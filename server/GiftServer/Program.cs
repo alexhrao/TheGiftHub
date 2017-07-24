@@ -45,15 +45,44 @@ namespace GiftServer
     {
         static void Main(string[] args)
         {
-            WebServer server = new WebServer("http://localhost:60001/", SendResponse);
+            WebServer server = new WebServer("http://localhost:60001/", Dispatch);
             server.Run();
-            Console.WriteLine("Hello World~!");
-            Console.ReadKey();
-            server.Stop();
+            Console.WriteLine("Server is Active...\nType quit or q to quit");
+            string input = null;
+            while ((input = Console.ReadLine()) != null)
+            {
+                if (string.Equals(input.ToLower(), "quit") || string.Equals(input.ToLower(), "q"))
+                {
+                    server.Stop();
+                    return;
+                }
+            }
         }
-        public static string SendResponse(HttpListenerRequest request)
+        public static string Dispatch(HttpListenerRequest request)
         {
             Stream input = request.InputStream;
+            System.Collections.Specialized.NameValueCollection headers = request.Headers;
+            foreach (string key in headers.AllKeys)
+            {
+                string[] values = headers.GetValues(key);
+                if (values.Length > 0)
+                {
+                    Console.WriteLine("The values of the {0} header are: ", key);
+                    foreach (string value in values)
+                    {
+                        Console.WriteLine("   {0}", value);
+                    }
+                }
+                else
+                    Console.WriteLine("There is no value associated with the header.");
+            }
+            if (request.HasEntityBody)
+            {
+                Console.WriteLine("Has Body");
+            } else
+            {
+                Console.WriteLine("No body");
+            }
             return string.Format("<HTML><BODY>My web page.<br>{0}</BODY></HTML>", DateTime.Now);
         }
     }
