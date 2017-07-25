@@ -65,7 +65,8 @@ namespace GiftServer
         /// <returns></returns>
         public static string Dispatch(HttpListenerRequest request)
         {
-            // Dispatch
+            // Check if user is logged in (via cookies?)
+            bool isLoggedIn = false;
             if (request.HasEntityBody)
             {
                 string input;
@@ -76,10 +77,13 @@ namespace GiftServer
                     Console.Write(input);
                 }
                 return "<html><body><form method=\"POST\"><input name=\"theMail\" type=\"email\"/><button type=\"submit\" value=\"submit\">Hello</button></form></body></html>";
-            }
-            else
+            } else if (isLoggedIn)
             {
-                // Return home page page
+                // If logged in (but no request), just send back home page:
+                return "<html><body><form method=\"POST\"><input name=\"theMail\" type=\"email\"/><button type=\"submit\" value=\"submit\">Hello</button></form></body></html>";
+            } else
+            {
+                // If not logged in, send the login page!
                 return "<html><body><form method=\"POST\"><input name=\"theMail\" type=\"email\"/><button type=\"submit\" value=\"submit\">Hello</button></form></body></html>";
             }
         }
