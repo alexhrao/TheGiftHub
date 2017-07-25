@@ -60,30 +60,22 @@ namespace GiftServer
         }
         public static string Dispatch(HttpListenerRequest request)
         {
-            Stream input = request.InputStream;
-            System.Collections.Specialized.NameValueCollection headers = request.Headers;
-            foreach (string key in headers.AllKeys)
-            {
-                string[] values = headers.GetValues(key);
-                if (values.Length > 0)
-                {
-                    Console.WriteLine("The values of the {0} header are: ", key);
-                    foreach (string value in values)
-                    {
-                        Console.WriteLine("   {0}", value);
-                    }
-                }
-                else
-                    Console.WriteLine("There is no value associated with the header.");
-            }
             if (request.HasEntityBody)
             {
-                Console.WriteLine("Has Body");
-            } else
-            {
-                Console.WriteLine("No body");
+                string input;
+                // Read input, then dispatch accordingly
+                using (StreamReader reader = new StreamReader(request.InputStream))
+                {
+                    input = reader.ReadToEnd();
+                    Console.Write(input);
+                }
+                return "<html><body><form method=\"POST\"><input name=\"theMail\" type=\"email\"/><button type=\"submit\" value=\"submit\">Hello</button></form></body></html>";
             }
-            return string.Format("<HTML><BODY>My web page.<br>{0}</BODY></HTML>", DateTime.Now);
+            else
+            {
+                // Return login page
+                return "<html><body><form method=\"POST\"><input name=\"theMail\" type=\"email\"/><button type=\"submit\" value=\"submit\">Hello</button></form></body></html>";
+            }
         }
     }
 }
