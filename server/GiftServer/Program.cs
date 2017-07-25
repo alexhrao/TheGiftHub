@@ -58,8 +58,14 @@ namespace GiftServer
                 }
             }
         }
+        /// <summary>
+        /// Dispatch will, given a request, return the webpage that will be shown to the user.
+        /// </summary>
+        /// <param name="request">The incoming HTML request, in it's entirety</param>
+        /// <returns></returns>
         public static string Dispatch(HttpListenerRequest request)
         {
+            // Dispatch
             if (request.HasEntityBody)
             {
                 string input;
@@ -73,7 +79,7 @@ namespace GiftServer
             }
             else
             {
-                // Return login page
+                // Return home page page
                 return "<html><body><form method=\"POST\"><input name=\"theMail\" type=\"email\"/><button type=\"submit\" value=\"submit\">Hello</button></form></body></html>";
             }
         }
