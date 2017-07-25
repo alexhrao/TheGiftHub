@@ -43,7 +43,7 @@ namespace GiftServer
     }
     class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             WebServer server = new WebServer("http://localhost:60001/", Dispatch);
             server.Run();

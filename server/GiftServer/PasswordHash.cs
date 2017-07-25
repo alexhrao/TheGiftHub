@@ -5,40 +5,65 @@ namespace GiftServer
 {
     namespace Security
     {
+        /// <summary>
+        /// PasswordHash
+        /// Responsible for properly hashing, salting and verifying passwords.
+        /// </summary>
         public class PasswordHash
         {
-            const int SaltSize = 16, HashSize = 20, HashIter = 10000;
-            readonly byte[] _salt, _hash;
+            public const int SALT_SIZE = 16;
+            public const int HASH_SIZE = 20;
+            public const int HASH_ITER = 10000;
+            private readonly byte[] _salt;
+            private readonly byte[] _hash;
+            private static readonly RNGCryptoServiceProvider rand = new RNGCryptoServiceProvider();
+
+            /// <summary>
+            /// Create a PasswordHash object from a password, which can then be used to retreive secure password hashes.
+            /// </summary>
+            /// <param name="password"></param>
             public PasswordHash(string password)
             {
-                new RNGCryptoServiceProvider().GetBytes(_salt = new byte[SaltSize]);
-                _hash = new Rfc2898DeriveBytes(password, _salt, HashIter).GetBytes(HashSize);
+                _salt = new byte[SALT_SIZE];
+                rand.GetBytes(_salt);
+                _hash = new Rfc2898DeriveBytes(password, _salt, HASH_ITER).GetBytes(HASH_SIZE);
             }
+            /// <summary>
+            /// Create a PasswordHash object from an existing hash - useful for comparison & verification
+            /// </summary>
+            /// <param name="hashBytes"></param>
             public PasswordHash(byte[] hashBytes)
             {
-                Array.Copy(hashBytes, 0, _salt = new byte[SaltSize], 0, SaltSize);
-                Array.Copy(hashBytes, SaltSize, _hash = new byte[HashSize], 0, HashSize);
+                Array.Copy(hashBytes, 0, _salt = new byte[SALT_SIZE], 0, SALT_SIZE);
+                Array.Copy(hashBytes, SALT_SIZE, _hash = new byte[HASH_SIZE], 0, HASH_SIZE);
             }
-            public PasswordHash(byte[] salt, byte[] hash)
-            {
-                Array.Copy(salt, 0, _salt = new byte[SaltSize], 0, SaltSize);
-                Array.Copy(hash, 0, _hash = new byte[HashSize], 0, HashSize);
-            }
+
+            /// <summary>
+            /// Get the salted & hashed password from this PasswordHash
+            /// </summary>
+            /// <returns>The hashed password, as a byte array.</returns>
             public byte[] ToArray()
             {
-                byte[] hashBytes = new byte[SaltSize + HashSize];
-                Array.Copy(_salt, 0, hashBytes, 0, SaltSize);
-                Array.Copy(_hash, 0, hashBytes, SaltSize, HashSize);
+                byte[] hashBytes = new byte[SALT_SIZE + HASH_SIZE];
+                Array.Copy(_salt, 0, hashBytes, 0, SALT_SIZE);
+                Array.Copy(_hash, 0, hashBytes, SALT_SIZE, HASH_SIZE);
                 return hashBytes;
             }
-            public byte[] Salt { get { return (byte[])_salt.Clone(); } }
-            public byte[] Hash { get { return (byte[])_hash.Clone(); } }
+            /// <summary>
+            /// Verify that the input password is indeed the same as the stored password.
+            /// </summary>
+            /// <param name="password"></param>
+            /// <returns>True if the passwords match; false otherwise</returns>
             public bool Verify(string password)
             {
-                byte[] test = new Rfc2898DeriveBytes(password, _salt, HashIter).GetBytes(HashSize);
-                for (int i = 0; i < HashSize; i++)
+                byte[] test = new Rfc2898DeriveBytes(password, _salt, HASH_ITER).GetBytes(HASH_SIZE);
+                for (int i = 0; i < HASH_SIZE; i++)
+                {
                     if (test[i] != _hash[i])
+                    {
                         return false;
+                    }
+                }
                 return true;
             }
         }
