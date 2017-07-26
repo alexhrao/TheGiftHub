@@ -13,7 +13,7 @@ namespace GiftServer
         /// <param name="args">Reserved for future use</param>
         public static void Main(string[] args)
         {
-            Server.WebServer server = new Server.WebServer("http://localhost:60001/", Dispatch);
+            Server.WebServer server = new Server.WebServer("https://localhost:60001/", Dispatch);
             server.Run();
             Console.WriteLine("Server is Active...\nType quit or q to quit");
             string input = null;
@@ -56,7 +56,7 @@ namespace GiftServer
             else
             {
                 // If not logged in, send the login page!
-                return "<html><body><form method=\"POST\"><input name=\"theMail\" type=\"email\"/><button type=\"submit\" value=\"submit\">Hello</button></form></body></html>";
+                return GiftServer.Properties.Resources.login;
             }
         }
     }

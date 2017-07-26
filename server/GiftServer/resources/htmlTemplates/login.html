@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="https://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Gift Registry Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            background-color: #172556;
+            color: white;
+        }
+        .input-group,
+        .form-group,
+        .spaced {
+            margin: 10px;
+        }
+        a {
+            color: lightgreen;
+        }
+        .nav-pills > li,
+        .nav-tabs > li {
+            float: none;
+            display: inline-block;
+        }
+        .nav-tabs,
+        .nav-pills {
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body class="text-center">
+    <div class="container-fluid">
+        <h1>Welcome to Gift Registry!</h1>
+        <ul class="text-center nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#login">Login</a></li>
+            <li><a data-toggle="tab" href="#signup">Sign Up</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="login" class="tab-pane fade in active">
+                <form id="loginForm" method="post">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <input name="email" type="email" class="form-control" id="email" placeholder="john.doe@example.com"/>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                        <input name="password" type="password" class="form-control" placeholder="Password"/>
+                    </div>
+                    <button type="submit" name="submit" form="loginForm" value="Submit" class="btn btn-success">
+                        Log In
+                    </button>
+                </form>
+            </div>
+            <div id="signup" class="tab-pane fade">
+                <form id="signupForm" method="post">
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <input name="email" type="email" class="form-control" id="email" placeholder="Email Address" />
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                        <input name="passwordOrig" type="password" class="form-control" id="firstPass" placeholder="Password" />
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                        <input name="passwordNew" type="password" class="form-control" id="secondPass" placeholder="Confirm Password" />
+                    </div>
+                    <button type="submit" name="submit" form="signupForm" value="Submit" class="btn btn-success">
+                        Sign Up
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
