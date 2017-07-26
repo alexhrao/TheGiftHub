@@ -8,6 +8,7 @@ namespace GiftServer
         {
             bool Create();
             bool Update();
+            bool Delete();
         }
     }
 }
