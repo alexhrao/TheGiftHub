@@ -17,7 +17,7 @@ CREATE TABLE gift_registry_db.users (
     FirstName VARCHAR(255) NOT NULL,
     LastName VARCHAR(255) NOT NULL,
     PasswordID INT NOT NULL,
-    UserEmail VARCHAR(255) NULL,
+    UserEmail VARCHAR(255) NOT NULL UNIQUE,
     UserTheme TINYINT UNSIGNED DEFAULT 0,
     UserImage VARCHAR(255) NULL
 );
