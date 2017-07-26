@@ -154,7 +154,6 @@ namespace GiftServer
             }
             public bool Delete()
             {
-                // TODO: Delete Password as well!
                 if (this._id == -1)
                 {
                     // User doesn't exist - don't delete
@@ -166,6 +165,17 @@ namespace GiftServer
                         con.Open();
                         MySqlCommand command = new MySqlCommand();
                         command.Connection = con;
+                        command.CommandText = "SELECT PasswordID FROM users WHERE UserID = @id";
+                        command.Parameters.AddWithValue("@id", this._id);
+                        command.Prepare();
+                        using (MySqlDataReader reader = command.ExecuteReader())
+                        {
+                            long pId = Convert.ToInt64(reader["PasswordID"]);
+                            command.CommandText = "DELETE FROM passwords WHERE PasswordID = @id";
+                            command.Parameters.AddWithValue("@id", pId);
+                            command.Prepare();
+                            command.ExecuteNonQuery();
+                        }
                         command.CommandText = "DELETE FROM users WHERE UserID = @id;";
                         command.Parameters.AddWithValue("@id", this._id);
                         command.Prepare();
