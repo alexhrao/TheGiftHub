@@ -25,10 +25,10 @@ namespace GiftServer
                     con.Open();
                     MySqlCommand command = new MySqlCommand();
                     command.Connection = con;
-                    command.CommandText = "SELECT users.UserID, users.firstName, users.LastName, passwords.passwordHash, users.theme, users.imagePath "
-                        + "FROM [users] "
-                        + "INNER JOIN [passwords] ON [users].[PasswordID] = [passwords].[PasswordID] "
-                        + "WHERE [users].[email] = @email;";
+                    command.CommandText = "SELECT users.UserID, users.FirstName, users.LastName, passwords.PasswordHash, users.UserTheme, users.UserImage "
+                        + "FROM users "
+                        + "INNER JOIN passwords ON passwords.PasswordID = users.PasswordID "
+                        + "WHERE users.UserEmail = @email;";
                     command.Parameters.AddWithValue("@email", email);
                     command.Prepare();
 
@@ -42,8 +42,7 @@ namespace GiftServer
                         while (reader.Read())
                         {
                             // Check password
-                            PasswordHash correct = new PasswordHash((byte[])(reader["passwordHash"]));
-                            if (!correct.Verify(password))
+                            if (!PasswordHash.Verify(password, (string)(reader["PasswordHash"])))
                             {
                                 // Not correct, throw new exception!
                                 throw new InvalidPasswordException();
@@ -52,9 +51,9 @@ namespace GiftServer
                             this.firstName = (string)(reader["FirstName"]);
                             this.lastName = (string)(reader["LastName"]);
                             this.email = email;
-                            this.passwordHash = correct.ToString();
-                            this.theme = (int)(reader["theme"]);
-                            this.imagePath = (string)(reader["imagePath"]);
+                            this.passwordHash = PasswordHash.Hash(password);
+                            this.theme = (int)(reader["UserTheme"]);
+                            this.imagePath = (string)(reader["UserImage"]);
                         }
                     }
                 }
@@ -64,8 +63,7 @@ namespace GiftServer
             public User(string firstName, string lastName, string email, string password, int theme, string imagePath)
             {
                 this.email = email;
-                PasswordHash hasher = new PasswordHash(password);
-                passwordHash = hasher.ToString();
+                passwordHash = PasswordHash.Hash(password);
                 this.firstName = firstName;
                 this.lastName = lastName;
                 this.theme = theme;

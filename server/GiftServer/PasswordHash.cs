@@ -5,66 +5,99 @@ namespace GiftServer
 {
     namespace Security
     {
-        /// <summary>
-        /// PasswordHash
-        /// Responsible for properly hashing, salting and verifying passwords.
-        /// </summary>
-        public class PasswordHash
+        public sealed class PasswordHash
         {
-            public const int SALT_SIZE = 16;
-            public const int HASH_SIZE = 20;
-            public const int HASH_ITER = 10000;
-            private readonly byte[] _salt = new byte[SALT_SIZE];
-            private readonly byte[] _hash = new byte[HASH_SIZE];
-            private readonly RNGCryptoServiceProvider rand = new RNGCryptoServiceProvider();
+            /// <summary>
+            /// Size of salt
+            /// </summary>
+            private const int SaltSize = 16;
 
             /// <summary>
-            /// Create a PasswordHash object from a password, which can then be used to retreive secure password hashes.
+            /// Size of hash
             /// </summary>
-            /// <param name="password">The password you want hashed</param>
-            public PasswordHash(string password)
+            private const int HashSize = 20;
+
+            /// <summary>
+            /// Creates a hash from a password
+            /// </summary>
+            /// <param name="password">the password</param>
+            /// <param name="iterations">number of iterations</param>
+            /// <returns>the hash</returns>
+            public static string Hash(string password, int iterations)
             {
-                rand.GetBytes(_salt);
-                _hash = new Rfc2898DeriveBytes(password, _salt, HASH_ITER).GetBytes(HASH_SIZE);
+                //create salt
+                byte[] salt;
+                new RNGCryptoServiceProvider().GetBytes(salt = new byte[SaltSize]);
+
+                //create hash
+                var pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations);
+                var hash = pbkdf2.GetBytes(HashSize);
+
+                //combine salt and hash
+                var hashBytes = new byte[SaltSize + HashSize];
+                Array.Copy(salt, 0, hashBytes, 0, SaltSize);
+                Array.Copy(hash, 0, hashBytes, SaltSize, HashSize);
+
+                //convert to base64
+                var base64Hash = Convert.ToBase64String(hashBytes);
+
+                //format hash with extra information
+                return string.Format("$MYHASH$V1${0}${1}", iterations, base64Hash);
             }
             /// <summary>
-            /// Create a PasswordHash object from an existing hash - useful for comparison & verification
+            /// Creates a hash from a password with 10000 iterations
             /// </summary>
-            /// <param name="hashBytes">The hashed password you want to box</param>
-            public PasswordHash(byte[] hashBytes)
+            /// <param name="password">the password</param>
+            /// <returns>the hash</returns>
+            public static string Hash(string password)
             {
-                Array.Copy(hashBytes, 0, _salt = new byte[SALT_SIZE], 0, SALT_SIZE);
-                Array.Copy(hashBytes, SALT_SIZE, _hash = new byte[HASH_SIZE], 0, HASH_SIZE);
-            }
-            /// <summary>
-            /// Get the salted & hashed password from this PasswordHash
-            /// </summary>
-            /// <returns>The hashed password, as a byte array.</returns>
-            public byte[] ToArray()
-            {
-                byte[] hashBytes = new byte[SALT_SIZE + HASH_SIZE];
-                Array.Copy(_salt, 0, hashBytes, 0, SALT_SIZE);
-                Array.Copy(_hash, 0, hashBytes, SALT_SIZE, HASH_SIZE);
-                return hashBytes;
+                return Hash(password, 10000);
             }
 
-            override
-            public string ToString()
-            {
-                byte[] conv = this.ToArray();
-                return System.Text.Encoding.UTF8.GetString(conv);
-            }
             /// <summary>
-            /// Verify that the input password is indeed the same as the stored password.
+            /// Check if hash is supported
             /// </summary>
-            /// <param name="password">The password you'd like to verify</param>
-            /// <returns>True if the passwords match; false otherwise</returns>
-            public bool Verify(string password)
+            /// <param name="hashString">the hash</param>
+            /// <returns>is supported?</returns>
+            public static bool IsHashSupported(string hashString)
             {
-                byte[] test = new Rfc2898DeriveBytes(password, _salt, HASH_ITER).GetBytes(HASH_SIZE);
-                for (int i = 0; i < HASH_SIZE; i++)
+                return hashString.Contains("$MYHASH$V1$");
+            }
+
+            /// <summary>
+            /// verify a password against a hash
+            /// </summary>
+            /// <param name="password">the password</param>
+            /// <param name="hashedPassword">the hash</param>
+            /// <returns>could be verified?</returns>
+            public static bool Verify(string password, string hashedPassword)
+            {
+                //check hash
+                if (!IsHashSupported(hashedPassword))
                 {
-                    if (test[i] != _hash[i])
+                    throw new NotSupportedException("The hashtype is not supported");
+                }
+
+                //extract iteration and Base64 string
+                var splittedHashString = hashedPassword.Replace("$MYHASH$V1$", "").Split('$');
+                var iterations = int.Parse(splittedHashString[0]);
+                var base64Hash = splittedHashString[1];
+
+                //get hashbytes
+                var hashBytes = Convert.FromBase64String(base64Hash);
+
+                //get salt
+                var salt = new byte[SaltSize];
+                Array.Copy(hashBytes, 0, salt, 0, SaltSize);
+
+                //create hash with given salt
+                var pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations);
+                byte[] hash = pbkdf2.GetBytes(HashSize);
+
+                //get result
+                for (var i = 0; i < HashSize; i++)
+                {
+                    if (hashBytes[i + SaltSize] != hash[i])
                     {
                         return false;
                     }
