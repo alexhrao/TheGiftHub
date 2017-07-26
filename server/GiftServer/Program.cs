@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.IO;
+using System.Web;
 
 namespace GiftServer
 {
@@ -29,7 +30,7 @@ namespace GiftServer
         /// Dispatch will, given a request, return the webpage that will be shown to the user.
         /// </summary>
         /// <param name="request">The incoming HTML request, in it's entirety</param>
-        /// <returns></returns>
+        /// <returns>The html to be sent back to the user. Additionally, it will also alter the response, if necessary</returns>
         public static string Dispatch(HttpListenerContext rtx)
         {
             // Check if user is logged in (via cookies?)

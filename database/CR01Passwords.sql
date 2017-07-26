@@ -1,4 +1,4 @@
-CREATE TABLE passwords (
+CREATE TABLE gift_registry_db.passwords (
     PasswordID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     PasswordHash CHAR(36) NOT NULL,
     CreateStamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
