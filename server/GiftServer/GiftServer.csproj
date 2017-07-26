@@ -83,6 +83,8 @@
     <Content Include="docs\MySqlParameterCollection.xml" />
     <Content Include="docs\MySqlTransaction.xml" />
     <Content Include="resources\htmlTemplates\login.html" />
+    <Content Include="resources\htmlTemplates\loginFailed.html" />
+    <None Include="resources\htmlTemplates\onLogin.html" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

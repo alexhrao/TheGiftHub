@@ -4,6 +4,7 @@ using System.IO;
 using System.Web;
 using System.Collections.Specialized;
 using GiftServer.Data;
+using GiftServer.Exceptions;
 namespace GiftServer
 {
     public class Program
@@ -54,20 +55,27 @@ namespace GiftServer
                             case "Signup":
                                 User newUser = new User(dict["firstName"], dict["lastName"], dict["email"], dict["password"]);
                                 newUser.Create();
-                                break;
+                                return GiftServer.Properties.Resources.login;
                             case "Login":
-                                User returnUser = new User(dict["email"], dict["password"]);
-                                break;
+                                try
+                                {
+                                    User returnUser = new User(dict["email"], dict["password"]);
+                                } catch (InvalidPasswordException)
+                                {
+                                    return GiftServer.Properties.Resources.loginFailed;
+                                } catch (UserNotFoundException)
+                                {
+                                    return GiftServer.Properties.Resources.loginFailed;
+                                }
+                                return GiftServer.Properties.Resources.onLogin;
                             default:
-                                break;
+                                return GiftServer.Properties.Resources.login;
                         }
-                    }
-                    foreach (string key in dict.AllKeys)
+                    } else
                     {
-                        Console.WriteLine(key + " - " + dict[key]);
+                        return GiftServer.Properties.Resources.login;
                     }
                 }
-                return "<html><body><form method=\"POST\"><input name=\"theMail\" type=\"email\"/><button type=\"submit\" value=\"submit\">Hello</button></form></body></html>";
             }
             else if (isLoggedIn)
             {

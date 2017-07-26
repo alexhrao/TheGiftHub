@@ -52,7 +52,7 @@ namespace GiftServer
                             this.lastName = (string)(reader["LastName"]);
                             this.email = email;
                             this.passwordHash = PasswordHash.Hash(password);
-                            this.theme = (int)(reader["UserTheme"]);
+                            this.theme = Convert.ToInt32(reader["UserTheme"]);
                             this.imagePath = (string)(reader["UserImage"]);
                         }
                     }
