@@ -2,7 +2,8 @@
 using System.Net;
 using System.IO;
 using System.Web;
-
+using System.Collections.Specialized;
+using GiftServer.Data;
 namespace GiftServer
 {
     public class Program
@@ -13,7 +14,7 @@ namespace GiftServer
         /// <param name="args">Reserved for future use</param>
         public static void Main(string[] args)
         {
-            Server.WebServer server = new Server.WebServer("https://localhost:60001/", Dispatch);
+            Server.WebServer server = new Server.WebServer("http://localhost:60001/", Dispatch);
             server.Run();
             Console.WriteLine("Server is Active...\nType quit or q to quit");
             string input = null;
@@ -44,7 +45,27 @@ namespace GiftServer
                 using (StreamReader reader = new StreamReader(request.InputStream))
                 {
                     input = reader.ReadToEnd();
-                    Console.Write(input);
+                    NameValueCollection dict = HttpUtility.ParseQueryString(input);
+                    if (dict["submit"] != null)
+                    {
+                        // Dispatch to correct logic:
+                        switch (dict["submit"])
+                        {
+                            case "Signup":
+                                User newUser = new User(dict["firstName"], dict["lastName"], dict["email"], dict["password"]);
+                                newUser.Create();
+                                break;
+                            case "Login":
+                                User returnUser = new User(dict["email"], dict["password"]);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    foreach (string key in dict.AllKeys)
+                    {
+                        Console.WriteLine(key + " - " + dict[key]);
+                    }
                 }
                 return "<html><body><form method=\"POST\"><input name=\"theMail\" type=\"email\"/><button type=\"submit\" value=\"submit\">Hello</button></form></body></html>";
             }

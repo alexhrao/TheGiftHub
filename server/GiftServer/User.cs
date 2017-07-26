@@ -13,24 +13,24 @@ namespace GiftServer
             public string firstName;
             public string lastName;
             public string email;
-            public byte[] passwordHash;
+            public string passwordHash;
             public int theme;
             public string imagePath;
             public User(string email, string password)
             {
-                // If this is called, the user already exists in DB; fetch. If it can't find it, through UserNotFoundException. 
+                // If this is called, the user already exists in DB; fetch. If it can't find it, throw UserNotFoundException. 
                 // If found, but password mismatch, throw InvalidPasswordException.
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["MySql"].ConnectionString))
                 {
                     con.Open();
                     MySqlCommand command = new MySqlCommand();
                     command.Connection = con;
-                    command.CommandText = "SELECT [users].[UserID], [users].[firstName], [users].[LastName], [passwords].[passwordHash], [users].[theme], [users].[imagePath] "
+                    command.CommandText = "SELECT users.UserID, users.firstName, users.LastName, passwords.passwordHash, users.theme, users.imagePath "
                         + "FROM [users] "
                         + "INNER JOIN [passwords] ON [users].[PasswordID] = [passwords].[PasswordID] "
                         + "WHERE [users].[email] = @email;";
-                    command.Prepare();
                     command.Parameters.AddWithValue("@email", email);
+                    command.Prepare();
 
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
@@ -52,7 +52,7 @@ namespace GiftServer
                             this.firstName = (string)(reader["FirstName"]);
                             this.lastName = (string)(reader["LastName"]);
                             this.email = email;
-                            this.passwordHash = correct.ToArray();
+                            this.passwordHash = correct.ToString();
                             this.theme = (int)(reader["theme"]);
                             this.imagePath = (string)(reader["imagePath"]);
                         }
@@ -65,7 +65,7 @@ namespace GiftServer
             {
                 this.email = email;
                 PasswordHash hasher = new PasswordHash(password);
-                passwordHash = hasher.ToArray();
+                passwordHash = hasher.ToString();
                 this.firstName = firstName;
                 this.lastName = lastName;
                 this.theme = theme;
@@ -80,21 +80,21 @@ namespace GiftServer
                     MySqlCommand command = new MySqlCommand();
                     command.Connection = con;
                     // Create new password:
-                    command.CommandText = "INSERT INTO passwords (PasswordHash, CreateStamp) VALUES (@pwd, @stamp);";
-                    command.Prepare();
+                    command.CommandText = "INSERT INTO passwords (PasswordHash) VALUES (@pwd);";
                     command.Parameters.AddWithValue("@pwd", this.passwordHash);
-                    command.Parameters.AddWithValue("@stamp", DateTime.Now);
+                    command.Parameters.AddWithValue("@stamp", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
+                    command.Prepare();
                     command.ExecuteNonQuery();
                     long pId = command.LastInsertedId;
                     command.CommandText = "INSERT INTO users (FirstName, LastName, UserEmail, PasswordID, UserTheme, UserImage) "
                         + "VALUES (@fName, @lName, @email, @pid, @theme, @img);";
-                    command.Prepare();
                     command.Parameters.AddWithValue("@fName", this.firstName);
                     command.Parameters.AddWithValue("@lName", this.lastName);
                     command.Parameters.AddWithValue("@email", this.email);
                     command.Parameters.AddWithValue("@pid", pId);
                     command.Parameters.AddWithValue("@theme", this.theme);
                     command.Parameters.AddWithValue("@img", this.imagePath);
+                    command.Prepare();
                     command.ExecuteNonQuery();
                     this._id = command.LastInsertedId;
                 }
@@ -120,13 +120,13 @@ namespace GiftServer
                         + "UserTheme = @theme, "
                         + "UserImage = @img "
                         + "WHERE UserID = @id;";
-                    command.Prepare();
                     command.Parameters.AddWithValue("@fName", this.firstName);
                     command.Parameters.AddWithValue("@lName", this.lastName);
                     command.Parameters.AddWithValue("@email", this.email);
                     command.Parameters.AddWithValue("@theme", this.theme);
                     command.Parameters.AddWithValue("@img", this.imagePath);
                     command.Parameters.AddWithValue("@id", this._id);
+                    command.Prepare();
                     if (command.ExecuteNonQuery() == 0)
                     {
                         return false;
@@ -134,17 +134,17 @@ namespace GiftServer
                     {
                         // Get password ID of user:
                         command.CommandText = "SELECT PasswordID FROM users WHERE UserID = @id;";
-                        command.Prepare();
                         command.Parameters.AddWithValue("@id", this._id);
+                        command.Prepare();
                         using (MySqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.Read())
                             {
                                 // Update password with PID:
                                 command.CommandText = "UPDATE passwords SET PasswordHash = @pwd WHERE PasswordID = @id;";
-                                command.Prepare();
                                 command.Parameters.AddWithValue("@pwd", this.passwordHash);
                                 command.Parameters.AddWithValue("@id", (long)(reader["PasswordID"]));
+                                command.Prepare();
                                 return command.ExecuteNonQuery() != 0;
                             } else
                             {
@@ -156,6 +156,7 @@ namespace GiftServer
             }
             public bool Delete()
             {
+                // TODO: Delete Password as well!
                 if (this._id == -1)
                 {
                     // User doesn't exist - don't delete
@@ -168,15 +169,15 @@ namespace GiftServer
                         MySqlCommand command = new MySqlCommand();
                         command.Connection = con;
                         command.CommandText = "DELETE FROM users WHERE UserID = @id;";
-                        command.Prepare();
                         command.Parameters.AddWithValue("@id", this._id);
+                        command.Prepare();
                         if (command.ExecuteNonQuery() != 0)
                         {
                             this._id = -1;
                             return true;
                         } else
                         {
-                            return false;
+                            throw new UserNotFoundException(this.email);
                         }
                     }
                 }

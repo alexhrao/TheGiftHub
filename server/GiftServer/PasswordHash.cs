@@ -47,6 +47,13 @@ namespace GiftServer
                 Array.Copy(_hash, 0, hashBytes, SALT_SIZE, HASH_SIZE);
                 return hashBytes;
             }
+
+            override
+            public string ToString()
+            {
+                byte[] conv = this.ToArray();
+                return System.Text.Encoding.UTF8.GetString(conv);
+            }
             /// <summary>
             /// Verify that the input password is indeed the same as the stored password.
             /// </summary>
