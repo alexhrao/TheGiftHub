@@ -50,6 +50,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Synchronizable.cs" />
+    <Compile Include="User.cs" />
     <Compile Include="WebServer.cs" />
   </ItemGroup>
   <ItemGroup>
