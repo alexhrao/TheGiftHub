@@ -1,101 +1,126 @@
 ﻿<!DOCTYPE html>
 
 <html lang="en" xmlns="https://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <title>Gift Registry Login</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <style>
-        body {
-            background-color: #172556;
-            color: white;
-        }
-        .input-group,
-        .form-group,
-        .spaced {
-            margin: 10px;
-        }
-        #firstName,
-        #lastName {
-            margin-top: 10px;
-            margin-bottom: 10px;
-        }
-        a {
-            color: lightgreen;
-        }
-        .nav-pills > li,
-        .nav-tabs > li {
-            float: none;
-            display: inline-block;
-        }
-        form {
-            max-width: 400px;
-            display: inline-block;
-        }
-        .nav-tabs,
-        .nav-pills {
-            display: inline-block;
-            text-align: center;
-            position: center;
-            max-width: 400px;
-        }
+    <head>
+        <meta charset="utf-8" />
+        <title>Gift Registry Login</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $('[data-toggle="tooltip"').tooltip();
+                $('#signupSubmit').hide();
+                $('#secondPass').keyup(function () {
+                    if ($('#secondPass').val() === $('#firstPass').val() && $('#secondPass').val()) {
+                        // We are good to go!
+                        $('#secondPass').parent().removeClass('has-error');
+                        $('#secondPass').parent().addClass('has-success');
+                        $('#signupSubmit').show();
+                    } else {
+                        // Passwords don't match; disable submit and warn
+                        $('#secondPass').parent().removeClass('has-success');
+                        $('#secondPass').parent().addClass('has-error');
+                        $('#signupSubmit').hide();
+                    }
+                });
+            });
+        </script>
+        <style>
+            body {
+                background-color: #172556;
+                color: white;
+            }
+            .input-group,
+            .form-group,
+            .spaced {
+                margin: 10px;
+            }
+            #firstName,
+            #lastName {
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+            a {
+                color: lightgreen;
+            }
+            .alert a {
+                color: #172556;
+            }
+            .nav-pills > li,
+            .nav-tabs > li {
+                float: none;
+                display: inline-block;
+            }
+            form {
+                max-width: 400px;
+                display: inline-block;
+            }
+            .nav-tabs,
+            .nav-pills {
+                display: inline-block;
+                text-align: center;
+                position: center;
+                max-width: 400px;
+            }
+            .no-click {
+                cursor: not-allowed;
+            }
 
-    </style>
-</head>
-<body class="text-center">
-    <div class="container-fluid">
-        <h1>Welcome to Gift Registry!</h1>
-        <ul class="text-center nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#login">Login</a></li>
-            <li><a data-toggle="tab" href="#signup">Sign Up</a></li>
-        </ul>
-        <div class="tab-content">
-            <div id="login" class="tab-pane fade in active">
-                <form id="loginForm" method="post">
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                        <input name="email" type="email" class="form-control" id="email" placeholder="Email"/>
-                    </div>
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                        <input id="password" name="password" type="password" class="form-control" placeholder="Password"/>
-                    </div>
-                    <button type="submit" name="submit" form="loginForm" value="Login" class="btn btn-success">
-                        Log In
-                    </button>
-                </form>
-            </div>
-            <div id="signup" class="tab-pane fade">
-                <form id="signupForm" method="post">
-                    <div class="form-group">
-                        <div class="col-sm-6">
-                            <input name="firstName" type="text" class="form-control" id="firstName" placeholder="First Name" />
+        </style>
+    </head>
+    <body class="text-center">
+        <div class="container-fluid">
+            <h1>Welcome to Gift Registry!</h1>
+            <ul class="text-center nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#login">Login</a></li>
+                <li><a data-toggle="tab" href="#signup">Sign Up</a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="login" class="tab-pane fade in active">
+                    <form id="loginForm" method="post">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <input name="email" type="email" class="form-control" id="email" placeholder="Email"/>
                         </div>
-                        <div class="col-sm-6">
-                            <input name="lastName" type="text" class="form-control" id="lastName" placeholder="Last Name" />
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            <input id="password" name="password" type="password" class="form-control" placeholder="Password"/>
                         </div>
-                    </div>
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                        <input name="email" type="email" class="form-control" id="email" placeholder="Email Address" />
-                    </div>
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                        <input name="password" type="password" class="form-control" id="firstPass" placeholder="Password" />
-                    </div>
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                        <input type="password" class="form-control" id="secondPass" placeholder="Confirm Password" />
-                    </div>
-                    <button type="submit" name="submit" form="signupForm" value="Signup" class="btn btn-success">
-                        Sign Up
-                    </button>
-                </form>
+                        <button id="loginSubmit" type="submit" name="submit" form="loginForm" value="Login" class="btn btn-success">
+                            Log In
+                        </button>
+                    </form>
+                </div>
+                <div id="signup" class="tab-pane fade">
+                    <form id="signupForm" method="post">
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <input name="firstName" type="text" class="form-control" id="firstName" placeholder="First Name" />
+                            </div>
+                            <div class="col-sm-6">
+                                <input name="lastName" type="text" class="form-control" id="lastName" placeholder="Last Name" />
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <input name="email" type="email" class="form-control" id="email" placeholder="Email Address" />
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            <input name="password" type="password" class="form-control" id="firstPass" placeholder="Password" />
+                        </div>
+                        <div class="input-group has-feedback">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            <input type="password" class="form-control" id="secondPass" placeholder="Confirm Password" />
+                        </div>
+                        <button id="signupSubmit" type="submit" name="submit" form="signupForm" value="Signup" class="btn btn-success">
+                            Sign Up
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-</body>
+    </body>
 </html>

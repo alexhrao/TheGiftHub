@@ -8,6 +8,21 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="tooltip"').tooltip();
+        });
+        $('#secondPass').keypress(function () {
+            if ($('#secondPass').val() === $('#firstPass').val()) {
+                // We are good to go!
+                $('#secondPass').addClass('has-success');
+
+            } else {
+                // Passwords don't match; disable submit and warn
+                $('#secondPass').addClass('has-error'); 
+            }
+        })
+    </script>
     <style>
         body {
             background-color: #172556;
