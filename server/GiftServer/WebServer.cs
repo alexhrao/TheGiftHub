@@ -21,21 +21,27 @@ namespace GiftServer
             }
             public void Run()
             {
-                ThreadPool.QueueUserWorkItem((obj) =>
+                try
                 {
-                    while (_listener.IsListening)
+                    ThreadPool.QueueUserWorkItem((obj) =>
                     {
-                        ThreadPool.QueueUserWorkItem((r) =>
+                        while (_listener.IsListening)
                         {
-                            HttpListenerContext rtx = (HttpListenerContext)(r);
-                            string resp = _responseGenerator(rtx);
-                            byte[] respBuffer = Encoding.UTF8.GetBytes(resp);
-                            rtx.Response.ContentLength64 = respBuffer.Length;
-                            rtx.Response.OutputStream.Write(respBuffer, 0, respBuffer.Length);
-                            rtx.Response.OutputStream.Close();
-                        }, _listener.GetContext());
-                    }
-                });
+                            ThreadPool.QueueUserWorkItem((r) =>
+                            {
+                                HttpListenerContext rtx = (HttpListenerContext)(r);
+                                string resp = _responseGenerator(rtx);
+                                byte[] respBuffer = Encoding.UTF8.GetBytes(resp);
+                                rtx.Response.ContentLength64 = respBuffer.Length;
+                                rtx.Response.OutputStream.Write(respBuffer, 0, respBuffer.Length);
+                                rtx.Response.OutputStream.Close();
+                            }, _listener.GetContext());
+                        }
+                    });
+                } catch (Exception)
+                {
+                    // If any exception is thrown and NOT caught by Dispatch, then it's time to close down the server! So, don't do anything
+                }
             }
             public void Stop()
             {
