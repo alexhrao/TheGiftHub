@@ -61,6 +61,33 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+        ///&lt;head&gt;
+        ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
+        ///    &lt;title&gt;My Dashboard&lt;/title&gt;
+        ///    &lt;style&gt;
+        ///        body {
+        ///            background-color: azure;
+        ///            font-family: &apos;Segoe UI&apos;, Tahoma, Geneva, Verdana, sans-serif;
+        ///            margin-top: 70px;
+        ///        }
+        ///    &lt;/style&gt;
+        ///&lt;/head&gt;
+        ///&lt;body&gt;
+        ///    &lt;div class=&quot;container-fluid&quot;&gt;
+        ///        &lt;div class=&quot;row&quot;&gt;
+        ///            &lt;div class=&quot;col-md-4&quot;&gt;
+        ///                &lt;!-- News Feed--&gt;
+        ///            &lt;/div&gt;
+        ///            &lt;div c [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string dashboard {
+            get {
+                return ResourceManager.GetString("dashboard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
         ///
         ///&lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
@@ -175,6 +202,15 @@ namespace GiftServer.Properties {
         internal static string onSignup {
             get {
                 return ResourceManager.GetString("onSignup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to http://localhost:60001.
+        /// </summary>
+        internal static string URL {
+            get {
+                return ResourceManager.GetString("URL", resourceCulture);
             }
         }
     }

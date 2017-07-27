@@ -136,4 +136,11 @@
   <data name="onSignup" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\htmlTemplates\onSignup.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="URL" xml:space="preserve">
+    <value>http://localhost:60001</value>
+    <comment>The URL this site is hosted on</comment>
+  </data>
+  <data name="dashboard" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\htmlTemplates\dashboard.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
 </root>

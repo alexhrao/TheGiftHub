@@ -1,0 +1,46 @@
+﻿<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>My Dashboard</title>
+    <style>
+        body {
+            background-color: #CECECE;
+            color: black;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid" style="margin-top: 70px;">
+        <div class="row">
+            <div class="col-md-3">
+                <!-- News Feed-->
+                <div id="newPanel" class="panel panel-success">
+                    <div class="text-center panel-heading">News Feed</div>
+                    <div class="panel-body">Panel Content</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <!-- Upcoming Birthdays-->
+                <div id="birthdayPanel" class="panel panel-primary">
+                    <div class="text-center panel-heading">Upcoming Birthdays</div>
+                    <div class="panel-body">Panel Content</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <!-- Navigator -->
+                <div id="birthdayPanel" class="panel">
+                    <div class="text-center panel-heading">Quick Links</div>
+                    <div class="panel-body">
+                        <ul class="nav nav-pills nav-stacked">
+                            <li class="active"><a href=".?dest=dashboard">Dashboard</a></li>
+                            <li><a href=".?dest=myList">My List</a></li>
+                            <li><a href=".?dest=myGroups">My Groups</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -5,6 +5,7 @@ using System.Web;
 using System.Collections.Specialized;
 using GiftServer.Data;
 using GiftServer.Exceptions;
+using GiftServer.Properties;
 namespace GiftServer
 {
     public class Program
@@ -60,29 +61,40 @@ namespace GiftServer
                             case "Signup":
                                 user = new User(dict["firstName"], dict["lastName"], dict["email"], dict["password"]);
                                 user.Create();
-                                return GiftServer.Properties.Resources.header + GiftServer.Properties.Resources.onSignup;
+                                return Resources.header + Resources.onSignup;
                             case "Login":
                                 try
                                 {
                                     user = new User(dict["email"], dict["password"]);
                                     Cookie logger = new Cookie("UserID", Convert.ToString(user.id));
                                     response.Cookies.Add(logger);
-                                    return GiftServer.Properties.Resources.header + GiftServer.Properties.Resources.onLogin;
+                                    return Resources.header + Resources.onLogin;
                                 } catch (InvalidPasswordException)
                                 {
-                                    return GiftServer.Properties.Resources.header + GiftServer.Properties.Resources.loginFailed;
+                                    return Resources.header + Resources.loginFailed;
                                 } catch (UserNotFoundException)
                                 {
-                                    return GiftServer.Properties.Resources.header + GiftServer.Properties.Resources.loginFailed;
+                                    return Resources.header + Resources.loginFailed;
                                 }
                             default:
-                                return GiftServer.Properties.Resources.header + GiftServer.Properties.Resources.login;
+                                return Resources.header + Resources.login;
                         }
                     } else
                     {
-                        return GiftServer.Properties.Resources.header + GiftServer.Properties.Resources.login;
+                        return Resources.header + Resources.login;
                     }
                 }
+            } else if (request.QueryString["dest"] != null)
+            {
+                switch (request.QueryString["dest"])
+                {
+                    case "dashboard":
+                        return Resources.header + Resources.navigationBar + Resources.dashboard;
+                    default:
+                        return Resources.header + Resources.navigationBar + Resources.dashboard;
+                        break;
+                }
+                Console.WriteLine(request.QueryString["dest"]);
             }
             else if (user != null)
             {
@@ -92,7 +104,7 @@ namespace GiftServer
             else
             {
                 // If not logged in, send the login page!
-                return GiftServer.Properties.Resources.header + GiftServer.Properties.Resources.navigationBar + GiftServer.Properties.Resources.login;
+                return Resources.header + Resources.navigationBar + Resources.login;
             }
         }
     }
