@@ -118,6 +118,27 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+        ///&lt;head&gt;
+        ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
+        ///&lt;/head&gt;
+        ///&lt;body&gt;
+        ///    &lt;div class=&quot;container-fluid&quot;&gt;
+        ///        &lt;nav class=&quot;navbar navbar-inverse&quot;&gt;
+        ///            &lt;div class=&quot;container-fluid&quot;&gt;
+        ///                &lt;div class=&quot;navbar-header&quot;&gt;
+        ///                    &lt;button type=&quot;button&quot; class=&quot;navbar-toggle&quot; data-toggle=&quot;collapse&quot; data-target=&quot;#globalNav&quot;&gt;
+        ///                        &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
+        ///                        &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
+        ///         [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string navigationBar {
+            get {
+                return ResourceManager.GetString("navigationBar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;https://www.w3.org/1999/xhtml&quot;&gt;
         ///&lt;head&gt;
         ///    &lt;title&gt;Gift Registry Login&lt;/title&gt;

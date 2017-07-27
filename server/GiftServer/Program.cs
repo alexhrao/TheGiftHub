@@ -92,7 +92,7 @@ namespace GiftServer
             else
             {
                 // If not logged in, send the login page!
-                return GiftServer.Properties.Resources.header + GiftServer.Properties.Resources.login;
+                return GiftServer.Properties.Resources.header + GiftServer.Properties.Resources.navigationBar + GiftServer.Properties.Resources.login;
             }
         }
     }
