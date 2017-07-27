@@ -39,12 +39,11 @@ namespace GiftServer
             HttpListenerRequest request = rtx.Request;
             HttpListenerResponse response = rtx.Response;
             Cookie reqLogger = request.Cookies["UserID"];
+            User user = null;
             if (reqLogger != null)
             {
-                User user = new User(Convert.ToInt64(reqLogger.Value));
-                return GiftServer.Properties.Resources.onLogin;
+                user = new User(Convert.ToInt64(reqLogger.Value));
             }
-            bool isLoggedIn = false;
             if (request.HasEntityBody)
             {
                 string input;
@@ -59,16 +58,16 @@ namespace GiftServer
                         switch (dict["submit"])
                         {
                             case "Signup":
-                                User newUser = new User(dict["firstName"], dict["lastName"], dict["email"], dict["password"]);
-                                newUser.Create();
-                                return GiftServer.Properties.Resources.onSignup;
+                                user = new User(dict["firstName"], dict["lastName"], dict["email"], dict["password"]);
+                                user.Create();
+                                return GiftServer.Properties.Resources.header + GiftServer.Properties.Resources.onSignup;
                             case "Login":
                                 try
                                 {
-                                    User returnUser = new User(dict["email"], dict["password"]);
-                                    Cookie logger = new Cookie("UserID", Convert.ToString(returnUser.id));
+                                    user = new User(dict["email"], dict["password"]);
+                                    Cookie logger = new Cookie("UserID", Convert.ToString(user.id));
                                     response.Cookies.Add(logger);
-                                    return GiftServer.Properties.Resources.onLogin;
+                                    return GiftServer.Properties.Resources.header + GiftServer.Properties.Resources.onLogin;
                                 } catch (InvalidPasswordException)
                                 {
                                     return GiftServer.Properties.Resources.header + GiftServer.Properties.Resources.loginFailed;
@@ -85,7 +84,7 @@ namespace GiftServer
                     }
                 }
             }
-            else if (isLoggedIn)
+            else if (user != null)
             {
                 // If logged in (but no request), just send back home page:
                 return "<html><body><form method=\"POST\"><input name=\"theMail\" type=\"email\"/><button type=\"submit\" value=\"submit\">Hello</button></form></body></html>";
