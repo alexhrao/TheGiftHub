@@ -2,12 +2,25 @@
 
 <html lang="en" xmlns="https://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8" />
     <title>Gift Registry Login</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#signupSubmit').hide();
+            $('#secondPass').keyup(function () {
+                if ($('#secondPass').val() === $('#firstPass').val() && $('#secondPass').val()) {
+                    // We are good to go!
+                    $('#secondPass').parent().removeClass('has-error');
+                    $('#secondPass').parent().addClass('has-success');
+                    $('#signupSubmit').show();
+                } else {
+                    // Passwords don't match; disable submit and warn
+                    $('#secondPass').parent().removeClass('has-success');
+                    $('#secondPass').parent().addClass('has-error');
+                    $('#signupSubmit').hide();
+                }
+            });
+        });
+    </script>
     <style>
         body {
             background-color: #172556;

@@ -63,14 +63,34 @@ namespace GiftServer.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
         ///
-        ///&lt;html lang=&quot;en&quot; xmlns=&quot;https://www.w3.org/1999/xhtml&quot;&gt;
+        ///&lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
         ///&lt;head&gt;
         ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
-        ///    &lt;title&gt;Gift Registry Login&lt;/title&gt;
         ///    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
         ///    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css&quot;&gt;
         ///    &lt;script src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js&quot;&gt;&lt;/script&gt;
-        ///    &lt;script src=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.j [rest of string was truncated]&quot;;.
+        ///    &lt;script src=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js&quot;&gt;&lt;/script&gt;
+        ///    &lt;script&gt;
+        ///        $(doc [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string header {
+            get {
+                return ResourceManager.GetString("header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;https://www.w3.org/1999/xhtml&quot;&gt;
+        ///    &lt;head&gt;
+        ///        &lt;title&gt;Gift Registry Login&lt;/title&gt;
+        ///        &lt;script&gt;
+        ///            $(document).ready(function () {
+        ///                $(&apos;#signupSubmit&apos;).hide();
+        ///                $(&apos;#secondPass&apos;).keyup(function () {
+        ///                    if ($(&apos;#secondPass&apos;).val() === $(&apos;#firstPass&apos;).val() &amp;&amp; $(&apos;#secondPass&apos;).val()) {
+        ///                        // We are good to go!
+        ///                        $(&apos;#secondPass&apos;).parent().removeClass(&apos;has-error&apos;);
+        ///             [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string login {
             get {
@@ -79,16 +99,17 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
-        ///
-        ///&lt;html lang=&quot;en&quot; xmlns=&quot;https://www.w3.org/1999/xhtml&quot;&gt;
-        ///&lt;head&gt;
-        ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
-        ///    &lt;title&gt;Gift Registry Login&lt;/title&gt;
-        ///    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
-        ///    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css&quot;&gt;
-        ///    &lt;script src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js&quot;&gt;&lt;/script&gt;
-        ///    &lt;script src=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.j [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;https://www.w3.org/1999/xhtml&quot;&gt;
+        ///    &lt;head&gt;
+        ///        &lt;title&gt;Gift Registry Login&lt;/title&gt;
+        ///        &lt;script&gt;
+        ///            $(document).ready(function () {
+        ///                $(&apos;#signupSubmit&apos;).hide();
+        ///                $(&apos;#secondPass&apos;).keyup(function () {
+        ///                    if ($(&apos;#secondPass&apos;).val() === $(&apos;#firstPass&apos;).val() &amp;&amp; $(&apos;#secondPass&apos;).val()) {
+        ///                        // We are good to go!
+        ///                        $(&apos;#secondPass&apos;).parent().removeClass(&apos;has-error&apos;);
+        ///             [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string loginFailed {
             get {
@@ -97,16 +118,17 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
-        ///
-        ///&lt;html lang=&quot;en&quot; xmlns=&quot;https://www.w3.org/1999/xhtml&quot;&gt;
+        ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;https://www.w3.org/1999/xhtml&quot;&gt;
         ///&lt;head&gt;
-        ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
         ///    &lt;title&gt;Gift Registry Login&lt;/title&gt;
-        ///    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
-        ///    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css&quot;&gt;
-        ///    &lt;script src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js&quot;&gt;&lt;/script&gt;
-        ///    &lt;script src=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.j [rest of string was truncated]&quot;;.
+        ///    &lt;script&gt;
+        ///        $(document).ready(function () {
+        ///            $(&apos;#signupSubmit&apos;).hide();
+        ///            $(&apos;#secondPass&apos;).keyup(function () {
+        ///                if ($(&apos;#secondPass&apos;).val() === $(&apos;#firstPass&apos;).val() &amp;&amp; $(&apos;#secondPass&apos;).val()) {
+        ///                    // We are good to go!
+        ///                    $(&apos;#secondPass&apos;).parent().removeClass(&apos;has-error&apos;);
+        ///                    $(&apos;#secondPass&apos;).parent().ad [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string onLogin {
             get {
@@ -119,12 +141,15 @@ namespace GiftServer.Properties {
         ///
         ///&lt;html lang=&quot;en&quot; xmlns=&quot;https://www.w3.org/1999/xhtml&quot;&gt;
         ///&lt;head&gt;
-        ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
         ///    &lt;title&gt;Gift Registry Login&lt;/title&gt;
-        ///    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
-        ///    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css&quot;&gt;
-        ///    &lt;script src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js&quot;&gt;&lt;/script&gt;
-        ///    &lt;script src=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.j [rest of string was truncated]&quot;;.
+        ///    &lt;script&gt;
+        ///        $(document).ready(function () {
+        ///            $(&apos;#signupSubmit&apos;).hide();
+        ///            $(&apos;#secondPass&apos;).keyup(function () {
+        ///                if ($(&apos;#secondPass&apos;).val() === $(&apos;#firstPass&apos;).val() &amp;&amp; $(&apos;#secondPass&apos;).val()) {
+        ///                    // We are good to go!
+        ///                    $(&apos;#secondPass&apos;).parent().removeClass(&apos;has-error&apos;);
+        ///                    $(&apos;#secon [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string onSignup {
             get {

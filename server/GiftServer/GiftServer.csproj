@@ -82,6 +82,7 @@
     <Content Include="docs\MySqlParameter.xml" />
     <Content Include="docs\MySqlParameterCollection.xml" />
     <Content Include="docs\MySqlTransaction.xml" />
+    <None Include="resources\htmlTemplates\header.html" />
     <Content Include="resources\htmlTemplates\login.html" />
     <Content Include="resources\htmlTemplates\loginFailed.html" />
     <None Include="resources\htmlTemplates\onSignup.html" />

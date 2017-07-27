@@ -71,17 +71,17 @@ namespace GiftServer
                                     return GiftServer.Properties.Resources.onLogin;
                                 } catch (InvalidPasswordException)
                                 {
-                                    return GiftServer.Properties.Resources.loginFailed;
+                                    return GiftServer.Properties.Resources.header + GiftServer.Properties.Resources.loginFailed;
                                 } catch (UserNotFoundException)
                                 {
-                                    return GiftServer.Properties.Resources.loginFailed;
+                                    return GiftServer.Properties.Resources.header + GiftServer.Properties.Resources.loginFailed;
                                 }
                             default:
-                                return GiftServer.Properties.Resources.login;
+                                return GiftServer.Properties.Resources.header + GiftServer.Properties.Resources.login;
                         }
                     } else
                     {
-                        return GiftServer.Properties.Resources.login;
+                        return GiftServer.Properties.Resources.header + GiftServer.Properties.Resources.login;
                     }
                 }
             }
@@ -93,7 +93,7 @@ namespace GiftServer
             else
             {
                 // If not logged in, send the login page!
-                return GiftServer.Properties.Resources.login;
+                return GiftServer.Properties.Resources.header + GiftServer.Properties.Resources.login;
             }
         }
     }
