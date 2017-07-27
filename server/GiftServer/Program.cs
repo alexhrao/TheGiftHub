@@ -38,6 +38,12 @@ namespace GiftServer
             // Check if user is logged in (via cookies?)
             HttpListenerRequest request = rtx.Request;
             HttpListenerResponse response = rtx.Response;
+            Cookie reqLogger = request.Cookies["UserID"];
+            if (reqLogger != null)
+            {
+                User user = new User(Convert.ToInt64(reqLogger.Value));
+                return GiftServer.Properties.Resources.onLogin;
+            }
             bool isLoggedIn = false;
             if (request.HasEntityBody)
             {
@@ -55,11 +61,14 @@ namespace GiftServer
                             case "Signup":
                                 User newUser = new User(dict["firstName"], dict["lastName"], dict["email"], dict["password"]);
                                 newUser.Create();
-                                return GiftServer.Properties.Resources.login;
+                                return GiftServer.Properties.Resources.onSignup;
                             case "Login":
                                 try
                                 {
                                     User returnUser = new User(dict["email"], dict["password"]);
+                                    Cookie logger = new Cookie("UserID", Convert.ToString(returnUser.id));
+                                    response.Cookies.Add(logger);
+                                    return GiftServer.Properties.Resources.onLogin;
                                 } catch (InvalidPasswordException)
                                 {
                                     return GiftServer.Properties.Resources.loginFailed;
@@ -67,7 +76,6 @@ namespace GiftServer
                                 {
                                     return GiftServer.Properties.Resources.loginFailed;
                                 }
-                                return GiftServer.Properties.Resources.onLogin;
                             default:
                                 return GiftServer.Properties.Resources.login;
                         }

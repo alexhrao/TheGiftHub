@@ -84,6 +84,7 @@
     <Content Include="docs\MySqlTransaction.xml" />
     <Content Include="resources\htmlTemplates\login.html" />
     <Content Include="resources\htmlTemplates\loginFailed.html" />
+    <None Include="resources\htmlTemplates\onSignup.html" />
     <None Include="resources\htmlTemplates\onLogin.html" />
   </ItemGroup>
   <ItemGroup>

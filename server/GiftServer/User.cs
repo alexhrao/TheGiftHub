@@ -9,13 +9,47 @@ namespace GiftServer
     {
         public class User : ISynchronizable
         {
-            private long _id = -1;
+            public long id = -1;
             public string firstName;
             public string lastName;
             public string email;
             public string passwordHash;
             public int theme;
             public string imagePath;
+
+            public User(long id)
+            {
+                // User is already logged in; just fetch their information!
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["MySql"].ConnectionString))
+                {
+                    MySqlCommand command = new MySqlCommand();
+                    command.Connection = con;
+                    command.CommandText = "SELECT users.FirstName, users.LastName, users.UserEmail, passwords.PasswordHash, users.UserTheme, users.UserImage "
+                        + "FROM users "
+                        + "INNER JOIN passwords ON passwords.PasswordID = users.PasswordID "
+                        + "WHERE users.UserID = @id;";
+                    command.Parameters.AddWithValue("@id", id);
+                    con.Open();
+                    command.Prepare();
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            reader.Read();
+                            this.id = id;
+                            this.firstName = (string)(reader["FirstName"]);
+                            this.lastName = (string)(reader["LastName"]);
+                            this.email = (string)(reader["UserEmail"]);
+                            this.passwordHash = (string)(reader["PasswordHash"]);
+                            this.theme = Convert.ToInt32(reader["UserTheme"]);
+                            this.imagePath = (string)(reader["UserImage"]);
+                        } else
+                        {
+                            throw new UserNotFoundException(id);
+                        }
+                    }
+                }
+            }
             public User(string email, string password)
             {
                 // If this is called, the user already exists in DB; fetch. If it can't find it, throw UserNotFoundException. 
@@ -47,7 +81,7 @@ namespace GiftServer
                                 // Not correct, throw new exception!
                                 throw new InvalidPasswordException();
                             }
-                            _id = (int)(reader["UserId"]);
+                            id = (int)(reader["UserId"]);
                             this.firstName = (string)(reader["FirstName"]);
                             this.lastName = (string)(reader["LastName"]);
                             this.email = email;
@@ -94,13 +128,13 @@ namespace GiftServer
                     command.Parameters.AddWithValue("@img", this.imagePath);
                     command.Prepare();
                     command.ExecuteNonQuery();
-                    this._id = command.LastInsertedId;
+                    this.id = command.LastInsertedId;
                 }
                     return false;
             }
             public bool Update()
             {
-                if (this._id == -1)
+                if (this.id == -1)
                 {
                     // User does not exist - create new one instead.
                     return Create();
@@ -123,7 +157,7 @@ namespace GiftServer
                     command.Parameters.AddWithValue("@email", this.email);
                     command.Parameters.AddWithValue("@theme", this.theme);
                     command.Parameters.AddWithValue("@img", this.imagePath);
-                    command.Parameters.AddWithValue("@id", this._id);
+                    command.Parameters.AddWithValue("@id", this.id);
                     command.Prepare();
                     if (command.ExecuteNonQuery() == 0)
                     {
@@ -132,7 +166,7 @@ namespace GiftServer
                     {
                         // Get password ID of user:
                         command.CommandText = "SELECT PasswordID FROM users WHERE UserID = @id;";
-                        command.Parameters.AddWithValue("@id", this._id);
+                        command.Parameters.AddWithValue("@id", this.id);
                         command.Prepare();
                         using (MySqlDataReader reader = command.ExecuteReader())
                         {
@@ -154,7 +188,7 @@ namespace GiftServer
             }
             public bool Delete()
             {
-                if (this._id == -1)
+                if (this.id == -1)
                 {
                     // User doesn't exist - don't delete
                     return false;
@@ -166,7 +200,7 @@ namespace GiftServer
                         MySqlCommand command = new MySqlCommand();
                         command.Connection = con;
                         command.CommandText = "SELECT PasswordID FROM users WHERE UserID = @id";
-                        command.Parameters.AddWithValue("@id", this._id);
+                        command.Parameters.AddWithValue("@id", this.id);
                         command.Prepare();
                         using (MySqlDataReader reader = command.ExecuteReader())
                         {
@@ -177,11 +211,11 @@ namespace GiftServer
                             command.ExecuteNonQuery();
                         }
                         command.CommandText = "DELETE FROM users WHERE UserID = @id;";
-                        command.Parameters.AddWithValue("@id", this._id);
+                        command.Parameters.AddWithValue("@id", this.id);
                         command.Prepare();
                         if (command.ExecuteNonQuery() != 0)
                         {
-                            this._id = -1;
+                            this.id = -1;
                             return true;
                         } else
                         {

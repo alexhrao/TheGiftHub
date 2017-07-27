@@ -8,6 +8,7 @@ namespace GiftServer
         {
             // A user wasn't found.
             public UserNotFoundException(string email) : base(email) { }
+            public UserNotFoundException(long id) : base(Convert.ToString(id)) { }
         }
         public class InvalidPasswordException : Exception
         {
