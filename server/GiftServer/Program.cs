@@ -68,7 +68,8 @@ namespace GiftServer
                                     user = new User(dict["email"], dict["password"]);
                                     Cookie logger = new Cookie("UserID", Convert.ToString(user.id));
                                     response.Cookies.Add(logger);
-                                    return Resources.header + Resources.onLogin;
+                                    response.AppendHeader("dest", "dashboard");
+                                    return Resources.header + Resources.navigationBar + Resources.dashboard;
                                 } catch (InvalidPasswordException)
                                 {
                                     return Resources.header + Resources.loginFailed;
@@ -92,9 +93,7 @@ namespace GiftServer
                         return Resources.header + Resources.navigationBar + Resources.dashboard;
                     default:
                         return Resources.header + Resources.navigationBar + Resources.dashboard;
-                        break;
                 }
-                Console.WriteLine(request.QueryString["dest"]);
             }
             else if (user != null)
             {

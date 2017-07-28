@@ -6,15 +6,28 @@
             $('.dropdown').on('mouseenter mouseleave click tap', function () {
                 $(this).toggleClass("open");
             });
+            $('.dropdown-submenu').on('mouseenter mouseleave click tap', function () {
+                $(this).toggleClass("open");
+            });
         });
     </script>
     <style>
         body {
             background-color: #003F13;
             color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         nav {
             margin-bottom: 30px;
+        }
+        .dropdown-submenu {
+            position: relative;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .dropdown-submenu .dropdown-menu {
+            top: 0;
+            left: 100%;
+            margin-top: -1px;
         }
     </style>
 </head>
@@ -33,13 +46,24 @@
                 <ul class="nav navbar-nav">
                     <li><a href=".?dest=dashboard">Dashboard</a></li>
                     <li><a href=".?dest=myList">My List</a></li>
-                    <li><a href=".?dest=myGroups">Groups</a></li>
+                    <!-- TODO: Redo this dropdown - look into dropdown-menu, submenu, and pull-left?-->
                     <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                            My Groups
-                            <span class="caret"></span>
-                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown">My Groups <span class="caret"></span></a>
                         <ul class="dropdown-menu">
+                            <li class="dropdown-submenu">
+                                <a href="#">Group 1 <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="">User 1</a></li>
+                                    <li><a href="">User 2</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown-submenu">
+                                <a href="#">Group 2 <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="">User 3</a></li>
+                                    <li><a href="">User 4</a></li>
+                                </ul>
+                            </li>
                         </ul>
                     </li>
                 </ul>
