@@ -85,6 +85,10 @@ namespace GiftServer
                         return Resources.header + Resources.login;
                     }
                 }
+            } else if (user == null)
+            {
+                // Send login page:
+                return Resources.header + Resources.navigationBar + Resources.login;
             } else if (request.QueryString["dest"] != null)
             {
                 switch (request.QueryString["dest"])
@@ -95,15 +99,10 @@ namespace GiftServer
                         return Resources.header + Resources.navigationBar + Resources.dashboard;
                 }
             }
-            else if (user != null)
+            else
             {
                 // If logged in (but no request), just send back home page:
                 return "<html><body><form method=\"POST\"><input name=\"theMail\" type=\"email\"/><button type=\"submit\" value=\"submit\">Hello</button></form></body></html>";
-            }
-            else
-            {
-                // If not logged in, send the login page!
-                return Resources.header + Resources.navigationBar + Resources.login;
             }
         }
     }
