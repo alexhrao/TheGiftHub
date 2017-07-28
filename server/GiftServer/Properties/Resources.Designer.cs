@@ -67,19 +67,18 @@ namespace GiftServer.Properties {
         ///    &lt;title&gt;My Dashboard&lt;/title&gt;
         ///    &lt;style&gt;
         ///        body {
-        ///            background-color: azure;
+        ///            background-color: #CECECE;
+        ///            color: black;
         ///            font-family: &apos;Segoe UI&apos;, Tahoma, Geneva, Verdana, sans-serif;
-        ///            margin-top: 70px;
         ///        }
         ///    &lt;/style&gt;
         ///&lt;/head&gt;
         ///&lt;body&gt;
         ///    &lt;div class=&quot;container-fluid&quot;&gt;
         ///        &lt;div class=&quot;row&quot;&gt;
-        ///            &lt;div class=&quot;col-md-4&quot;&gt;
-        ///                &lt;!-- News Feed--&gt;
-        ///            &lt;/div&gt;
-        ///            &lt;div c [rest of string was truncated]&quot;;.
+        ///            &lt;div class=&quot;col-md-3&quot;&gt;
+        ///                &lt;!-- Feed --&gt;
+        ///                &lt;div id=&quot;newPanel&quot; class=&quot;pa [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string dashboard {
             get {
@@ -148,39 +147,23 @@ namespace GiftServer.Properties {
         ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
         ///&lt;head&gt;
         ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
-        ///&lt;/head&gt;
-        ///&lt;body&gt;
-        ///    &lt;div class=&quot;container-fluid&quot;&gt;
-        ///        &lt;nav class=&quot;navbar navbar-inverse&quot;&gt;
-        ///            &lt;div class=&quot;container-fluid&quot;&gt;
-        ///                &lt;div class=&quot;navbar-header&quot;&gt;
-        ///                    &lt;button type=&quot;button&quot; class=&quot;navbar-toggle&quot; data-toggle=&quot;collapse&quot; data-target=&quot;#globalNav&quot;&gt;
-        ///                        &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
-        ///                        &lt;span class=&quot;icon-bar&quot;&gt;&lt;/span&gt;
-        ///         [rest of string was truncated]&quot;;.
+        ///    &lt;script&gt;
+        ///        $(document).ready(function () {
+        ///            $(&apos;.dropdown&apos;).on(&apos;mouseenter mouseleave click tap&apos;, function () {
+        ///                $(this).toggleClass(&quot;open&quot;);
+        ///            });
+        ///            $(&apos;.dropdown-submenu&apos;).on(&apos;mouseenter mouseleave click tap&apos;, function () {
+        ///                $(this).toggleClass(&quot;open&quot;);
+        ///            });
+        ///        });
+        ///    &lt;/script&gt;
+        ///    &lt;style&gt;
+        ///        body {
+        ///            f [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string navigationBar {
             get {
                 return ResourceManager.GetString("navigationBar", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;https://www.w3.org/1999/xhtml&quot;&gt;
-        ///&lt;head&gt;
-        ///    &lt;title&gt;Gift Registry Login&lt;/title&gt;
-        ///    &lt;script&gt;
-        ///        $(document).ready(function () {
-        ///            $(&apos;#signupSubmit&apos;).hide();
-        ///            $(&apos;#secondPass&apos;).keyup(function () {
-        ///                if ($(&apos;#secondPass&apos;).val() === $(&apos;#firstPass&apos;).val() &amp;&amp; $(&apos;#secondPass&apos;).val()) {
-        ///                    // We are good to go!
-        ///                    $(&apos;#secondPass&apos;).parent().removeClass(&apos;has-error&apos;);
-        ///                    $(&apos;#secondPass&apos;).parent().ad [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string onLogin {
-            get {
-                return ResourceManager.GetString("onLogin", resourceCulture);
             }
         }
         
