@@ -20,7 +20,6 @@ namespace GiftServer
             public string passwordHash;
             public int theme;
             public string imagePath;
-
             public User(long id)
             {
                 // User is already logged in; just fetch their information!
@@ -110,20 +109,25 @@ namespace GiftServer
             
             public static bool SendRecoveryEmail(string emailAddress)
             {
+                // TODO: check if user exists
+
                 string URL = Resources.URL + "?ResetToken=" + PasswordReset.GenerateToken();
                 string body = URL;
                 /* actually, body will contain ALL html in email, but haven't written it yet. */
-                MailMessage email = new MailMessage(new MailAddress("no-reply@GiftRegistry.com"), new MailAddress(emailAddress));
+                MailMessage email = new MailMessage(new MailAddress("GiftRegistry<no-reply@GiftRegistry.com>"), new MailAddress(emailAddress));
                 email.Body = body;
                 email.Subject = "Password Reset";
-                SmtpClient sender = new SmtpClient();
-                sender.Host = "smtp.gmail.com";
-                sender.Port = 587;
-                sender.EnableSsl = true;
-                sender.DeliveryMethod = SmtpDeliveryMethod.Network;
-                sender.UseDefaultCredentials = false;
-                sender.Credentials = new NetworkCredential("NoReplyGiftRegistry@gmail.com", pwd);
-                return false;
+                using (SmtpClient sender = new SmtpClient())
+                {
+                    sender.Host = "smtp.gmail.com";
+                    sender.Port = 587;
+                    sender.EnableSsl = true;
+                    sender.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    sender.UseDefaultCredentials = false;
+                    sender.Credentials = new NetworkCredential("NoReplyGiftRegistry@gmail.com", Resources.emailPassword);
+                    sender.Send(email);
+                    return true;
+                }
             }
             public bool Create()
             {

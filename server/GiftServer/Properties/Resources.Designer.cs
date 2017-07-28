@@ -134,25 +134,6 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;https://www.w3.org/1999/xhtml&quot;&gt;
-        ///    &lt;head&gt;
-        ///        &lt;title&gt;Gift Registry Login&lt;/title&gt;
-        ///        &lt;script&gt;
-        ///            $(document).ready(function () {
-        ///                $(&apos;#signupSubmit&apos;).hide();
-        ///                $(&apos;#secondPass&apos;).keyup(function () {
-        ///                    if ($(&apos;#secondPass&apos;).val() === $(&apos;#firstPass&apos;).val() &amp;&amp; $(&apos;#secondPass&apos;).val()) {
-        ///                        // We are good to go!
-        ///                        $(&apos;#secondPass&apos;).parent().removeClass(&apos;has-error&apos;);
-        ///             [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string loginFailed {
-            get {
-                return ResourceManager.GetString("loginFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
         ///&lt;head&gt;
         ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
@@ -173,27 +154,6 @@ namespace GiftServer.Properties {
         internal static string navigationBar {
             get {
                 return ResourceManager.GetString("navigationBar", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
-        ///
-        ///&lt;html lang=&quot;en&quot; xmlns=&quot;https://www.w3.org/1999/xhtml&quot;&gt;
-        ///&lt;head&gt;
-        ///    &lt;title&gt;Gift Registry Login&lt;/title&gt;
-        ///    &lt;script&gt;
-        ///        $(document).ready(function () {
-        ///            $(&apos;#signupSubmit&apos;).hide();
-        ///            $(&apos;#secondPass&apos;).keyup(function () {
-        ///                if ($(&apos;#secondPass&apos;).val() === $(&apos;#firstPass&apos;).val() &amp;&amp; $(&apos;#secondPass&apos;).val()) {
-        ///                    // We are good to go!
-        ///                    $(&apos;#secondPass&apos;).parent().removeClass(&apos;has-error&apos;);
-        ///                    $(&apos;#secon [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string onSignup {
-            get {
-                return ResourceManager.GetString("onSignup", resourceCulture);
             }
         }
         

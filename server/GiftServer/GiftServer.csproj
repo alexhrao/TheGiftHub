@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptions.cs" />
+    <Compile Include="HtmlManager.cs" />
     <Compile Include="ISynchronizable.cs" />
     <Compile Include="PasswordHash.cs" />
     <Compile Include="PasswordReset.cs" />
@@ -116,8 +117,6 @@
     <Content Include="Scripts\jquery-3.1.1.slim.min.js" />
     <None Include="resources\htmlTemplates\header.html" />
     <Content Include="resources\htmlTemplates\login.html" />
-    <Content Include="resources\htmlTemplates\loginFailed.html" />
-    <None Include="resources\htmlTemplates\onSignup.html" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

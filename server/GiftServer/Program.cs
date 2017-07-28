@@ -4,6 +4,7 @@ using System.IO;
 using System.Web;
 using System.Collections.Specialized;
 using GiftServer.Data;
+using GiftServer.DataManipulation;
 using GiftServer.Security;
 using GiftServer.Exceptions;
 using GiftServer.Properties;
@@ -71,7 +72,7 @@ namespace GiftServer
                             case "Signup":
                                 user = new User(dict["firstName"], dict["lastName"], dict["email"], dict["password"]);
                                 user.Create();
-                                return Resources.header + Resources.onSignup;
+                                return HtmlManager.SuccessSignup();
                             case "Login":
                                 try
                                 {
@@ -82,18 +83,18 @@ namespace GiftServer
                                     return Resources.header + Resources.navigationBar + Resources.dashboard;
                                 } catch (InvalidPasswordException)
                                 {
-                                    return Resources.header + Resources.loginFailed;
+                                    return HtmlManager.FailLogin();
                                 } catch (UserNotFoundException)
                                 {
-                                    return Resources.header + Resources.loginFailed;
+                                    return HtmlManager.FailLogin();
                                 }
                             case "PasswordResetRequest":
                                 // POST data will have user email. Send recovery email.
-
-                                return Resources.header + /* Resources.resetPasswordEmailSent */ Resources.login;
+                                User.SendRecoveryEmail(dict["emailAddress"]);
+                                return HtmlManager.ResetPasswordSent();
                             case "PasswordReset":
                                 // Reset password and direct to login page
-                                return Resources.header + /* Resources.changedPassword +  */ Resources.login;
+                                return HtmlManager.SuccessResetPassword();
                             default:
                                 return Resources.header + Resources.login;
                         }
