@@ -4,6 +4,7 @@ using System.IO;
 using System.Web;
 using System.Collections.Specialized;
 using GiftServer.Data;
+using GiftServer.Security;
 using GiftServer.Exceptions;
 using GiftServer.Properties;
 namespace GiftServer
@@ -86,6 +87,9 @@ namespace GiftServer
                                 {
                                     return Resources.header + Resources.loginFailed;
                                 }
+                            case "PasswordReset":
+                                // Reset password and direct to login page
+                                return Resources.header + /* Resources.changedPassword +  */ Resources.login;
                             default:
                                 return Resources.header + Resources.login;
                         }
@@ -96,7 +100,16 @@ namespace GiftServer
                 }
             } else if (user == null)
             {
-                // Send login page:
+                // Send login page EXCEPT if requesting password reset:
+                if (request.QueryString["ResetToken"] != null)
+                {
+                    // Get token; search DB for hash. If it exists, show reset form
+                    string token = request.QueryString["ResetToken"];
+                    long id = PasswordReset.GetUser(token);
+                    // Show reset form. Form will have a hidden input with UserID?
+                    /* return Resources.header + Resources.changePassword; */
+                    return Resources.header + Resources.login;
+                }
                 return Resources.header + Resources.login;
             } else if (request.QueryString["dest"] != null)
             {
