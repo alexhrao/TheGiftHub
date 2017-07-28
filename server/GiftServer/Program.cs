@@ -102,7 +102,7 @@ namespace GiftServer
             else
             {
                 // If logged in (but no request), just send back home page:
-                return "<html><body><form method=\"POST\"><input name=\"theMail\" type=\"email\"/><button type=\"submit\" value=\"submit\">Hello</button></form></body></html>";
+                return Resources.header + Resources.navigationBar + Resources.dashboard;
             }
         }
     }
