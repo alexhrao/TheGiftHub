@@ -1,10 +1,20 @@
 ﻿<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
+    <script>
+        $(document).ready(function () {
+            $('.dropdown').on('mouseenter mouseleave click tap', function () {
+                $(this).toggleClass("open");
+            });
+        });
+    </script>
     <style>
         body {
             background-color: #003F13;
             color: white;
+        }
+        nav {
+            margin-bottom: 30px;
         }
     </style>
 </head>
@@ -21,10 +31,17 @@
             </div>
             <div class="collapse navbar-collapse" id="globalNav">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Home</a></li>
                     <li><a href=".?dest=dashboard">Dashboard</a></li>
                     <li><a href=".?dest=myList">My List</a></li>
                     <li><a href=".?dest=myGroups">Groups</a></li>
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            My Groups
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                        </ul>
+                    </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href=""><span class="glyphicon glyphicon-off"></span> Log Out</a></li>
