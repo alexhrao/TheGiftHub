@@ -55,6 +55,10 @@
             .no-click {
                 cursor: not-allowed;
             }
+            .panel-heading {
+                border-top-left-radius: inherit;
+                border-top-right-radius: inherit;
+            }
 
         </style>
     </head>
@@ -62,6 +66,30 @@
         <div class="container-fluid">
             <div class="alert alert-dismissable fade in">
                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            </div>
+            <div id="resetPassword" class="modal fade panel-warning" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content panel-warning">
+                        <div class="modal-header panel-heading">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Reset Your Password</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form id="resetForm" method="post">
+                                <div class="form-group">
+                                    <input class="form-control" id="resetEmail" type="email" name="email" placeholder="Email Address" />
+                                </div>
+                                <button id="resetPasswordSubmit" form="resetForm" class="btn btn-success" type="submit" name="submit" value="PasswordResetRequest">
+                                    Submit
+                                </button>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+
+                </div>
             </div>
             <h1>Welcome to Gift Registry!</h1>
             <ul class="text-center nav nav-tabs">
