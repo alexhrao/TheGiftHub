@@ -87,6 +87,10 @@ namespace GiftServer
                                 {
                                     return Resources.header + Resources.loginFailed;
                                 }
+                            case "PasswordResetRequest":
+                                // POST data will have user email. Send recovery email.
+
+                                return Resources.header + /* Resources.resetPasswordEmailSent */ Resources.login;
                             case "PasswordReset":
                                 // Reset password and direct to login page
                                 return Resources.header + /* Resources.changedPassword +  */ Resources.login;
@@ -110,7 +114,10 @@ namespace GiftServer
                     /* return Resources.header + Resources.changePassword; */
                     return Resources.header + Resources.login;
                 }
-                return Resources.header + Resources.login;
+                else
+                {
+                    return Resources.header + Resources.login;
+                }
             } else if (request.QueryString["dest"] != null)
             {
                 switch (request.QueryString["dest"])

@@ -3,6 +3,10 @@ using GiftServer.Security;
 using MySql.Data.MySqlClient;
 using System.Configuration;
 using GiftServer.Exceptions;
+using GiftServer.Properties;
+using System.Net.Mail;
+using System.Net;
+
 namespace GiftServer
 {
     namespace Data
@@ -103,7 +107,24 @@ namespace GiftServer
                 this.theme = theme;
                 this.imagePath = imagePath;
             }
-
+            
+            public static bool SendRecoveryEmail(string emailAddress)
+            {
+                string URL = Resources.URL + "?ResetToken=" + PasswordReset.GenerateToken();
+                string body = URL;
+                /* actually, body will contain ALL html in email, but haven't written it yet. */
+                MailMessage email = new MailMessage(new MailAddress("no-reply@GiftRegistry.com"), new MailAddress(emailAddress));
+                email.Body = body;
+                email.Subject = "Password Reset";
+                SmtpClient sender = new SmtpClient();
+                sender.Host = "smtp.gmail.com";
+                sender.Port = 587;
+                sender.EnableSsl = true;
+                sender.DeliveryMethod = SmtpDeliveryMethod.Network;
+                sender.UseDefaultCredentials = false;
+                sender.Credentials = new NetworkCredential("NoReplyGiftRegistry@gmail.com", pwd);
+                return false;
+            }
             public bool Create()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["MySql"].ConnectionString))
