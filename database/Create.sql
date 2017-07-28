@@ -37,6 +37,16 @@ ALTER TABLE gift_registry_db.groups
     ADD CONSTRAINT FK_GroupsUser FOREIGN KEY (AdminID)
         REFERENCES gift_registry_db.users(UserID);
 
+CREATE TABLE gift_registry_db.passwordResets (
+    PasswordResetID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    UserID INT NOT NULL,
+    ResetHash CHAR(64) NOT NULL,
+    TimeCreated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+ALTER TABLE gift_registry_db.passwordResets
+    ADD CONSTRAINT FK_PasswordResetsUser FOREIGN KEY (UserID)
+        REFERENCES gift_registry_db.users(UserID);
+
 CREATE TABLE gift_registry_db.gifts (
     GiftID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     UserID INT NOT NULL,

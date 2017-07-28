@@ -27,7 +27,10 @@ namespace GiftServer
             {
                 //create salt
                 byte[] salt;
-                new RNGCryptoServiceProvider().GetBytes(salt = new byte[SaltSize]);
+                using (RNGCryptoServiceProvider crypt = new RNGCryptoServiceProvider())
+                {
+                    crypt.GetBytes(salt = new byte[SaltSize]);
+                }
 
                 //create hash
                 var pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations);
