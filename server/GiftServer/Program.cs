@@ -58,6 +58,15 @@ namespace GiftServer
                         // Dispatch to correct logic:
                         switch (dict["submit"])
                         {
+                            case "Logout":
+                                if (request.Cookies["UserID"] != null)
+                                {
+                                    // Logout user by removing UserID token:
+                                    Cookie cookie = new Cookie("UserID", "-1");
+                                    cookie.Expires = DateTime.Now.AddDays(-1d);
+                                    response.Cookies.Add(cookie);
+                                }
+                                return Resources.header + Resources.login;
                             case "Signup":
                                 user = new User(dict["firstName"], dict["lastName"], dict["email"], dict["password"]);
                                 user.Create();
@@ -88,7 +97,7 @@ namespace GiftServer
             } else if (user == null)
             {
                 // Send login page:
-                return Resources.header + Resources.navigationBar + Resources.login;
+                return Resources.header + Resources.login;
             } else if (request.QueryString["dest"] != null)
             {
                 switch (request.QueryString["dest"])

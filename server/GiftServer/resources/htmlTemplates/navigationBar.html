@@ -13,12 +13,13 @@
     </script>
     <style>
         body {
-            background-color: #003F13;
-            color: white;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         nav {
-            margin-bottom: 30px;
+            margin-bottom: 200px;
+        }
+        body > div {
+            padding-top: 70px;
         }
         .dropdown-submenu {
             position: relative;
@@ -32,7 +33,7 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-inverse">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container-fluid">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#globalNav">
@@ -68,7 +69,13 @@
                     </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href=""><span class="glyphicon glyphicon-off"></span> Log Out</a></li>
+                    <li>
+                        <form class="navbar-form navbar-left" id="logoutForm" method="post">
+                            <button class="btn btn-danger" id="logoutSubmit" type="submit" name="submit" form="logoutForm" value="Logout">
+                                <span class="glyphicon glyphicon-off"></span> Log Out
+                            </button>
+                        </form>
+                    </li>
                     <li><a href=""><span class="glyphicon glyphicon-user"></span> Account</a></li>
                 </ul>
             </div>
