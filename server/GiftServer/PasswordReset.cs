@@ -138,9 +138,10 @@ namespace GiftServer
                         }
                     }
                 }
-                MailMessage email = new MailMessage(new MailAddress("GiftRegistry<no-reply@GiftRegistry.com>"), new MailAddress(emailAddress));
+                MailMessage email = new MailMessage(new MailAddress("Gift Registry<no-reply@GiftRegistry.com>"), new MailAddress(emailAddress));
                 email.Body = body;
                 email.Subject = "Password Reset";
+                email.IsBodyHtml = true;
                 using (SmtpClient sender = new SmtpClient("smtp.gmail.com", 587))
                 {
                     sender.EnableSsl = true;
