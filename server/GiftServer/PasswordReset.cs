@@ -95,10 +95,11 @@ namespace GiftServer
                 user.passwordHash = PasswordHash.Hash(password);
                 user.Update();
             }
-            public static bool SendRecoveryEmail(string emailAddress)
+            public static void SendRecoveryEmail(string emailAddress)
             {
-                long id;
-                string token;
+                long id = -1;
+                string token = "";
+                string body;
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["MySql"].ConnectionString))
                 {
                     con.Open();
@@ -115,35 +116,38 @@ namespace GiftServer
                                 // Get data:
                                 id = Convert.ToInt64(reader["UserID"]);
                                 token = GenerateToken();
-                                string body = HtmlManager.GenerateEmail(token);
-                                MailMessage email = new MailMessage(new MailAddress("GiftRegistry<no-reply@GiftRegistry.com>"), new MailAddress(emailAddress));
-                                email.Body = body;
-                                email.Subject = "Password Reset";
-                                using (SmtpClient sender = new SmtpClient("smtp.gmail.com", 587))
-                                {
-                                    sender.EnableSsl = true;
-                                    sender.DeliveryMethod = SmtpDeliveryMethod.Network;
-                                    sender.UseDefaultCredentials = false;
-                                    sender.Credentials = new NetworkCredential("NoReplyGiftRegistry@gmail.com", Resources.emailPassword);
-                                    sender.Send(email);
-                                }
+                                body = HtmlManager.GenerateEmail(token);
                             }
                             else
                             {
-                                throw new UserNotFoundException(emailAddress);
+                                // User doesn't exist. Send an email saying so!
+                                body = HtmlManager.GenerateEmail();
                             }
                         }
                     }
-                    using (MySqlCommand cmd = new MySqlCommand())
+                    if (id != -1)
                     {
-                        cmd.Connection = con;
-                        cmd.CommandText = "INSERT INTO passwordResets (UserID, ResetHash) VALUES (@uid, @hash);";
-                        cmd.Parameters.AddWithValue("@uid", id);
-                        cmd.Parameters.AddWithValue("@hash", PasswordReset.ComputeHash(token));
-                        cmd.Prepare();
-                        cmd.ExecuteNonQuery();
-                        return true;
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "INSERT INTO passwordResets (UserID, ResetHash) VALUES (@uid, @hash);";
+                            cmd.Parameters.AddWithValue("@uid", id);
+                            cmd.Parameters.AddWithValue("@hash", PasswordReset.ComputeHash(token));
+                            cmd.Prepare();
+                            cmd.ExecuteNonQuery();
+                        }
                     }
+                }
+                MailMessage email = new MailMessage(new MailAddress("GiftRegistry<no-reply@GiftRegistry.com>"), new MailAddress(emailAddress));
+                email.Body = body;
+                email.Subject = "Password Reset";
+                using (SmtpClient sender = new SmtpClient("smtp.gmail.com", 587))
+                {
+                    sender.EnableSsl = true;
+                    sender.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    sender.UseDefaultCredentials = false;
+                    sender.Credentials = new NetworkCredential("NoReplyGiftRegistry@gmail.com", Resources.emailPassword);
+                    sender.Send(email);
                 }
             }
         }

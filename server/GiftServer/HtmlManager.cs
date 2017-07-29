@@ -77,6 +77,16 @@ namespace GiftServer
                 homePage.Attributes["href"].Value = Resources.URL;
                 return email.DocumentNode.OuterHtml;
             }
+            public static string GenerateEmail()
+            {
+                HtmlDocument email = new HtmlDocument();
+                email.LoadHtml(Resources.header + Resources.passwordResetEmail);
+                HtmlNode found = email.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userFound \")]");
+                found.AddClass("hidden");
+                HtmlNode notfound = email.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userNotFound \")]");
+                notfound.RemoveClass("hidden");
+                return email.DocumentNode.OuterHtml;
+            }
         }
     }
 }
