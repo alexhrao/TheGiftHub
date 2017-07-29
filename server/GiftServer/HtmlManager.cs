@@ -17,7 +17,7 @@ namespace GiftServer
                 alert.AddClass("in");
                 alert.RemoveClass("hidden");
                 HtmlNode message = HtmlNode.CreateNode("<p><strong>Uh-Oh...</strong> Looks like we didn't recognize that Username/Password pair."
-                                                     + "Try again or, <a data-toggle=\"modal\" href=\"#resetPassword\">Reset your Password</a></p>");
+                                                     + " Try again or <a data-toggle=\"modal\" href=\"#resetPassword\">Reset your Password</a></p>");
                 HtmlNodeCollection children = new HtmlNodeCollection(alert);
                 children.Add(message);
                 alert.AppendChildren(children);

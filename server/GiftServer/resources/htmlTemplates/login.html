@@ -4,20 +4,148 @@
         <script>
             $(document).ready(function () {
                 $('#signupSubmit').hide();
+                $('#loginSubmit').hide();
+                $(window).keydown(function (event) {
+                    if (event.keyCode == 13) {
+                        // If clicked first tab, validate:
+                        if ($('#loginTab').hasClass("active")) {
+                            if (!validateLogin()) {
+                                event.preventDefault();
+                                return false;
+                            }
+                        } else if ($('#signupTab').hasClass("active")) {
+                            if (!validateSignup()) {
+                                event.preventDefault();
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                });
+                $('#firstPass').keyup(function () {
+                    if ($('#secondPass').val() === $('#firstPass').val() && $('#firstPass').val()) {
+                        // We are good to go!
+                        $('#firstPass').parent().removeClass('has-error');
+                        $('#firstPass').parent().addClass('has-success');
+                        $('#secondPass').parent().removeClass('has-error');
+                        $('#secondPass').parent().addClass('has-success');
+                    } else {
+                        // Passwords don't match; disable submit and warn
+                        $('#firstPass').parent().removeClass('has-success');
+                        $('#firstPass').parent().addClass('has-error');
+                        $('#secondPass').parent().removeClass('has-success');
+                        $('#secondPass').parent().addClass('has-error');
+                    }
+                    validateSignup();
+                });
                 $('#secondPass').keyup(function () {
                     if ($('#secondPass').val() === $('#firstPass').val() && $('#secondPass').val()) {
                         // We are good to go!
+                        $('#firstPass').parent().removeClass('has-error');
+                        $('#firstPass').parent().addClass('has-success');
                         $('#secondPass').parent().removeClass('has-error');
                         $('#secondPass').parent().addClass('has-success');
-                        $('#signupSubmit').show();
                     } else {
                         // Passwords don't match; disable submit and warn
+                        $('#firstPass').parent().removeClass('has-success');
+                        $('#firstPass').parent().addClass('has-error');
                         $('#secondPass').parent().removeClass('has-success');
                         $('#secondPass').parent().addClass('has-error');
-                        $('#signupSubmit').hide();
                     }
+                    validateSignup();
+                });
+                $('#firstName').keyup(function () {
+                    if ($('#firstName').val()) {
+                        // We are good to go!
+                        $('#firstName').parent().removeClass('has-error');
+                        $('#firstName').parent().addClass('has-success');
+                    } else {
+                        // Passwords don't match; disable submit and warn
+                        $('#firstName').parent().removeClass('has-success');
+                        $('#firstName').parent().addClass('has-error');
+                    }
+                    validateSignup();
+                });
+                $('#lastName').keyup(function () {
+                    if ($('#lastName').val()) {
+                        // We are good to go!
+                        $('#lastName').parent().removeClass('has-error');
+                        $('#lastName').parent().addClass('has-success');
+                    } else {
+                        // Passwords don't match; disable submit and warn
+                        $('#lastName').parent().removeClass('has-success');
+                        $('#lastName').parent().addClass('has-error');
+                    }
+                    validateSignup();
+                });
+                $('#signupEmail').keyup(function () {
+                    if ($('#signupEmail').val()) {
+                        // We are good to go!
+                        $('#signupEmail').parent().removeClass('has-error');
+                        $('#signupEmail').parent().addClass('has-success');
+                    } else {
+                        // Passwords don't match; disable submit and warn
+                        $('#signupEmail').parent().removeClass('has-success');
+                        $('#signupEmail').parent().addClass('has-error');
+                    }
+                    validateSignup();
+                });
+                $('#loginEmail').keyup(function () {
+                    if ($('#loginEmail').val()) {
+                        // We are good to go!
+                        $('#loginEmail').parent().removeClass('has-error');
+                        $('#loginEmail').parent().addClass('has-success');
+                    } else {
+                        // Passwords don't match; disable submit and warn
+                        $('#loginEmail').parent().removeClass('has-success');
+                        $('#loginEmail').parent().addClass('has-error');
+                    }
+                    validateLogin();
+                });
+                $('#password').keyup(function () {
+                    if ($('#password').val()) {
+                        // We are good to go!
+                        $('#password').parent().removeClass('has-error');
+                        $('#password').parent().addClass('has-success');
+                    } else {
+                        // Passwords don't match; disable submit and warn
+                        $('#password').parent().removeClass('has-success');
+                        $('#password').parent().addClass('has-error');
+                    }
+                    validateLogin();
                 });
             });
+            function validateLogin() {
+                var invalid = false;
+                $("#loginForm :input:not(:button)").each(function () {
+                    if ($(this).val() === "") {
+                        invalid = true;
+                        return false;
+                    }
+                });
+                if (!invalid) {
+                    $('#loginSubmit').show();
+                } else {
+                    $('#loginSubmit').hide();
+                }
+                return !invalid;
+            }
+            function validateSignup() {
+                // Iterate over all inputs; if none are blank, enable!
+                var invalid = false;
+                $("#signupForm :input:not(:button)").each(function () {
+                    if ($(this).val() === "") {
+                        invalid = true;
+                        return false;
+                    }
+                });
+                if (!invalid) {
+                    $('#signupSubmit').show();
+                } else {
+                    $('#signupSubmit').hide();
+                }
+                return !invalid;
+            }
         </script>
         <style>
             .input-group,
@@ -98,15 +226,15 @@
             </div>
             <h1>Welcome to Gift Registry!</h1>
             <ul class="text-center nav nav-tabs">
-                <li class="active"><a data-toggle="tab" href="#login">Login</a></li>
-                <li><a data-toggle="tab" href="#signup">Sign Up</a></li>
+                <li id="loginTab" class="active"><a data-toggle="tab" href="#login">Login</a></li>
+                <li id="signupTab"><a data-toggle="tab" href="#signup">Sign Up</a></li>
             </ul>
             <div class="tab-content">
                 <div id="login" class="tab-pane fade in active">
                     <form id="loginForm" method="post">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input name="email" type="email" class="form-control" id="email" placeholder="Email"/>
+                            <input name="email" type="email" class="form-control" id="loginEmail" placeholder="Email"/>
                         </div>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
@@ -134,7 +262,7 @@
                         </div>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input name="email" type="email" class="form-control" id="email" placeholder="Email Address" />
+                            <input name="email" type="email" class="form-control" id="signupEmail" placeholder="Email Address" />
                         </div>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
