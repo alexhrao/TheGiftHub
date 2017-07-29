@@ -94,6 +94,10 @@ namespace GiftServer
                                 return HtmlManager.ResetPasswordSent();
                             case "PasswordReset":
                                 // Reset password and direct to login page
+                                // POST data will have userID in userID input. Reset the password and let the user know.
+                                long id = Convert.ToInt64(dict["userID"]);
+                                string password = dict["password"];
+                                PasswordReset.ResetPassword(id, password);
                                 return HtmlManager.SuccessResetPassword();
                             default:
                                 return Resources.header + Resources.login;

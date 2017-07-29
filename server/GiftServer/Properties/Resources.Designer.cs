@@ -171,9 +171,9 @@ namespace GiftServer.Properties {
         ///                    &lt;span class=&quot;input-group-addon&quot;&gt;&lt;i class=&quot;glyphicon glyphicon-lock&quot;&gt;&lt;/i&gt;&lt;/span&gt;
         ///                    &lt;input name=&quot;password&quot; type=&quot;password&quot; class=&quot;form-control&quot; id=&quot;fi [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string resetPassword {
+        internal static string passwordReset {
             get {
-                return ResourceManager.GetString("resetPassword", resourceCulture);
+                return ResourceManager.GetString("passwordReset", resourceCulture);
             }
         }
         

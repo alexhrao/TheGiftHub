@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using MySql.Data.MySqlClient;
 using System.Configuration;
 using GiftServer.Exceptions;
+using GiftServer.Data;
 
 namespace GiftServer
 {
@@ -76,13 +77,19 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "DELETE FROM passwordResets WHERE passwordResets.ResetHash = @hash;";
-                        cmd.Parameters["@hash"].Value = hashed.ToString();
+                        cmd.Parameters.AddWithValue("@hash", hashed);
                         cmd.Prepare();
                         // Finish with reader, then do this
                         cmd.ExecuteNonQuery();
                     }
                     return ret;
                 }
+            }
+            public static void ResetPassword(long userID, string password)
+            {
+                User user = new User(userID);
+                user.passwordHash = PasswordHash.Hash(password);
+                user.Update();
             }
         }
     }
