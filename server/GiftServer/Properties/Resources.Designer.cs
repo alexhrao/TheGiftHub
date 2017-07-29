@@ -158,6 +158,26 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+        ///&lt;head&gt;
+        ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
+        ///    &lt;title&gt;Reset Password for Gift Registry&lt;/title&gt;
+        ///&lt;/head&gt;
+        ///&lt;body&gt;
+        ///    &lt;div class=&quot;container-fluid&quot;&gt;
+        ///        &lt;div class=&quot;text-center&quot;&gt;
+        ///            &lt;form id=&quot;resetForm&quot; method=&quot;post&quot;&gt;
+        ///                &lt;div class=&quot;input-group&quot;&gt;
+        ///                    &lt;span class=&quot;input-group-addon&quot;&gt;&lt;i class=&quot;glyphicon glyphicon-lock&quot;&gt;&lt;/i&gt;&lt;/span&gt;
+        ///                    &lt;input name=&quot;password&quot; type=&quot;password&quot; class=&quot;form-control&quot; id=&quot;fi [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string resetPassword {
+            get {
+                return ResourceManager.GetString("resetPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to http://localhost:60001.
         /// </summary>
         internal static string URL {

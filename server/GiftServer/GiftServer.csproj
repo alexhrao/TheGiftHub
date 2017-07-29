@@ -108,6 +108,7 @@
     <None Include="resources\htmlTemplates\navigationBar.html" />
     <None Include="resources\htmlTemplates\dashboard.html" />
     <None Include="resources\emailPassword.txt" />
+    <None Include="resources\htmlTemplates\resetPassword.html" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-3.1.1.intellisense.js" />

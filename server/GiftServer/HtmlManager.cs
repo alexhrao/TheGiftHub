@@ -55,6 +55,14 @@ namespace GiftServer
                 alert.AppendChildren(children);
                 return login.DocumentNode.OuterHtml;
             }
+            public static string CreateReset(long userID)
+            {
+                HtmlDocument pg = new HtmlDocument();
+                pg.LoadHtml(Resources.header + Resources.resetPassword);
+                HtmlNode hidden = pg.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@name), \" \"), \" userID \")]");
+                hidden.Attributes["value"].Value = Convert.ToString(userID);
+                return pg.DocumentNode.OuterHtml;
+            }
         }
     }
 }

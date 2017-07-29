@@ -112,8 +112,7 @@ namespace GiftServer
                     string token = request.QueryString["ResetToken"];
                     long id = PasswordReset.GetUser(token);
                     // Show reset form. Form will have a hidden input with UserID?
-                    /* return Resources.header + Resources.changePassword; */
-                    return Resources.header + Resources.login;
+                    return HtmlManager.CreateReset(id);
                 }
                 else
                 {
