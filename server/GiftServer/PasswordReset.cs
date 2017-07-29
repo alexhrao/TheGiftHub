@@ -7,6 +7,7 @@ using GiftServer.Data;
 using GiftServer.Properties;
 using System.Net.Mail;
 using System.Net;
+using GiftServer.DataManipulation;
 
 namespace GiftServer
 {
@@ -114,9 +115,7 @@ namespace GiftServer
                                 // Get data:
                                 id = Convert.ToInt64(reader["UserID"]);
                                 token = GenerateToken();
-                                string URL = Resources.URL + "?ResetToken=" + token;
-                                string body = URL;
-                                /* actually, body will contain ALL html in email, but haven't written it yet. */
+                                string body = HtmlManager.GenerateEmail(token);
                                 MailMessage email = new MailMessage(new MailAddress("GiftRegistry<no-reply@GiftRegistry.com>"), new MailAddress(emailAddress));
                                 email.Body = body;
                                 email.Subject = "Password Reset";

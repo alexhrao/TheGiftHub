@@ -162,18 +162,38 @@ namespace GiftServer.Properties {
         ///&lt;head&gt;
         ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
         ///    &lt;title&gt;Reset Password for Gift Registry&lt;/title&gt;
-        ///&lt;/head&gt;
-        ///&lt;body&gt;
-        ///    &lt;div class=&quot;container-fluid&quot;&gt;
-        ///        &lt;div class=&quot;text-center&quot;&gt;
-        ///            &lt;form id=&quot;resetForm&quot; method=&quot;post&quot;&gt;
-        ///                &lt;div class=&quot;input-group&quot;&gt;
-        ///                    &lt;span class=&quot;input-group-addon&quot;&gt;&lt;i class=&quot;glyphicon glyphicon-lock&quot;&gt;&lt;/i&gt;&lt;/span&gt;
-        ///                    &lt;input name=&quot;password&quot; type=&quot;password&quot; class=&quot;form-control&quot; id=&quot;fi [rest of string was truncated]&quot;;.
+        ///    &lt;script&gt;
+        ///            $(document).ready(function () {
+        ///                $(&apos;#resetSubmit&apos;).hide();
+        ///                $(&apos;#secondResetPass&apos;).keyup(function () {
+        ///                    if ($(&apos;#secondResetPass&apos;).val() === $(&apos;#firstResetPass&apos;).val() &amp;&amp; $(&apos;#secondResetPass&apos;).val()) {
+        ///                        // We are good to go!
+        ///                        $(&apos;#secondResetP [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string passwordReset {
             get {
                 return ResourceManager.GetString("passwordReset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+        ///&lt;head&gt;
+        ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
+        ///    &lt;title&gt;&lt;/title&gt;
+        ///&lt;/head&gt;
+        ///&lt;body&gt;
+        ///    &lt;h1&gt;Hey There&lt;/h1&gt;
+        ///    &lt;p&gt;
+        ///        Looks like you need to reset your password. To do so, just click &lt;a id=&quot;passwordReset&quot; href=&quot;&quot;&gt;here&lt;/a&gt;.
+        ///    &lt;/p&gt;
+        ///    &lt;br /&gt;
+        ///    &lt;p&gt;
+        ///        If you didn&apos;t request a password reset, this means someone has attempted to access your account - don&apos;t worry, they failed. However, to prevent further access, click &lt;a id=&quot;passwordReset&quot; href=&quot;&quot; [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string passwordResetEmail {
+            get {
+                return ResourceManager.GetString("passwordResetEmail", resourceCulture);
             }
         }
         

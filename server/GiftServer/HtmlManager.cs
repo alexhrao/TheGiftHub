@@ -1,6 +1,7 @@
 ﻿using System;
 using HtmlAgilityPack;
 using GiftServer.Properties;
+
 namespace GiftServer
 {
     namespace DataManipulation
@@ -13,7 +14,8 @@ namespace GiftServer
                 login.LoadHtml(Resources.header + Resources.login);
                 HtmlNode alert = login.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@class), \" \"), \" alert \")]");
                 alert.AddClass("alert-danger");
-                HtmlNode message = HtmlNode.CreateNode("<p><strong>Uh-Oh...</strong> Looks like we didn't recognize that Username/Password pair. Try again or, <a data-toggle=\"modal\" href=\"#resetPassword\">Reset your Password</a></p>");
+                HtmlNode message = HtmlNode.CreateNode("<p><strong>Uh-Oh...</strong> Looks like we didn't recognize that Username/Password pair."
+                                                     + "Try again or, <a data-toggle=\"modal\" href=\"#resetPassword\">Reset your Password</a></p>");
                 HtmlNodeCollection children = new HtmlNodeCollection(alert);
                 children.Add(message);
                 alert.AppendChildren(children);
@@ -62,6 +64,18 @@ namespace GiftServer
                 HtmlNode hidden = pg.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@name), \" \"), \" userID \")]");
                 hidden.Attributes["value"].Value = Convert.ToString(userID);
                 return pg.DocumentNode.OuterHtml;
+            }
+            public static string GenerateEmail(string token)
+            {
+                HtmlDocument email = new HtmlDocument();
+                email.LoadHtml(Resources.header + Resources.passwordResetEmail);
+                HtmlNode resetLink = email.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" passwordReset \")]");
+                resetLink.Attributes["href"].Value = Resources.URL + "?ResetToken=" + token;
+                HtmlNode resetButton = email.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" passwordResetBtn \")]");
+                resetButton.Attributes["href"].Value = Resources.URL + "?ResetToken=" + token;
+                HtmlNode homePage = email.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" passwordReset \")]");
+                homePage.Attributes["href"].Value = Resources.URL;
+                return email.DocumentNode.OuterHtml;
             }
         }
     }

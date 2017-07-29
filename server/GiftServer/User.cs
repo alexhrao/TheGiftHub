@@ -3,9 +3,6 @@ using GiftServer.Security;
 using MySql.Data.MySqlClient;
 using System.Configuration;
 using GiftServer.Exceptions;
-using GiftServer.Properties;
-using System.Net.Mail;
-using System.Net;
 
 namespace GiftServer
 {
