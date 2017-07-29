@@ -90,7 +90,7 @@ namespace GiftServer
                                 }
                             case "PasswordResetRequest":
                                 // POST data will have user email. Send recovery email.
-                                User.SendRecoveryEmail(dict["email"]);
+                                PasswordReset.SendRecoveryEmail(dict["email"]);
                                 return HtmlManager.ResetPasswordSent();
                             case "PasswordReset":
                                 // Reset password and direct to login page

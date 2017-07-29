@@ -111,60 +111,6 @@ namespace GiftServer
                 this.theme = theme;
                 this.imagePath = imagePath;
             }
-            
-            public static bool SendRecoveryEmail(string emailAddress)
-            {
-                long id;
-                string token;
-                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["MySql"].ConnectionString))
-                {
-                    con.Open();
-                    using (MySqlCommand cmd = new MySqlCommand())
-                    {
-                        cmd.Connection = con;
-                        cmd.CommandText = "SELECT users.UserID FROM users WHERE users.UserEmail = @email;";
-                        cmd.Parameters.AddWithValue("@email", emailAddress);
-                        cmd.Prepare();
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            if (reader.Read())
-                            {
-                                // Get data:
-                                id = Convert.ToInt64(reader["UserID"]);
-                                token = PasswordReset.GenerateToken();
-                                string URL = Resources.URL + "?ResetToken=" + token;
-                                string body = URL;
-                                /* actually, body will contain ALL html in email, but haven't written it yet. */
-                                MailMessage email = new MailMessage(new MailAddress("GiftRegistry<no-reply@GiftRegistry.com>"), new MailAddress(emailAddress));
-                                email.Body = body;
-                                email.Subject = "Password Reset";
-                                using (SmtpClient sender = new SmtpClient("smtp.gmail.com", 587))
-                                {
-                                    sender.EnableSsl = true;
-                                    sender.DeliveryMethod = SmtpDeliveryMethod.Network;
-                                    sender.UseDefaultCredentials = false;
-                                    sender.Credentials = new NetworkCredential("NoReplyGiftRegistry@gmail.com", Resources.emailPassword);
-                                    sender.Send(email);
-                                }
-                            }
-                            else
-                            {
-                                throw new UserNotFoundException(emailAddress);
-                            }
-                        }
-                    }
-                    using (MySqlCommand cmd = new MySqlCommand())
-                    {
-                        cmd.Connection = con;
-                        cmd.CommandText = "INSERT INTO passwordResets (UserID, ResetHash) VALUES (@uid, @hash);";
-                        cmd.Parameters.AddWithValue("@uid", id);
-                        cmd.Parameters.AddWithValue("@hash", PasswordReset.ComputeHash(token));
-                        cmd.Prepare();
-                        cmd.ExecuteNonQuery();
-                        return true;
-                    }
-                }
-            }
             public bool Create()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["MySql"].ConnectionString))

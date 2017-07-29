@@ -59,6 +59,9 @@
                 border-top-left-radius: inherit;
                 border-top-right-radius: inherit;
             }
+            .form-inline > .form-group {
+                vertical-align: middle;
+            }
 
         </style>
     </head>
@@ -79,9 +82,11 @@
                                 <div class="form-group">
                                     <input class="form-control" id="resetEmail" type="email" name="email" placeholder="Email Address" />
                                 </div>
-                                <button id="resetPasswordSubmit" form="resetForm" class="btn btn-success" type="submit" name="submit" value="PasswordResetRequest">
-                                    Submit
-                                </button>
+                                <div class="form-group">
+                                    <button id="resetPasswordSubmit" form="resetForm" class="btn btn-success" type="submit" name="submit" value="PasswordResetRequest">
+                                        Submit
+                                    </button>
+                                </div>
                             </form>
                         </div>
                         <div class="modal-footer">
@@ -107,9 +112,14 @@
                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
                             <input id="password" name="password" type="password" class="form-control" placeholder="Password"/>
                         </div>
-                        <button id="loginSubmit" type="submit" name="submit" form="loginForm" value="Login" class="btn btn-success">
-                            Log In
-                        </button>
+                        <div class="form-group">
+                            <button id="passwordReset" type="button" class="btn btn-danger" data-toggle="modal" href="#resetPassword" name="reset">
+                                Reset Password
+                            </button>
+                            <button id="loginSubmit" type="submit" name="submit" form="loginForm" value="Login" class="btn btn-success">
+                                Log In
+                            </button>
+                        </div>
                     </form>
                 </div>
                 <div id="signup" class="tab-pane fade">
