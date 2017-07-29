@@ -216,8 +216,8 @@ namespace GiftServer
                 }
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["MySql"].ConnectionString))
                 {
-                    long pId;
                     con.Open();
+                    long pId;
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
@@ -263,6 +263,7 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         // Update password with PID:
+                        cmd.Connection = con;
                         cmd.CommandText = "UPDATE passwords SET PasswordHash = @pwd WHERE PasswordID = @id;";
                         cmd.Parameters.AddWithValue("@pwd", this.passwordHash);
                         cmd.Parameters.AddWithValue("@id", pId);
@@ -286,12 +287,11 @@ namespace GiftServer
                         long pId;
                         using (MySqlCommand cmd = new MySqlCommand())
                         {
-                            MySqlCommand command = new MySqlCommand();
-                            command.Connection = con;
-                            command.CommandText = "SELECT PasswordID FROM users WHERE UserID = @id";
-                            command.Parameters.AddWithValue("@id", this.id);
-                            command.Prepare();
-                            using (MySqlDataReader reader = command.ExecuteReader())
+                            cmd.Connection = con;
+                            cmd.CommandText = "SELECT PasswordID FROM users WHERE UserID = @id";
+                            cmd.Parameters.AddWithValue("@id", this.id);
+                            cmd.Prepare();
+                            using (MySqlDataReader reader = cmd.ExecuteReader())
                             {
                                 if (reader.Read())
                                 {
@@ -305,6 +305,7 @@ namespace GiftServer
                         }
                         using (MySqlCommand cmd = new MySqlCommand())
                         {
+                            cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM passwords WHERE PasswordID = @id";
                             cmd.Parameters.AddWithValue("@id", pId);
                             cmd.Prepare();
@@ -312,6 +313,7 @@ namespace GiftServer
                         }
                         using (MySqlCommand cmd = new MySqlCommand())
                         {
+                            cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM users WHERE UserID = @id;";
                             cmd.Parameters.AddWithValue("@id", this.id);
                             cmd.Prepare();
