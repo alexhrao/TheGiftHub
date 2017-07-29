@@ -25,30 +25,33 @@ namespace GiftServer
                 // User is already logged in; just fetch their information!
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["MySql"].ConnectionString))
                 {
-                    MySqlCommand command = new MySqlCommand();
-                    command.Connection = con;
-                    command.CommandText = "SELECT users.FirstName, users.LastName, users.UserEmail, passwords.PasswordHash, users.UserTheme, users.UserImage "
-                        + "FROM users "
-                        + "INNER JOIN passwords ON passwords.PasswordID = users.PasswordID "
-                        + "WHERE users.UserID = @id;";
-                    command.Parameters.AddWithValue("@id", id);
                     con.Open();
-                    command.Prepare();
-                    using (MySqlDataReader reader = command.ExecuteReader())
+                    using (MySqlCommand cmd = new MySqlCommand())
                     {
-                        if (reader.HasRows)
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT users.FirstName, users.LastName, users.UserEmail, passwords.PasswordHash, users.UserTheme, users.UserImage "
+                                        + "FROM users "
+                                        + "INNER JOIN passwords ON passwords.PasswordID = users.PasswordID "
+                                        + "WHERE users.UserID = @id;";
+                        cmd.Parameters.AddWithValue("@id", id);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            reader.Read();
-                            this.id = id;
-                            this.firstName = (string)(reader["FirstName"]);
-                            this.lastName = (string)(reader["LastName"]);
-                            this.email = (string)(reader["UserEmail"]);
-                            this.passwordHash = (string)(reader["PasswordHash"]);
-                            this.theme = Convert.ToInt32(reader["UserTheme"]);
-                            this.imagePath = (string)(reader["UserImage"]);
-                        } else
-                        {
-                            throw new UserNotFoundException(id);
+                            if (reader.HasRows)
+                            {
+                                reader.Read();
+                                this.id = id;
+                                this.firstName = (string)(reader["FirstName"]);
+                                this.lastName = (string)(reader["LastName"]);
+                                this.email = (string)(reader["UserEmail"]);
+                                this.passwordHash = (string)(reader["PasswordHash"]);
+                                this.theme = Convert.ToInt32(reader["UserTheme"]);
+                                this.imagePath = (string)(reader["UserImage"]);
+                            }
+                            else
+                            {
+                                throw new UserNotFoundException(id);
+                            }
                         }
                     }
                 }
@@ -60,37 +63,39 @@ namespace GiftServer
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["MySql"].ConnectionString))
                 {
                     con.Open();
-                    MySqlCommand command = new MySqlCommand();
-                    command.Connection = con;
-                    command.CommandText = "SELECT users.UserID, users.FirstName, users.LastName, passwords.PasswordHash, users.UserTheme, users.UserImage "
-                        + "FROM users "
-                        + "INNER JOIN passwords ON passwords.PasswordID = users.PasswordID "
-                        + "WHERE users.UserEmail = @email;";
-                    command.Parameters.AddWithValue("@email", email);
-                    command.Prepare();
-
-                    using (MySqlDataReader reader = command.ExecuteReader())
+                    using (MySqlCommand cmd = new MySqlCommand())
                     {
-                        if (!reader.HasRows)
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT users.UserID, users.FirstName, users.LastName, passwords.PasswordHash, users.UserTheme, users.UserImage "
+                                        + "FROM users "
+                                        + "INNER JOIN passwords ON passwords.PasswordID = users.PasswordID "
+                                        + "WHERE users.UserEmail = @email;";
+                        cmd.Parameters.AddWithValue("@email", email);
+                        cmd.Prepare();
+
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            // User not found, throw correct exception
-                            throw new UserNotFoundException(email);
-                        }
-                        while (reader.Read())
-                        {
-                            // Check password
-                            if (!PasswordHash.Verify(password, (string)(reader["PasswordHash"])))
+                            if (!reader.Read())
                             {
-                                // Not correct, throw new exception!
-                                throw new InvalidPasswordException();
+                                // User not found, throw correct exception
+                                throw new UserNotFoundException(email);
                             }
-                            id = (int)(reader["UserId"]);
-                            this.firstName = (string)(reader["FirstName"]);
-                            this.lastName = (string)(reader["LastName"]);
-                            this.email = email;
-                            this.passwordHash = PasswordHash.Hash(password);
-                            this.theme = Convert.ToInt32(reader["UserTheme"]);
-                            this.imagePath = (string)(reader["UserImage"]);
+                            else
+                            {
+                                // Check password
+                                if (!PasswordHash.Verify(password, (string)(reader["PasswordHash"])))
+                                {
+                                    // Not correct, throw new exception!
+                                    throw new InvalidPasswordException();
+                                }
+                                id = Convert.ToInt64(reader["UserID"]);
+                                this.firstName = (string)(reader["FirstName"]);
+                                this.lastName = (string)(reader["LastName"]);
+                                this.email = email;
+                                this.passwordHash = PasswordHash.Hash(password);
+                                this.theme = Convert.ToInt32(reader["UserTheme"]);
+                                this.imagePath = (string)(reader["UserImage"]);
+                            }
                         }
                     }
                 }
@@ -111,7 +116,6 @@ namespace GiftServer
             {
                 long id;
                 string token;
-                // TODO: Log token in DB
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["MySql"].ConnectionString))
                 {
                     con.Open();
@@ -148,19 +152,16 @@ namespace GiftServer
                                 throw new UserNotFoundException(emailAddress);
                             }
                         }
-                        using (MySqlCommand command = new MySqlCommand())
-                        {
-                            command.Connection = con;
-                            command.CommandText = "INSERT INTO passwordResets (UserID, ResetHash) VALUES (@uid, @hash);";
-                            command.Parameters.AddWithValue("@uid", id);
-                            command.Parameters.AddWithValue("@hash", "");
-                            // No idea why the ToString() is needed, since it literally does no conversion, BUT
-                            // It avoids the "Expected Prepared Statement Marker" exception - No idea why this is thrown, and Google has failed me.
-                            command.Parameters["@hash"].Value = PasswordReset.ComputeHash(token).ToString();
-                            command.Prepare();
-                            command.ExecuteNonQuery();
-                            return true;
-                        }
+                    }
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "INSERT INTO passwordResets (UserID, ResetHash) VALUES (@uid, @hash);";
+                        cmd.Parameters.AddWithValue("@uid", id);
+                        cmd.Parameters.AddWithValue("@hash", PasswordReset.ComputeHash(token));
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                        return true;
                     }
                 }
             }
@@ -169,28 +170,42 @@ namespace GiftServer
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["MySql"].ConnectionString))
                 {
                     con.Open();
-                    MySqlCommand command = new MySqlCommand();
-                    command.Connection = con;
-                    // Create new password:
-                    command.CommandText = "INSERT INTO passwords (PasswordHash) VALUES (@pwd);";
-                    command.Parameters.AddWithValue("@pwd", this.passwordHash);
-                    command.Parameters.AddWithValue("@stamp", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
-                    command.Prepare();
-                    command.ExecuteNonQuery();
-                    long pId = command.LastInsertedId;
-                    command.CommandText = "INSERT INTO users (FirstName, LastName, UserEmail, PasswordID, UserTheme, UserImage) "
-                        + "VALUES (@fName, @lName, @email, @pid, @theme, @img);";
-                    command.Parameters.AddWithValue("@fName", this.firstName);
-                    command.Parameters.AddWithValue("@lName", this.lastName);
-                    command.Parameters.AddWithValue("@email", this.email);
-                    command.Parameters.AddWithValue("@pid", pId);
-                    command.Parameters.AddWithValue("@theme", this.theme);
-                    command.Parameters.AddWithValue("@img", this.imagePath);
-                    command.Prepare();
-                    command.ExecuteNonQuery();
-                    this.id = command.LastInsertedId;
+                    long pId;
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        // Create new password:
+                        cmd.CommandText = "INSERT INTO passwords (PasswordHash) VALUES (@pwd);";
+                        cmd.Parameters.AddWithValue("@pwd", this.passwordHash);
+                        cmd.Parameters.AddWithValue("@stamp", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
+                        cmd.Prepare();
+                        if (cmd.ExecuteNonQuery() == 0)
+                        {
+                            // Failed:
+                            return false;
+                        };
+                        pId = cmd.LastInsertedId;
+                    }
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "INSERT INTO users (FirstName, LastName, UserEmail, PasswordID, UserTheme, UserImage) "
+                            + "VALUES (@fName, @lName, @email, @pid, @theme, @img);";
+                        cmd.Parameters.AddWithValue("@fName", this.firstName);
+                        cmd.Parameters.AddWithValue("@lName", this.lastName);
+                        cmd.Parameters.AddWithValue("@email", this.email);
+                        cmd.Parameters.AddWithValue("@pid", pId);
+                        cmd.Parameters.AddWithValue("@theme", this.theme);
+                        cmd.Parameters.AddWithValue("@img", this.imagePath);
+                        cmd.Prepare();
+                        if (cmd.ExecuteNonQuery() == 0)
+                        {
+                            return false;
+                        }
+                        this.id = cmd.LastInsertedId;
+                    }
                 }
-                    return false;
+                return true;
             }
             public bool Update()
             {
@@ -201,48 +216,58 @@ namespace GiftServer
                 }
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["MySql"].ConnectionString))
                 {
+                    long pId;
                     con.Open();
-                    MySqlCommand command = new MySqlCommand();
-                    command.Connection = con;
-                    // Update user information
-                    command.CommandText = "UPDATE users "
-                        + "SET FirstName = @fName, "
-                        + "LastName = @lName, "
-                        + "UserEmail = @email, "
-                        + "UserTheme = @theme, "
-                        + "UserImage = @img "
-                        + "WHERE UserID = @id;";
-                    command.Parameters.AddWithValue("@fName", this.firstName);
-                    command.Parameters.AddWithValue("@lName", this.lastName);
-                    command.Parameters.AddWithValue("@email", this.email);
-                    command.Parameters.AddWithValue("@theme", this.theme);
-                    command.Parameters.AddWithValue("@img", this.imagePath);
-                    command.Parameters.AddWithValue("@id", this.id);
-                    command.Prepare();
-                    if (command.ExecuteNonQuery() == 0)
+                    using (MySqlCommand cmd = new MySqlCommand())
                     {
-                        return false;
-                    } else
+                        cmd.Connection = con;
+                        // Update user information
+                        cmd.CommandText = "UPDATE users "
+                            + "SET FirstName = @fName, "
+                            + "LastName = @lName, "
+                            + "UserEmail = @email, "
+                            + "UserTheme = @theme, "
+                            + "UserImage = @img "
+                            + "WHERE UserID = @id;";
+                        cmd.Parameters.AddWithValue("@fName", this.firstName);
+                        cmd.Parameters.AddWithValue("@lName", this.lastName);
+                        cmd.Parameters.AddWithValue("@email", this.email);
+                        cmd.Parameters.AddWithValue("@theme", this.theme);
+                        cmd.Parameters.AddWithValue("@img", this.imagePath);
+                        cmd.Parameters.AddWithValue("@id", this.id);
+                        cmd.Prepare();
+                        if (cmd.ExecuteNonQuery() == 0)
+                        {
+                            return false;
+                        }
+                    }
+                    using (MySqlCommand cmd = new MySqlCommand())
                     {
                         // Get password ID of user:
-                        command.CommandText = "SELECT PasswordID FROM users WHERE UserID = @id;";
-                        command.Parameters.AddWithValue("@id", this.id);
-                        command.Prepare();
-                        using (MySqlDataReader reader = command.ExecuteReader())
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT PasswordID FROM users WHERE UserID = @id;";
+                        cmd.Parameters.AddWithValue("@id", this.id);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
                             if (reader.Read())
                             {
-                                // Update password with PID:
-                                command.CommandText = "UPDATE passwords SET PasswordHash = @pwd WHERE PasswordID = @id;";
-                                command.Parameters.AddWithValue("@pwd", this.passwordHash);
-                                command.Parameters.AddWithValue("@id", (long)(reader["PasswordID"]));
-                                command.Prepare();
-                                return command.ExecuteNonQuery() != 0;
-                            } else
+                                pId = Convert.ToInt64(reader["PasswordID"]);
+                            }
+                            else
                             {
                                 return false;
                             }
                         }
+                    }
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        // Update password with PID:
+                        cmd.CommandText = "UPDATE passwords SET PasswordHash = @pwd WHERE PasswordID = @id;";
+                        cmd.Parameters.AddWithValue("@pwd", this.passwordHash);
+                        cmd.Parameters.AddWithValue("@id", pId);
+                        cmd.Prepare();
+                        return cmd.ExecuteNonQuery() != 0;
                     }
                 }
             }
@@ -252,34 +277,54 @@ namespace GiftServer
                 {
                     // User doesn't exist - don't delete
                     return false;
-                } else
+                }
+                else
                 {
                     using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["MySql"].ConnectionString))
                     {
                         con.Open();
-                        MySqlCommand command = new MySqlCommand();
-                        command.Connection = con;
-                        command.CommandText = "SELECT PasswordID FROM users WHERE UserID = @id";
-                        command.Parameters.AddWithValue("@id", this.id);
-                        command.Prepare();
-                        using (MySqlDataReader reader = command.ExecuteReader())
+                        long pId;
+                        using (MySqlCommand cmd = new MySqlCommand())
                         {
-                            long pId = Convert.ToInt64(reader["PasswordID"]);
-                            command.CommandText = "DELETE FROM passwords WHERE PasswordID = @id";
-                            command.Parameters.AddWithValue("@id", pId);
+                            MySqlCommand command = new MySqlCommand();
+                            command.Connection = con;
+                            command.CommandText = "SELECT PasswordID FROM users WHERE UserID = @id";
+                            command.Parameters.AddWithValue("@id", this.id);
                             command.Prepare();
-                            command.ExecuteNonQuery();
+                            using (MySqlDataReader reader = command.ExecuteReader())
+                            {
+                                if (reader.Read())
+                                {
+                                    pId = Convert.ToInt64(reader["PasswordID"]);
+                                }
+                                else
+                                {
+                                    throw new InvalidPasswordException();
+                                }
+                            }
                         }
-                        command.CommandText = "DELETE FROM users WHERE UserID = @id;";
-                        command.Parameters.AddWithValue("@id", this.id);
-                        command.Prepare();
-                        if (command.ExecuteNonQuery() != 0)
+                        using (MySqlCommand cmd = new MySqlCommand())
                         {
-                            this.id = -1;
-                            return true;
-                        } else
+                            cmd.CommandText = "DELETE FROM passwords WHERE PasswordID = @id";
+                            cmd.Parameters.AddWithValue("@id", pId);
+                            cmd.Prepare();
+                            cmd.ExecuteNonQuery();
+                        }
+                        using (MySqlCommand cmd = new MySqlCommand())
                         {
-                            throw new UserNotFoundException(this.email);
+                            cmd.CommandText = "DELETE FROM users WHERE UserID = @id;";
+                            cmd.Parameters.AddWithValue("@id", this.id);
+                            cmd.Prepare();
+                            if (cmd.ExecuteNonQuery() != 0)
+                            {
+                                this.id = -1;
+                                return true;
+                            }
+                            else
+                            {
+                                this.id = -1;
+                                throw new UserNotFoundException(this.email);
+                            }
                         }
                     }
                 }
