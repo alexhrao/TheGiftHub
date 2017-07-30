@@ -27,15 +27,29 @@ namespace GiftServer
                     {
                         while (_listener.IsListening)
                         {
-                            ThreadPool.QueueUserWorkItem((r) =>
+                            try
                             {
-                                HttpListenerContext rtx = (HttpListenerContext)(r);
-                                string resp = _responseGenerator(rtx);
-                                byte[] respBuffer = Encoding.UTF8.GetBytes(resp);
-                                rtx.Response.ContentLength64 = respBuffer.Length;
-                                rtx.Response.OutputStream.Write(respBuffer, 0, respBuffer.Length);
-                                rtx.Response.OutputStream.Close();
-                            }, _listener.GetContext());
+                                ThreadPool.QueueUserWorkItem((r) =>
+                                {
+                                    try
+                                    {
+                                        HttpListenerContext rtx = (HttpListenerContext)(r);
+                                        string resp = _responseGenerator(rtx);
+                                        byte[] respBuffer = Encoding.UTF8.GetBytes(resp);
+                                        rtx.Response.ContentLength64 = respBuffer.Length;
+                                        rtx.Response.OutputStream.Write(respBuffer, 0, respBuffer.Length);
+                                        rtx.Response.OutputStream.Close();
+                                    }
+                                    catch (Exception)
+                                    {
+                                        // WebServer is shutting down, so safely ignore!
+                                    }
+                                }, _listener.GetContext());
+                            }
+                            catch (Exception)
+                            {
+                                // WebServer is shutting down, so safely ignore!
+                            }
                         }
                     });
                 } catch (Exception)

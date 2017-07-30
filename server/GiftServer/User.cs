@@ -17,6 +17,7 @@ namespace GiftServer
             public string passwordHash;
             public int theme;
             public string imagePath;
+            public DateTime dob;
             public User(long id)
             {
                 // User is already logged in; just fetch their information!
@@ -26,7 +27,7 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT users.FirstName, users.LastName, users.UserEmail, passwords.PasswordHash, users.UserTheme, users.UserImage "
+                        cmd.CommandText = "SELECT users.FirstName, users.LastName, users.UserEmail, passwords.PasswordHash, users.UserTheme, users.UserImage, users.DateOfBirth "
                                         + "FROM users "
                                         + "INNER JOIN passwords ON passwords.PasswordID = users.PasswordID "
                                         + "WHERE users.UserID = @id;";
@@ -44,6 +45,15 @@ namespace GiftServer
                                 this.passwordHash = (string)(reader["PasswordHash"]);
                                 this.theme = Convert.ToInt32(reader["UserTheme"]);
                                 this.imagePath = (string)(reader["UserImage"]);
+                                try
+                                {
+                                    this.dob = (DateTime)(reader["DateOfBirth"]);
+                                }
+                                catch (InvalidCastException)
+                                {
+                                    this.dob = DateTime.MinValue;
+                                }
+                                
                             }
                             else
                             {
@@ -63,7 +73,7 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT users.UserID, users.FirstName, users.LastName, passwords.PasswordHash, users.UserTheme, users.UserImage "
+                        cmd.CommandText = "SELECT users.UserID, users.FirstName, users.LastName, passwords.PasswordHash, users.UserTheme, users.UserImage, users.DateOfBirth "
                                         + "FROM users "
                                         + "INNER JOIN passwords ON passwords.PasswordID = users.PasswordID "
                                         + "WHERE users.UserEmail = @email;";
@@ -92,22 +102,32 @@ namespace GiftServer
                                 this.passwordHash = PasswordHash.Hash(password);
                                 this.theme = Convert.ToInt32(reader["UserTheme"]);
                                 this.imagePath = (string)(reader["UserImage"]);
+                                try
+                                {
+                                    this.dob = (DateTime)(reader["DateOfBirth"]);
+                                }
+                                catch (InvalidCastException)
+                                {
+                                    this.dob = DateTime.MinValue;
+                                }
                             }
                         }
                     }
                 }
                 
             }
-            public User(string firstName, string lastName, string email, string password) : this(firstName, lastName, email, password, 1, "") { }
-            public User(string firstName, string lastName, string email, string password, int theme, string imagePath)
+            public User(string firstName, string lastName, string email, string password) : this(firstName, lastName, email, password, 1, "", DateTime.MinValue) { }
+            public User(string firstName, string lastName, string email, string password, int theme, string imagePath, DateTime dob)
             {
                 this.email = email;
-                passwordHash = PasswordHash.Hash(password);
+                this.passwordHash = PasswordHash.Hash(password);
                 this.firstName = firstName;
                 this.lastName = lastName;
                 this.theme = theme;
                 this.imagePath = imagePath;
+                this.dob = dob;
             }
+
             public bool Create()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["MySql"].ConnectionString))
@@ -132,14 +152,15 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "INSERT INTO users (FirstName, LastName, UserEmail, PasswordID, UserTheme, UserImage) "
-                            + "VALUES (@fName, @lName, @email, @pid, @theme, @img);";
+                        cmd.CommandText = "INSERT INTO users (FirstName, LastName, UserEmail, PasswordID, UserTheme, UserImage, DateOfBirth) "
+                            + "VALUES (@fName, @lName, @email, @pid, @theme, @img, @dob);";
                         cmd.Parameters.AddWithValue("@fName", this.firstName);
                         cmd.Parameters.AddWithValue("@lName", this.lastName);
                         cmd.Parameters.AddWithValue("@email", this.email);
                         cmd.Parameters.AddWithValue("@pid", pId);
                         cmd.Parameters.AddWithValue("@theme", this.theme);
                         cmd.Parameters.AddWithValue("@img", this.imagePath);
+                        cmd.Parameters.AddWithValue("@dob", this.dob);
                         cmd.Prepare();
                         if (cmd.ExecuteNonQuery() == 0)
                         {
@@ -150,6 +171,7 @@ namespace GiftServer
                 }
                 return true;
             }
+
             public bool Update()
             {
                 if (this.id == -1)
@@ -171,6 +193,7 @@ namespace GiftServer
                             + "UserEmail = @email, "
                             + "UserTheme = @theme, "
                             + "UserImage = @img "
+                            + "DateOfBirth = @dob "
                             + "WHERE UserID = @id;";
                         cmd.Parameters.AddWithValue("@fName", this.firstName);
                         cmd.Parameters.AddWithValue("@lName", this.lastName);
@@ -178,6 +201,7 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@theme", this.theme);
                         cmd.Parameters.AddWithValue("@img", this.imagePath);
                         cmd.Parameters.AddWithValue("@id", this.id);
+                        cmd.Parameters.AddWithValue("@dob", this.dob);
                         cmd.Prepare();
                         if (cmd.ExecuteNonQuery() == 0)
                         {
@@ -215,6 +239,7 @@ namespace GiftServer
                     }
                 }
             }
+
             public bool Delete()
             {
                 if (this.id == -1)
