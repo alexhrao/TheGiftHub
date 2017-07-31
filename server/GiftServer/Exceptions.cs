@@ -19,5 +19,9 @@ namespace GiftServer
         {
             public PasswordResetTimeoutException() : base("Timeout Expired") { }
         }
+        public class EventNotFoundException : Exception
+        {
+            public EventNotFoundException(long id, string name) : base("Event " + name + " for user " + id + " Does not exist") { }
+        }
     }
 }

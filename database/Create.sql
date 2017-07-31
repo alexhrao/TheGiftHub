@@ -12,7 +12,7 @@ CREATE TABLE gift_registry_db.passwords (
     CreateStamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE gift_registry_db.giftEvents (
+CREATE TABLE gift_registry_db.defaultEvents (
     GiftEventID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     GiftEventDay INT NOT NULL,
     GiftEventMonth INT NOT NULL,
@@ -37,7 +37,6 @@ ALTER TABLE gift_registry_db.users
 
 CREATE TABLE gift_registry_db.giftEventsUsers (
     GiftEventUserID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    GiftEventID INT NOT NULL,
     UserID INT NOT NULL,
     EventDay INT NOT NULL,
     EventMonth INT NOT NULL,
@@ -47,9 +46,6 @@ CREATE TABLE gift_registry_db.giftEventsUsers (
 ALTER TABLE gift_registry_db.giftEventUsers
     ADD CONSTRAINT FK_giftEvent_Users FOREIGN KEY (UserID)
         REFERENCES gift_registry_db.users;
-ALTER TABLE gift_registry_db.giftEventUsers
-    ADD CONSTRAINT FK_giftEvent_Events FOREIGN KEY (GiftEventID)
-        REFERENCES gift_registry_db.giftEvents;
         
 CREATE TABLE gift_registry_db.groups (
     GroupID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
