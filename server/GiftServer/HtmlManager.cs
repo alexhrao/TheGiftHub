@@ -79,6 +79,9 @@ namespace GiftServer
                 email.LoadHtml(Resources.header + Resources.passwordResetEmail);
                 HtmlNode resetLink = email.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" passwordReset \")]");
                 resetLink.Attributes["href"].Value = Resources.URL + "?ResetToken=" + token;
+                HtmlNode resetUrl = email.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" resetURL \")]");
+                resetUrl.Attributes["href"].Value = Resources.URL + "?ResetToken=" + token;
+                resetUrl.InnerHtml = Resources.URL + "?ResetToken=" + token;
                 HtmlNode homePage = email.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" changePassword \")]");
                 homePage.Attributes["href"].Value = Resources.URL;
                 email.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userNotFound \")]").Remove();
