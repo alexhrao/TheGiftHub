@@ -4,11 +4,30 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace GiftServerTester
 {
     [TestClass]
-    public class UnitTest1
+    public class PasswordHashTester
     {
         [TestMethod]
-        public void TestMethod1()
+        public void HashTest()
         {
+
+        }
+
+        [TestMethod]
+        public void DefaultHashTest()
+        {
+
+        }
+
+        [TestMethod]
+        public void VerifyTest()
+        {
+
+        }
+
+        [TestMethod]
+        public void SupportTest()
+        {
+            
         }
     }
 }

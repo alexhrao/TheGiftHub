@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GiftServer.Exceptions;
+using System;
 using System.Security.Cryptography;
 
 namespace GiftServer
@@ -25,6 +26,10 @@ namespace GiftServer
             /// <returns>the hash</returns>
             public static string Hash(string password, int iterations)
             {
+                if (password == null || password.Length <= 3)
+                {
+                    throw new InvalidPasswordException();
+                }
                 //create salt
                 byte[] salt;
                 using (RNGCryptoServiceProvider crypt = new RNGCryptoServiceProvider())
@@ -64,6 +69,10 @@ namespace GiftServer
             /// <returns>is supported?</returns>
             public static bool IsHashSupported(string hashString)
             {
+                if (hashString == null)
+                {
+                    throw new InvalidPasswordException();
+                }
                 return hashString.Contains("$MYHASH$V1$");
             }
 
@@ -75,6 +84,10 @@ namespace GiftServer
             /// <returns>could be verified?</returns>
             public static bool Verify(string password, string hashedPassword)
             {
+                if (password == null || hashedPassword == null)
+                {
+                    throw new InvalidPasswordException();
+                }
                 //check hash
                 if (!IsHashSupported(hashedPassword))
                 {
