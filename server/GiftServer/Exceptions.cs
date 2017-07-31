@@ -23,5 +23,9 @@ namespace GiftServer
         {
             public EventNotFoundException(long id, string name) : base("Event " + name + " for user " + id + " Does not exist") { }
         }
+        public class InvalidEventException : Exception
+        {
+            public InvalidEventException(string type, int val) : base("Invalid " + type + " (" + val + ")") { }
+        }
     }
 }

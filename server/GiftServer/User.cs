@@ -253,6 +253,7 @@ namespace GiftServer
                     {
                         con.Open();
                         long pId;
+                        // Get password ID
                         using (MySqlCommand cmd = new MySqlCommand())
                         {
                             cmd.Connection = con;
@@ -271,6 +272,7 @@ namespace GiftServer
                                 }
                             }
                         }
+                        // Delete from passwords
                         using (MySqlCommand cmd = new MySqlCommand())
                         {
                             cmd.Connection = con;
@@ -279,22 +281,85 @@ namespace GiftServer
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
+                        // Delete from users
                         using (MySqlCommand cmd = new MySqlCommand())
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM users WHERE UserID = @id;";
                             cmd.Parameters.AddWithValue("@id", this.id);
                             cmd.Prepare();
-                            if (cmd.ExecuteNonQuery() != 0)
+                            if (cmd.ExecuteNonQuery() == 0)
                             {
-                                this.id = -1;
-                                return true;
-                            }
-                            else
-                            {
-                                this.id = -1;
                                 throw new UserNotFoundException(this.email);
                             }
+                        }
+                        // Delete from Events
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "DELETE FROM eventsUsers WHERE UserID = @id;";
+                            cmd.Parameters.AddWithValue("@id", this.id);
+                            cmd.Prepare();
+                            cmd.ExecuteNonQuery();
+                        }
+                        // Delete from receptions & reservations (based on GiftID):
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "SELECT GiftID FROM gifts WHERE UserID = @id;";
+                            cmd.Parameters.AddWithValue("@id", this.id);
+                            cmd.Prepare();
+                            using (MySqlDataReader reader = cmd.ExecuteReader())
+                            {
+                                // For each ID, delete from receptions:
+                                while (reader.Read())
+                                {
+                                    using (MySqlCommand rm = new MySqlCommand())
+                                    {
+                                        rm.Connection = con;
+                                        rm.CommandText = "DELETE FROM receptions WHERE GiftID = @id;";
+                                        rm.Parameters.AddWithValue("@id", reader["GiftID"]);
+                                        rm.Prepare();
+                                        rm.ExecuteNonQuery();
+                                    }
+                                    using (MySqlCommand rm = new MySqlCommand())
+                                    {
+                                        rm.Connection = con;
+                                        rm.CommandText = "DELETE FROM reservations WHERE GiftID = @id;";
+                                        rm.Parameters.AddWithValue("@id", reader["GiftID"]);
+                                        rm.Prepare();
+                                        rm.ExecuteNonQuery();
+                                    }
+                                }
+                            }
+                        }
+                        // Delete from gifts
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "DELETE FROM gifts WHERE UserID = @id;";
+                            cmd.Parameters.AddWithValue("@id", this.id);
+                            cmd.Prepare();
+                            cmd.ExecuteNonQuery();
+                        }
+                        // Delete from groups - what if s/he is admin??
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "DELETE FROM groupsUsers WHERE UserID = @id;";
+                            cmd.Parameters.AddWithValue("@id", this.id);
+                            cmd.Prepare();
+                            cmd.ExecuteNonQuery();
+                        }
+                        // Delete from reservations
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "DELETE FROM reservations WHERE UserID = @id;";
+                            cmd.Parameters.AddWithValue("@id", this.id);
+                            cmd.Prepare();
+                            cmd.ExecuteNonQuery();
+                            return true;
                         }
                     }
                 }
