@@ -117,7 +117,7 @@ namespace GiftServer.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;https://www.w3.org/1999/xhtml&quot;&gt;
         ///    &lt;head&gt;
-        ///        &lt;title&gt;Gift Registry Login&lt;/title&gt;
+        ///        &lt;title&gt;The Gift Hub Login&lt;/title&gt;
         ///        &lt;script&gt;
         ///            $(document).ready(function () {
         ///                $(&apos;#signupSubmit&apos;).hide();
@@ -161,7 +161,7 @@ namespace GiftServer.Properties {
         ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
         ///&lt;head&gt;
         ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
-        ///    &lt;title&gt;Reset Password for Gift Registry&lt;/title&gt;
+        ///    &lt;title&gt;Reset Password for The Gift Hub&lt;/title&gt;
         ///    &lt;script&gt;
         ///            $(document).ready(function () {
         ///                $(&apos;#resetSubmit&apos;).hide();

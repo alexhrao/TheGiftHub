@@ -138,7 +138,7 @@ namespace GiftServer
                         }
                     }
                 }
-                MailMessage email = new MailMessage(new MailAddress("Gift Registry<no-reply@GiftRegistry.com>"), new MailAddress(emailAddress));
+                MailMessage email = new MailMessage(new MailAddress("The Gift Hub<support@TheGiftHub.org>"), new MailAddress(emailAddress));
                 email.Body = body;
                 email.Subject = "Password Reset";
                 email.IsBodyHtml = true;
@@ -147,7 +147,8 @@ namespace GiftServer
                     sender.EnableSsl = true;
                     sender.DeliveryMethod = SmtpDeliveryMethod.Network;
                     sender.UseDefaultCredentials = false;
-                    sender.Credentials = new NetworkCredential("NoReplyGiftRegistry@gmail.com", Resources.emailPassword);
+                    // Replace with GiftHub credentials
+                    sender.Credentials = new NetworkCredential("support@thegifthub.org", Resources.emailPassword);
                     sender.Send(email);
                 }
             }
