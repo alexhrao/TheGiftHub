@@ -61,8 +61,8 @@
   <ItemGroup>
     <Compile Include="Event.cs" />
     <Compile Include="Exceptions.cs" />
-    <Compile Include="HtmlManager.cs" />
     <Compile Include="ISynchronizable.cs" />
+    <Compile Include="LoginManager.cs" />
     <Compile Include="PasswordHash.cs" />
     <Compile Include="PasswordReset.cs" />
     <Compile Include="Program.cs" />
@@ -72,6 +72,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="ResetManager.cs" />
     <Compile Include="User.cs" />
     <Compile Include="WebServer.cs" />
   </ItemGroup>

@@ -4,7 +4,8 @@ using System.IO;
 using System.Web;
 using System.Collections.Specialized;
 using GiftServer.Data;
-using GiftServer.DataManipulation;
+using GiftServer.Html.Login;
+using GiftServer.Html.Reset;
 using GiftServer.Security;
 using GiftServer.Exceptions;
 using GiftServer.Properties;
@@ -73,7 +74,7 @@ namespace GiftServer
                             case "Signup":
                                 user = new User(dict["firstName"], dict["lastName"], dict["email"], dict["password"]);
                                 user.Create();
-                                return HtmlManager.SuccessSignup();
+                                return LoginManager.SuccessSignup();
                             case "Login":
                                 try
                                 {
@@ -84,22 +85,22 @@ namespace GiftServer
                                     return Resources.header + Resources.navigationBar + Resources.dashboard;
                                 } catch (InvalidPasswordException)
                                 {
-                                    return HtmlManager.FailLogin();
+                                    return LoginManager.FailLogin();
                                 } catch (UserNotFoundException)
                                 {
-                                    return HtmlManager.FailLogin();
+                                    return LoginManager.FailLogin();
                                 }
                             case "PasswordResetRequest":
                                 // POST data will have user email. Send recovery email.
                                 PasswordReset.SendRecoveryEmail(dict["email"]);
-                                return HtmlManager.ResetPasswordSent();
+                                return ResetManager.ResetPasswordSent();
                             case "PasswordReset":
                                 // Reset password and direct to login page
                                 // POST data will have userID in userID input. Reset the password and let the user know.
                                 long id = Convert.ToInt64(dict["userID"]);
                                 string password = dict["password"];
                                 PasswordReset.ResetPassword(id, password);
-                                return HtmlManager.SuccessResetPassword();
+                                return ResetManager.SuccessResetPassword();
                             default:
                                 return Resources.header + Resources.login;
                         }
@@ -117,7 +118,7 @@ namespace GiftServer
                     string token = request.QueryString["ResetToken"];
                     long id = PasswordReset.GetUser(token);
                     // Show reset form. Form will have a hidden input with UserID?
-                    return HtmlManager.CreateReset(id);
+                    return ResetManager.CreateReset(id);
                 }
                 else
                 {

@@ -7,7 +7,7 @@ using GiftServer.Data;
 using GiftServer.Properties;
 using System.Net.Mail;
 using System.Net;
-using GiftServer.DataManipulation;
+using GiftServer.Html.Reset;
 
 namespace GiftServer
 {
@@ -116,12 +116,12 @@ namespace GiftServer
                                 // Get data:
                                 id = Convert.ToInt64(reader["UserID"]);
                                 token = GenerateToken();
-                                body = HtmlManager.GenerateEmail(token);
+                                body = ResetManager.GenerateEmail(token);
                             }
                             else
                             {
                                 // User doesn't exist. Send an email saying so!
-                                body = HtmlManager.GenerateEmail();
+                                body = ResetManager.GenerateEmail();
                             }
                         }
                     }
@@ -147,7 +147,6 @@ namespace GiftServer
                     sender.EnableSsl = true;
                     sender.DeliveryMethod = SmtpDeliveryMethod.Network;
                     sender.UseDefaultCredentials = false;
-                    // Replace with GiftHub credentials
                     sender.Credentials = new NetworkCredential("support@thegifthub.org", Resources.emailPassword);
                     sender.Send(email);
                 }
