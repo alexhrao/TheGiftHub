@@ -48,7 +48,7 @@ namespace GiftServer
                 DateTime timestamp;
                 // Hash and query DB for hash; if not found, throw error. Otherwise, get the user
                 string hashed = PasswordReset.ComputeHash(token);
-                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["MySql"].ConnectionString))
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
                     using (MySqlCommand cmd = new MySqlCommand())
@@ -100,7 +100,7 @@ namespace GiftServer
                 long id = -1;
                 string token = "";
                 string body;
-                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["MySql"].ConnectionString))
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
                     using (MySqlCommand cmd = new MySqlCommand())
