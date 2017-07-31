@@ -5,10 +5,16 @@
             $(document).ready(function () {
                 $('#signupSubmit').hide();
                 $('#loginSubmit').hide();
+                $('#resetSubmit').hide();
                 $(window).keydown(function (event) {
                     if (event.keyCode == 13) {
                         // If clicked first tab, validate:
-                        if ($('#loginTab').hasClass("active")) {
+                        if ($('#resetPassword').hasClass("in")) {
+                            if (!validateReset()) {
+                                event.preventDefault();
+                                return false;
+                            }
+                        } else if ($('#loginTab').hasClass("active")) {
                             if (!validateLogin()) {
                                 event.preventDefault();
                                 return false;
@@ -114,6 +120,16 @@
                     }
                     validateLogin();
                 });
+                $('#resetEmail').keyup(function () {
+                    if ($('#resetEmail').val()) {
+                        $('#resetEmail').parent().removeClass('has-error');
+                        $('#resetEmail').parent().addClass('has-success');
+                    } else {
+                        $('#resetEmail').parent().removeClass('has-success');
+                        $('#resetEmail').parent().addClass('has-error');
+                    }
+                    validateReset();
+                })
             });
             function validateLogin() {
                 var invalid = false;
@@ -145,6 +161,15 @@
                     $('#signupSubmit').hide();
                 }
                 return !invalid;
+            }
+            function validateReset() {
+                if ($('#resetEmail').val() !== "") {
+                    $('#resetSubmit').show();
+                    return true;
+                } else {
+                    $('#resetSubmit').hide();
+                    return false;
+                }
             }
         </script>
         <style>
@@ -211,7 +236,7 @@
                                     <input class="form-control" id="resetEmail" type="email" name="email" placeholder="Email Address" />
                                 </div>
                                 <div class="form-group">
-                                    <button id="resetPasswordSubmit" form="resetForm" class="btn btn-success" type="submit" name="submit" value="PasswordResetRequest">
+                                    <button id="resetSubmit" form="resetForm" class="btn btn-success" type="submit" name="submit" value="PasswordResetRequest">
                                         Submit
                                     </button>
                                 </div>
