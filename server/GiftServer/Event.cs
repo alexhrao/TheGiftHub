@@ -84,6 +84,35 @@ namespace GiftServer
                     }
                 }
             }
+            public Event(long id)
+            {
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT eventUsers.* FROM eventUsers WHERE eventUsers.EventUserID = @id;";
+                        cmd.Parameters.AddWithValue("@id", id);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                this.id = Convert.ToInt64(reader["EventUserID"]);
+                                this.Name = (string)(reader["EventName"]);
+                                this.Description = (string)(reader["EventDescription"]);
+                                this.Day = Convert.ToInt32(reader["EventDay"]);
+                                this.Month = Convert.ToInt32(reader["EventMonth"]);
+                            }
+                            else
+                            {
+                                throw new EventNotFoundException(id);
+                            }
+                        }
+                    }
+                }
+            }
 
             public bool Create()
             {
