@@ -81,7 +81,7 @@ namespace GiftServer
                                     Cookie logger = new Cookie("UserID", Convert.ToString(user.id));
                                     response.Cookies.Add(logger);
                                     response.AppendHeader("dest", "dashboard");
-                                    return Resources.header + Resources.navigationBar + Resources.dashboard;
+                                    return DashboardManager.UpdateEvents(user.id, Resources.header + Resources.navigationBar + Resources.dashboard);
                                 } catch (InvalidPasswordException)
                                 {
                                     return LoginManager.FailLogin();
@@ -128,9 +128,9 @@ namespace GiftServer
                 switch (request.QueryString["dest"])
                 {
                     case "dashboard":
-                        return Resources.header + Resources.navigationBar + Resources.dashboard;
+                        return DashboardManager.UpdateEvents(user.id, Resources.header + Resources.navigationBar + Resources.dashboard);
                     default:
-                        return Resources.header + Resources.navigationBar + Resources.dashboard;
+                        return DashboardManager.UpdateEvents(user.id, Resources.header + Resources.navigationBar + Resources.dashboard);
                 }
             }
             else
