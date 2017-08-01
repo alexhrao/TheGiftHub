@@ -35,9 +35,8 @@ namespace GiftServer
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            if (reader.HasRows)
+                            if (reader.Read())
                             {
-                                reader.Read();
                                 this.id = id;
                                 this.firstName = (string)(reader["FirstName"]);
                                 this.lastName = (string)(reader["LastName"]);
