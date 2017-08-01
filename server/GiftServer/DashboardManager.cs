@@ -59,10 +59,12 @@ namespace GiftServer
                                 string eName = Convert.ToString(reader["EventName"]);
                                 // Create HtmlNode for this event:
                                 // <li><h5>(ENAME) - (MM/DD)</h5><ul></ul></li>
-                                HtmlNode eNode = HtmlNode.CreateNode("<li><h5 id=\"menu-dropdown\" data-toggle=\"collapse\" data-target=\"#EventNumber" + eventNum + "\">" + HttpUtility.HtmlEncode(Convert.ToString(reader["EventName"]))
+                                HtmlNode eNode = HtmlNode.CreateNode("<li><h5 id=\"menu-dropdown\" data-toggle=\"collapse\" data-target=\"#EventNumber" + eventNum + "\">" 
+                                                                    + HttpUtility.HtmlEncode(Convert.ToString(reader["EventName"]))
                                                                     + " - ("
                                                                     + Convert.ToInt32(reader["EventMonth"]) + "/"
-                                                                    + Convert.ToInt32(reader["EventDay"]) + ") <span class=\"glyphicon glyphicon-chevron-right\"></span></h5></li>");
+                                                                    + Convert.ToInt32(reader["EventDay"]) 
+                                                                    + ") <span class=\"glyphicon glyphicon-chevron-right\"></span></h5></li>");
                                 HtmlNode users = HtmlNode.CreateNode("<ul id=\"EventNumber" + eventNum + "\" class=\"collapse\"></ul>");
                                 eNode.AppendChild(users);
                                 while (eName.Equals(Convert.ToString(reader["EventName"])))
