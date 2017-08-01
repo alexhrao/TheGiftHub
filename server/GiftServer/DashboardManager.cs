@@ -25,7 +25,7 @@ namespace GiftServer
                         // Get all events that have anything to do with anyone in any group with our user.
                         // look at template
                         cmd.CommandText = "SELECT eventsusersgroups.EventUserID, users.FirstName, users.LastName, users.UserEmail, "
-                                        + "eventsusers.EventName, eventsusers.EventDay, eventsusers.EventMonth, eventsusers.EventDescription "
+                                        + "eventsusers.EventName, eventsusers.EventDay, eventsusers.EventMonth, eventsusers.EventYear, eventsusers.EventRecurs, eventsusers.EventDescription "
                                         + "FROM eventsusersgroups "
                                         + "INNER JOIN eventsusers ON eventsusersgroups.EventUserID = eventsusers.EventUserID "
                                         + "INNER JOIN users ON eventsusers.UserID = users.UserID "
@@ -87,11 +87,23 @@ namespace GiftServer
             }
             public static string UpdateEvents(long userID)
             {
-                return UpdateEvents(userID, Resources.dashboard);
+                return UpdateEvents(userID, Resources.header + Resources.navigationBar + Resources.dashboard);
             }
-            private static string getEvent(long eventID)
+
+            public static string UpdateFeed(long userID)
             {
-                return "";
+                return UpdateFeed(userID, Resources.header + Resources.navigationBar + Resources.dashboard);
+            }
+            public static string UpdateFeed(long userID, string page)
+            {
+                return page;
+            }
+
+            public static string Dashboard(long userID)
+            {
+                string page = UpdateEvents(userID);
+                page = UpdateFeed(userID, page);
+                return page;
             }
         }
     }

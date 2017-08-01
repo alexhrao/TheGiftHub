@@ -16,6 +16,8 @@ CREATE TABLE gift_registry_db.defaultEvents (
     EventID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     EventDay INT NOT NULL,
     EventMonth INT NOT NULL,
+    EventYear INT NOT NULL,
+    EventRecur BOOLEAN NOT NULL DEFAULT TRUE,
     EventName VARCHAR(255) NOT NULL,
     EventDescription VARCHAR(4095) NULL
 );
@@ -41,6 +43,8 @@ CREATE TABLE gift_registry_db.eventsUsers (
     EventID INT NULL,
     EventDay INT NOT NULL,
     EventMonth INT NOT NULL,
+    EventYear INT NOT NULL,
+    EventRecur BOOLEAN NOT NULL DEFAULT TRUE,
     EventName VARCHAR(255) NOT NULL,
     EventDescription VARCHAR(4095) NULL
 );
