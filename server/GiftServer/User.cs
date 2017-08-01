@@ -193,7 +193,6 @@ namespace GiftServer
                             + "UserEmail = @email, "
                             + "UserTheme = @theme, "
                             + "UserImage = @img "
-                            + "DateOfBirth = @dob "
                             + "WHERE UserID = @id;";
                         cmd.Parameters.AddWithValue("@fName", this.firstName);
                         cmd.Parameters.AddWithValue("@lName", this.lastName);

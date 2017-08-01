@@ -91,7 +91,7 @@ namespace GiftServer
                 //check hash
                 if (!IsHashSupported(hashedPassword))
                 {
-                    throw new NotSupportedException("The hashtype is not supported");
+                    throw new InvalidPasswordException();
                 }
 
                 //extract iteration and Base64 string

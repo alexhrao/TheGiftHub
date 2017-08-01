@@ -136,7 +136,7 @@ namespace GiftServer
             else
             {
                 // If logged in (but no request), just send back home page:
-                return Resources.header + Resources.navigationBar + Resources.dashboard;
+                return DashboardManager.UpdateEvents(user.id, Resources.header + Resources.navigationBar + Resources.dashboard);
             }
         }
     }

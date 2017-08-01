@@ -3,6 +3,7 @@ using HtmlAgilityPack;
 using GiftServer.Properties;
 using MySql.Data.MySqlClient;
 using System.Configuration;
+using System.Web;
 
 namespace GiftServer
 {
@@ -14,8 +15,7 @@ namespace GiftServer
             {
                 HtmlDocument dash = new HtmlDocument();
                 dash.LoadHtml(page);
-                HtmlNode eventHolder = dash.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@class), \" \"), \" alert \")]");
-                eventHolder.RemoveAllChildren();
+                HtmlNode eventHolder = dash.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" eventTable \")]");
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -24,7 +24,7 @@ namespace GiftServer
                         cmd.Connection = con;
                         // Get all events that have anything to do with anyone in any group with our user.
                         // look at template
-                        cmd.CommandText = "SELECT eventsusersgroups.EventUserID "
+                        cmd.CommandText = "SELECT eventsusersgroups.EventUserID, eventsusers.UserID, eventsusers.EventName "
                                         + "FROM eventsusersgroups "
                                         + "INNER JOIN eventsusers ON eventsusersgroups.EventUserID = eventsusers.EventUserID "
                                         + "WHERE eventsusers.UserID IN ( "
@@ -52,11 +52,14 @@ namespace GiftServer
                             while (reader.Read())
                             {
                                 // Add HtmlNode to our document?
+                                // TODO: Encode HTML
+                                HtmlNode eventInfo = HtmlNode.CreateNode("<tr><td>" + Convert.ToString(reader["EventName"]) + "</td></tr>");
+                                eventHolder.AppendChild(eventInfo);
                             }
                         }
                     }
                 }
-                return page;
+                return dash.DocumentNode.OuterHtml;
             }
             public static string UpdateEvents(long userID)
             {
