@@ -24,32 +24,33 @@ namespace GiftServer
                         cmd.Connection = con;
                         // Get all events that have anything to do with anyone in any group with our user.
                         // look at template
-                        cmd.CommandText = "SELECT eventsusersgroups.EventUserID, users.FirstName, users.LastName, users.UserEmail, "
-                                        + "eventsusers.EventName, eventsusers.EventDay, eventsusers.EventMonth, eventsusers.EventYear, eventsusers.EventRecurs, eventsusers.EventDescription "
-                                        + "FROM eventsusersgroups "
-                                        + "INNER JOIN eventsusers ON eventsusersgroups.EventUserID = eventsusers.EventUserID "
-                                        + "INNER JOIN users ON eventsusers.UserID = users.UserID "
-                                        + "WHERE eventsusers.UserID IN ( "
+                        cmd.CommandText = "SELECT events_users_groups.EventUserID, users.FirstName, users.LastName, users.UserEmail, "
+                                        + "events_users.EventName, events_users.EventDay, events_users.EventMonth, events_users.EventYear, events_users.EventRecurs, events_users.EventDescription "
+                                        + "FROM events_users_groups "
+                                        + "INNER JOIN events_users ON events_users_groups.EventUserID = events_users.EventUserID "
+                                        + "INNER JOIN users ON events_users.UserID = users.UserID "
+                                        + "WHERE events_users.UserID IN ( "
                                             + "SELECT UserID "
-                                            + "FROM gift_registry_db.groupsusers "
+                                            + "FROM gift_registry_db.groups_users "
                                             + "WHERE GroupID IN ( "
                                                 + "SELECT GroupID "
-                                                + "FROM gift_registry_db.groupsusers "
-                                                + "WHERE gift_registry_db.groupsusers.UserID = @uid "
+                                                + "FROM gift_registry_db.groups_users "
+                                                + "WHERE gift_registry_db.groups_users.UserID = @uid "
                                             + ") "
                                         + ") "
-                                        + "AND eventsusersgroups.GroupID IN ( "
+                                        + "AND events_users_groups.GroupID IN ( "
                                             + "SELECT GroupID "
-                                            + "FROM gift_registry_db.groupsusers "
+                                            + "FROM gift_registry_db.groups_users "
                                             + "WHERE GroupID IN ( "
                                                 + "SELECT GroupID "
-                                                + "FROM gift_registry_db.groupsusers "
-                                                + "WHERE gift_registry_db.groupsusers.UserID = @uid "
+                                                + "FROM gift_registry_db.groups_users "
+                                                + "WHERE gift_registry_db.groups_users.UserID = @uid "
                                             + ") "
                                         + ") "
-                                        + "ORDER BY eventsusers.EventMonth ASC, eventsusers.EventDay ASC, eventsusers.EventName;";
+                                        + "ORDER BY events_users.EventMonth ASC, events_users.EventDay ASC, events_users.EventName;";
                         cmd.Parameters.AddWithValue("@uid", userID);
                         cmd.Prepare();
+                        int eventNum = 0;
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
@@ -58,11 +59,11 @@ namespace GiftServer
                                 string eName = Convert.ToString(reader["EventName"]);
                                 // Create HtmlNode for this event:
                                 // <li><h5>(ENAME) - (MM/DD)</h5><ul></ul></li>
-                                HtmlNode eNode = HtmlNode.CreateNode("<li><h5>" + HttpUtility.HtmlEncode(Convert.ToString(reader["EventName"]))
+                                HtmlNode eNode = HtmlNode.CreateNode("<li><h5 id=\"menu-dropdown\" data-toggle=\"collapse\" data-target=\"#EventNumber" + eventNum + "\">" + HttpUtility.HtmlEncode(Convert.ToString(reader["EventName"]))
                                                                     + " - ("
                                                                     + Convert.ToInt32(reader["EventMonth"]) + "/"
-                                                                    + Convert.ToInt32(reader["EventDay"]) + ")<span class=\"glyphicon glyphicon-chevron-right\"></span></h5></li>");
-                                HtmlNode users = HtmlNode.CreateNode("<ul></ul>");
+                                                                    + Convert.ToInt32(reader["EventDay"]) + ") <span class=\"glyphicon glyphicon-chevron-right\"></span></h5></li>");
+                                HtmlNode users = HtmlNode.CreateNode("<ul id=\"EventNumber" + eventNum + "\" class=\"collapse\"></ul>");
                                 eNode.AppendChild(users);
                                 while (eName.Equals(Convert.ToString(reader["EventName"])))
                                 {
@@ -71,7 +72,7 @@ namespace GiftServer
                                     HtmlNode userInfo = HtmlNode.CreateNode("<li><a href=\"\">"
                                                                             + HttpUtility.HtmlEncode(Convert.ToString(reader["FirstName"])) + " "
                                                                             + HttpUtility.HtmlEncode(Convert.ToString(reader["LastName"])) + " "
-                                                                            + "<span class=\"glyphicon glyphicon-chevron-right\"></span></a></li>");
+                                                                            + "<span class=\"glyphicon glyphicon-arrow-right\"></span></a></li>");
                                     users.AppendChild(userInfo);
                                     if (!reader.Read())
                                     {
@@ -79,6 +80,7 @@ namespace GiftServer
                                     }
                                 }
                                 eventHolder.AppendChild(eNode);
+                                eventNum++;
                             }
                         }
                     }

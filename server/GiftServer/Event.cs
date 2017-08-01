@@ -14,8 +14,10 @@ namespace GiftServer
             public string Description;
             public int Day = -1;
             public int Month = -1;
+            public int Year = -1;
+            public bool isRecurring;
             public long UserID;
-            public Event(long userID, string name, int day, int month, string description)
+            public Event(long userID, string name, int day, int month, int year, bool recurs, string description)
             {
                 // Check if user exists
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -50,6 +52,8 @@ namespace GiftServer
                 {
                     throw new InvalidEventException("day", day);
                 }
+                this.Year = year;
+                this.isRecurring = recurs;
                 this.Day = day;
                 this.Description = description;
             }
@@ -62,7 +66,7 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT eventUsers.* FROM eventUsers WHERE eventUsers.UserID = @id AND eventUsers.EventName = @name;";
+                        cmd.CommandText = "SELECT events_users.* FROM events_users WHERE events_users.UserID = @id AND events_users.EventName = @name;";
                         cmd.Parameters.AddWithValue("@id", userID);
                         cmd.Parameters.AddWithValue("@name", name);
                         cmd.Prepare();
@@ -75,6 +79,8 @@ namespace GiftServer
                                 this.Description = (string)(reader["EventDescription"]);
                                 this.Day = Convert.ToInt32(reader["EventDay"]);
                                 this.Month = Convert.ToInt32(reader["EventMonth"]);
+                                this.Year = Convert.ToInt32(reader["EventYear"]);
+                                this.isRecurring = Convert.ToBoolean(reader["EventRecurs"]);
                             }
                             else
                             {
@@ -92,7 +98,7 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT eventUsers.* FROM eventUsers WHERE eventUsers.EventUserID = @id;";
+                        cmd.CommandText = "SELECT events_users.* FROM events_users WHERE events_users.EventUserID = @id;";
                         cmd.Parameters.AddWithValue("@id", id);
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
@@ -104,6 +110,8 @@ namespace GiftServer
                                 this.Description = (string)(reader["EventDescription"]);
                                 this.Day = Convert.ToInt32(reader["EventDay"]);
                                 this.Month = Convert.ToInt32(reader["EventMonth"]);
+                                this.Year = Convert.ToInt32(reader["EventYear"]);
+                                this.isRecurring = Convert.ToBoolean(reader["EventRecurs"]);
                             }
                             else
                             {
@@ -122,15 +130,19 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "INSERT INTO eventsUsers (UserID, EventDay, EventMonth, EventName, EventDescription) VALUES ("
+                        cmd.CommandText = "INSERT INTO events_users (UserID, EventDay, EventMonth, EventYear, EventRecurs, EventName, EventDescription) VALUES ("
                                         + "@id, "
                                         + "@day, "
                                         + "@month, "
+                                        + "@year, "
+                                        + "@recurs, "
                                         + "@name, "
                                         + "@description);";
                         cmd.Parameters.AddWithValue("@id", this.UserID);
                         cmd.Parameters.AddWithValue("@day", this.Day);
                         cmd.Parameters.AddWithValue("@month", this.Month);
+                        cmd.Parameters.AddWithValue("@year", this.Year);
+                        cmd.Parameters.AddWithValue("@recurs", this.isRecurring);
                         cmd.Parameters.AddWithValue("@name", this.Name);
                         cmd.Parameters.AddWithValue("@description", this.Description);
                         cmd.Prepare();
@@ -160,11 +172,13 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "UPDATE eventsUsers "
+                        cmd.CommandText = "UPDATE events_users "
                                         + "SET "
                                         + "UserID = @uid, "
                                         + "EventDay = @day, "
                                         + "EventMonth = @month, "
+                                        + "EventYear = @year, "
+                                        + "EventRecurs = @recurs, "
                                         + "EventName = @name, "
                                         + "EventDescription = @description "
                                         + "WHERE EventUserID = @id";
@@ -172,6 +186,8 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@uid", this.UserID);
                         cmd.Parameters.AddWithValue("@day", this.Day);
                         cmd.Parameters.AddWithValue("@month", this.Month);
+                        cmd.Parameters.AddWithValue("@year", this.Year);
+                        cmd.Parameters.AddWithValue("@recurs", this.isRecurring);
                         cmd.Parameters.AddWithValue("@name", this.Name);
                         cmd.Parameters.AddWithValue("@description", this.Description);
                         cmd.Prepare();
@@ -188,7 +204,14 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "DELETE FROM eventsUsers WHERE eventsUsers.EventUserID = @id;";
+                        cmd.CommandText = "DELETE FROM events_users_groups WHERE events_users_groups.EventUserID = @id;";
+                        cmd.Parameters.AddWithValue("@id", this.id);
+                        cmd.Prepare();
+                    }
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "DELETE FROM events_users WHERE events_users.EventUserID = @id;";
                         cmd.Parameters.AddWithValue("@id", this.id);
                         cmd.Prepare();
                         return cmd.ExecuteNonQuery() == 1;

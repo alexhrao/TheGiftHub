@@ -129,6 +129,7 @@ namespace GiftServer
 
             public bool Create()
             {
+                // TODO: Check if email already exists
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -173,6 +174,7 @@ namespace GiftServer
 
             public bool Update()
             {
+                // TODO: Check if email already exists
                 if (this.id == -1)
                 {
                     // User does not exist - create new one instead.
@@ -295,7 +297,7 @@ namespace GiftServer
                         using (MySqlCommand cmd = new MySqlCommand())
                         {
                             cmd.Connection = con;
-                            cmd.CommandText = "DELETE FROM eventsUsers WHERE UserID = @id;";
+                            cmd.CommandText = "DELETE FROM events_users WHERE UserID = @id;";
                             cmd.Parameters.AddWithValue("@id", this.id);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
@@ -344,7 +346,7 @@ namespace GiftServer
                         using (MySqlCommand cmd = new MySqlCommand())
                         {
                             cmd.Connection = con;
-                            cmd.CommandText = "DELETE FROM groupsUsers WHERE UserID = @id;";
+                            cmd.CommandText = "DELETE FROM groups_users WHERE UserID = @id;";
                             cmd.Parameters.AddWithValue("@id", this.id);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();

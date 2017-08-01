@@ -12,12 +12,12 @@ CREATE TABLE gift_registry_db.passwords (
     CreateStamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE gift_registry_db.defaultEvents (
+CREATE TABLE gift_registry_db.default_events (
     EventID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     EventDay INT NOT NULL,
     EventMonth INT NOT NULL,
     EventYear INT NOT NULL,
-    EventRecur BOOLEAN NOT NULL DEFAULT TRUE,
+    EventRecurs BOOLEAN NOT NULL DEFAULT TRUE,
     EventName VARCHAR(255) NOT NULL,
     EventDescription VARCHAR(4095) NULL
 );
@@ -37,23 +37,23 @@ ALTER TABLE gift_registry_db.users
     ADD CONSTRAINT FK_UsersPassword FOREIGN KEY (PasswordID)
         REFERENCES gift_registry_db.passwords(PasswordID);
 
-CREATE TABLE gift_registry_db.eventsUsers (
+CREATE TABLE gift_registry_db.events_users (
     EventUserID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     UserID INT NOT NULL,
     EventID INT NULL,
     EventDay INT NOT NULL,
     EventMonth INT NOT NULL,
     EventYear INT NOT NULL,
-    EventRecur BOOLEAN NOT NULL DEFAULT TRUE,
+    EventRecurs BOOLEAN NOT NULL DEFAULT TRUE,
     EventName VARCHAR(255) NOT NULL,
     EventDescription VARCHAR(4095) NULL
 );
-ALTER TABLE gift_registry_db.eventsUsers
+ALTER TABLE gift_registry_db.events_users
     ADD CONSTRAINT FK_Event_Users FOREIGN KEY (UserID)
         REFERENCES gift_registry_db.users(UserID);
-ALTER TABLE gift_registry_db.eventsUsers
+ALTER TABLE gift_registry_db.events_users
     ADD CONSTRAINT FK_Event_Events FOREIGN KEY (EventID)
-        REFERENCES gift_registry_db.defaultevents(EventID);
+        REFERENCES gift_registry_db.default_events(EventID);
         
 CREATE TABLE gift_registry_db.groups (
     GroupID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -65,13 +65,13 @@ ALTER TABLE gift_registry_db.groups
     ADD CONSTRAINT FK_GroupsUser FOREIGN KEY (AdminID)
         REFERENCES gift_registry_db.users(UserID);
 
-CREATE TABLE gift_registry_db.passwordResets (
+CREATE TABLE gift_registry_db.passwordresets (
     PasswordResetID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     UserID INT NOT NULL,
     ResetHash CHAR(88) NOT NULL,
     TimeCreated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-ALTER TABLE gift_registry_db.passwordResets
+ALTER TABLE gift_registry_db.passwordresets
     ADD CONSTRAINT FK_PasswordResetsUser FOREIGN KEY (UserID)
         REFERENCES gift_registry_db.users(UserID);
 
@@ -98,27 +98,27 @@ ALTER TABLE gift_registry_db.gifts
     ADD CONSTRAINT FK_GiftsCategories FOREIGN KEY (CategoryID)
         REFERENCES gift_registry_db.categories(CategoryID);
         
-CREATE TABLE gift_registry_db.groupsUsers (
+CREATE TABLE gift_registry_db.groups_users (
     GroupUserID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     GroupID INT NOT NULL,
     UserID INT NOT NULL
 );
-ALTER TABLE gift_registry_db.groupsUsers
+ALTER TABLE gift_registry_db.groups_users
     ADD CONSTRAINT FK_GroupsUsers_Users FOREIGN KEY (UserID)
         REFERENCES gift_registry_db.users(UserID);
-ALTER TABLE gift_registry_db.groupsUsers
+ALTER TABLE gift_registry_db.groups_users
     ADD CONSTRAINT FK_GroupsUsers_Groups FOREIGN KEY (GroupID)
         REFERENCES gift_registry_db.groups(GroupID);
 
-CREATE TABLE gift_registry_db.groupsGifts (
+CREATE TABLE gift_registry_db.groups_gifts (
     GroupGiftID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     GroupID INT NOT NULL,
     GiftID INT NOT NULL
 );
-ALTER TABLE gift_registry_db.groupsGifts
+ALTER TABLE gift_registry_db.groups_gifts
     ADD CONSTRAINT FK_GroupsGifts_Groups FOREIGN KEY (GroupID)
         REFERENCES gift_registry_db.groups(GroupID);
-ALTER TABLE gift_registry_db.groupsGifts
+ALTER TABLE gift_registry_db.groups_gifts
     ADD CONSTRAINT FK_GroupsGifts_Gifts FOREIGN KEY (GiftID)
         REFERENCES gift_registry_db.gifts(GiftID);
 
@@ -145,14 +145,14 @@ ALTER TABLE gift_registry_db.reservations
     ADD CONSTRAINT FK_ReservationsUsers FOREIGN KEY (UserID)
         REFERENCES gift_registry_db.users(UserID);
 
-CREATE TABLE gift_registry_db.eventsUsersGroups (
+CREATE TABLE gift_registry_db.events_users_groups (
     EventGroupUserID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     EventUserID INT NOT NULL,
     GroupID INT NOT NULL
 );
-ALTER TABLE gift_registry_db.eventsUsersGroups
+ALTER TABLE gift_registry_db.events_users_groups
     ADD CONSTRAINT FK_EventsUsersGroups_Events FOREIGN KEY (EventUserID)
-        REFERENCES gift_registry_db.eventsusers(EventUserID);
-ALTER TABLE gift_registry_db.eventsUsersGroups
+        REFERENCES gift_registry_db.events_users(EventUserID);
+ALTER TABLE gift_registry_db.events_users_groups
     ADD CONSTRAINT FK_EventsUsersGroups_Groups FOREIGN KEY (GroupID)
         REFERENCES gift_registry_db.groups(GroupID);
