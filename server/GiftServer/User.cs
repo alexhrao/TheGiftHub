@@ -19,9 +19,8 @@ namespace GiftServer
             public string email;
             public string passwordHash;
             public int theme;
-            public string imagePath;
             public DateTime dob;
-            public DateTime joined;
+            public readonly DateTime dateJoined;
             public User(long id)
             {
                 // User is already logged in; just fetch their information!
@@ -31,7 +30,7 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT users.FirstName, users.LastName, users.UserEmail, passwords.PasswordHash, users.UserTheme, users.UserImage, users.DateOfBirth "
+                        cmd.CommandText = "SELECT users.FirstName, users.LastName, users.UserEmail, passwords.PasswordHash, users.UserTheme, users.DateOfBirth, users.TimeCreated "
                                         + "FROM users "
                                         + "INNER JOIN passwords ON passwords.PasswordID = users.PasswordID "
                                         + "WHERE users.UserID = @id;";
@@ -47,7 +46,6 @@ namespace GiftServer
                                 this.email = (string)(reader["UserEmail"]);
                                 this.passwordHash = (string)(reader["PasswordHash"]);
                                 this.theme = Convert.ToInt32(reader["UserTheme"]);
-                                this.imagePath = (string)(reader["UserImage"]);
                                 try
                                 {
                                     this.dob = (DateTime)(reader["DateOfBirth"]);
@@ -56,6 +54,7 @@ namespace GiftServer
                                 {
                                     this.dob = DateTime.MinValue;
                                 }
+                                this.dateJoined = (DateTime)(reader["TimeCreated"]);
                                 
                             }
                             else
@@ -76,7 +75,7 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT users.UserID, users.FirstName, users.LastName, passwords.PasswordHash, users.UserTheme, users.UserImage, users.DateOfBirth "
+                        cmd.CommandText = "SELECT users.UserID, users.FirstName, users.LastName, passwords.PasswordHash, users.UserTheme, users.DateOfBirth, users.TimeCreated "
                                         + "FROM users "
                                         + "INNER JOIN passwords ON passwords.PasswordID = users.PasswordID "
                                         + "WHERE users.UserEmail = @email;";
@@ -104,7 +103,6 @@ namespace GiftServer
                                 this.email = email;
                                 this.passwordHash = PasswordHash.Hash(password);
                                 this.theme = Convert.ToInt32(reader["UserTheme"]);
-                                this.imagePath = (string)(reader["UserImage"]);
                                 try
                                 {
                                     this.dob = (DateTime)(reader["DateOfBirth"]);
@@ -113,22 +111,23 @@ namespace GiftServer
                                 {
                                     this.dob = DateTime.MinValue;
                                 }
+                                this.dateJoined = (DateTime)(reader["TimeCreated"]);
                             }
                         }
                     }
                 }
                 
             }
-            public User(string firstName, string lastName, string email, string password) : this(firstName, lastName, email, password, 1, "", DateTime.MinValue) { }
-            public User(string firstName, string lastName, string email, string password, int theme, string imagePath, DateTime dob)
+            public User(string firstName, string lastName, string email, string password) : this(firstName, lastName, email, password, 1, DateTime.MinValue) { }
+            public User(string firstName, string lastName, string email, string password, int theme, DateTime dob)
             {
                 this.email = email;
                 this.passwordHash = PasswordHash.Hash(password);
                 this.firstName = firstName;
                 this.lastName = lastName;
                 this.theme = theme;
-                this.imagePath = imagePath;
                 this.dob = dob;
+                this.dateJoined = DateTime.Now;
             }
 
             public bool Create()
@@ -156,14 +155,13 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "INSERT INTO users (FirstName, LastName, UserEmail, PasswordID, UserTheme, UserImage, DateOfBirth) "
-                            + "VALUES (@fName, @lName, @email, @pid, @theme, @img, @dob);";
+                        cmd.CommandText = "INSERT INTO users (FirstName, LastName, UserEmail, PasswordID, UserTheme, DateOfBirth) "
+                            + "VALUES (@fName, @lName, @email, @pid, @theme, @dob);";
                         cmd.Parameters.AddWithValue("@fName", this.firstName);
                         cmd.Parameters.AddWithValue("@lName", this.lastName);
                         cmd.Parameters.AddWithValue("@email", this.email);
                         cmd.Parameters.AddWithValue("@pid", pId);
                         cmd.Parameters.AddWithValue("@theme", this.theme);
-                        cmd.Parameters.AddWithValue("@img", this.imagePath);
                         cmd.Parameters.AddWithValue("@dob", this.dob);
                         cmd.Prepare();
                         if (cmd.ExecuteNonQuery() == 0)
@@ -192,18 +190,17 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         // Update user information
+                        // TODO: Deal with DOB
                         cmd.CommandText = "UPDATE users "
                             + "SET FirstName = @fName, "
                             + "LastName = @lName, "
                             + "UserEmail = @email, "
-                            + "UserTheme = @theme, "
-                            + "UserImage = @img "
+                            + "UserTheme = @theme "
                             + "WHERE UserID = @id;";
                         cmd.Parameters.AddWithValue("@fName", this.firstName);
                         cmd.Parameters.AddWithValue("@lName", this.lastName);
                         cmd.Parameters.AddWithValue("@email", this.email);
                         cmd.Parameters.AddWithValue("@theme", this.theme);
-                        cmd.Parameters.AddWithValue("@img", this.imagePath);
                         cmd.Parameters.AddWithValue("@id", this.id);
                         cmd.Parameters.AddWithValue("@dob", this.dob);
                         cmd.Prepare();
@@ -371,11 +368,11 @@ namespace GiftServer
             public void SaveImage(MultipartParser parser)
             {
                 ImageProcessor processor = new ImageProcessor(parser);
-                File.WriteAllBytes(Resources.BasePath + "/resources/images/users/User" + this.id + ".jpg", processor.Data);
+                File.WriteAllBytes(Resources.BasePath + "/resources/images/users/User" + this.id + Resources.ImageFormat, processor.Data);
             }
             public void RemoveImage()
             {
-                File.Delete(Resources.BasePath + "/resources/images/users/User" + this.id + ".jpg");
+                File.Delete(Resources.BasePath + "/resources/images/users/User" + this.id + Resources.ImageFormat);
             }
             public string GetImage()
             {
@@ -384,16 +381,16 @@ namespace GiftServer
             public static string GetImage(long userID)
             {
                 // Build path:
-                string path = Resources.BasePath + "/resources/images/users/User" + userID + ".jpg";
+                string path = Resources.BasePath + "/resources/images/users/User" + userID + Resources.ImageFormat;
                 // if file exists, return path. Otherwise, return default
                 // Race condition, but I don't know how to solve (yet)
                 if (File.Exists(path))
                 {
-                    return "resources/images/users/User" + userID + ".jpg";
+                    return "resources/images/users/User" + userID + Resources.ImageFormat;
                 }
                 else
                 {
-                    return "resources/images/users/default.jpg";
+                    return "resources/images/users/default" + Resources.ImageFormat;
                 }
             }
         }

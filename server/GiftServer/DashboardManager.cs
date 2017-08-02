@@ -1,6 +1,7 @@
 ﻿using System;
 using HtmlAgilityPack;
 using GiftServer.Properties;
+using GiftServer.Data;
 using MySql.Data.MySqlClient;
 using System.Configuration;
 using System.Web;
@@ -11,7 +12,7 @@ namespace GiftServer
     {
         public class DashboardManager
         {
-            public static string UpdateEvents(long userID, string page)
+            public static string UpdateEvents(User user, string page)
             {
                 HtmlDocument dash = new HtmlDocument();
                 dash.LoadHtml(page);
@@ -48,7 +49,7 @@ namespace GiftServer
                                             + ") "
                                         + ") "
                                         + "ORDER BY events_users.EventMonth ASC, events_users.EventDay ASC, events_users.EventName;";
-                        cmd.Parameters.AddWithValue("@uid", userID);
+                        cmd.Parameters.AddWithValue("@uid", user.id);
                         cmd.Prepare();
                         int eventNum = 0;
                         using (MySqlDataReader reader = cmd.ExecuteReader())
@@ -59,11 +60,11 @@ namespace GiftServer
                                 string eName = Convert.ToString(reader["EventName"]);
                                 // Create HtmlNode for this event:
                                 // <li><h5>(ENAME) - (MM/DD) (CHEVRON_RIGHT)</h5><ul></ul></li>
-                                HtmlNode eNode = HtmlNode.CreateNode("<li><h5 id=\"menu-dropdown\" data-toggle=\"collapse\" data-target=\"#EventNumber" + eventNum + "\">" 
+                                HtmlNode eNode = HtmlNode.CreateNode("<li><h5 id=\"menu-dropdown\" data-toggle=\"collapse\" data-target=\"#EventNumber" + eventNum + "\">"
                                                                     + HttpUtility.HtmlEncode(Convert.ToString(reader["EventName"]))
                                                                     + " - ("
                                                                     + Convert.ToInt32(reader["EventMonth"]) + "/"
-                                                                    + Convert.ToInt32(reader["EventDay"]) 
+                                                                    + Convert.ToInt32(reader["EventDay"])
                                                                     + ") <span class=\"glyphicon glyphicon-chevron-right\"></span></h5></li>");
                                 HtmlNode users = HtmlNode.CreateNode("<ul id=\"EventNumber" + eventNum + "\" class=\"collapse\"></ul>");
                                 eNode.AppendChild(users);
@@ -89,24 +90,24 @@ namespace GiftServer
                 }
                 return dash.DocumentNode.OuterHtml;
             }
-            public static string UpdateEvents(long userID)
+            public static string UpdateEvents(User user)
             {
-                return UpdateEvents(userID, NavigationManager.NavigationBar(userID) + Resources.dashboard);
+                return UpdateEvents(user, NavigationManager.NavigationBar(user) + Resources.dashboard);
             }
 
-            public static string UpdateFeed(long userID)
-            {
-                return UpdateFeed(userID, NavigationManager.NavigationBar(userID) + Resources.dashboard);
-            }
-            public static string UpdateFeed(long userID, string page)
+            public static string UpdateFeed(User user, string page)
             {
                 return page;
             }
-
-            public static string Dashboard(long userID)
+            public static string UpdateFeed(User user)
             {
-                string page = UpdateEvents(userID);
-                page = UpdateFeed(userID, page);
+                return UpdateFeed(user, NavigationManager.NavigationBar(user) + Resources.dashboard);
+            }
+
+            public static string Dashboard(User user)
+            {
+                string page = UpdateEvents(user);
+                page = UpdateFeed(user, page);
                 return page;
             }
         }

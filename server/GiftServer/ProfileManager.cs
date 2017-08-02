@@ -21,12 +21,14 @@ namespace GiftServer
             public static string ProfilePage(User user)
             {
                 HtmlDocument profile = new HtmlDocument();
-                profile.LoadHtml(NavigationManager.NavigationBar(user.id) + Resources.profile);
+                profile.LoadHtml(NavigationManager.NavigationBar(user) + Resources.profile);
                 // Set src of image:
                 HtmlNode img = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userImage \")]");
                 img.Attributes["src"].Value = user.GetImage();
                 HtmlNode name = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
                 name.InnerHtml = HttpUtility.HtmlEncode(user.firstName + " " + user.lastName);
+                HtmlNode timeMember = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" timeMember \")]");
+                timeMember.InnerHtml = HttpUtility.HtmlEncode("Member since " + user.dateJoined.ToString("MMMM d, yyyy"));
                 return profile.DocumentNode.OuterHtml;
             }
         }

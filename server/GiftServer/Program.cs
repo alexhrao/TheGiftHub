@@ -20,7 +20,7 @@ namespace GiftServer
         /// <param name="args">Reserved for future use</param>
         public static void Main(string[] args)
         {
-            Server.WebServer server = new Server.WebServer("http://localhost:60001/", Dispatch);
+            Server.WebServer server = new Server.WebServer(Resources.URL + "/", Dispatch);
             server.Run();
             Console.WriteLine("Server is Active...\nType quit or q to quit");
             string input = null;
@@ -68,19 +68,19 @@ namespace GiftServer
                         switch (request.QueryString["dest"])
                         {
                             case "dashboard":
-                                return DashboardManager.Dashboard(user.id);
+                                return DashboardManager.Dashboard(user);
                             case "profile":
                                 // Save user image:
                                 user.SaveImage(parser);
-                                return ProfileManager.ProfilePage(user.id);
+                                return ProfileManager.ProfilePage(user);
                             default:
-                                return DashboardManager.Dashboard(user.id);
+                                return DashboardManager.Dashboard(user);
                         }
                     }
                     else
                     {
                         // Just return dashboard
-                        return DashboardManager.Dashboard(user.id);
+                        return DashboardManager.Dashboard(user);
                     }
                 }
                 // We have image; read! (how????)
@@ -119,7 +119,7 @@ namespace GiftServer
                                     Cookie logger = new Cookie("UserID", Convert.ToString(user.id));
                                     response.Cookies.Add(logger);
                                     response.AppendHeader("dest", "dashboard");
-                                    return DashboardManager.Dashboard(user.id);
+                                    return DashboardManager.Dashboard(user);
                                 } catch (InvalidPasswordException)
                                 {
                                     return LoginManager.FailLogin();
@@ -170,11 +170,11 @@ namespace GiftServer
                 switch (request.QueryString["dest"])
                 {
                     case "dashboard":
-                        return DashboardManager.Dashboard(user.id);
+                        return DashboardManager.Dashboard(user);
                     case "profile":
-                        return ProfileManager.ProfilePage(user.id);
+                        return ProfileManager.ProfilePage(user);
                     default:
-                        return DashboardManager.Dashboard(user.id);
+                        return DashboardManager.Dashboard(user);
                 }
             }
             else if (path.Length != 0)
@@ -193,7 +193,7 @@ namespace GiftServer
             else
             {
                 // If logged in (but no request), just send back home page:
-                return DashboardManager.Dashboard(user.id);
+                return DashboardManager.Dashboard(user);
             }
         }
     }

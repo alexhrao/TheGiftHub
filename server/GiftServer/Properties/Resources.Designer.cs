@@ -121,6 +121,15 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .png.
+        /// </summary>
+        internal static string ImageFormat {
+            get {
+                return ResourceManager.GetString("ImageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;https://www.w3.org/1999/xhtml&quot;&gt;
         ///    &lt;head&gt;
         ///        &lt;title&gt;The Gift Hub Login&lt;/title&gt;
@@ -214,11 +223,17 @@ namespace GiftServer.Properties {
         ///&lt;head&gt;
         ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
         ///    &lt;title&gt;My Profile&lt;/title&gt;
-        ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
-        ///    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
-        ///    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css&quot;&gt;
-        ///    &lt;script src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js&quot;&gt;&lt;/script&gt;
-        ///    &lt;script src=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min. [rest of string was truncated]&quot;;.
+        ///    &lt;script&gt;
+        ///        $(document).ready(function () {
+        ///            $(&quot;#image&quot;).change(function () {
+        ///                readURL(this);
+        ///            });
+        ///        });
+        ///        function readURL(input) {
+        ///            if (input.files &amp;&amp; input.files[0]) {
+        ///                var reader = new FileReader();
+        ///                reader.onload = function (e) {
+        ///                    $(&apos;#previewImage&apos;).attr( [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string profile {
             get {
