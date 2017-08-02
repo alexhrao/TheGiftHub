@@ -4,11 +4,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
-/// <summary>
-/// HttpMultipartParser
-/// Reads a multipart http data stream and returns the file name, content type and file content.
-/// Also, it returns any additional form parameters in a Dictionary.
-/// </summary>
 namespace GiftServer
 {
     namespace Server

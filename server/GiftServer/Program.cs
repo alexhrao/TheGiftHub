@@ -8,6 +8,7 @@ using GiftServer.Data;
 using GiftServer.Html;
 using GiftServer.Security;
 using GiftServer.Exceptions;
+using GiftServer.Properties;
 
 namespace GiftServer
 {
@@ -58,8 +59,30 @@ namespace GiftServer
             if (request.ContentType != null && request.ContentType.Contains("multipart/form-data"))
             {
                 MultipartParser parser = new MultipartParser(request.InputStream, "image");
-
-                return "";
+                if (parser.Success)
+                {
+                    // Image file will be saved in resources/images/users/User[UID].jpg
+                    // Figure out which page user was on, engage.
+                    if (request.QueryString["dest"] != null)
+                    {
+                        switch (request.QueryString["dest"])
+                        {
+                            case "dashboard":
+                                return DashboardManager.Dashboard(user.id);
+                            case "profile":
+                                // Save user image:
+                                user.SaveImage(parser);
+                                return ProfileManager.ProfilePage(user.id);
+                            default:
+                                return DashboardManager.Dashboard(user.id);
+                        }
+                    }
+                    else
+                    {
+                        // Just return dashboard
+                        return DashboardManager.Dashboard(user.id);
+                    }
+                }
                 // We have image; read! (how????)
                 // We will return the same page, with new image!
             }
@@ -115,10 +138,6 @@ namespace GiftServer
                                 string password = dict["password"];
                                 PasswordReset.ResetPassword(id, password);
                                 return ResetManager.SuccessResetPassword();
-                            case "Profile":
-                                // Uploaded new info for user:
-                                byte[] buffer;
-                                return "";
                             default:
                                 return LoginManager.Login();
                         }
@@ -160,8 +179,10 @@ namespace GiftServer
             }
             else if (path.Length != 0)
             {
+                // Check if user is allowed to access
                 // Serve back whatever's at the path (will be image):
-                byte[] buffer = File.ReadAllBytes(Server.WebServer.GeneratePath(path));
+                
+                byte[] buffer = File.ReadAllBytes(WebServer.GeneratePath(path));
                 response.ContentLength64 = buffer.Length;
                 using (Stream resp = response.OutputStream)
                 {

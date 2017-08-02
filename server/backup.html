@@ -1,0 +1,49 @@
+﻿<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>My Profile</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            background-color: #CECECE;
+            color: black;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        #userImage {
+            height: 256px;
+            width: 256px;
+            display: inline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-4 text-center">
+                <!-- User Image -->
+                <form id="imgUploadForm" method="post" name="imgUploadForm" enctype="multipart/form-data">
+                    <input id="userImage" type="file" name="theImage" accept="image/*" />
+                    <button form="imgUploadForm" type="submit" class="btn btn-primary" name="submit" value="Profile">
+                        Submit
+                    </button>
+                </form>
+                <img id="userImage" class="img-circle img-responsive" src="resources/images/users/default.png" />
+                <h1 id="userName">
+                    [FirstName] [LastName]
+                </h1>
+                <h5 id="timeMember">
+                    Member since [Date]
+                </h5>
+            </div>
+            <div class="col-sm-8">
+                <!-- User Information -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>

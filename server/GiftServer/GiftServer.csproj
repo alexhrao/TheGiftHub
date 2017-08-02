@@ -59,6 +59,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ImageProcessor.cs" />
+    <Compile Include="IShowable.cs" />
     <Compile Include="MultipartParser.cs" />
     <Compile Include="ProfileManager.cs" />
     <Compile Include="DashboardManager.cs" />

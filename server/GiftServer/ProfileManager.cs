@@ -15,8 +15,19 @@ namespace GiftServer
             {
                 // Create user from id
                 User user = new User(userID);
-                // Populate page with information:
-                return NavigationManager.NavigationBar(userID) + Resources.profile;
+                return ProfilePage(user);
+            }
+
+            public static string ProfilePage(User user)
+            {
+                HtmlDocument profile = new HtmlDocument();
+                profile.LoadHtml(NavigationManager.NavigationBar(user.id) + Resources.profile);
+                // Set src of image:
+                HtmlNode img = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userImage \")]");
+                img.Attributes["src"].Value = user.GetImage();
+                HtmlNode name = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
+                name.InnerHtml = HttpUtility.HtmlEncode(user.firstName + " " + user.lastName);
+                return profile.DocumentNode.OuterHtml;
             }
         }
     }

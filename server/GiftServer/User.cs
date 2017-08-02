@@ -3,12 +3,15 @@ using GiftServer.Security;
 using MySql.Data.MySqlClient;
 using System.Configuration;
 using GiftServer.Exceptions;
+using System.IO;
+using GiftServer.Properties;
+using GiftServer.Server;
 
 namespace GiftServer
 {
     namespace Data
     {
-        public class User : ISynchronizable
+        public class User : ISynchronizable, IShowable
         {
             public long id = -1;
             public string firstName;
@@ -18,6 +21,7 @@ namespace GiftServer
             public int theme;
             public string imagePath;
             public DateTime dob;
+            public DateTime joined;
             public User(long id)
             {
                 // User is already logged in; just fetch their information!
@@ -364,7 +368,34 @@ namespace GiftServer
                     }
                 }
             }
-
+            public void SaveImage(MultipartParser parser)
+            {
+                ImageProcessor processor = new ImageProcessor(parser);
+                File.WriteAllBytes(Resources.BasePath + "/resources/images/users/User" + this.id + ".jpg", processor.Data);
+            }
+            public void RemoveImage()
+            {
+                File.Delete(Resources.BasePath + "/resources/images/users/User" + this.id + ".jpg");
+            }
+            public string GetImage()
+            {
+                return GetImage(this.id);
+            }
+            public static string GetImage(long userID)
+            {
+                // Build path:
+                string path = Resources.BasePath + "/resources/images/users/User" + userID + ".jpg";
+                // if file exists, return path. Otherwise, return default
+                // Race condition, but I don't know how to solve (yet)
+                if (File.Exists(path))
+                {
+                    return "resources/images/users/User" + userID + ".jpg";
+                }
+                else
+                {
+                    return "resources/images/users/default.jpg";
+                }
+            }
         }
     }
 }

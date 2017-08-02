@@ -2,11 +2,24 @@
 <head>
     <meta charset="utf-8" />
     <title>My Profile</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#image").change(function () {
+                readURL(this);
+            });
+        });
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#previewImage').attr('src', e.target.result);
+                    $('#previewImage').removeClass("hidden");
+                    $('#submit').removeClass("hidden");
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
     <style>
         body {
             background-color: #CECECE;
@@ -18,20 +31,55 @@
             width: 256px;
             display: inline;
         }
+        #previewImage {
+            height: 256px;
+            width: 256px;
+            display: inline;
+        }
     </style>
 </head>
 <body>
     <div class="container-fluid">
+        <div id="uploadImage" class="modal fade panel-success" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content panel-success">
+                    <div class="modal-header panel-heading">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Upload new image</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="imgUploadForm" method="post" name="imgUploadForm" enctype="multipart/form-data">
+                            <div class="row text-center">
+                                <div class="form-group">
+                                    <label class="btn btn-default btn-file">
+                                        Browse <input id="image" name="image" accept="image/*" type="file" style="display: none;">
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group text-center">
+                                    <img id="previewImage" src="" class="img-circle img-responsive hidden" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group text-center">
+                                    <button id="submit" form="imgUploadForm" type="submit" class="btn btn-primary hidden" name="submit" value="Profile">
+                                        Upload Picture
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-sm-4 text-center">
                 <!-- User Image -->
-                <form id="imgUploadForm" method="post" name="imgUploadForm" enctype="multipart/form-data">
-                    <input type="file" name="image" accept="image/*" />
-                    <button form="imgUploadForm" type="submit" class="btn btn-primary" name="submit" value="Profile">
-                        Upload Picture
-                    </button>
-                </form>
-                <img id="userImage" class="img-circle img-responsive" src="resources/images/users/default.png" />
+                <img id="userImage" type="button" data-toggle="modal" href="#uploadImage" class="img-circle img-responsive" src="resources/images/users/default.png" />
                 <h1 id="userName">
                     [FirstName] [LastName]
                 </h1>
