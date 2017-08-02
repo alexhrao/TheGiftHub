@@ -58,7 +58,7 @@ namespace GiftServer
                                 // Soonest is first. Loop until we reach a different event!
                                 string eName = Convert.ToString(reader["EventName"]);
                                 // Create HtmlNode for this event:
-                                // <li><h5>(ENAME) - (MM/DD)</h5><ul></ul></li>
+                                // <li><h5>(ENAME) - (MM/DD) (CHEVRON_RIGHT)</h5><ul></ul></li>
                                 HtmlNode eNode = HtmlNode.CreateNode("<li><h5 id=\"menu-dropdown\" data-toggle=\"collapse\" data-target=\"#EventNumber" + eventNum + "\">" 
                                                                     + HttpUtility.HtmlEncode(Convert.ToString(reader["EventName"]))
                                                                     + " - ("
@@ -70,7 +70,7 @@ namespace GiftServer
                                 while (eName.Equals(Convert.ToString(reader["EventName"])))
                                 {
                                     // Add HtmlNode for this person:
-                                    // <li><a>(FIRSTNAME) (LASTNAME) (CHEVRON_RIGHT)</a></li>
+                                    // <li><a>(FIRSTNAME) (LASTNAME) (ARROW_RIGHT)</a></li>
                                     HtmlNode userInfo = HtmlNode.CreateNode("<li><a href=\"\">"
                                                                             + HttpUtility.HtmlEncode(Convert.ToString(reader["FirstName"])) + " "
                                                                             + HttpUtility.HtmlEncode(Convert.ToString(reader["LastName"])) + " "
@@ -91,12 +91,12 @@ namespace GiftServer
             }
             public static string UpdateEvents(long userID)
             {
-                return UpdateEvents(userID, Resources.header + Resources.navigationBar + Resources.dashboard);
+                return UpdateEvents(userID, NavigationManager.NavigationBar(userID) + Resources.dashboard);
             }
 
             public static string UpdateFeed(long userID)
             {
-                return UpdateFeed(userID, Resources.header + Resources.navigationBar + Resources.dashboard);
+                return UpdateFeed(userID, NavigationManager.NavigationBar(userID) + Resources.dashboard);
             }
             public static string UpdateFeed(long userID, string page)
             {

@@ -72,13 +72,10 @@ namespace GiftServer.Properties {
         ///            font-family: &apos;Segoe UI&apos;, Tahoma, Geneva, Verdana, sans-serif;
         ///        }
         ///    &lt;/style&gt;
-        ///&lt;/head&gt;
-        ///&lt;body&gt;
-        ///    &lt;div class=&quot;container-fluid&quot;&gt;
-        ///        &lt;div class=&quot;row&quot;&gt;
-        ///            &lt;div class=&quot;col-md-3&quot;&gt;
-        ///                &lt;!-- Feed --&gt;
-        ///                &lt;div id=&quot;newPanel&quot; class=&quot;pa [rest of string was truncated]&quot;;.
+        ///    &lt;script&gt;
+        ///        $(document).ready(function () {
+        ///            $(&apos;#menu-dropdown&apos;).click(function () {
+        ///                $(this).find(&apos;span&apos;).toggleClass(&apos;glyphicon-chevron-right&apos;).toggle [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string dashboard {
             get {
@@ -87,7 +84,7 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GiftRegister.
+        ///   Looks up a localized string similar to Notpmah678.
         /// </summary>
         internal static string emailPassword {
             get {
@@ -121,11 +118,12 @@ namespace GiftServer.Properties {
         ///        &lt;script&gt;
         ///            $(document).ready(function () {
         ///                $(&apos;#signupSubmit&apos;).hide();
-        ///                $(&apos;#secondPass&apos;).keyup(function () {
-        ///                    if ($(&apos;#secondPass&apos;).val() === $(&apos;#firstPass&apos;).val() &amp;&amp; $(&apos;#secondPass&apos;).val()) {
-        ///                        // We are good to go!
-        ///                        $(&apos;#secondPass&apos;).parent().removeClass(&apos;has-error&apos;);
-        ///             [rest of string was truncated]&quot;;.
+        ///                $(&apos;#loginSubmit&apos;).hide();
+        ///                $(&apos;#resetSubmit&apos;).hide();
+        ///                $(window).keydown(function (event) {
+        ///                    if (event.keyCode == 13) {
+        ///                        // If clicked first tab, validate:
+        ///                        if ($(&apos;#resetPassword&apos; [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string login {
             get {
@@ -168,7 +166,7 @@ namespace GiftServer.Properties {
         ///                $(&apos;#secondResetPass&apos;).keyup(function () {
         ///                    if ($(&apos;#secondResetPass&apos;).val() === $(&apos;#firstResetPass&apos;).val() &amp;&amp; $(&apos;#secondResetPass&apos;).val()) {
         ///                        // We are good to go!
-        ///                        $(&apos;#secondResetP [rest of string was truncated]&quot;;.
+        ///                        $(&apos;#secondResetPa [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string passwordReset {
             get {
@@ -177,23 +175,45 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
+        ///
+        ///&lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
         ///&lt;head&gt;
         ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
-        ///    &lt;title&gt;&lt;/title&gt;
         ///&lt;/head&gt;
         ///&lt;body&gt;
-        ///    &lt;h1&gt;Hey There&lt;/h1&gt;
-        ///    &lt;p&gt;
-        ///        Looks like you need to reset your password. To do so, just click &lt;a id=&quot;passwordReset&quot; href=&quot;&quot;&gt;here&lt;/a&gt;.
-        ///    &lt;/p&gt;
-        ///    &lt;br /&gt;
-        ///    &lt;p&gt;
-        ///        If you didn&apos;t request a password reset, this means someone has attempted to access your account - don&apos;t worry, they failed. However, to prevent further access, click &lt;a id=&quot;passwordReset&quot; href=&quot;&quot; [rest of string was truncated]&quot;;.
+        ///    &lt;div id=&quot;userFound&quot;&gt;
+        ///        &lt;h1&gt;Hey There&lt;/h1&gt;
+        ///        &lt;p&gt;
+        ///            Looks like you need to reset your password at The Gift Hub. To do so, just click &lt;a id=&quot;passwordReset&quot; href=&quot;&quot;&gt;here&lt;/a&gt;.
+        ///        &lt;/p&gt;
+        ///        &lt;p&gt;
+        ///            If the link doesn&apos;t work, copy this into the browser of your choice: &lt;a id=&quot;resetURL&quot; href=&quot;&quot;&gt;&lt;/a&gt;
+        ///        &lt;/p&gt;
+        ///        &lt;br /&gt;
+        ///        &lt;p&gt;
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string passwordResetEmail {
             get {
                 return ResourceManager.GetString("passwordResetEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+        ///&lt;head&gt;
+        ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
+        ///    &lt;title&gt;My Profile&lt;/title&gt;
+        ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
+        ///    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        ///    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css&quot;&gt;
+        ///    &lt;script src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js&quot;&gt;&lt;/script&gt;
+        ///    &lt;script src=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min. [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string profile {
+            get {
+                return ResourceManager.GetString("profile", resourceCulture);
             }
         }
         

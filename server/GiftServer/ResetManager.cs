@@ -11,7 +11,7 @@ namespace GiftServer
             public static string ResetPasswordSent()
             {
                 HtmlDocument login = new HtmlDocument();
-                login.LoadHtml(Resources.header + Resources.login);
+                login.LoadHtml(LoginManager.Login());
                 HtmlNode alert = login.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@class), \" \"), \" alert \")]");
                 alert.AddClass("alert-success");
                 alert.AddClass("in");
@@ -25,7 +25,7 @@ namespace GiftServer
             public static string SuccessResetPassword()
             {
                 HtmlDocument login = new HtmlDocument();
-                login.LoadHtml(Resources.header + Resources.login);
+                login.LoadHtml(LoginManager.Login());
                 HtmlNode alert = login.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@class), \" \"), \" alert \")]");
                 alert.AddClass("alert-success");
                 alert.AddClass("in");

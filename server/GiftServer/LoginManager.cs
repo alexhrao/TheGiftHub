@@ -7,6 +7,10 @@ namespace GiftServer
     {
         public static class LoginManager
         {
+            public static string Login()
+            {
+                return Resources.header + Resources.login;
+            }
             public static string FailLogin()
             {
                 HtmlDocument login = new HtmlDocument();

@@ -7,7 +7,6 @@ using GiftServer.Data;
 using GiftServer.Html;
 using GiftServer.Security;
 using GiftServer.Exceptions;
-using GiftServer.Properties;
 
 namespace GiftServer
 {
@@ -43,11 +42,19 @@ namespace GiftServer
             HttpListenerRequest request = rtx.Request;
             HttpListenerResponse response = rtx.Response;
             Cookie reqLogger = request.Cookies["UserID"];
+            // Get URI:
+            string path = request.RawUrl;
+            if (path.Contains("?") || path.Length < 2)
+            {
+                // there will be no img
+                path = "";
+            }
             User user = null;
             if (reqLogger != null)
             {
                 user = new User(Convert.ToInt64(reqLogger.Value));
             }
+
             if (request.HasEntityBody)
             {
                 string input;
@@ -69,7 +76,7 @@ namespace GiftServer
                                     cookie.Expires = DateTime.Now.AddDays(-1d);
                                     response.Cookies.Add(cookie);
                                 }
-                                return Resources.header + Resources.login;
+                                return LoginManager.Login();
                             case "Signup":
                                 user = new User(dict["firstName"], dict["lastName"], dict["email"], dict["password"]);
                                 user.Create();
@@ -101,14 +108,15 @@ namespace GiftServer
                                 PasswordReset.ResetPassword(id, password);
                                 return ResetManager.SuccessResetPassword();
                             default:
-                                return Resources.header + Resources.login;
+                                return LoginManager.Login();
                         }
                     } else
                     {
-                        return Resources.header + Resources.login;
+                        return LoginManager.Login();
                     }
                 }
-            } else if (user == null)
+            }
+            else if (user == null)
             {
                 // Send login page EXCEPT if requesting password reset:
                 if (request.QueryString["ResetToken"] != null)
@@ -121,17 +129,31 @@ namespace GiftServer
                 }
                 else
                 {
-                    return Resources.header + Resources.login;
+                    return LoginManager.Login();
                 }
-            } else if (request.QueryString["dest"] != null)
+            }
+            else if (request.QueryString["dest"] != null)
             {
                 switch (request.QueryString["dest"])
                 {
                     case "dashboard":
                         return DashboardManager.Dashboard(user.id);
+                    case "profile":
+                        return ProfileManager.ProfilePage(user.id);
                     default:
                         return DashboardManager.Dashboard(user.id);
                 }
+            }
+            else if (path.Length != 0)
+            {
+                // Serve back whatever's at the path (will be image):
+                byte[] buffer = File.ReadAllBytes("../.." + path);
+                response.ContentLength64 = buffer.Length;
+                using (Stream resp = response.OutputStream)
+                {
+                    resp.Write(buffer, 0, buffer.Length);
+                }
+                return "";
             }
             else
             {

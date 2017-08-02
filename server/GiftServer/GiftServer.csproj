@@ -59,7 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccountManager.cs" />
+    <Compile Include="ProfileManager.cs" />
     <Compile Include="DashboardManager.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="Exceptions.cs" />
@@ -116,6 +116,8 @@
     <None Include="resources\emailPassword.txt" />
     <None Include="resources\htmlTemplates\passwordReset.html" />
     <None Include="resources\htmlTemplates\passwordResetEmail.html" />
+    <Content Include="resources\htmlTemplates\profile.html" />
+    <Content Include="resources\images\users\default.png" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-3.1.1.intellisense.js" />
@@ -132,6 +134,9 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="resources\images\gifts\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
