@@ -3,6 +3,7 @@ using System.Net;
 using System.IO;
 using System.Web;
 using System.Collections.Specialized;
+using GiftServer.Server;
 using GiftServer.Data;
 using GiftServer.Html;
 using GiftServer.Security;
@@ -54,7 +55,14 @@ namespace GiftServer
             {
                 user = new User(Convert.ToInt64(reqLogger.Value));
             }
+            if (request.ContentType != null && request.ContentType.Contains("multipart/form-data"))
+            {
+                MultipartParser parser = new MultipartParser(request.InputStream, "image");
 
+                return "";
+                // We have image; read! (how????)
+                // We will return the same page, with new image!
+            }
             if (request.HasEntityBody)
             {
                 string input;
@@ -107,11 +115,17 @@ namespace GiftServer
                                 string password = dict["password"];
                                 PasswordReset.ResetPassword(id, password);
                                 return ResetManager.SuccessResetPassword();
+                            case "Profile":
+                                // Uploaded new info for user:
+                                byte[] buffer;
+                                return "";
                             default:
                                 return LoginManager.Login();
                         }
-                    } else
+                    }
+                    else
                     {
+                        // If string is not empty, perhaps it is a 
                         return LoginManager.Login();
                     }
                 }
