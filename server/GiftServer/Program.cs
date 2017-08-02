@@ -147,7 +147,7 @@ namespace GiftServer
             else if (path.Length != 0)
             {
                 // Serve back whatever's at the path (will be image):
-                byte[] buffer = File.ReadAllBytes("../.." + path);
+                byte[] buffer = File.ReadAllBytes(Server.WebServer.GeneratePath(path));
                 response.ContentLength64 = buffer.Length;
                 using (Stream resp = response.OutputStream)
                 {

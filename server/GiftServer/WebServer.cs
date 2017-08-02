@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading;
 using System.Text;
 using System.IO;
+using GiftServer.Properties;
 
 namespace GiftServer
 {
@@ -61,6 +62,10 @@ namespace GiftServer
             {
                 _listener.Stop();
                 _listener.Close();
+            }
+            public static string GeneratePath(string uri)
+            {
+                return Resources.BasePath + uri;
             }
         }
     }

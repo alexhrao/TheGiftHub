@@ -146,4 +146,8 @@
   <data name="profile" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\htmlTemplates\profile.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="BasePath" xml:space="preserve">
+    <value>C:/Users/alexhrao/Documents/TheGiftHub/server/GiftServer</value>
+    <comment>The base path of the GiftServerProject; defined as the parent of resources</comment>
+  </data>
 </root>
