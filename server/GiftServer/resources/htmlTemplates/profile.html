@@ -80,7 +80,7 @@
         <div class="row">
             <div class="col-sm-4 text-center">
                 <!-- User Image -->
-                <img id="userImage" type="button" data-toggle="modal" href="#uploadImage" class="img-circle img-responsive" src="resources/images/users/default.png" />
+                <img id="userImage" type="button" data-tooltip="tooltip" data-placement="bottom auto" title="Click to select new image" data-toggle="modal" href="#uploadImage" class="img-circle img-responsive" src="resources/images/users/default.png" />
                 <h1 id="userName">
                     [FirstName] [LastName]
                 </h1>
@@ -88,8 +88,22 @@
                     Member since [Date]
                 </h5>
             </div>
-            <div class="col-sm-8">
+            <div class="col-sm-5">
                 <!-- User Information -->
+            </div>
+            <div class="col-sm-3 hidden-xs">
+                <!-- Add Side Navigation Bar (From Dashboard) -->
+                <div id="navigator" class="panel">
+                    <div class="text-center panel-heading">Quick Links</div>
+                    <div class="panel-body">
+                        <ul class="nav nav-pills nav-stacked">
+                            <li><a href=".?dest=dashboard">Dashboard</a></li>
+                            <li><a href=".?dest=myList">My List</a></li>
+                            <li><a href=".?dest=myGroups">My Groups</a></li>
+                            <li class="active"><a href=".?dest=profile">My Account</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

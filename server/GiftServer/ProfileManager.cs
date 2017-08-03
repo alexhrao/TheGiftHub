@@ -11,15 +11,9 @@ namespace GiftServer
     {
         public static class ProfileManager
         {
-            public static string ProfilePage(long userID)
-            {
-                // Create user from id
-                User user = new User(userID);
-                return ProfilePage(user);
-            }
-
             public static string ProfilePage(User user)
             {
+                // Add Side Navigation Bar (From Dashboard)
                 HtmlDocument profile = new HtmlDocument();
                 profile.LoadHtml(NavigationManager.NavigationBar(user) + Resources.profile);
                 // Set src of image:

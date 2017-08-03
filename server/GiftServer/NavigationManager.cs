@@ -1,6 +1,7 @@
 ﻿using GiftServer.Properties;
 using System;
 using GiftServer.Data;
+using HtmlAgilityPack;
 namespace GiftServer
 {
     namespace Html
@@ -9,7 +10,11 @@ namespace GiftServer
         {
             public static string NavigationBar(User user)
             {
-                return Resources.header + Resources.navigationBar;
+                HtmlDocument bar = new HtmlDocument();
+                bar.LoadHtml(Resources.header + Resources.navigationBar);
+                HtmlNode logo = bar.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@class), \" \"), \" navbar-brand \")]");
+                logo.Attributes["href"].Value = Resources.URL;
+                return bar.DocumentNode.OuterHtml;
             }
         }
     }
