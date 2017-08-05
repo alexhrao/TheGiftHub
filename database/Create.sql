@@ -1,18 +1,18 @@
 CREATE DATABASE gift_registry_db;
 
-CREATE TABLE gift_registry_db.categories (
+CREATE TABLE categories (
     CategoryID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     CategoryName VARCHAR(255) NOT NULL,
     CategoryDescription VARCHAR(4096) NULL
 );
 
-CREATE TABLE gift_registry_db.passwords (
+CREATE TABLE passwords (
     PasswordID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     PasswordHash CHAR(66) NOT NULL,
     CreateStamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE gift_registry_db.default_events (
+CREATE TABLE default_events (
     EventID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     EventDay INT NOT NULL,
     EventMonth INT NOT NULL,
@@ -84,7 +84,8 @@ CREATE TABLE gift_registry_db.gifts (
     GiftCost DECIMAL(15, 2) NULL,
     GiftStores VARCHAR(4095) NULL,
     GiftQuantity INT UNSIGNED NOT NULL DEFAULT 0,
-    GiftPicture VARCHAR(255) NULL,
+    GiftColor VARCHAR(6) NULL,
+    GiftColorDesc VARCHAR(31) NULL,
     GiftSize VARCHAR(127) NULL,
     CategoryID INT NOT NULL,
     GiftRating DECIMAL(3, 2) NOT NULL DEFAULT 0,
