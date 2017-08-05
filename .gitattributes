@@ -61,3 +61,13 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+###############################################################################
+# Linguist
+#
+# Set languages for linquist library
+###############################################################################
+*.cs linguist-language=csharp
+server/GiftServer/Scripts/* linguist-vendored=true
+server/GiftServer/fonts/* linguist-vendored=true
+server/GiftServer/Content/* linguist-vendored=true
