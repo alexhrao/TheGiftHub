@@ -7,6 +7,55 @@
             $("#image").change(function () {
                 readURL(this);
             });
+
+        });
+        $(document).ready(function () {
+            $(window).keydown(function (event) {
+                if (event.keyCode == 13) {
+                    // Validate:
+                    if (!$('#resetPassword').hasClass('in') || ($('#secondResetPass').val() && $('#secondResetPass').val() === $('#firstResetPass').val())) {
+                        return true;
+                    } else {
+                        event.preventDefault();
+                        return false;
+                    }
+                }
+            });
+            $('#resetSubmit').hide();
+            $('#firstResetPass').keyup(function () {
+                if ($('#secondResetPass').val() === $('#firstResetPass').val() && $('#secondResetPass').val()) {
+                    // We are good to go!
+                    $('#secondResetPass').parent().removeClass('has-error');
+                    $('#secondResetPass').parent().addClass('has-success');
+                    $('#firstResetPass').parent().removeClass('has-error');
+                    $('#firstResetPass').parent().addClass('has-success');
+                    $('#resetSubmit').show();
+                } else {
+                    // Passwords don't match; disable submit and warn
+                    $('#secondResetPass').parent().removeClass('has-success');
+                    $('#secondResetPass').parent().addClass('has-error');
+                    $('#firstResetPass').parent().removeClass('has-success');
+                    $('#firstResetPass').parent().addClass('has-error');
+                    $('#resetSubmit').hide();
+                }
+            });
+            $('#secondResetPass').keyup(function () {
+                if ($('#secondResetPass').val() === $('#firstResetPass').val() && $('#secondResetPass').val()) {
+                    // We are good to go!
+                    $('#secondResetPass').parent().removeClass('has-error');
+                    $('#secondResetPass').parent().addClass('has-success');
+                    $('#firstResetPass').parent().removeClass('has-error');
+                    $('#firstResetPass').parent().addClass('has-success');
+                    $('#resetSubmit').show();
+                } else {
+                    // Passwords don't match; disable submit and warn
+                    $('#secondResetPass').parent().removeClass('has-success');
+                    $('#secondResetPass').parent().addClass('has-error');
+                    $('#firstResetPass').parent().removeClass('has-success');
+                    $('#firstResetPass').parent().addClass('has-error');
+                    $('#resetSubmit').hide();
+                }
+            });
         });
         function readURL(input) {
             if (input.files && input.files[0]) {
@@ -14,13 +63,18 @@
                 reader.onload = function (e) {
                     $('#previewImage').attr('src', e.target.result);
                     $('#previewImage').removeClass("hidden");
-                    $('#submit').removeClass("hidden");
+                    $('#submitImg').removeClass("hidden");
                 }
                 reader.readAsDataURL(input.files[0]);
             }
         }
     </script>
     <style>
+        .input-group,
+        .form-group,
+        .spaced {
+            margin: 10px;
+        }
         body {
             background-color: #CECECE;
             color: black;
@@ -47,8 +101,9 @@
             display: inline-flex;
         }
         p {
-            font-weight: 100;
+            font-weight: 200;
             text-indent: each-line 20px;
+            font-size: 22px;
         }
     </style>
 </head>
@@ -77,11 +132,40 @@
                             </div>
                             <div class="row">
                                 <div class="form-group text-center">
-                                    <button id="submit" form="imgUploadForm" type="submit" class="btn btn-primary hidden" name="submit" value="Profile">
+                                    <button id="submitImg" form="imgUploadForm" type="submit" class="btn btn-primary hidden" name="submit" value="Profile">
                                         Upload Picture
                                     </button>
                                 </div>
                             </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="resetPassword" class="modal fade panel-danger" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content panel-danger">
+                    <div class="modal-header panel-heading">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Reset your Password</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="resetForm" method="post">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                <input name="password" type="password" class="form-control" id="firstResetPass" placeholder="Password" />
+                            </div>
+                            <div class="input-group has-feedback">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                <input type="password" class="form-control" id="secondResetPass" placeholder="Confirm Password" />
+                            </div>
+                            <input class="hidden form-control" name="userID" type="hidden" value="" />
+                            <button id="resetSubmit" type="submit" name="submit" form="resetForm" value="PasswordReset" class="btn btn-success">
+                                Change Password
+                            </button>
                         </form>
                     </div>
                     <div class="modal-footer">
@@ -95,8 +179,8 @@
                 <!-- User Image -->
                 <img id="userImage" type="button" data-tooltip="tooltip" data-placement="bottom auto" title="Click to select new image" data-toggle="modal" href="#uploadImage" class="img-circle img-responsive" src="resources/images/users/default.png" />
                 <h1 id="userName"></h1>
-                <button class="btn btn-lg btn-danger" type="button" id="resetPassword" data-target="#resetPass">Reset Password</button>
-                <h5 id="timeMember"></h5>
+                <button class="btn btn-lg btn-danger" type="button" id="resetPassword" data-toggle="modal" data-target="#resetPassword">Change Password</button>
+                <h3 id="timeMember"></h3>
             </div>
             <div class="col-sm-5">
                 <!-- User Information -->
@@ -123,20 +207,14 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <h1 class="text-center">Events</h1>
                 <ul id="events">
-                    <li class="event">
-
-                    </li>
                 </ul>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <h1 class="text-center">Groups</h1>
                 <ul id="groups">
-                    <li class="group">
-
-                    </li>
                 </ul>
             </div>
         </div>

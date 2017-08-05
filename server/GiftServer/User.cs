@@ -20,7 +20,8 @@ namespace GiftServer
             public string passwordHash;
             public int theme;
             public DateTime dob;
-            public readonly DateTime dateJoined;
+            public string bio;
+            public DateTime dateJoined;
             public User(long id)
             {
                 // User is already logged in; just fetch their information!
@@ -30,7 +31,7 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT users.FirstName, users.LastName, users.UserEmail, passwords.PasswordHash, users.UserTheme, users.DateOfBirth, users.TimeCreated "
+                        cmd.CommandText = "SELECT users.FirstName, users.LastName, users.UserEmail, passwords.PasswordHash, users.UserTheme, users.DateOfBirth, users.TimeCreated, users.UserBio "
                                         + "FROM users "
                                         + "INNER JOIN passwords ON passwords.PasswordID = users.PasswordID "
                                         + "WHERE users.UserID = @id;";
@@ -55,6 +56,7 @@ namespace GiftServer
                                     this.dob = DateTime.MinValue;
                                 }
                                 this.dateJoined = (DateTime)(reader["TimeCreated"]);
+                                this.bio = (string)(reader["UserBio"]);
                                 
                             }
                             else
@@ -75,7 +77,7 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT users.UserID, users.FirstName, users.LastName, passwords.PasswordHash, users.UserTheme, users.DateOfBirth, users.TimeCreated "
+                        cmd.CommandText = "SELECT users.UserID, users.FirstName, users.LastName, passwords.PasswordHash, users.UserTheme, users.DateOfBirth, users.TimeCreated, users.UserBio "
                                         + "FROM users "
                                         + "INNER JOIN passwords ON passwords.PasswordID = users.PasswordID "
                                         + "WHERE users.UserEmail = @email;";
@@ -112,14 +114,15 @@ namespace GiftServer
                                     this.dob = DateTime.MinValue;
                                 }
                                 this.dateJoined = (DateTime)(reader["TimeCreated"]);
+                                this.bio = (string)(reader["UserBio"]);
                             }
                         }
                     }
                 }
                 
             }
-            public User(string firstName, string lastName, string email, string password) : this(firstName, lastName, email, password, 1, DateTime.MinValue) { }
-            public User(string firstName, string lastName, string email, string password, int theme, DateTime dob)
+            public User(string firstName, string lastName, string email, string password) : this(firstName, lastName, email, password, 1, DateTime.MinValue, "") { }
+            public User(string firstName, string lastName, string email, string password, int theme, DateTime dob, string bio)
             {
                 this.email = email;
                 this.passwordHash = PasswordHash.Hash(password);
@@ -128,6 +131,7 @@ namespace GiftServer
                 this.theme = theme;
                 this.dob = dob;
                 this.dateJoined = DateTime.Now;
+                this.bio = bio;
             }
 
             public bool Create()
@@ -155,20 +159,32 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "INSERT INTO users (FirstName, LastName, UserEmail, PasswordID, UserTheme, DateOfBirth) "
-                            + "VALUES (@fName, @lName, @email, @pid, @theme, @dob);";
+                        cmd.CommandText = "INSERT INTO users (FirstName, LastName, UserEmail, PasswordID, UserTheme, DateOfBirth, UserBio) "
+                            + "VALUES (@fName, @lName, @email, @pid, @theme, @dob, @bio);";
                         cmd.Parameters.AddWithValue("@fName", this.firstName);
                         cmd.Parameters.AddWithValue("@lName", this.lastName);
                         cmd.Parameters.AddWithValue("@email", this.email);
                         cmd.Parameters.AddWithValue("@pid", pId);
                         cmd.Parameters.AddWithValue("@theme", this.theme);
                         cmd.Parameters.AddWithValue("@dob", this.dob);
+                        cmd.Parameters.AddWithValue("@bio", this.bio);
                         cmd.Prepare();
                         if (cmd.ExecuteNonQuery() == 0)
                         {
                             return false;
                         }
                         this.id = cmd.LastInsertedId;
+                    }
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT TimeCreated FROM users WHERE UserID = @id;";
+                        cmd.Parameters.AddWithValue("@id", this.id);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            this.dateJoined = (DateTime)(reader["TimeCreated"]);
+                        }
                     }
                 }
                 return true;
@@ -195,12 +211,14 @@ namespace GiftServer
                             + "SET FirstName = @fName, "
                             + "LastName = @lName, "
                             + "UserEmail = @email, "
-                            + "UserTheme = @theme "
+                            + "UserTheme = @theme, "
+                            + "UserBio = @bio "
                             + "WHERE UserID = @id;";
                         cmd.Parameters.AddWithValue("@fName", this.firstName);
                         cmd.Parameters.AddWithValue("@lName", this.lastName);
                         cmd.Parameters.AddWithValue("@email", this.email);
                         cmd.Parameters.AddWithValue("@theme", this.theme);
+                        cmd.Parameters.AddWithValue("@bio", this.bio);
                         cmd.Parameters.AddWithValue("@id", this.id);
                         cmd.Parameters.AddWithValue("@dob", this.dob);
                         cmd.Prepare();
@@ -243,6 +261,7 @@ namespace GiftServer
 
             public bool Delete()
             {
+                // TODO: Delete from users_events_futures
                 if (this.id == -1)
                 {
                     // User doesn't exist - don't delete

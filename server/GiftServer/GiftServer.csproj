@@ -60,6 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Group.cs" />
     <Compile Include="ImageProcessor.cs" />
     <Compile Include="IShowable.cs" />
     <Compile Include="MultipartParser.cs" />
