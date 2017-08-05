@@ -1,18 +1,23 @@
 CREATE DATABASE gift_registry_db;
 
-CREATE TABLE categories (
+CREATE TABLE gift_registry_db.categories (
     CategoryID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     CategoryName VARCHAR(255) NOT NULL,
     CategoryDescription VARCHAR(4096) NULL
 );
 
-CREATE TABLE passwords (
+CREATE TABLE gift_registry_db.passwords (
     PasswordID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     PasswordHash CHAR(66) NOT NULL,
     CreateStamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE default_events (
+CREATE TABLE gift_registry_db.value_types (
+    ValueTypeID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    ValueTypeName VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE gift_registry_db.default_events (
     EventID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     EventDay INT NOT NULL,
     EventMonth INT NOT NULL,
@@ -22,6 +27,26 @@ CREATE TABLE default_events (
     EventDescription VARCHAR(4095) NULL
 );
 
+CREATE TABLE gift_registry_db.preferences (
+    PreferenceID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    PreferenceName VARCHAR(255) NOT NULL,
+    ValueTypeID INT NOT NULL
+);
+ALTER TABLE gift_registry_db.preferences
+    ADD CONSTRAINT FK_PreferencesValues FOREIGN KEY (ValueTypeID)
+        REFERENCES gift_registry_db.value_types(ValueTypeID);
+
+CREATE TABLE gift_registry_db.default_events_futures (
+    EventFutureID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    EventID INT NOT NULL,
+    EventYear INT NOT NULL,
+    EventMonth INT NOT NULL,
+    EventDay INT NOT NULL
+);
+ALTER TABLE gift_registry_db.default_events_futures
+    ADD CONSTRAINT FK_DefaultEventsFuture FOREIGN KEY (EventID)
+        REFERENCES gift_registry_db.default_events(EventID);
+
 CREATE TABLE gift_registry_db.users (
     UserID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     FirstName VARCHAR(255) NOT NULL,
@@ -29,7 +54,7 @@ CREATE TABLE gift_registry_db.users (
     PasswordID INT NOT NULL,
     UserEmail VARCHAR(255) NOT NULL UNIQUE,
     UserTheme TINYINT UNSIGNED DEFAULT 0,
-    UserImage VARCHAR(255) NOT NULL DEFAULT 'default.png',
+    UserBio VARCHAR(4095) NULL,
     DateOfBirth DATE NULL,
     TimeCreated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -55,6 +80,30 @@ ALTER TABLE gift_registry_db.events_users
     ADD CONSTRAINT FK_Event_Events FOREIGN KEY (EventID)
         REFERENCES gift_registry_db.default_events(EventID);
         
+CREATE TABLE gift_registry_db.users_preferences (
+    UserPreferenceID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    UserID INT NOT NULL,
+    PreferenceID INT NOT NULL,
+    PreferenceValue VARCHAR(4095) NOT NULL
+);
+ALTER TABLE gift_registry_db.users_preferences
+    ADD CONSTRAINT FK_PreferencesUsers FOREIGN KEY (UserID)
+        REFERENCES gift_registry_db.users(UserID);
+ALTER TABLE gift_registry_db.users_preferences
+    ADD CONSTRAINT FK_PreferencesPrefs FOREIGN KEY (PreferenceID)
+        REFERENCES gift_registry_db.preferences(PreferenceID);
+        
+CREATE TABLE gift_registry_db.events_users_futures (
+    EventFutureID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    EventID INT NOT NULL,
+    EventYear INT NOT NULL,
+    EventMonth INT NOT NULL,
+    EventDay INT NOT NULL
+);
+ALTER TABLE gift_registry_db.events_users_futures
+    ADD CONSTRAINT FK_EventsFuture FOREIGN KEY (EventID)
+        REFERENCES gift_registry_db.events_users(EventID);
+    
 CREATE TABLE gift_registry_db.groups (
     GroupID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     GroupName VARCHAR(255) NOT NULL,
@@ -102,7 +151,8 @@ ALTER TABLE gift_registry_db.gifts
 CREATE TABLE gift_registry_db.groups_users (
     GroupUserID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     GroupID INT NOT NULL,
-    UserID INT NOT NULL
+    UserID INT NOT NULL,
+    IsChild BOOL NOT NULL DEFAULT FALSE
 );
 ALTER TABLE gift_registry_db.groups_users
     ADD CONSTRAINT FK_GroupsUsers_Users FOREIGN KEY (UserID)

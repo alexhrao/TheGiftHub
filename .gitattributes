@@ -71,3 +71,4 @@
 server/GiftServer/Scripts/* linguist-vendored=true
 server/GiftServer/fonts/* linguist-vendored=true
 server/GiftServer/Content/* linguist-vendored=true
+server/GiftServer/docs/* linguist-documentation=true

@@ -180,7 +180,7 @@ namespace GiftServer
             else if (path.Length != 0)
             {
                 // Check if user is allowed to access
-                // Serve back whatever's at the path (will be image):
+                // Serve back whatever's at the path:
                 
                 byte[] buffer = File.ReadAllBytes(WebServer.GeneratePath(path));
                 response.ContentLength64 = buffer.Length;

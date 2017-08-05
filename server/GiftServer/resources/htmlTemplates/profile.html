@@ -26,6 +26,9 @@
             color: black;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+        h2 {
+            font-style: italic;
+        }
         #userImage {
             height: 256px;
             width: 256px;
@@ -36,6 +39,16 @@
             height: 256px;
             width: 256px;
             display: inline;
+        }
+        .circle {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: inline-flex;
+        }
+        p {
+            font-weight: 100;
+            text-indent: each-line 20px;
         }
     </style>
 </head>
@@ -81,15 +94,18 @@
             <div class="col-sm-4 text-center">
                 <!-- User Image -->
                 <img id="userImage" type="button" data-tooltip="tooltip" data-placement="bottom auto" title="Click to select new image" data-toggle="modal" href="#uploadImage" class="img-circle img-responsive" src="resources/images/users/default.png" />
-                <h1 id="userName">
-                    [FirstName] [LastName]
-                </h1>
-                <h5 id="timeMember">
-                    Member since [Date]
-                </h5>
+                <h1 id="userName"></h1>
+                <button class="btn btn-lg btn-danger" type="button" id="resetPassword" data-target="#resetPass">Reset Password</button>
+                <h5 id="timeMember"></h5>
             </div>
             <div class="col-sm-5">
                 <!-- User Information -->
+                <h2 id="email"></h2>
+                <h2 id="birthday"></h2>
+                <h2>Theme: <span id="theme" class="circle" style=""></span></h2>
+                <!-- Theme button -->
+                <h2>Bio: </h2>
+                <p id="bio"></p>
             </div>
             <div class="col-sm-3 hidden-xs">
                 <!-- Add Side Navigation Bar (From Dashboard) -->
@@ -104,6 +120,24 @@
                         </ul>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <h1 class="text-center">Events</h1>
+                <ul id="events">
+                    <li class="event">
+
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-6">
+                <h1 class="text-center">Groups</h1>
+                <ul id="groups">
+                    <li class="group">
+
+                    </li>
+                </ul>
             </div>
         </div>
     </div>

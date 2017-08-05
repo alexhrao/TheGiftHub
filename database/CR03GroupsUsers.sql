@@ -1,7 +1,8 @@
 CREATE TABLE gift_registry_db.groupsUsers (
     GroupUserID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     GroupID INT NOT NULL,
-    UserID INT NOT NULL
+    UserID INT NOT NULL,
+    IsChild BOOL NOT NULL DEFAULT FALSE
 );
 
 ALTER TABLE gift_registry_db.groupsUsers
