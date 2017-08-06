@@ -16,7 +16,7 @@ namespace GiftServer
             public readonly int Month;
             public readonly int Year;
             public readonly bool IsRecurring;
-            public List<EventFuture> Futures;
+            public List<EventFuture> Futures = new List<EventFuture>();
 
             public DefaultEvent(long EventID)
             {
