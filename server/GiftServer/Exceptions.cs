@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GiftServer.Data;
+using System;
 
 namespace GiftServer
 {
@@ -32,6 +33,10 @@ namespace GiftServer
         public class InvalidEventException : Exception
         {
             public InvalidEventException(string type, int val) : base("Invalid " + type + " (" + val + ")") { }
+        }
+        public class DefaultEventException : Exception
+        {
+            public DefaultEventException(DefaultEvent e) : base(e.Name + " is a default event can cannot be modified") { }
         }
     }
 }
