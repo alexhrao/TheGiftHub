@@ -178,7 +178,7 @@ namespace GiftServer
                 if (File.Exists(path))
                 {
                     // File exists: Check if filename even needs authentication:
-                    if (Path.GetDirectoryName(path).Equals("users"))
+                    if (Path.GetFileName(Path.GetDirectoryName(path)).Equals("users"))
                     {
                         if (_user != null && Path.GetFileNameWithoutExtension(path).Equals("User" + _user.Id))
                         {
@@ -190,7 +190,7 @@ namespace GiftServer
                             }
                         }
                     }
-                    else if (Path.GetDirectoryName(path).Equals("gifts"))
+                    else if (Path.GetFileName(Path.GetDirectoryName(path)).Equals("gifts"))
                     {
                         // Get gift ID, see if any gifts attached to user has gift id
                         long giftID = Convert.ToInt64(Path.GetFileNameWithoutExtension(path).Substring(4));

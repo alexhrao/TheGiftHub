@@ -38,10 +38,15 @@ namespace GiftServer
 #endif
                                         HttpListenerContext rtx = (HttpListenerContext)(r);
                                         string resp = _responseGenerator(rtx);
-                                        byte[] respBuffer = Encoding.UTF8.GetBytes(resp);
-                                        rtx.Response.ContentLength64 = respBuffer.Length;
-                                        rtx.Response.OutputStream.Write(respBuffer, 0, respBuffer.Length);
-                                        rtx.Response.OutputStream.Close();
+                                        if (resp.Length != 0)
+                                        {
+                                            using (Stream output = rtx.Response.OutputStream)
+                                            {
+                                                byte[] respBuffer = Encoding.UTF8.GetBytes(resp);
+                                                rtx.Response.ContentLength64 = respBuffer.Length;
+                                                rtx.Response.OutputStream.Write(respBuffer, 0, respBuffer.Length);
+                                            }
+                                        }
 #if !DEBUG
 
                                     }
