@@ -356,7 +356,14 @@ namespace GiftServer
                             cmd.ExecuteNonQuery();
                         }
                         // Delete from passwords
-
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "DELETE FROM passwords WHERE UserID = @id;";
+                            cmd.Parameters.AddWithValue("@id", this.Id);
+                            cmd.Prepare();
+                            cmd.ExecuteNonQuery();
+                        }
                         // Delete from users
                         using (MySqlCommand cmd = new MySqlCommand())
                         {
@@ -365,33 +372,6 @@ namespace GiftServer
                             cmd.Parameters.AddWithValue("@id", this.Id);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
-                        }
-                        // Delete from passwords:
-                        using (MySqlCommand cmd = new MySqlCommand())
-                        {
-                            cmd.Connection = con;
-                            cmd.CommandText = ""
-                            cmd.CommandText = "SELECT PasswordID FROM users WHERE UserID = @id";
-                            cmd.Parameters.AddWithValue("@id", this.Id);
-                            cmd.Prepare();
-                            using (MySqlDataReader reader = cmd.ExecuteReader())
-                            {
-                                if (reader.Read())
-                                {
-                                    using (MySqlCommand eDelete = new MySqlCommand())
-                                    {
-                                        eDelete.Connection = con;
-                                        eDelete.CommandText = "DELETE FROM passwords WHERE PasswordID = @id;";
-                                        eDelete.Parameters.AddWithValue("@id", Convert.ToInt64(reader["PasswordID"]));
-                                        eDelete.Prepare();
-                                        eDelete.ExecuteNonQuery();
-                                    }
-                                }
-                                else
-                                {
-                                    throw new InvalidPasswordException();
-                                }
-                            }
                         }
                         this.Id = -1;
                         return true;
