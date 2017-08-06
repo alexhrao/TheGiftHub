@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Category.cs" />
     <Compile Include="Controller.cs" />
+    <Compile Include="DefaultEvent.cs" />
     <Compile Include="Gift.cs" />
     <Compile Include="Group.cs" />
     <Compile Include="ImageProcessor.cs" />
@@ -69,7 +70,7 @@
     <Compile Include="MultipartParser.cs" />
     <Compile Include="ProfileManager.cs" />
     <Compile Include="DashboardManager.cs" />
-    <Compile Include="Event.cs" />
+    <Compile Include="UserEvent.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="GroupManager.cs" />
     <Compile Include="ISynchronizable.cs" />

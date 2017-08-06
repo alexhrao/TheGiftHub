@@ -52,7 +52,22 @@ namespace GiftServer
                 {
                     con.Open();
                     // Get events
-
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT EventUserID FROM events_users WHERE UserID = @id;";
+                        cmd.Parameters.AddWithValue("@id", user.Id);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            HtmlNode events = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" events \")]");
+                            while (reader.Read())
+                            {
+                                Event evnt = new Event(Convert.ToInt64(reader["EventUserID"]));
+                                HtmlNode eventEntry = HtmlNode.CreateNode("<li><h3>" + HttpUtility.HtmlEncode(evnt.Name) + " <span class=\"glyphicon glyphicon-user\">/span></h3></li>");
+                            }
+                        }
+                    }
                     // Get groups
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
@@ -68,7 +83,7 @@ namespace GiftServer
                             {
                                 // Create a group
                                 Group group = new Group(Convert.ToInt64(reader["GroupID"]));
-                                HtmlNode groupEntry = HtmlNode.CreateNode("<li><h3>" + HttpUtility.HtmlEncode(group.name) + " <span class=\"glyphicon glyphicon-user\"></span></h3></li>");
+                                HtmlNode groupEntry = HtmlNode.CreateNode("<li><h3>" + HttpUtility.HtmlEncode(group.Name) + " <span class=\"glyphicon glyphicon-user\"></span></h3></li>");
                                 groups.AppendChild(groupEntry);
                             }
                         }

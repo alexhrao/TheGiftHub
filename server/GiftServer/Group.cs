@@ -7,7 +7,7 @@ namespace GiftServer
         public class Group
         {
             public long GroupID = -1;
-            public string name = "Hello World!";
+            public string Name = "Hello World!";
             public long AdminID;
 
             public Group(long groupID)
