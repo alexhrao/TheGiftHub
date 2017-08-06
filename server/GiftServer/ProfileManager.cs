@@ -63,8 +63,9 @@ namespace GiftServer
                             HtmlNode events = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" events \")]");
                             while (reader.Read())
                             {
-                                Event evnt = new Event(Convert.ToInt64(reader["EventUserID"]));
-                                HtmlNode eventEntry = HtmlNode.CreateNode("<li><h3>" + HttpUtility.HtmlEncode(evnt.Name) + " <span class=\"glyphicon glyphicon-user\">/span></h3></li>");
+                                EventUser evnt = new EventUser(Convert.ToInt64(reader["EventUserID"]));
+                                HtmlNode eventEntry = HtmlNode.CreateNode("<tr><td><h3><span class=\"glyphicon glyphicon-remove\"></span></h3></td><td class=\"name\"><h3>" + HttpUtility.HtmlEncode(evnt.Name) + " </h3></td></tr>");
+                                events.AppendChild(eventEntry);
                             }
                         }
                     }
@@ -83,7 +84,7 @@ namespace GiftServer
                             {
                                 // Create a group
                                 Group group = new Group(Convert.ToInt64(reader["GroupID"]));
-                                HtmlNode groupEntry = HtmlNode.CreateNode("<li><h3>" + HttpUtility.HtmlEncode(group.Name) + " <span class=\"glyphicon glyphicon-user\"></span></h3></li>");
+                                HtmlNode groupEntry = HtmlNode.CreateNode("<tr><td><h3><span class=\"glyphicon glyphicon-remove\"></span></h3></td><td class=\"name\"><h3>" + HttpUtility.HtmlEncode(group.Name) + " </h3></td></tr>");
                                 groups.AppendChild(groupEntry);
                             }
                         }

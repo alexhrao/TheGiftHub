@@ -11,7 +11,7 @@ namespace GiftServerTester
         [ExpectedException(typeof(InvalidEventException))]
         public void Create_Null()
         {
-            Event e = new Event(1, null);
+            EventUser e = new EventUser(1);
         }
     }
 }

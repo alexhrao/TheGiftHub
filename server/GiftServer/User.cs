@@ -42,10 +42,10 @@ namespace GiftServer
                             if (reader.Read())
                             {
                                 this.Id = id;
-                                this.firstName = (string)(reader["FirstName"]);
-                                this.lastName = (string)(reader["LastName"]);
-                                this.email = (string)(reader["UserEmail"]);
-                                this.passwordHash = (string)(reader["PasswordHash"]);
+                                this.firstName = Convert.ToString(reader["FirstName"]);
+                                this.lastName = Convert.ToString(reader["LastName"]);
+                                this.email = Convert.ToString(reader["UserEmail"]);
+                                this.passwordHash = Convert.ToString(reader["PasswordHash"]);
                                 this.theme = Convert.ToInt32(reader["UserTheme"]);
                                 try
                                 {
@@ -56,7 +56,7 @@ namespace GiftServer
                                     this.dob = DateTime.MinValue;
                                 }
                                 this.dateJoined = (DateTime)(reader["TimeCreated"]);
-                                this.bio = (string)(reader["UserBio"]);
+                                this.bio = Convert.ToString(reader["UserBio"]);
                                 
                             }
                             else
@@ -94,14 +94,14 @@ namespace GiftServer
                             else
                             {
                                 // Check password
-                                if (!PasswordHash.Verify(password, (string)(reader["PasswordHash"])))
+                                if (!PasswordHash.Verify(password, Convert.ToString(reader["PasswordHash"])))
                                 {
                                     // Not correct, throw new exception!
                                     throw new InvalidPasswordException();
                                 }
                                 Id = Convert.ToInt64(reader["UserID"]);
-                                this.firstName = (string)(reader["FirstName"]);
-                                this.lastName = (string)(reader["LastName"]);
+                                this.firstName = Convert.ToString(reader["FirstName"]);
+                                this.lastName = Convert.ToString(reader["LastName"]);
                                 this.email = email;
                                 this.passwordHash = PasswordHash.Hash(password);
                                 this.theme = Convert.ToInt32(reader["UserTheme"]);
@@ -114,7 +114,7 @@ namespace GiftServer
                                     this.dob = DateTime.MinValue;
                                 }
                                 this.dateJoined = (DateTime)(reader["TimeCreated"]);
-                                this.bio = (string)(reader["UserBio"]);
+                                this.bio = Convert.ToString(reader["UserBio"]);
                             }
                         }
                     }

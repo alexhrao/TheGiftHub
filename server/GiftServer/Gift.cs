@@ -43,15 +43,15 @@ namespace GiftServer
                             if (reader.Read())
                             {
                                 user = new User(Convert.ToInt64(reader["UserID"]));
-                                Name = (string)(reader["GiftName"]);
-                                Description = (string)(reader["GiftDescription"]);
-                                Url = (string)(reader["GiftURL"]);
+                                Name = Convert.ToString(reader["GiftName"]);
+                                Description = Convert.ToString(reader["GiftDescription"]);
+                                Url = Convert.ToString(reader["GiftURL"]);
                                 Cost = Convert.ToDouble(reader["GiftCost"]);
-                                Stores = (string)(reader["GiftStores"]);
+                                Stores = Convert.ToString(reader["GiftStores"]);
                                 Quantity = Convert.ToInt32(reader["GiftQuantity"]);
-                                Color = (string)(reader["GiftColor"]);
-                                ColorText = (string)(reader["GiftColorText"]);
-                                Size = (string)(reader["GiftSize"]);
+                                Color = Convert.ToString(reader["GiftColor"]);
+                                ColorText = Convert.ToString(reader["GiftColorText"]);
+                                Size = Convert.ToString(reader["GiftSize"]);
                                 category = new Category(Convert.ToInt64(reader["CategoryID"]));
                                 Rating = Convert.ToDouble(reader["GiftRating"]);
                                 TimeStamp = (DateTime)(reader["GiftAddStamp"]);
