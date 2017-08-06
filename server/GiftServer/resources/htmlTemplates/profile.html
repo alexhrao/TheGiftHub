@@ -111,6 +111,10 @@
         table {
             width: 75%;
         }
+        .btn-primary,
+        .btn-danger {
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -162,11 +166,11 @@
                         <form id="resetForm" method="post">
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                <input name="password" type="password" class="form-control" id="firstResetPass" placeholder="Password" />
+                                <input name="password" type="password" class="form-control" id="firstResetPass" placeholder="New Password" />
                             </div>
                             <div class="input-group has-feedback">
                                 <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                <input type="password" class="form-control" id="secondResetPass" placeholder="Confirm Password" />
+                                <input type="password" class="form-control" id="secondResetPass" placeholder="Confirm New Password" />
                             </div>
                             <input class="hidden form-control" name="userID" type="hidden" value="" />
                             <button id="resetSubmit" type="submit" name="submit" form="resetForm" value="PasswordReset" class="btn btn-success">
@@ -180,12 +184,38 @@
                 </div>
             </div>
         </div>
+        <div id="changePreferences" class="modal fade panel-primary" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content panel-primary">
+                    <div class="modal-header panel-heading">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Change Preferences</h4>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-sm-4 text-center">
                 <!-- User Image -->
                 <img id="userImage" type="button" data-tooltip="tooltip" data-placement="bottom auto" title="Click to select new image" data-toggle="modal" href="#uploadImage" class="img-circle img-responsive" src="resources/images/users/default.png" />
                 <h1 id="userName"></h1>
-                <button class="btn btn-lg btn-danger" type="button" id="resetPassword" data-toggle="modal" data-target="#resetPassword">Change Password</button>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <button class="btn btn-lg btn-danger" type="button" id="resetPassword" data-toggle="modal" data-target="#resetPassword">
+                            Change Password <span class="glyphicon glyphicon-lock"></span>
+                        </button>
+                    </div>
+                    <div class="col-xs-6">
+                        <button class="btn btn-lg btn-primary" type="button" id="changePreferences" data-toggle="modal" data-target="#changePreferences">
+                            Change Preferences <span class="glyphicon glyphicon-cog"></span>
+                        </button>
+                    </div>
+                </div>
                 <h3 id="timeMember"></h3>
             </div>
             <div class="col-sm-5">

@@ -141,7 +141,7 @@ namespace GiftServer
                         }
                         else if (path.Length != 0)
                         {
-                            return ServeResource(GeneratePath(path));
+                            return ServeResource(path);
                         }
                         else
                         {
@@ -174,6 +174,7 @@ namespace GiftServer
 
             private string ServeResource(string path)
             {
+                path = GeneratePath(path);
                 // Check existence:
                 if (File.Exists(path))
                 {
