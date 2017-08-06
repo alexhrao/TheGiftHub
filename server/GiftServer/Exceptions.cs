@@ -11,6 +11,11 @@ namespace GiftServer
             public UserNotFoundException(long id) : base(Convert.ToString(id)) { }
             public UserNotFoundException(byte[] pHash) : base(Convert.ToBase64String(pHash)) { }
         }
+        public class DuplicateUserException : Exception
+        {
+            public DuplicateUserException(string email) : base(email) { }
+            public DuplicateUserException(long id) : base(Convert.ToString(id)) { }
+        }
         public class InvalidPasswordException : Exception
         {
             public InvalidPasswordException() : base() { }

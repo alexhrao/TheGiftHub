@@ -33,7 +33,7 @@ namespace GiftServer
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT users.FirstName, users.LastName, users.UserEmail, passwords.PasswordHash, users.UserTheme, users.DateOfBirth, users.TimeCreated, users.UserBio "
                                         + "FROM users "
-                                        + "INNER JOIN passwords ON passwords.PasswordID = users.PasswordID "
+                                        + "INNER JOIN passwords ON passwords.UserID = users.UserID "
                                         + "WHERE users.UserID = @id;";
                         cmd.Parameters.AddWithValue("@id", id);
                         cmd.Prepare();
@@ -79,7 +79,7 @@ namespace GiftServer
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT users.UserID, users.FirstName, users.LastName, passwords.PasswordHash, users.UserTheme, users.DateOfBirth, users.TimeCreated, users.UserBio "
                                         + "FROM users "
-                                        + "INNER JOIN passwords ON passwords.PasswordID = users.PasswordID "
+                                        + "INNER JOIN passwords ON passwords.UserID = users.UserID "
                                         + "WHERE users.UserEmail = @email;";
                         cmd.Parameters.AddWithValue("@email", email);
                         cmd.Prepare();
@@ -121,50 +121,37 @@ namespace GiftServer
                 }
                 
             }
-            public User(string firstName, string lastName, string email, string password) : this(firstName, lastName, email, password, 1, DateTime.MinValue, "") { }
-            public User(string firstName, string lastName, string email, string password, int theme, DateTime dob, string bio)
-            {
-                this.email = email;
-                this.passwordHash = PasswordHash.Hash(password);
-                this.firstName = firstName;
-                this.lastName = lastName;
-                this.theme = theme;
-                this.dob = dob;
-                this.dateJoined = DateTime.Now;
-                this.bio = bio;
-            }
+            public User() { }
 
             public bool Create()
             {
-                // TODO: Check if email already exists
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
-                    long pId;
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
+                        // Check if email present:
                         cmd.Connection = con;
-                        // Create new password:
-                        cmd.CommandText = "INSERT INTO passwords (PasswordHash) VALUES (@pwd);";
-                        cmd.Parameters.AddWithValue("@pwd", this.passwordHash);
-                        cmd.Parameters.AddWithValue("@stamp", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
+                        cmd.CommandText = "SELECT UserID FROM users WHERE UserEmail = @email;";
+                        cmd.Parameters.AddWithValue("@email", this.email);
                         cmd.Prepare();
-                        if (cmd.ExecuteNonQuery() == 0)
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            // Failed:
-                            return false;
-                        };
-                        pId = cmd.LastInsertedId;
+                            if (reader.Read())
+                            {
+                                // User already exists; throw exception:
+                                throw new DuplicateUserException(this.email);
+                            }
+                        }
                     }
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "INSERT INTO users (FirstName, LastName, UserEmail, PasswordID, UserTheme, DateOfBirth, UserBio) "
+                        cmd.CommandText = "INSERT INTO users (FirstName, LastName, UserEmail, UserTheme, DateOfBirth, UserBio) "
                             + "VALUES (@fName, @lName, @email, @pid, @theme, @dob, @bio);";
                         cmd.Parameters.AddWithValue("@fName", this.firstName);
                         cmd.Parameters.AddWithValue("@lName", this.lastName);
                         cmd.Parameters.AddWithValue("@email", this.email);
-                        cmd.Parameters.AddWithValue("@pid", pId);
                         cmd.Parameters.AddWithValue("@theme", this.theme);
                         cmd.Parameters.AddWithValue("@dob", this.dob);
                         cmd.Parameters.AddWithValue("@bio", this.bio);
@@ -174,6 +161,20 @@ namespace GiftServer
                             return false;
                         }
                         this.Id = cmd.LastInsertedId;
+                    }
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        // Create new password:
+                        cmd.CommandText = "INSERT INTO passwords (PasswordHash, UserID) VALUES (@pwd, @id);";
+                        cmd.Parameters.AddWithValue("@pwd", PasswordHash.Hash(this.passwordHash));
+                        cmd.Parameters.AddWithValue("@id", this.Id);
+                        cmd.Prepare();
+                        if (cmd.ExecuteNonQuery() == 0)
+                        {
+                            // Failed:
+                            return false;
+                        };
                     }
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
@@ -192,7 +193,6 @@ namespace GiftServer
 
             public bool Update()
             {
-                // TODO: Check if email already exists
                 if (this.Id == -1)
                 {
                     // User does not exist - create new one instead.
@@ -201,67 +201,52 @@ namespace GiftServer
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
-                    long pId;
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
+                        // Check if email present:
                         cmd.Connection = con;
-                        // Update user information
-                        // TODO: Deal with DOB
-                        cmd.CommandText = "UPDATE users "
-                            + "SET FirstName = @fName, "
-                            + "LastName = @lName, "
-                            + "UserEmail = @email, "
-                            + "UserTheme = @theme, "
-                            + "UserBio = @bio "
-                            + "WHERE UserID = @id;";
-                        cmd.Parameters.AddWithValue("@fName", this.firstName);
-                        cmd.Parameters.AddWithValue("@lName", this.lastName);
+                        cmd.CommandText = "SELECT UserID FROM users WHERE UserEmail = @email AND UserID <> @id;";
                         cmd.Parameters.AddWithValue("@email", this.email);
-                        cmd.Parameters.AddWithValue("@theme", this.theme);
-                        cmd.Parameters.AddWithValue("@bio", this.bio);
-                        cmd.Parameters.AddWithValue("@id", this.Id);
-                        cmd.Parameters.AddWithValue("@dob", this.dob);
-                        cmd.Prepare();
-                        if (cmd.ExecuteNonQuery() == 0)
-                        {
-                            return false;
-                        }
-                    }
-                    using (MySqlCommand cmd = new MySqlCommand())
-                    {
-                        // Get password ID of user:
-                        cmd.Connection = con;
-                        cmd.CommandText = "SELECT PasswordID FROM users WHERE UserID = @id;";
                         cmd.Parameters.AddWithValue("@id", this.Id);
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
                             if (reader.Read())
                             {
-                                pId = Convert.ToInt64(reader["PasswordID"]);
-                            }
-                            else
-                            {
-                                return false;
+                                // User already exists; throw exception:
+                                throw new DuplicateUserException(this.email);
                             }
                         }
                     }
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
-                        // Update password with PID:
                         cmd.Connection = con;
-                        cmd.CommandText = "UPDATE passwords SET PasswordHash = @pwd WHERE PasswordID = @id;";
-                        cmd.Parameters.AddWithValue("@pwd", this.passwordHash);
-                        cmd.Parameters.AddWithValue("@id", pId);
+                        // Update user information
+                        cmd.CommandText = "UPDATE users "
+                            + "SET FirstName = @fName, "
+                            + "LastName = @lName, "
+                            + "UserEmail = @email, "
+                            + "UserTheme = @theme, "
+                            + "UserBio = @bio, "
+                            + "DateOfBirth = @dob "
+                            + "WHERE UserID = @id;";
+                        cmd.Parameters.AddWithValue("@fName", this.firstName);
+                        cmd.Parameters.AddWithValue("@lName", this.lastName);
+                        cmd.Parameters.AddWithValue("@email", this.email);
+                        cmd.Parameters.AddWithValue("@theme", this.theme);
+                        cmd.Parameters.AddWithValue("@bio", this.bio);
+                        cmd.Parameters.AddWithValue("@dob", this.dob.ToString("yyyy-MM-dd"));
+                        cmd.Parameters.AddWithValue("@id", this.Id);
                         cmd.Prepare();
-                        return cmd.ExecuteNonQuery() != 0;
+                        return (cmd.ExecuteNonQuery() == 1);
                     }
+                    // Only way to update password is through password reset, so no need here
                 }
             }
 
             public bool Delete()
             {
-                // TODO: Delete from users_events_futures
+                // TODO: Gauruntee not admin of any group
                 if (this.Id == -1)
                 {
                     // User doesn't exist - don't delete
@@ -272,48 +257,25 @@ namespace GiftServer
                     using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                     {
                         con.Open();
-                        long pId;
-                        // Get password ID
+                        // Delete from event futures, groups, and events:
                         using (MySqlCommand cmd = new MySqlCommand())
                         {
+                            // Get EventUserID:
                             cmd.Connection = con;
-                            cmd.CommandText = "SELECT PasswordID FROM users WHERE UserID = @id";
+                            cmd.CommandText = "DELETE FROM events_users_futures WHERE EventUserID IN (SELECT EventUserID FROM events_users WHERE UserID = @id);";
                             cmd.Parameters.AddWithValue("@id", this.Id);
-                            cmd.Prepare();
-                            using (MySqlDataReader reader = cmd.ExecuteReader())
-                            {
-                                if (reader.Read())
-                                {
-                                    pId = Convert.ToInt64(reader["PasswordID"]);
-                                }
-                                else
-                                {
-                                    throw new InvalidPasswordException();
-                                }
-                            }
-                        }
-                        // Delete from passwords
-                        using (MySqlCommand cmd = new MySqlCommand())
-                        {
-                            cmd.Connection = con;
-                            cmd.CommandText = "DELETE FROM passwords WHERE PasswordID = @id";
-                            cmd.Parameters.AddWithValue("@id", pId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
-                        // Delete from users
                         using (MySqlCommand cmd = new MySqlCommand())
                         {
+                            // Get EventUserID:
                             cmd.Connection = con;
-                            cmd.CommandText = "DELETE FROM users WHERE UserID = @id;";
+                            cmd.CommandText = "DELETE FROM events_users_groups WHERE EventUserID IN (SELECT EventUserID FROM events_users WHERE UserID = @id);";
                             cmd.Parameters.AddWithValue("@id", this.Id);
                             cmd.Prepare();
-                            if (cmd.ExecuteNonQuery() == 0)
-                            {
-                                throw new UserNotFoundException(this.email);
-                            }
+                            cmd.ExecuteNonQuery();
                         }
-                        // Delete from Events
                         using (MySqlCommand cmd = new MySqlCommand())
                         {
                             cmd.Connection = con;
@@ -322,51 +284,11 @@ namespace GiftServer
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
-                        // Delete from receptions & reservations (based on GiftID):
+                        // Delete from purchases and reservations:
                         using (MySqlCommand cmd = new MySqlCommand())
                         {
                             cmd.Connection = con;
-                            cmd.CommandText = "SELECT GiftID FROM gifts WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.Id);
-                            cmd.Prepare();
-                            using (MySqlDataReader reader = cmd.ExecuteReader())
-                            {
-                                // For each ID, delete from receptions:
-                                while (reader.Read())
-                                {
-                                    using (MySqlCommand rm = new MySqlCommand())
-                                    {
-                                        rm.Connection = con;
-                                        rm.CommandText = "DELETE FROM receptions WHERE GiftID = @id;";
-                                        rm.Parameters.AddWithValue("@id", reader["GiftID"]);
-                                        rm.Prepare();
-                                        rm.ExecuteNonQuery();
-                                    }
-                                    using (MySqlCommand rm = new MySqlCommand())
-                                    {
-                                        rm.Connection = con;
-                                        rm.CommandText = "DELETE FROM reservations WHERE GiftID = @id;";
-                                        rm.Parameters.AddWithValue("@id", reader["GiftID"]);
-                                        rm.Prepare();
-                                        rm.ExecuteNonQuery();
-                                    }
-                                }
-                            }
-                        }
-                        // Delete from gifts
-                        using (MySqlCommand cmd = new MySqlCommand())
-                        {
-                            cmd.Connection = con;
-                            cmd.CommandText = "DELETE FROM gifts WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.Id);
-                            cmd.Prepare();
-                            cmd.ExecuteNonQuery();
-                        }
-                        // Delete from groups - what if s/he is admin??
-                        using (MySqlCommand cmd = new MySqlCommand())
-                        {
-                            cmd.Connection = con;
-                            cmd.CommandText = "DELETE FROM groups_users WHERE UserID = @id;";
+                            cmd.CommandText = "DELETE FROM purchases WHERE ReservationID IN (SELECT ReservationID FROM reservations WHERE UserID = @id);";
                             cmd.Parameters.AddWithValue("@id", this.Id);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
@@ -379,8 +301,100 @@ namespace GiftServer
                             cmd.Parameters.AddWithValue("@id", this.Id);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
-                            return true;
                         }
+                        // Delete gifts from receptions, groups, and gifts:
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "DELETE FROM receptions WHERE GiftID IN (SELECT GiftID FROM gifts WHERE UserID = @id);";
+                            cmd.Parameters.AddWithValue("@id", this.Id);
+                            cmd.Prepare();
+                            cmd.ExecuteNonQuery();
+                        }
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "DELETE FROM groups_gifts WHERE GiftID IN (SELECT GiftID FROM gifts WHERE UserID = @id);";
+                            cmd.Parameters.AddWithValue("@id", this.Id);
+                            cmd.Prepare();
+                            cmd.ExecuteNonQuery();
+                        }
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "DELETE FROM gifts WHERE UserID = @id;";
+                            cmd.Parameters.AddWithValue("@id", this.Id);
+                            cmd.Prepare();
+                            cmd.ExecuteNonQuery();
+                        }
+                        // Delete from groups_users
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "DELETE FROM groups_users WHERE UserID = @id;";
+                            cmd.Parameters.AddWithValue("@id", this.Id);
+                            cmd.Prepare();
+                            cmd.ExecuteNonQuery();
+                        }
+                        // No need to delete from groups; guaranteed to NOT be admin of any
+                        // Delete from Passwordresets
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "DELETE FROM passwordresets WHERE UserID = @id;";
+                            cmd.Parameters.AddWithValue("@id", this.Id);
+                            cmd.Prepare();
+                            cmd.ExecuteNonQuery();
+                        }
+                        // Delete from preferences
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "DELETE FROM users_preferences WHERE UserID = @id;";
+                            cmd.Parameters.AddWithValue("@id", this.Id);
+                            cmd.Prepare();
+                            cmd.ExecuteNonQuery();
+                        }
+                        // Delete from passwords
+
+                        // Delete from users
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "DELETE FROM users WHERE UserID = @id;";
+                            cmd.Parameters.AddWithValue("@id", this.Id);
+                            cmd.Prepare();
+                            cmd.ExecuteNonQuery();
+                        }
+                        // Delete from passwords:
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = ""
+                            cmd.CommandText = "SELECT PasswordID FROM users WHERE UserID = @id";
+                            cmd.Parameters.AddWithValue("@id", this.Id);
+                            cmd.Prepare();
+                            using (MySqlDataReader reader = cmd.ExecuteReader())
+                            {
+                                if (reader.Read())
+                                {
+                                    using (MySqlCommand eDelete = new MySqlCommand())
+                                    {
+                                        eDelete.Connection = con;
+                                        eDelete.CommandText = "DELETE FROM passwords WHERE PasswordID = @id;";
+                                        eDelete.Parameters.AddWithValue("@id", Convert.ToInt64(reader["PasswordID"]));
+                                        eDelete.Prepare();
+                                        eDelete.ExecuteNonQuery();
+                                    }
+                                }
+                                else
+                                {
+                                    throw new InvalidPasswordException();
+                                }
+                            }
+                        }
+                        this.Id = -1;
+                        return true;
                     }
                 }
             }

@@ -68,6 +68,21 @@ namespace GiftServer
                     }
                 }
             }
+            public Gift() { }
+
+            public bool Create()
+            {
+                return false;
+            }
+            public bool Update()
+            {
+                return false;
+            }
+            public bool Delete()
+            {
+                return false;
+            }
+
             public void SaveImage(MultipartParser parser)
             {
                 ImageProcessor processor = new ImageProcessor(parser);
@@ -84,19 +99,6 @@ namespace GiftServer
             public string GetImage(long id)
             {
                 return Resources.BasePath + "/resources/images/gifts/Gift" + this.Id + Resources.ImageFormat;
-            }
-
-            public bool Create()
-            {
-                return false;
-            }
-            public bool Update()
-            {
-                return false;
-            }
-            public bool Delete()
-            {
-                return false;
             }
         }
     }

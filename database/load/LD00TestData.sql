@@ -6,12 +6,6 @@ INSERT INTO categories (CategoryName, CategoryDescription)
 INSERT INTO categories (CategoryName, CategoryDescription)
     VALUES ('Electronics', 'Electronic Devices');
 
--- Insert into Password:
-INSERT INTO passwords (PasswordHash)
-    VALUES ('fdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafd');
-INSERT INTO passwords (PasswordHash)
-    VALUES ('fdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsa32');
-
 -- Insert into value-types:
 INSERT INTO value_types (ValueTypeName)
     VALUES ('int');
@@ -35,25 +29,31 @@ INSERT INTO preferences (PreferenceName, ValueTypeID)
     VALUES ('DefaultGroup', 1);
 INSERT INTO preferences (PreferenceName, ValueTypeID)
     VALUES ('DefaultTimeZone', 2);
-    
+
 -- Insert into users:
-INSERT INTO users (FirstName, LastName, UserEmail, DateOfBirth, PasswordID, UserBio)
-    VALUES ('Alex', 'Rao', 'alexhrao@gmail.com', "1996-07-03", 1, "I LOVE to have fun!");
-INSERT INTO users (FirstName, LastName, UserEmail, DateOfBirth, PasswordID, UserBio)
-    VALUES ('Raeedah', 'Choudhury', 'rchoudhury@gmail.com', "1997-11-19", 2, "I love my boyfriend");
+INSERT INTO users (FirstName, LastName, UserEmail, DateOfBirth, UserBio)
+    VALUES ('Alex', 'Rao', 'alexhrao@gmail.com', "1996-07-03", "I LOVE to have fun!");
+INSERT INTO users (FirstName, LastName, UserEmail, DateOfBirth, UserBio)
+    VALUES ('Raeedah', 'Choudhury', 'rchoudhury@gmail.com', "1997-11-19", "I love my boyfriend");
+
+-- Insert into Password:
+INSERT INTO passwords (UserID, PasswordHash)
+    VALUES (1, 'fdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafd');
+INSERT INTO passwords (UserID, PasswordHash)
+    VALUES (2, 'fdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsa32');
 
 -- Default Event Futures:
 INSERT INTO default_events_futures (EventID, EventYear, EventMonth, EventDay)
     VALUES (3, 2018, 5, 13);
 INSERT INTO default_events_futures (EventID, EventYear, EventMonth, EventDay)
     VALUES (3, 2019, 5, 12);
-    
+
 -- Insert into events:
 INSERT INTO events_users (EventName, UserID, EventYear, EventMonth, EventDay, EventID, EventRecurs)
     VALUES ('Christmas', 1, 2017, 12, 25, 1, TRUE);
-INSERT INTO events_users (EventName, UserID, EventYear, EventMonth, EventDay, EventID, EventRecurs) 
+INSERT INTO events_users (EventName, UserID, EventYear, EventMonth, EventDay, EventID, EventRecurs)
     VALUES ('New Year''s', 2, 2017, 1, 1, 2, TRUE);
-INSERT INTO events_users (EventName, UserID, EventYear, EventMonth, EventDay, EventID, EventRecurs) 
+INSERT INTO events_users (EventName, UserID, EventYear, EventMonth, EventDay, EventID, EventRecurs)
     VALUES ('Christmas', 2, 2017, 12, 25, 1, TRUE);
 INSERT INTO events_users (EventName, UserID, EventYear, EventMonth, EventDay, EventID, EventRecurs)
     VALUES ('Mother''s Day', 2, 2017, 5, 8, 3, FALSE);
@@ -67,7 +67,7 @@ INSERT INTO users_preferences (UserID, PreferenceID, PreferenceValue)
     VALUES (1, 2, '1');
 INSERT INTO users_preferences (UserID, PreferenceID, PreferenceValue)
     VALUES (1, 3, 'New York');
-    
+
 -- Insert into events_futures
 INSERT INTO events_users_futures (EventUserID, EventYear, EventMonth, EventDay)
     VALUES (6, 2017, 12, 1);

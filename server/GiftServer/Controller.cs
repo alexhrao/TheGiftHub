@@ -85,7 +85,12 @@ namespace GiftServer
                                         });
                                         return LoginManager.Login();
                                     case "Signup":
-                                        _user = new User(dict["firstName"], dict["lastName"], dict["email"], dict["password"]);
+                                        _user = new User {
+                                            firstName = dict["firstName"],
+                                            lastName = dict["lastName"],
+                                            email = dict["email"],
+                                            passwordHash = dict["password"]
+                                        };
                                         _user.Create();
                                         return LoginManager.SuccessSignup();
                                     case "Login":
