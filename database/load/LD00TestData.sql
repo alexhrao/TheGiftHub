@@ -79,7 +79,7 @@ INSERT INTO groups (GroupName, AdminID)
     VALUES ('The Rao''s', 1);
 
 -- Create gift
-INSERT INTO gifts (UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorDesc, GiftSize, CategoryID, GiftRating)
+INSERT INTO gifts (UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating)
     VALUES (1, 'Webcam', 'Logitech BRIO webcam', 'https://www.google.com', 100.00, 'Logitech, Target', 1, 'FFFFFF', 'White', 'N/A', 2, 5.0);
 
 -- Add user to group
