@@ -34,113 +34,125 @@ namespace GiftServer
             public string Dispatch()
             {
                 {
-                    string path = ParsePath();
-                    if (_request.ContentType != null && _request.ContentType.Contains("multipart/form-data"))
+#if !DEBUG
+                    try
                     {
-                        MultipartParser parser = new MultipartParser(_request.InputStream, "image");
-                        if (parser.Success)
+#endif
+                        string path = ParsePath();
+                        if (_request.ContentType != null && _request.ContentType.Contains("multipart/form-data"))
                         {
-                            // Image file will be saved in resources/images/users/User[UID].jpg
-                            // Figure out which page user was on, engage.
-                            if (_request.QueryString["dest"] != null)
+                            MultipartParser parser = new MultipartParser(_request.InputStream, "image");
+                            if (parser.Success)
                             {
-                                switch (_request.QueryString["dest"])
+                                // Image file will be saved in resources/images/users/User[UID].jpg
+                                // Figure out which page user was on, engage.
+                                if (_request.QueryString["dest"] != null)
                                 {
-                                    case "profile":
-                                        // Save user image:
-                                        _user.SaveImage(parser);
-                                        break;
-                                    case "gift":
-                                        // TODO: Save Gift
-                                        break;
+                                    switch (_request.QueryString["dest"])
+                                    {
+                                        case "profile":
+                                            // Save user image:
+                                            _user.SaveImage(parser);
+                                            break;
+                                        case "gift":
+                                            // TODO: Save Gift
+                                            break;
+                                    }
+                                    return ParseQuery();
                                 }
-                                return ParseQuery();
-                            }
-                            else
-                            {
-                                // Just return dashboard
-                                return DashboardManager.Dashboard(_user);
+                                else
+                                {
+                                    // Just return dashboard
+                                    return DashboardManager.Dashboard(_user);
+                                }
                             }
                         }
-                    }
-                    if (_request.HasEntityBody)
-                    {
-                        string input;
-                        // Read input, then dispatch accordingly
-                        using (StreamReader reader = new StreamReader(_request.InputStream))
+                        if (_request.HasEntityBody)
                         {
-                            input = reader.ReadToEnd();
-                            NameValueCollection dict = HttpUtility.ParseQueryString(input);
-                            if (dict["submit"] != null)
+                            string input;
+                            // Read input, then dispatch accordingly
+                            using (StreamReader reader = new StreamReader(_request.InputStream))
                             {
-                                // Dispatch to correct logic:
-                                switch (dict["submit"])
+                                input = reader.ReadToEnd();
+                                NameValueCollection dict = HttpUtility.ParseQueryString(input);
+                                if (dict["submit"] != null)
                                 {
-                                    case "Logout":
-                                        _response.Cookies.Add(new Cookie
-                                        {
-                                            Name = "UserID",
-                                            Value = "-1",
-                                            Expires = DateTime.Now.AddDays(-1d)
-                                        });
-                                        return LoginManager.Login();
-                                    case "Signup":
-                                        _user = new User {
-                                            firstName = dict["firstName"],
-                                            lastName = dict["lastName"],
-                                            email = dict["email"],
-                                            passwordHash = dict["password"]
-                                        };
-                                        _user.Create();
-                                        return LoginManager.SuccessSignup();
-                                    case "Login":
-                                        return Login(dict["email"], dict["password"]);
-                                    case "PasswordResetRequest":
-                                        // POST data will have user email. Send recovery email.
-                                        PasswordReset.SendRecoveryEmail(dict["email"]);
-                                        return ResetManager.ResetPasswordSent();
-                                    case "PasswordReset":
-                                        // Reset password and direct to login page
-                                        // POST data will have userID in userID input. Reset the password and let the user know.
-                                        long id = Convert.ToInt64(dict["userID"]);
-                                        string password = dict["password"];
-                                        PasswordReset.ResetPassword(id, password);
-                                        return ResetManager.SuccessResetPassword();
-                                    default:
-                                        return LoginManager.Login();
+                                    // Dispatch to correct logic:
+                                    switch (dict["submit"])
+                                    {
+                                        case "Logout":
+                                            _response.Cookies.Add(new Cookie
+                                            {
+                                                Name = "UserID",
+                                                Value = "-1",
+                                                Expires = DateTime.Now.AddDays(-1d)
+                                            });
+                                            return LoginManager.Login();
+                                        case "Signup":
+                                            _user = new User
+                                            {
+                                                firstName = dict["firstName"],
+                                                lastName = dict["lastName"],
+                                                email = dict["email"],
+                                                passwordHash = dict["password"]
+                                            };
+                                            _user.Create();
+                                            return LoginManager.SuccessSignup();
+                                        case "Login":
+                                            return Login(dict["email"], dict["password"]);
+                                        case "PasswordResetRequest":
+                                            // POST data will have user email. Send recovery email.
+                                            PasswordReset.SendRecoveryEmail(dict["email"]);
+                                            return ResetManager.ResetPasswordSent();
+                                        case "PasswordReset":
+                                            // Reset password and direct to login page
+                                            // POST data will have userID in userID input. Reset the password and let the user know.
+                                            _user = new User(Convert.ToInt64(dict["userID"]));
+                                            string password = dict["password"];
+                                            PasswordReset.ResetPassword(_user, password);
+                                            return ResetManager.SuccessResetPassword();
+                                        default:
+                                            return LoginManager.Login();
+                                    }
                                 }
+                                else
+                                {
+                                    return LoginManager.Login();
+                                }
+                            }
+                        }
+                        else if (_user == null)
+                        {
+                            // Send login page EXCEPT if requesting password reset:
+                            if (_request.QueryString["ResetToken"] != null)
+                            {
+                                return ResetManager.CreateReset(PasswordReset.GetUser(_request.QueryString["ResetToken"]));
                             }
                             else
                             {
                                 return LoginManager.Login();
                             }
                         }
-                    }
-                    else if (_user == null)
-                    {
-                        // Send login page EXCEPT if requesting password reset:
-                        if (_request.QueryString["ResetToken"] != null)
+                        else if (_request.QueryString["dest"] != null)
                         {
-                            return ResetManager.CreateReset(PasswordReset.GetUser(_request.QueryString["ResetToken"]));
+                            return ParseQuery();
+                        }
+                        else if (path.Length != 0)
+                        {
+                            return ServeResource(GeneratePath(path));
                         }
                         else
                         {
-                            return LoginManager.Login();
+                            // If logged in (but no request), just send back home page:
+                            return DashboardManager.Dashboard(_user);
                         }
-                    }
-                    else if (_request.QueryString["dest"] != null)
+#if !DEBUG
+                        // catch exceptions and return something meaningful
+                    } catch (Exception)
                     {
-                        return ParseQuery();
+
                     }
-                    else if (path.Length != 0)
-                    {
-                        return ServeResource(GeneratePath(path));
-                    }
-                    else
-                    {
-                        // If logged in (but no request), just send back home page:
-                        return DashboardManager.Dashboard(_user);
-                    }
+#endif
                 }
             }
 

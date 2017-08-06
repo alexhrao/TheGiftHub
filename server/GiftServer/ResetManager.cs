@@ -1,6 +1,7 @@
 ﻿using System;
 using HtmlAgilityPack;
 using GiftServer.Properties;
+using GiftServer.Data;
 
 namespace GiftServer
 {
@@ -36,12 +37,12 @@ namespace GiftServer
                 alert.AppendChildren(children);
                 return login.DocumentNode.OuterHtml;
             }
-            public static string CreateReset(long userID)
+            public static string CreateReset(User user)
             {
                 HtmlDocument pg = new HtmlDocument();
                 pg.LoadHtml(Resources.header + Resources.passwordReset);
                 HtmlNode hidden = pg.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@name), \" \"), \" userID \")]");
-                hidden.Attributes["value"].Value = Convert.ToString(userID);
+                hidden.Attributes["value"].Value = Convert.ToString(user.Id);
                 return pg.DocumentNode.OuterHtml;
             }
             public static string GenerateEmail(string token)

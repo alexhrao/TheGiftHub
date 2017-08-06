@@ -42,9 +42,9 @@ namespace GiftServer
             {
                 return hashed.Equals(PasswordReset.ComputeHash(token));
             }
-            public static long GetUser(string token)
+            public static User GetUser(string token)
             {
-                long ret;
+                User ret;
                 DateTime timestamp;
                 // Hash and query DB for hash; if not found, throw error. Otherwise, get the user
                 string hashed = PasswordReset.ComputeHash(token);
@@ -67,7 +67,7 @@ namespace GiftServer
                             else
                             {
                                 reader.Read();
-                                ret = Convert.ToInt64(reader["UserID"]);
+                                ret = new User(Convert.ToInt64(reader["UserID"]));
                                 timestamp = (DateTime)(reader["TimeCreated"]);
                                 if (timestamp.AddMinutes(30) < DateTime.Now)
                                 {
@@ -89,11 +89,9 @@ namespace GiftServer
                     return ret;
                 }
             }
-            public static void ResetPassword(long userID, string password)
+            public static void ResetPassword(User user, string password)
             {
-                User user = new User(userID);
-                user.passwordHash = PasswordHash.Hash(password);
-                user.Update();
+                user.UpdatePassword(password);
             }
             public static void SendRecoveryEmail(string emailAddress)
             {

@@ -32,19 +32,24 @@ namespace GiftServer
                             {
                                 ThreadPool.QueueUserWorkItem((r) =>
                                 {
+#if !DEBUG
                                     try
                                     {
+#endif
                                         HttpListenerContext rtx = (HttpListenerContext)(r);
                                         string resp = _responseGenerator(rtx);
                                         byte[] respBuffer = Encoding.UTF8.GetBytes(resp);
                                         rtx.Response.ContentLength64 = respBuffer.Length;
                                         rtx.Response.OutputStream.Write(respBuffer, 0, respBuffer.Length);
                                         rtx.Response.OutputStream.Close();
+#if !DEBUG
+
                                     }
                                     catch (Exception)
                                     {
                                         // WebServer is shutting down, so safely ignore!
                                     }
+#endif
                                 }, _listener.GetContext());
                             }
                             catch (Exception)

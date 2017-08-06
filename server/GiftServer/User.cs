@@ -123,6 +123,25 @@ namespace GiftServer
             }
             public User() { }
 
+            public bool UpdatePassword(string pass)
+            {
+                if (this.Id == -1)
+                {
+                    return false;
+                }
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "UPDATE passwords SET PasswordHash = @pwd WHERE UserID = @id;";
+                        cmd.Parameters.AddWithValue("@pwd", PasswordHash.Hash(pass));
+                        cmd.Parameters.AddWithValue("@id", this.Id);
+                    }
+                }
+                return true;
+            }
             public bool Create()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
