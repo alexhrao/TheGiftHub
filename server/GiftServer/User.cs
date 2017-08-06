@@ -13,7 +13,7 @@ namespace GiftServer
     {
         public class User : ISynchronizable, IShowable
         {
-            public long id = -1;
+            public long Id = -1;
             public string firstName;
             public string lastName;
             public string email;
@@ -41,7 +41,7 @@ namespace GiftServer
                         {
                             if (reader.Read())
                             {
-                                this.id = id;
+                                this.Id = id;
                                 this.firstName = (string)(reader["FirstName"]);
                                 this.lastName = (string)(reader["LastName"]);
                                 this.email = (string)(reader["UserEmail"]);
@@ -99,7 +99,7 @@ namespace GiftServer
                                     // Not correct, throw new exception!
                                     throw new InvalidPasswordException();
                                 }
-                                id = Convert.ToInt64(reader["UserID"]);
+                                Id = Convert.ToInt64(reader["UserID"]);
                                 this.firstName = (string)(reader["FirstName"]);
                                 this.lastName = (string)(reader["LastName"]);
                                 this.email = email;
@@ -173,13 +173,13 @@ namespace GiftServer
                         {
                             return false;
                         }
-                        this.id = cmd.LastInsertedId;
+                        this.Id = cmd.LastInsertedId;
                     }
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT TimeCreated FROM users WHERE UserID = @id;";
-                        cmd.Parameters.AddWithValue("@id", this.id);
+                        cmd.Parameters.AddWithValue("@id", this.Id);
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
@@ -193,7 +193,7 @@ namespace GiftServer
             public bool Update()
             {
                 // TODO: Check if email already exists
-                if (this.id == -1)
+                if (this.Id == -1)
                 {
                     // User does not exist - create new one instead.
                     return Create();
@@ -219,7 +219,7 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@email", this.email);
                         cmd.Parameters.AddWithValue("@theme", this.theme);
                         cmd.Parameters.AddWithValue("@bio", this.bio);
-                        cmd.Parameters.AddWithValue("@id", this.id);
+                        cmd.Parameters.AddWithValue("@id", this.Id);
                         cmd.Parameters.AddWithValue("@dob", this.dob);
                         cmd.Prepare();
                         if (cmd.ExecuteNonQuery() == 0)
@@ -232,7 +232,7 @@ namespace GiftServer
                         // Get password ID of user:
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT PasswordID FROM users WHERE UserID = @id;";
-                        cmd.Parameters.AddWithValue("@id", this.id);
+                        cmd.Parameters.AddWithValue("@id", this.Id);
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
@@ -262,7 +262,7 @@ namespace GiftServer
             public bool Delete()
             {
                 // TODO: Delete from users_events_futures
-                if (this.id == -1)
+                if (this.Id == -1)
                 {
                     // User doesn't exist - don't delete
                     return false;
@@ -278,7 +278,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "SELECT PasswordID FROM users WHERE UserID = @id";
-                            cmd.Parameters.AddWithValue("@id", this.id);
+                            cmd.Parameters.AddWithValue("@id", this.Id);
                             cmd.Prepare();
                             using (MySqlDataReader reader = cmd.ExecuteReader())
                             {
@@ -306,7 +306,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM users WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.id);
+                            cmd.Parameters.AddWithValue("@id", this.Id);
                             cmd.Prepare();
                             if (cmd.ExecuteNonQuery() == 0)
                             {
@@ -318,7 +318,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM events_users WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.id);
+                            cmd.Parameters.AddWithValue("@id", this.Id);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -327,7 +327,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "SELECT GiftID FROM gifts WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.id);
+                            cmd.Parameters.AddWithValue("@id", this.Id);
                             cmd.Prepare();
                             using (MySqlDataReader reader = cmd.ExecuteReader())
                             {
@@ -358,7 +358,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM gifts WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.id);
+                            cmd.Parameters.AddWithValue("@id", this.Id);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -367,7 +367,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM groups_users WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.id);
+                            cmd.Parameters.AddWithValue("@id", this.Id);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -376,7 +376,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM reservations WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.id);
+                            cmd.Parameters.AddWithValue("@id", this.Id);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                             return true;
@@ -387,15 +387,15 @@ namespace GiftServer
             public void SaveImage(MultipartParser parser)
             {
                 ImageProcessor processor = new ImageProcessor(parser);
-                File.WriteAllBytes(Resources.BasePath + "/resources/images/users/User" + this.id + Resources.ImageFormat, processor.Data);
+                File.WriteAllBytes(Resources.BasePath + "/resources/images/users/User" + this.Id + Resources.ImageFormat, processor.Data);
             }
             public void RemoveImage()
             {
-                File.Delete(Resources.BasePath + "/resources/images/users/User" + this.id + Resources.ImageFormat);
+                File.Delete(Resources.BasePath + "/resources/images/users/User" + this.Id + Resources.ImageFormat);
             }
             public string GetImage()
             {
-                return GetImage(this.id);
+                return GetImage(this.Id);
             }
             public static string GetImage(long userID)
             {

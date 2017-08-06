@@ -26,7 +26,7 @@ namespace GiftServer
                 HtmlNode email = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" email \")]");
                 email.InnerHtml = HttpUtility.HtmlEncode("Email: " + user.email);
                 HtmlNode id = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@name), \" \"), \" userID \")]");
-                id.Attributes["value"].Value = user.id.ToString();
+                id.Attributes["value"].Value = user.Id.ToString();
                 if (user.dob != DateTime.MinValue)
                 {
                     HtmlNode birthday = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" birthday \")]");
@@ -58,7 +58,7 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT GroupID FROM groups_users WHERE groups_users.UserID = @id;";
-                        cmd.Parameters.AddWithValue("@id", user.id);
+                        cmd.Parameters.AddWithValue("@id", user.Id);
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {

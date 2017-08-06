@@ -195,7 +195,7 @@ namespace GiftServer
                 try
                 {
                     _user = new User(email, password);
-                    Cookie logger = new Cookie("UserID", Convert.ToString(_user.id));
+                    Cookie logger = new Cookie("UserID", Convert.ToString(_user.Id));
                     _response.Cookies.Add(logger);
                     _response.AppendHeader("dest", "dashboard");
                     return ParseQuery();

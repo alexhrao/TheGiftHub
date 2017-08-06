@@ -9,6 +9,7 @@ namespace GiftServer
         {
             void SaveImage(MultipartParser parser);
             void RemoveImage();
+            string GetImage();
         }
     }
 }

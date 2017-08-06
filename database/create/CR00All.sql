@@ -134,7 +134,7 @@ CREATE TABLE gift_registry_db.gifts (
     GiftStores VARCHAR(4095) NULL,
     GiftQuantity INT UNSIGNED NOT NULL DEFAULT 0,
     GiftColor VARCHAR(6) NULL,
-    GiftColorDesc VARCHAR(31) NULL,
+    GiftColorText VARCHAR(31) NULL,
     GiftSize VARCHAR(127) NULL,
     CategoryID INT NOT NULL,
     GiftRating DECIMAL(3, 2) NOT NULL DEFAULT 0,

@@ -49,7 +49,7 @@ namespace GiftServer
                                             + ") "
                                         + ") "
                                         + "ORDER BY events_users.EventMonth ASC, events_users.EventDay ASC, events_users.EventName;";
-                        cmd.Parameters.AddWithValue("@uid", user.id);
+                        cmd.Parameters.AddWithValue("@uid", user.Id);
                         cmd.Prepare();
                         int eventNum = 0;
                         using (MySqlDataReader reader = cmd.ExecuteReader())
