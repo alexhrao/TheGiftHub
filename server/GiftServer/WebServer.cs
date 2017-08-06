@@ -63,10 +63,6 @@ namespace GiftServer
                 _listener.Stop();
                 _listener.Close();
             }
-            public static string GeneratePath(string uri)
-            {
-                return Resources.BasePath + uri;
-            }
         }
     }
 }
