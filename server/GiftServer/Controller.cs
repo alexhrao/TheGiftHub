@@ -3,8 +3,10 @@ using GiftServer.Exceptions;
 using GiftServer.Html;
 using GiftServer.Properties;
 using GiftServer.Security;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Specialized;
+using System.Configuration;
 using System.IO;
 using System.Net;
 using System.Web;
@@ -150,7 +152,7 @@ namespace GiftServer
                         // catch exceptions and return something meaningful
                     } catch (Exception)
                     {
-
+                        return LoginManager.Login();
                     }
 #endif
                 }
@@ -172,12 +174,64 @@ namespace GiftServer
 
             private string ServeResource(string path)
             {
-                // TODO: Check if user is allowed to view resource
-                byte[] buffer = File.ReadAllBytes(path);
-                _response.ContentLength64 = buffer.Length;
-                using (Stream response = _response.OutputStream)
+                // Check existence:
+                if (File.Exists(path))
                 {
-                    response.Write(buffer, 0, buffer.Length);
+                    // File exists: Check if filename even needs authentication:
+                    if (Path.GetDirectoryName(path).Equals("users"))
+                    {
+                        if (_user != null && Path.GetFileNameWithoutExtension(path).Equals("User" + _user.Id))
+                        {
+                            byte[] buffer = File.ReadAllBytes(path);
+                            _response.ContentLength64 = buffer.Length;
+                            using (Stream response = _response.OutputStream)
+                            {
+                                response.Write(buffer, 0, buffer.Length);
+                            }
+                        }
+                    }
+                    else if (Path.GetDirectoryName(path).Equals("gifts"))
+                    {
+                        // Get gift ID, see if any gifts attached to user has gift id
+                        long giftID = Convert.ToInt64(Path.GetFileNameWithoutExtension(path).Substring(4));
+                        using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                        {
+                            con.Open();
+                            using (MySqlCommand cmd = new MySqlCommand())
+                            {
+                                cmd.Connection = con;
+                                cmd.CommandText = "SELECT GiftID FROM gifts WHERE UserID = @id;";
+                                cmd.Parameters.AddWithValue("@id", _user.Id);
+                                cmd.Prepare();
+                                using (MySqlDataReader reader = cmd.ExecuteReader())
+                                {
+                                    if (reader.Read())
+                                    {
+                                        // OK; serve up image
+                                        byte[] buffer = File.ReadAllBytes(path);
+                                        _response.ContentLength64 = buffer.Length;
+                                        using (Stream response = _response.OutputStream)
+                                        {
+                                            response.Write(buffer, 0, buffer.Length);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Not accessing images or gifts, so OK to just send info:
+                        byte[] buffer = File.ReadAllBytes(path);
+                        _response.ContentLength64 = buffer.Length;
+                        using (Stream response = _response.OutputStream)
+                        {
+                            response.Write(buffer, 0, buffer.Length);
+                        }
+#if DEBUG
+                        Console.WriteLine("Resource at " + path + " Does not need authentication and was served.");
+#endif
+                    }
                 }
                 return "";
             }

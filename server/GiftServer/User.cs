@@ -138,6 +138,8 @@ namespace GiftServer
                         cmd.CommandText = "UPDATE passwords SET PasswordHash = @pwd WHERE UserID = @id;";
                         cmd.Parameters.AddWithValue("@pwd", PasswordHash.Hash(pass));
                         cmd.Parameters.AddWithValue("@id", this.Id);
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
                     }
                 }
                 return true;
