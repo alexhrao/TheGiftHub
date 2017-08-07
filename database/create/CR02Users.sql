@@ -4,9 +4,10 @@ CREATE TABLE gift_registry_db.users (
     LastName VARCHAR(255) NOT NULL,
     PasswordID INT NOT NULL,
     UserEmail VARCHAR(255) NOT NULL UNIQUE,
-    UserTheme TINYINT UNSIGNED DEFAULT 0,
+    UserTheme TINYINT UNSIGNED NULL DEFAULT 0,
     UserBio VARCHAR(4095) NULL,
-    DateOfBirth DATE NULL,
+    UserBirthMonth INT NULL DEFAULT 0,
+    UserBirthDay INT NULL DEFAULT 0,
     TimeCreated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 

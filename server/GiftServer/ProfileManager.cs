@@ -27,10 +27,16 @@ namespace GiftServer
                 email.InnerHtml = HttpUtility.HtmlEncode("Email: " + user.email);
                 HtmlNode id = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@name), \" \"), \" userID \")]");
                 id.Attributes["value"].Value = user.Id.ToString();
-                if (user.dob != DateTime.MinValue)
+                if (user.birthMonth != 0)
+                {
+                    DateTime dob = new DateTime(1999, user.birthMonth, user.birthDay);
+                    HtmlNode birthday = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" birthday \")]");
+                    birthday.InnerHtml = HttpUtility.HtmlEncode("Birthday: " + dob.ToString("MMMM d"));
+                }
+                else
                 {
                     HtmlNode birthday = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" birthday \")]");
-                    birthday.InnerHtml = HttpUtility.HtmlEncode("Birthday: " + user.dob.ToString("MMMM d, yyyy"));
+                    birthday.InnerHtml = HttpUtility.HtmlEncode("Birthday: " + "Not Set");
                 }
                 HtmlNode theme = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" theme \")]");
                 switch (user.theme)
@@ -64,7 +70,8 @@ namespace GiftServer
                             while (reader.Read())
                             {
                                 EventUser evnt = new EventUser(Convert.ToInt64(reader["EventUserID"]));
-                                HtmlNode eventEntry = HtmlNode.CreateNode("<tr><td><h3><span class=\"glyphicon glyphicon-remove\"></span></h3></td><td class=\"name\"><h3>" + HttpUtility.HtmlEncode(evnt.Name) + " </h3></td></tr>");
+                                HtmlNode eventEntry = HtmlNode.CreateNode("<tr id=\"event" + evnt.EventUserID + "\"><td><h3><span id=\"eventCloser" + evnt.EventUserID + "\" class=\"glyphicon glyphicon-remove event-closer\"></span></h3></td>"
+                                                                        + "<td class=\"event-name\"><h3>" + HttpUtility.HtmlEncode(evnt.Name) + " </h3></td></tr>");
                                 events.AppendChild(eventEntry);
                             }
                         }
@@ -84,7 +91,8 @@ namespace GiftServer
                             {
                                 // Create a group
                                 Group group = new Group(Convert.ToInt64(reader["GroupID"]));
-                                HtmlNode groupEntry = HtmlNode.CreateNode("<tr><td><h3><span class=\"glyphicon glyphicon-remove\"></span></h3></td><td class=\"name\"><h3>" + HttpUtility.HtmlEncode(group.Name) + " </h3></td></tr>");
+                                HtmlNode groupEntry = HtmlNode.CreateNode("<tr id=\"group" + group.GroupID + "\"><td><h3><span id=\"groupCloser" + group.GroupID + "\" class=\"glyphicon glyphicon-remove group-closer\"></span></h3></td>"
+                                                                        + "<td class=\"group-name\"><h3>" + HttpUtility.HtmlEncode(group.Name) + " </h3></td></tr>");
                                 groups.AppendChild(groupEntry);
                             }
                         }

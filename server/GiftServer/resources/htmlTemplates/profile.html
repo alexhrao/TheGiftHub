@@ -10,6 +10,44 @@
 
         });
         $(document).ready(function () {
+            $('#events .event-closer').click(function () {
+                var eNumber = this.id;
+                eNumber = parseInt(eNumber.substring(11))
+                $.post(".",
+                    {
+                        submit: "EventChange",
+                        item: "delete",
+                        eventID: eNumber
+                    },
+                    function (data, status) {
+                        if (data == 200) {
+                            $('#event' + eNumber).remove();
+                        } else {
+                            alert("We're unable to make your changes right now - try again in a few minutes.");
+                        }
+                    });
+            });
+        });
+        $(document).ready(function () {
+            $('#groups .group-closer').click(function () {
+                var gNumber = this.id;
+                gNumber = parseInt(gNumber.substring(11))
+                $.post(".",
+                    {
+                        submit: "GroupChange",
+                        item: "delete",
+                        eventID: gNumber
+                    },
+                    function (data, status) {
+                        if (data == 200) {
+                            $('#group' + gNumber).remove();
+                        } else {
+                            alert("We're unable to make your changes right now - try again in a few minutes.");
+                        }
+                    });
+            });
+        });
+        $(document).ready(function () {
             $(window).keydown(function (event) {
                 if (event.keyCode == 13) {
                     // Validate:
@@ -21,6 +59,124 @@
                     }
                 }
             });
+            $('#userName').click(function () {
+                $('#userName').toggleClass("hidden");
+                $('#userNameChangeSection').toggleClass("hidden");
+            });
+            $('#email').click(function () {
+                $('#email').toggleClass("hidden");
+                $('#userEmailChangeSection').toggleClass("hidden");
+            });
+            $('#birthday').click(function () {
+                $('#birthday').toggleClass("hidden");
+                $('#userBirthdayChangeSection').toggleClass("hidden");
+            });
+            $('#bio').click(function () {
+                $('#bio').toggleClass("hidden");
+                $('#userBioChangeSection').toggleClass("hidden");
+            });
+
+            $('#userNameChangeCancel').click(function () {
+                $('#userName').toggleClass("hidden");
+                $('#userNameChangeSection').toggleClass("hidden");
+            });
+            $('#userEmailChangeCancel').click(function () {
+                $('#email').toggleClass("hidden");
+                $('#userEmailChangeSection').toggleClass("hidden");
+            });
+            $('#userBirthdayChangeCancel').click(function () {
+                $('#birthday').toggleClass("hidden");
+                $('#userBirthdayChangeSection').toggleClass("hidden");
+            });
+            $('#userBioChangeCancel').click(function () {
+                $('#bio').toggleClass("hidden");
+                $('#userBioChangeSection').toggleClass("hidden");
+            });
+
+            $('#userNameChangeSubmit').click(function () {
+                $.post(".",
+                    {
+                        submit: "UserChange",
+                        item: "name",
+                        firstName: $('#firstNameChange').val(),
+                        lastName: $('#lastNameChange').val()
+                    },
+                    function (data, status) {
+                        if (data == 200) {
+                            // Change name; we succeeded:
+                            $('#userName').text($('#firstNameChange').val() + " " + $('#lastNameChange').val());
+                        } else {
+                            alert("We're unable to make your changes right now - try again in a few minutes.");
+                        }
+                        $('#userName').toggleClass("hidden");
+                        $('#userNameChangeSection').toggleClass("hidden");
+                    });
+            });
+            $('#userEmailChangeSubmit').click(function () {
+                $.post(".",
+                    {
+                        submit: "UserChange",
+                        item: "email",
+                        email: $('#userEmailChange').val(),
+                    },
+                    function (data, status) {
+                        if (data == 200) {
+                            // Change name; we succeeded:
+                            $('#email').text($('#userEmail').val());
+                        } else {
+                            alert("We're unable to make your changes right now - try again in a few minutes.");
+                        }
+                        $('#userEmailChangeSection').toggleClass("hidden");
+                        $('#email').toggleClass("hidden");
+                    });
+            });
+            $('#userBirthdayChangeSubmit').click(function () {
+                $.post(".",
+                    {
+                        submit: "UserChange",
+                        item: "birthday",
+                        month: $('#userBirthdayMonthChange').val(),
+                        day: $('#userBirthdayDayChange').val()
+                    },
+                    function (data, status) {
+                        if (data == 200) {
+                            // Change name; we succeeded:
+                            $('#birthday').text("Birthday: " + $('#userBirthdayMonthChange').find(':selected').text() + " " + $('#userBirthdayDayChange').val());
+                        } else {
+                            alert("We're unable to make your changes right now - try again in a few minutes.");
+                        }
+                        $('#userBirthdayChangeSection').toggleClass("hidden");
+                        $('#birthday').toggleClass("hidden");
+                    });
+            });
+            $('#userBioChangeSubmit').click(function () {
+                $.post(".",
+                    {
+                        submit: "UserChange",
+                        item: "bio",
+                        bio: $('#userBioChange').val()
+                    },
+                    function (data, status) {
+                        if (data == 200) {
+                            // Change name; we succeeded:
+                            $('#bio').val($('#userBioChange').val())
+                        } else {
+                            alert("We're unable to make your changes right now - try again in a few minutes.");
+                        }
+                        $('#userBioChangeSection').toggleClass("hidden");
+                        $('#bio').toggleClass("hidden");
+                    });
+            });
+
+            $('#userBirthdayMonthChange').change(function () {
+                $('.days').remove();
+                for (var i = 1; i <= daysInMonth($('#userBirthdayMonthChange').val()); i++) {
+                    // Create a day:
+                    $("<option class=\"days\" value=\"" + i + "\">" + i + "</option>").appendTo($('#days'));
+                }
+
+            });
+
             $('#resetSubmit').hide();
             $('#firstResetPass').keyup(function () {
                 if ($('#secondResetPass').val() === $('#firstResetPass').val() && $('#secondResetPass').val()) {
@@ -68,11 +224,19 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
+        function daysInMonth(month) {
+            // No leap day
+            if (month == 0) {
+                return 0;
+            }
+            return new Date(1999, month, 0).getDate();
+        }
     </script>
     <style>
         .input-group,
         .form-group,
-        .spaced {
+        .spaced,
+        .input {
             margin: 10px;
         }
         body {
@@ -101,7 +265,7 @@
             display: inline-flex;
         }
         p {
-            font-weight: 200;
+            font-weight: 400;
             text-indent: each-line 20px;
             font-size: 22px;
         }
@@ -111,9 +275,14 @@
         table {
             width: 75%;
         }
-        .btn-primary,
-        .btn-danger {
+        .btn {
             width: 100%;
+        }
+        .event-closer,
+        .group-closer,
+        .event-name,
+        .group-name {
+            cursor: pointer;
         }
     </style>
 </head>
@@ -203,16 +372,36 @@
             <div class="col-sm-4 text-center">
                 <!-- User Image -->
                 <img id="userImage" type="button" data-tooltip="tooltip" data-placement="bottom auto" title="Click to select new image" data-toggle="modal" href="#uploadImage" class="img-circle img-responsive" src="resources/images/users/default.png" />
-                <h1 id="userName"></h1>
+                <div class="form-group">
+                    <h1 role="button" id="userName" class="form-control-static"></h1>
+                </div>
+                <div id="userNameChangeSection" class="form-group hidden">
+                    <div class="col-md-4">
+                        <input style="margin:5px;" type="text" class="form-control" id="firstNameChange" placeholder="First Name" />
+                    </div>
+                    <div class="col-md-4">
+                        <input style="margin:5px;" type="text" class="form-control" id="lastNameChange" placeholder="Last Name" />
+                    </div>
+                    <div class="col-md-2">
+                        <button id="userNameChangeSubmit" class="btn btn-success" type="button">
+                            Confirm
+                        </button>
+                    </div>
+                    <div class="col-md-2">
+                        <button id="userNameChangeCancel" class="btn btn-danger" type="button">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-xs-6">
                         <button class="btn btn-lg btn-danger" type="button" id="resetPassword" data-toggle="modal" data-target="#resetPassword">
-                            Change Password <span class="glyphicon glyphicon-lock"></span>
+                            <div class="hidden-sm hidden-xs">Change Password </div><span class="glyphicon glyphicon-lock"></span>
                         </button>
                     </div>
                     <div class="col-xs-6">
                         <button class="btn btn-lg btn-primary" type="button" id="changePreferences" data-toggle="modal" data-target="#changePreferences">
-                            Change Preferences <span class="glyphicon glyphicon-cog"></span>
+                            <div class="hidden-sm hidden-xs">Change Preferences </div><span class="glyphicon glyphicon-cog"></span>
                         </button>
                     </div>
                 </div>
@@ -220,11 +409,121 @@
             </div>
             <div class="col-sm-5">
                 <!-- User Information -->
-                <h2 id="email"></h2>
-                <h2 id="birthday"></h2>
+                <div class="form-group">
+                    <h2 role="button" id="email" class="form-control-static"></h2>
+                </div>
+                <div id="userEmailChangeSection" class="form-group hidden">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <input style="margin:5px;" type="email" class="form-control" id="userEmailChange" placeholder="Email Address" />
+                        </div>
+                        <div class="col-md-2">
+                            <button id="userEmailChangeSubmit" class="btn btn-success" type="button">
+                                Confirm
+                            </button>
+                        </div>
+                        <div class="col-md-2">
+                            <button id="userEmailChangeCancel" class="btn btn-danger" type="button">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <h2 role="button" id="birthday" class="form-control-static"></h2>
+                </div>
+                <div id="userBirthdayChangeSection" class="form-group hidden">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <select class="form-control" id="userBirthdayMonthChange">
+                                <optgroup label="Month">
+                                    <option id="userChangeMonthJan" value="1">January</option>
+                                    <option id="userChangeMonthFeb" value="2">February</option>
+                                    <option id="userChangeMonthMar" value="3">March</option>
+                                    <option id="userChangeMonthApr" value="4">April</option>
+                                    <option id="userChangeMonthMay" value="5">May</option>
+                                    <option id="userChangeMonthJun" value="6">June</option>
+                                    <option id="userChangeMonthJul" value="7">July</option>
+                                    <option id="userChangeMonthAug" value="8">August</option>
+                                    <option id="userChangeMonthSep" value="9">September</option>
+                                    <option id="userChangeMonthOct" value="10">October</option>
+                                    <option id="userChangeMonthNov" value="11">November</option>
+                                    <option id="userChangeMonthDec" value="12">December</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <select id="userBirthdayDayChange" class="form-control">
+                                <optgroup id="days" label="Day">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                    <option value="13">13</option>
+                                    <option value="14">14</option>
+                                    <option value="15">15</option>
+                                    <option value="16">16</option>
+                                    <option value="17">17</option>
+                                    <option value="18">18</option>
+                                    <option value="19">19</option>
+                                    <option value="20">20</option>
+                                    <option value="21">21</option>
+                                    <option value="22">22</option>
+                                    <option value="23">23</option>
+                                    <option value="24">24</option>
+                                    <option value="25">25</option>
+                                    <option value="26">26</option>
+                                    <option value="27">27</option>
+                                    <option value="28">28</option>
+                                    <option value="29">29</option>
+                                    <option value="30">30</option>
+                                    <option value="31">31</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button id="userBirthdayChangeSubmit" class="btn btn-success" type="button">
+                                Confirm
+                            </button>
+                        </div>
+                        <div class="col-md-2">
+                            <button id="userBirthdayChangeCancel" class="btn btn-danger" type="button">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 <h2>Theme: <span id="theme" class="circle" style=""></span></h2>
                 <!-- Theme button -->
                 <h2>Bio: </h2>
+                <div class="form-group">
+                    <p role="button" id="bio" class="form-control-static"></p>
+                </div>
+                <div id="userBioChangeSection" class="form-group hidden">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <textarea class="form-control" rows="5" id="userBioChange"></textarea>
+                        </div>
+                        <div class="col-md-2">
+                            <button id="userBioChangeSubmit" class="btn btn-success" type="button">
+                                Confirm
+                            </button>
+                        </div>
+                        <div class="col-md-2">
+                            <button id="userBioChangeCancel" class="btn btn-danger" type="button">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 <p id="bio"></p>
             </div>
             <div class="col-sm-3 hidden-xs">

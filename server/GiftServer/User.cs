@@ -19,7 +19,8 @@ namespace GiftServer
             public string email;
             public string passwordHash;
             public int theme;
-            public DateTime dob;
+            public int birthMonth;
+            public int birthDay;
             public string bio;
             public DateTime dateJoined;
             public User(long id)
@@ -31,7 +32,7 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT users.FirstName, users.LastName, users.UserEmail, passwords.PasswordHash, users.UserTheme, users.DateOfBirth, users.TimeCreated, users.UserBio "
+                        cmd.CommandText = "SELECT users.FirstName, users.LastName, users.UserEmail, passwords.PasswordHash, users.UserTheme, users.UserBirthMonth, users.UserBirthDay, users.TimeCreated, users.UserBio "
                                         + "FROM users "
                                         + "INNER JOIN passwords ON passwords.UserID = users.UserID "
                                         + "WHERE users.UserID = @id;";
@@ -47,14 +48,8 @@ namespace GiftServer
                                 this.email = Convert.ToString(reader["UserEmail"]);
                                 this.passwordHash = Convert.ToString(reader["PasswordHash"]);
                                 this.theme = Convert.ToInt32(reader["UserTheme"]);
-                                try
-                                {
-                                    this.dob = (DateTime)(reader["DateOfBirth"]);
-                                }
-                                catch (InvalidCastException)
-                                {
-                                    this.dob = DateTime.MinValue;
-                                }
+                                this.birthDay = Convert.ToInt32(reader["UserBirthDay"]);
+                                this.birthMonth = Convert.ToInt32(reader["UserBirthMonth"]);
                                 this.dateJoined = (DateTime)(reader["TimeCreated"]);
                                 this.bio = Convert.ToString(reader["UserBio"]);
                                 
@@ -77,7 +72,7 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT users.UserID, users.FirstName, users.LastName, passwords.PasswordHash, users.UserTheme, users.DateOfBirth, users.TimeCreated, users.UserBio "
+                        cmd.CommandText = "SELECT users.UserID, users.FirstName, users.LastName, passwords.PasswordHash, users.UserTheme, users.UserBirthMonth, users.UserBirthDay, users.TimeCreated, users.UserBio "
                                         + "FROM users "
                                         + "INNER JOIN passwords ON passwords.UserID = users.UserID "
                                         + "WHERE users.UserEmail = @email;";
@@ -105,14 +100,8 @@ namespace GiftServer
                                 this.email = email;
                                 this.passwordHash = PasswordHash.Hash(password);
                                 this.theme = Convert.ToInt32(reader["UserTheme"]);
-                                try
-                                {
-                                    this.dob = (DateTime)(reader["DateOfBirth"]);
-                                }
-                                catch (InvalidCastException)
-                                {
-                                    this.dob = DateTime.MinValue;
-                                }
+                                this.birthDay = Convert.ToInt32(reader["UserBirthMonth"]);
+                                this.birthMonth = Convert.ToInt32(reader["UserBirthDay"]);
                                 this.dateJoined = (DateTime)(reader["TimeCreated"]);
                                 this.bio = Convert.ToString(reader["UserBio"]);
                             }
@@ -168,13 +157,14 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "INSERT INTO users (FirstName, LastName, UserEmail, UserTheme, DateOfBirth, UserBio) "
-                            + "VALUES (@fName, @lName, @email, @pid, @theme, @dob, @bio);";
+                        cmd.CommandText = "INSERT INTO users (FirstName, LastName, UserEmail, UserTheme, UserBirthMonth, UserBirthDay, UserBio) "
+                            + "VALUES (@fName, @lName, @email, @pid, @theme, @bmonth, @bday, @bio);";
                         cmd.Parameters.AddWithValue("@fName", this.firstName);
                         cmd.Parameters.AddWithValue("@lName", this.lastName);
                         cmd.Parameters.AddWithValue("@email", this.email);
                         cmd.Parameters.AddWithValue("@theme", this.theme);
-                        cmd.Parameters.AddWithValue("@dob", this.dob);
+                        cmd.Parameters.AddWithValue("@bmonth", this.birthMonth);
+                        cmd.Parameters.AddWithValue("@bday", this.birthDay);
                         cmd.Parameters.AddWithValue("@bio", this.bio);
                         cmd.Prepare();
                         if (cmd.ExecuteNonQuery() == 0)
@@ -249,14 +239,16 @@ namespace GiftServer
                             + "UserEmail = @email, "
                             + "UserTheme = @theme, "
                             + "UserBio = @bio, "
-                            + "DateOfBirth = @dob "
+                            + "UserBirthMonth = @bmonth, "
+                            + "UserBirthDay = @bday "
                             + "WHERE UserID = @id;";
                         cmd.Parameters.AddWithValue("@fName", this.firstName);
                         cmd.Parameters.AddWithValue("@lName", this.lastName);
                         cmd.Parameters.AddWithValue("@email", this.email);
                         cmd.Parameters.AddWithValue("@theme", this.theme);
                         cmd.Parameters.AddWithValue("@bio", this.bio);
-                        cmd.Parameters.AddWithValue("@dob", this.dob.ToString("yyyy-MM-dd"));
+                        cmd.Parameters.AddWithValue("@bmonth", this.birthMonth);
+                        cmd.Parameters.AddWithValue("@bday", this.birthDay);
                         cmd.Parameters.AddWithValue("@id", this.Id);
                         cmd.Prepare();
                         return (cmd.ExecuteNonQuery() == 1);

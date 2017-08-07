@@ -4,7 +4,7 @@ namespace GiftServer
 {
     namespace Data
     {
-        public class Group
+        public class Group : ISynchronizable
         {
             public long GroupID = -1;
             public string Name = "Hello World!";
@@ -13,6 +13,19 @@ namespace GiftServer
             public Group(long groupID)
             {
                 this.GroupID = groupID;
+            }
+
+            public bool Create()
+            {
+                return false;
+            }
+            public bool Update()
+            {
+                return false;
+            }
+            public bool Delete()
+            {
+                return false;
             }
         }
     }

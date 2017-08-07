@@ -38,7 +38,7 @@ namespace GiftServer
 #endif
                                         HttpListenerContext rtx = (HttpListenerContext)(r);
                                         string resp = _responseGenerator(rtx);
-                                        if (resp.Length != 0)
+                                        if (resp != null)
                                         {
                                             using (Stream output = rtx.Response.OutputStream)
                                             {

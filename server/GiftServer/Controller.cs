@@ -21,6 +21,7 @@ namespace GiftServer
             private HttpListenerContext _ctx;
             private HttpListenerRequest _request;
             private HttpListenerResponse _response;
+            private NameValueCollection _dict;
             public Controller(HttpListenerContext ctx)
             {
                 this._ctx = ctx;
@@ -76,11 +77,11 @@ namespace GiftServer
                             using (StreamReader reader = new StreamReader(_request.InputStream))
                             {
                                 input = reader.ReadToEnd();
-                                NameValueCollection dict = HttpUtility.ParseQueryString(input);
-                                if (dict["submit"] != null)
+                                _dict = HttpUtility.ParseQueryString(input);
+                                if (_dict["submit"] != null)
                                 {
                                     // Dispatch to correct logic:
-                                    switch (dict["submit"])
+                                    switch (_dict["submit"])
                                     {
                                         case "Logout":
                                             _response.Cookies.Add(new Cookie
@@ -93,26 +94,32 @@ namespace GiftServer
                                         case "Signup":
                                             _user = new User
                                             {
-                                                firstName = dict["firstName"],
-                                                lastName = dict["lastName"],
-                                                email = dict["email"],
-                                                passwordHash = dict["password"]
+                                                firstName = _dict["firstName"],
+                                                lastName = _dict["lastName"],
+                                                email = _dict["email"],
+                                                passwordHash = _dict["password"]
                                             };
                                             _user.Create();
                                             return LoginManager.SuccessSignup();
                                         case "Login":
-                                            return Login(dict["email"], dict["password"]);
+                                            return Login(_dict["email"], _dict["password"]);
                                         case "PasswordResetRequest":
                                             // POST data will have user email. Send recovery email.
-                                            PasswordReset.SendRecoveryEmail(dict["email"]);
+                                            PasswordReset.SendRecoveryEmail(_dict["email"]);
                                             return ResetManager.ResetPasswordSent();
                                         case "PasswordReset":
                                             // Reset password and direct to login page
                                             // POST data will have userID in userID input. Reset the password and let the user know.
-                                            _user = new User(Convert.ToInt64(dict["userID"]));
-                                            string password = dict["password"];
+                                            _user = new User(Convert.ToInt64(_dict["userID"]));
+                                            string password = _dict["password"];
                                             PasswordReset.ResetPassword(_user, password);
                                             return ResetManager.SuccessResetPassword();
+                                        case "UserChange":
+                                            return UpdateUser();
+                                        case "EventChange":
+                                            return UpdateEvent();
+                                        case "GroupChange":
+                                            return UpdateGroup();
                                         default:
                                             return LoginManager.Login();
                                     }
@@ -234,7 +241,7 @@ namespace GiftServer
 #endif
                     }
                 }
-                return "";
+                return null;
             }
 
             private User GetUser()
@@ -281,6 +288,74 @@ namespace GiftServer
                     return LoginManager.FailLogin();
                 }
             }
+
+            private string UpdateUser()
+            {
+                switch (_dict["item"])
+                {
+                    case "name":
+                        // Update this user's name, then respond back with success:
+                        _user.firstName = _dict["firstName"];
+                        _user.lastName = _dict["lastName"];
+                        break;
+                    case "email":
+                        _user.email = _dict["email"];
+                        break;
+                    case "birthday":
+                        _user.birthMonth = Convert.ToInt32(_dict["month"]);
+                        _user.birthDay = Convert.ToInt32(_dict["day"]);
+                        break;
+                    case "bio":
+                        _user.bio = _dict["bio"];
+                        break;
+                    case "delete":
+                        _user.Delete();
+                        // TODO: Invalidate cookie
+                        return LoginManager.Login();
+                        // Return so that 
+                        // will return HERE so as to not update a null user
+                    default:
+                        return "404";
+                }
+                _user.Update();
+                return "200";
+            }
+
+            private string UpdateEvent()
+            {
+                EventUser evnt = new EventUser(Convert.ToInt64(_dict["eventID"]));
+                switch (_dict["item"])
+                {
+                    case "name":
+                        break;
+                    case "delete":
+                        evnt.Delete();
+                        return "200";
+                    default:
+                        return "404";
+                }
+                evnt.Update();
+                return "200";
+
+            }
+
+            private string UpdateGroup()
+            {
+                Group group = new Group(Convert.ToInt64(_dict["groupID"]));
+                switch (_dict["item"])
+                {
+                    case "name":
+                        break;
+                    case "delete":
+                        group.Delete();
+                        return "200";
+                    default:
+                        return "404";
+                }
+                group.Update();
+                return "200";
+            }
+
 
             private static string GeneratePath(string uri)
             {

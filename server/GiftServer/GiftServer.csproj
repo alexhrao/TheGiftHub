@@ -70,7 +70,7 @@
     <Compile Include="MultipartParser.cs" />
     <Compile Include="ProfileManager.cs" />
     <Compile Include="DashboardManager.cs" />
-    <Compile Include="UserEvent.cs" />
+    <Compile Include="EventUser.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="GroupManager.cs" />
     <Compile Include="ISynchronizable.cs" />

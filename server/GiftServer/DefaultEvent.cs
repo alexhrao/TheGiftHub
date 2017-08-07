@@ -44,7 +44,7 @@ namespace GiftServer
                             }
                         }
                     }
-                    if (IsRecurring)
+                    if (!IsRecurring)
                     {
                         // Get EventFutures:
                         using (MySqlCommand cmd = new MySqlCommand())

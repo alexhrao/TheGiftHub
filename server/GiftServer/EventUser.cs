@@ -23,7 +23,7 @@ namespace GiftServer
             {
                 get
                 {
-                    if (_isDefault)
+                    if (IsDefault)
                     {
                         return _defaultEvent.Name;
                     }
@@ -34,7 +34,7 @@ namespace GiftServer
                 }
                 set
                 {
-                    this._isDefault = false;
+                    this.IsDefault = false;
                     this._name = value;
                 }
             }
@@ -42,7 +42,7 @@ namespace GiftServer
             {
                 get
                 {
-                    if (_isDefault)
+                    if (IsDefault)
                     {
                         return _defaultEvent.Description;
                     }
@@ -53,7 +53,7 @@ namespace GiftServer
                 }
                 set
                 {
-                    this._isDefault = false;
+                    this.IsDefault = false;
                     this._description = value;
                 }
             }
@@ -61,7 +61,7 @@ namespace GiftServer
             {
                 get
                 {
-                    if (_isDefault)
+                    if (IsDefault)
                     {
                         return _defaultEvent.Day;
                     }
@@ -72,7 +72,7 @@ namespace GiftServer
                 }
                 set
                 {
-                    this._isDefault = false;
+                    this.IsDefault = false;
                     this._day = value;
                 }
             }
@@ -80,7 +80,7 @@ namespace GiftServer
             {
                 get
                 {
-                    if (_isDefault)
+                    if (IsDefault)
                     {
                         return _defaultEvent.Month;
                     }
@@ -91,7 +91,7 @@ namespace GiftServer
                 }
                 set
                 {
-                    this._isDefault = false;
+                    this.IsDefault = false;
                     this._month = value;
                 }
             }
@@ -99,7 +99,7 @@ namespace GiftServer
             {
                 get
                 {
-                    if (_isDefault)
+                    if (IsDefault)
                     {
                         return _defaultEvent.Year;
                     }
@@ -110,7 +110,7 @@ namespace GiftServer
                 }
                 set
                 {
-                    this._isDefault = false;
+                    this.IsDefault = false;
                     this._year = value;
                 }
             }
@@ -118,7 +118,7 @@ namespace GiftServer
             {
                 get
                 {
-                    if (_isDefault)
+                    if (IsDefault)
                     {
                         return _defaultEvent.IsRecurring;
                     }
@@ -129,7 +129,7 @@ namespace GiftServer
                 }
                 set
                 {
-                    this._isDefault = false;
+                    this.IsDefault = false;
                     this._isRecurring = value;
                 }
             }
@@ -137,7 +137,7 @@ namespace GiftServer
             {
                 get
                 {
-                    if (_isDefault)
+                    if (IsDefault)
                     {
                         return _defaultEvent.Futures;
                     }
@@ -148,11 +148,15 @@ namespace GiftServer
                 }
                 set
                 {
-                    this._isDefault = false;
+                    this.IsDefault = false;
                     this._futures = value;
                 }
             }
-            private bool _isDefault;
+            public bool IsDefault
+            {
+                get;
+                private set;
+            }
             private DefaultEvent _defaultEvent;
 
             public EventUser(DefaultEvent defaultEvent)
@@ -165,7 +169,7 @@ namespace GiftServer
                 this.Year = _defaultEvent.Year;
                 this.IsRecurring = _defaultEvent.IsRecurring;
                 this.Futures = _defaultEvent.Futures;
-                this._isDefault = true;
+                this.IsDefault = true;
             }
             public EventUser(long EventUserID)
             {
@@ -188,13 +192,13 @@ namespace GiftServer
                                 if (!Convert.IsDBNull(reader["EventID"]))
                                 {
                                     this._defaultEvent = new DefaultEvent(Convert.ToInt64(reader["EventID"]));
-                                    this._isDefault = true;
+                                    this.IsDefault = true;
                                     this.EventUserID = EventUserID;
                                     return;
                                 }
                                 else
                                 {
-                                    this._isDefault = false;
+                                    this.IsDefault = false;
                                     this.EventUserID = EventUserID;
                                     this.Name = Convert.ToString(reader["EventName"]);
                                     this.Description = Convert.ToString(reader["EventDescription"]);
@@ -206,7 +210,7 @@ namespace GiftServer
                             }
                         }
                     }
-                    if (IsRecurring)
+                    if (!IsRecurring)
                     {
                         using (MySqlCommand cmd = new MySqlCommand())
                         {
@@ -226,6 +230,10 @@ namespace GiftServer
                     }
                 }
             }
+
+            public EventUser() { }
+
+            // TODO: Contstructor for event with default information.
 
             public bool Create()
             {
@@ -252,19 +260,113 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@eMonth", this.Month);
                         cmd.Parameters.AddWithValue("@eYear", this.Year);
                         cmd.Parameters.AddWithValue("@eRecurs", this.IsRecurring);
-
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                        EventUserID = cmd.LastInsertedId;
                     }
                 }
                 return false;
             }
             public bool Update()
             {
+                // TODO: Finish this!
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    if (!IsDefault)
+                    {
+                        // If we're not default, then just update existing event.
+                        if (IsRecurring)
+                        {
+                            // No more event futures
+                            using (MySqlCommand cmd = new MySqlCommand())
+                            {
+                                cmd.Connection = con;
+                                cmd.CommandText = "DELETE FROM events_users_futures WHERE EventUserID = @id;";
+                                cmd.Parameters.AddWithValue("@id", this.EventUserID);
+                                cmd.Prepare();
+                                cmd.ExecuteNonQuery();
+                            }
+                            using (MySqlCommand cmd = new MySqlCommand())
+                            {
+                                cmd.Connection = con;
+                                cmd.CommandText = "UPDATE events_users "
+                                                + "SET UserID = @uid, "
+                                                + "EventID = NULL, "
+                                                + "EventDay = @day, "
+                                                + "EventMonth = @month, "
+                                                + "EventYear = @year, "
+                                                + "EventRecurs = TRUE, "
+                                                + "EventName = @name, "
+                                                + "EventDescription = @descrip "
+                                                + "WHERE EventUserID = @id;";
+                                cmd.Parameters.AddWithValue("@uid", this.user.Id);
+                                cmd.Parameters.AddWithValue("@day", this.Day);
+                                cmd.Parameters.AddWithValue("@month", this.Month);
+                                cmd.Parameters.AddWithValue("@year", this.Year);
+                                cmd.Parameters.AddWithValue("@name", this.Name);
+                                cmd.Parameters.AddWithValue("@description", this.Description);
+                                cmd.Parameters.AddWithValue("@id", this.EventUserID);
+
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // We'll need to copy event - We wouldn't be updating if we were using a default event
+                        // Copy over all data, then call ourself AFTER isDefault is false!
+                    }
+                }
                 // If isdefault, remove this and make it it's own event?
-                return !_isDefault;
+                return !IsDefault;
             }
             public bool Delete()
             {
-                return false;
+                // if ID == -1, don't do anything
+                if (EventUserID == -1)
+                {
+                    return false;
+                }
+                // Delete from EventUsersGroups:
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    // Delete from EventsUsersGroups:
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "DELETE FROM events_users_groups WHERE EventUserID = @id;";
+                        cmd.Parameters.AddWithValue("@id", this.EventUserID);
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                    }
+                    // Delete from futures:
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "DELETE FROM events_users_futures WHERE EventUserID = @id;";
+                        cmd.Parameters.AddWithValue("@id", this.EventUserID);
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                    }
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "DELETE FROM events_users WHERE EventUserID = @id;";
+                        cmd.Parameters.AddWithValue("@id", this.EventUserID);
+                        cmd.Prepare();
+                        if (cmd.ExecuteNonQuery() == 0)
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            this.EventUserID = -1;
+                            return true;
+                        }
+
+                    }
+                }
             }
         }
     }
