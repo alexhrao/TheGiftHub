@@ -1,27 +1,44 @@
-﻿using System;
+﻿using GiftServer.Exceptions;
+using MySql.Data.MySqlClient;
+using System;
+using System.Configuration;
 
 namespace GiftServer
 {
     namespace Data
     {
-        public class Category : ISynchronizable
+        public class Category
         {
-            public long Id = -1;
+            public readonly long CategoryId = -1;
+            public readonly string Name;
+            public readonly string Description;
+
             public Category(long id)
             {
-
-            }
-            public bool Create()
-            {
-                return false;
-            }
-            public bool Update()
-            {
-                return false;
-            }
-            public bool Delete()
-            {
-                return false;
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT * FROM categories WHERE CategoryID = @id;";
+                        cmd.Parameters.AddWithValue("@id", id);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                this.CategoryId = id;
+                                this.Name = Convert.ToString(reader["CategoryName"]);
+                                this.Description = Convert.ToString(reader["CategoryDescription"]);
+                            }
+                            else
+                            {
+                                throw new CategoryNotFoundException(id);
+                            }
+                        }
+                    }
+                }
             }
         }
     }

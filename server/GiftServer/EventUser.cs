@@ -10,8 +10,8 @@ namespace GiftServer
     {
         public class EventUser : ISynchronizable
         {
-            public long EventUserID = -1;
-            public User user;
+            public long EventUserId = -1;
+            public User User;
             private string _name;
             private string _description;
             private int _day;
@@ -188,18 +188,18 @@ namespace GiftServer
                             if (reader.Read())
                             {
                                 // Get user:
-                                this.user = new User(Convert.ToInt64(reader["UserID"]));
+                                this.User = new User(Convert.ToInt64(reader["UserID"]));
                                 if (!Convert.IsDBNull(reader["EventID"]))
                                 {
                                     this._defaultEvent = new DefaultEvent(Convert.ToInt64(reader["EventID"]));
                                     this.IsDefault = true;
-                                    this.EventUserID = EventUserID;
+                                    this.EventUserId = EventUserID;
                                     return;
                                 }
                                 else
                                 {
                                     this.IsDefault = false;
-                                    this.EventUserID = EventUserID;
+                                    this.EventUserId = EventUserID;
                                     this.Name = Convert.ToString(reader["EventName"]);
                                     this.Description = Convert.ToString(reader["EventDescription"]);
                                     this.Day = Convert.ToInt32(reader["EventDay"]);
@@ -245,7 +245,7 @@ namespace GiftServer
                         cmd.Connection = con;
                         cmd.CommandText = "INSERT INTO events_users (UserID, EventID, EventName, EventDescription, EventDay, EventMonth, EventYear, EventRecurs) "
                                         + " VALUES (@uid, @eid, @eName, @eDesc, @eDay, @eMonth, @eYear, @eRecurs);";
-                        cmd.Parameters.AddWithValue("@uid", this.user.UserId);
+                        cmd.Parameters.AddWithValue("@uid", this.User.UserId);
                         if (_defaultEvent != null)
                         {
                             cmd.Parameters.AddWithValue("@eid", this._defaultEvent.EventID);
@@ -262,7 +262,7 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@eRecurs", this.IsRecurring);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
-                        EventUserID = cmd.LastInsertedId;
+                        EventUserId = cmd.LastInsertedId;
                     }
                 }
                 return false;
@@ -279,7 +279,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM events_users_futures WHERE EventUserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.EventUserID);
+                            cmd.Parameters.AddWithValue("@id", this.EventUserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -296,13 +296,13 @@ namespace GiftServer
                                             + "EventName = @name, "
                                             + "EventDescription = @descrip "
                                             + "WHERE EventUserID = @id;";
-                            cmd.Parameters.AddWithValue("@uid", this.user.UserId);
+                            cmd.Parameters.AddWithValue("@uid", this.User.UserId);
                             cmd.Parameters.AddWithValue("@day", this.Day);
                             cmd.Parameters.AddWithValue("@month", this.Month);
                             cmd.Parameters.AddWithValue("@year", this.Year);
                             cmd.Parameters.AddWithValue("@name", this.Name);
                             cmd.Parameters.AddWithValue("@description", this.Description);
-                            cmd.Parameters.AddWithValue("@id", this.EventUserID);
+                            cmd.Parameters.AddWithValue("@id", this.EventUserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -317,7 +317,7 @@ namespace GiftServer
                                     cmd.Connection = con;
                                     cmd.CommandText = "INSERT INTO events_users_futures (EventUserID, EventYear, EventMonth, EventDay) "
                                                     + "VALUES (@euid, @year, @month, @day);";
-                                    cmd.Parameters.AddWithValue("@euid", this.EventUserID);
+                                    cmd.Parameters.AddWithValue("@euid", this.EventUserId);
                                     cmd.Parameters.AddWithValue("@year", future.Year);
                                     cmd.Parameters.AddWithValue("@month", future.Month);
                                     cmd.Parameters.AddWithValue("@day", future.Day);
@@ -349,7 +349,7 @@ namespace GiftServer
             public bool Delete()
             {
                 // if ID == -1, don't do anything
-                if (EventUserID == -1)
+                if (EventUserId == -1)
                 {
                     return false;
                 }
@@ -362,7 +362,7 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "DELETE FROM events_users_groups WHERE EventUserID = @id;";
-                        cmd.Parameters.AddWithValue("@id", this.EventUserID);
+                        cmd.Parameters.AddWithValue("@id", this.EventUserId);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                     }
@@ -371,7 +371,7 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "DELETE FROM events_users_futures WHERE EventUserID = @id;";
-                        cmd.Parameters.AddWithValue("@id", this.EventUserID);
+                        cmd.Parameters.AddWithValue("@id", this.EventUserId);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                     }
@@ -379,7 +379,7 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "DELETE FROM events_users WHERE EventUserID = @id;";
-                        cmd.Parameters.AddWithValue("@id", this.EventUserID);
+                        cmd.Parameters.AddWithValue("@id", this.EventUserId);
                         cmd.Prepare();
                         if (cmd.ExecuteNonQuery() == 0)
                         {
@@ -387,7 +387,7 @@ namespace GiftServer
                         }
                         else
                         {
-                            this.EventUserID = -1;
+                            this.EventUserId = -1;
                             return true;
                         }
 

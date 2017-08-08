@@ -70,7 +70,7 @@ namespace GiftServer
                             while (reader.Read())
                             {
                                 EventUser evnt = new EventUser(Convert.ToInt64(reader["EventUserID"]));
-                                HtmlNode eventEntry = HtmlNode.CreateNode("<tr id=\"event" + evnt.EventUserID + "\"><td><h3><span id=\"eventCloser" + evnt.EventUserID + "\" class=\"glyphicon glyphicon-remove event-closer\"></span></h3></td>"
+                                HtmlNode eventEntry = HtmlNode.CreateNode("<tr id=\"event" + evnt.EventUserId + "\"><td><h3><span id=\"eventCloser" + evnt.EventUserId + "\" class=\"glyphicon glyphicon-remove event-closer\"></span></h3></td>"
                                                                         + "<td class=\"event-name\"><h3>" + HttpUtility.HtmlEncode(evnt.Name) + " </h3></td></tr>");
                                 events.AppendChild(eventEntry);
                             }
@@ -91,7 +91,7 @@ namespace GiftServer
                             {
                                 // Create a group
                                 Group group = new Group(Convert.ToInt64(reader["GroupID"]));
-                                HtmlNode groupEntry = HtmlNode.CreateNode("<tr id=\"group" + group.GroupID + "\"><td><h3><span id=\"groupCloser" + group.GroupID + "\" class=\"glyphicon glyphicon-remove group-closer\"></span></h3></td>"
+                                HtmlNode groupEntry = HtmlNode.CreateNode("<tr id=\"group" + group.GroupId + "\"><td><h3><span id=\"groupCloser" + group.GroupId + "\" class=\"glyphicon glyphicon-remove group-closer\"></span></h3></td>"
                                                                         + "<td class=\"group-name\"><h3>" + HttpUtility.HtmlEncode(group.Name) + " </h3></td></tr>");
                                 groups.AppendChild(groupEntry);
                             }

@@ -11,8 +11,8 @@ namespace GiftServer
     {
         public class Gift : ISynchronizable, IShowable
         {
-            public long Id = -1;
-            public User user;
+            public long GiftId = -1;
+            public User User;
             public string Name;
             public string Description;
             public string Url;
@@ -22,7 +22,7 @@ namespace GiftServer
             public string Color;
             public string ColorText;
             public string Size;
-            public Category category;
+            public Category Category;
             public double Rating;
             public DateTime TimeStamp;
             public DateTime ReceivedDate;
@@ -42,7 +42,7 @@ namespace GiftServer
                         {
                             if (reader.Read())
                             {
-                                user = new User(Convert.ToInt64(reader["UserID"]));
+                                User = new User(Convert.ToInt64(reader["UserID"]));
                                 Name = Convert.ToString(reader["GiftName"]);
                                 Description = Convert.ToString(reader["GiftDescription"]);
                                 Url = Convert.ToString(reader["GiftURL"]);
@@ -52,7 +52,7 @@ namespace GiftServer
                                 Color = Convert.ToString(reader["GiftColor"]);
                                 ColorText = Convert.ToString(reader["GiftColorText"]);
                                 Size = Convert.ToString(reader["GiftSize"]);
-                                category = new Category(Convert.ToInt64(reader["CategoryID"]));
+                                Category = new Category(Convert.ToInt64(reader["CategoryID"]));
                                 Rating = Convert.ToDouble(reader["GiftRating"]);
                                 TimeStamp = (DateTime)(reader["GiftAddStamp"]);
                                 try
@@ -86,19 +86,19 @@ namespace GiftServer
             public void SaveImage(MultipartParser parser)
             {
                 ImageProcessor processor = new ImageProcessor(parser);
-                File.WriteAllBytes(Resources.BasePath + "/resources/images/gifts/Gift" + this.Id + Resources.ImageFormat, processor.Data);
+                File.WriteAllBytes(Resources.BasePath + "/resources/images/gifts/Gift" + this.GiftId + Resources.ImageFormat, processor.Data);
             }
             public void RemoveImage()
             {
-                File.Delete(Resources.BasePath + "/resources/images/gifts/Gift" + this.Id + Resources.ImageFormat);
+                File.Delete(Resources.BasePath + "/resources/images/gifts/Gift" + this.GiftId + Resources.ImageFormat);
             }
             public string GetImage()
             {
-                return GetImage(this.Id);
+                return GetImage(this.GiftId);
             }
             public string GetImage(long id)
             {
-                return Resources.BasePath + "/resources/images/gifts/Gift" + this.Id + Resources.ImageFormat;
+                return Resources.BasePath + "/resources/images/gifts/Gift" + this.GiftId + Resources.ImageFormat;
             }
         }
     }
