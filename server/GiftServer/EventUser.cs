@@ -245,7 +245,7 @@ namespace GiftServer
                         cmd.Connection = con;
                         cmd.CommandText = "INSERT INTO events_users (UserID, EventID, EventName, EventDescription, EventDay, EventMonth, EventYear, EventRecurs) "
                                         + " VALUES (@uid, @eid, @eName, @eDesc, @eDay, @eMonth, @eYear, @eRecurs);";
-                        cmd.Parameters.AddWithValue("@uid", this.user.UserID);
+                        cmd.Parameters.AddWithValue("@uid", this.user.UserId);
                         if (_defaultEvent != null)
                         {
                             cmd.Parameters.AddWithValue("@eid", this._defaultEvent.EventID);
@@ -296,7 +296,7 @@ namespace GiftServer
                                             + "EventName = @name, "
                                             + "EventDescription = @descrip "
                                             + "WHERE EventUserID = @id;";
-                            cmd.Parameters.AddWithValue("@uid", this.user.UserID);
+                            cmd.Parameters.AddWithValue("@uid", this.user.UserId);
                             cmd.Parameters.AddWithValue("@day", this.Day);
                             cmd.Parameters.AddWithValue("@month", this.Month);
                             cmd.Parameters.AddWithValue("@year", this.Year);

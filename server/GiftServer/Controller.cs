@@ -94,10 +94,10 @@ namespace GiftServer
                                         case "Signup":
                                             _user = new User
                                             {
-                                                firstName = _dict["firstName"],
-                                                lastName = _dict["lastName"],
-                                                email = _dict["email"],
-                                                passwordHash = _dict["password"]
+                                                FirstName = _dict["firstName"],
+                                                LastName = _dict["lastName"],
+                                                Email = _dict["email"],
+                                                PasswordHash = _dict["password"]
                                             };
                                             _user.Create();
                                             return LoginManager.SuccessSignup();
@@ -188,7 +188,7 @@ namespace GiftServer
                     // File exists: Check if filename even needs authentication:
                     if (Path.GetFileName(Path.GetDirectoryName(path)).Equals("users"))
                     {
-                        if (_user != null && Path.GetFileNameWithoutExtension(path).Equals("User" + _user.UserID))
+                        if (_user != null && Path.GetFileNameWithoutExtension(path).Equals("User" + _user.UserId))
                         {
                             byte[] buffer = File.ReadAllBytes(path);
                             _response.ContentLength64 = buffer.Length;
@@ -209,7 +209,7 @@ namespace GiftServer
                             {
                                 cmd.Connection = con;
                                 cmd.CommandText = "SELECT GiftID FROM gifts WHERE UserID = @id;";
-                                cmd.Parameters.AddWithValue("@id", _user.UserID);
+                                cmd.Parameters.AddWithValue("@id", _user.UserId);
                                 cmd.Prepare();
                                 using (MySqlDataReader reader = cmd.ExecuteReader())
                                 {
@@ -274,7 +274,7 @@ namespace GiftServer
                 try
                 {
                     _user = new User(email, password);
-                    Cookie logger = new Cookie("UserID", Convert.ToString(_user.UserID));
+                    Cookie logger = new Cookie("UserID", Convert.ToString(_user.UserId));
                     _response.Cookies.Add(logger);
                     _response.AppendHeader("dest", "dashboard");
                     return ParseQuery();
@@ -295,18 +295,18 @@ namespace GiftServer
                 {
                     case "name":
                         // Update this user's name, then respond back with success:
-                        _user.firstName = _dict["firstName"];
-                        _user.lastName = _dict["lastName"];
+                        _user.FirstName = _dict["firstName"];
+                        _user.LastName = _dict["lastName"];
                         break;
                     case "email":
-                        _user.email = _dict["email"];
+                        _user.Email = _dict["email"];
                         break;
                     case "birthday":
-                        _user.birthMonth = Convert.ToInt32(_dict["month"]);
-                        _user.birthDay = Convert.ToInt32(_dict["day"]);
+                        _user.BirthMonth = Convert.ToInt32(_dict["month"]);
+                        _user.BirthDay = Convert.ToInt32(_dict["day"]);
                         break;
                     case "bio":
-                        _user.bio = _dict["bio"];
+                        _user.Bio = _dict["bio"];
                         break;
                     case "delete":
                         _user.Delete();

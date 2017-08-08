@@ -13,16 +13,16 @@ namespace GiftServer
     {
         public class User : ISynchronizable, IShowable
         {
-            public long UserID = -1;
-            public string firstName;
-            public string lastName;
-            public string email;
-            public string passwordHash;
-            public int theme;
-            public int birthMonth;
-            public int birthDay;
-            public string bio;
-            public DateTime dateJoined;
+            public long UserId = -1;
+            public string FirstName;
+            public string LastName;
+            public string Email;
+            public string PasswordHash;
+            public int Theme;
+            public int BirthMonth;
+            public int BirthDay;
+            public string Bio;
+            public DateTime DateJoined;
             public User(long id)
             {
                 // User is already logged in; just fetch their information!
@@ -42,16 +42,16 @@ namespace GiftServer
                         {
                             if (reader.Read())
                             {
-                                this.UserID = id;
-                                this.firstName = Convert.ToString(reader["FirstName"]);
-                                this.lastName = Convert.ToString(reader["LastName"]);
-                                this.email = Convert.ToString(reader["UserEmail"]);
-                                this.passwordHash = Convert.ToString(reader["PasswordHash"]);
-                                this.theme = Convert.ToInt32(reader["UserTheme"]);
-                                this.birthDay = Convert.ToInt32(reader["UserBirthDay"]);
-                                this.birthMonth = Convert.ToInt32(reader["UserBirthMonth"]);
-                                this.dateJoined = (DateTime)(reader["TimeCreated"]);
-                                this.bio = Convert.ToString(reader["UserBio"]);
+                                this.UserId = id;
+                                this.FirstName = Convert.ToString(reader["FirstName"]);
+                                this.LastName = Convert.ToString(reader["LastName"]);
+                                this.Email = Convert.ToString(reader["UserEmail"]);
+                                this.PasswordHash = Convert.ToString(reader["PasswordHash"]);
+                                this.Theme = Convert.ToInt32(reader["UserTheme"]);
+                                this.BirthDay = Convert.ToInt32(reader["UserBirthDay"]);
+                                this.BirthMonth = Convert.ToInt32(reader["UserBirthMonth"]);
+                                this.DateJoined = (DateTime)(reader["TimeCreated"]);
+                                this.Bio = Convert.ToString(reader["UserBio"]);
                                 
                             }
                             else
@@ -89,21 +89,21 @@ namespace GiftServer
                             else
                             {
                                 // Check password
-                                if (!PasswordHash.Verify(password, Convert.ToString(reader["PasswordHash"])))
+                                if (!Security.PasswordHash.Verify(password, Convert.ToString(reader["PasswordHash"])))
                                 {
                                     // Not correct, throw new exception!
                                     throw new InvalidPasswordException();
                                 }
-                                UserID = Convert.ToInt64(reader["UserID"]);
-                                this.firstName = Convert.ToString(reader["FirstName"]);
-                                this.lastName = Convert.ToString(reader["LastName"]);
-                                this.email = email;
-                                this.passwordHash = PasswordHash.Hash(password);
-                                this.theme = Convert.ToInt32(reader["UserTheme"]);
-                                this.birthDay = Convert.ToInt32(reader["UserBirthMonth"]);
-                                this.birthMonth = Convert.ToInt32(reader["UserBirthDay"]);
-                                this.dateJoined = (DateTime)(reader["TimeCreated"]);
-                                this.bio = Convert.ToString(reader["UserBio"]);
+                                UserId = Convert.ToInt64(reader["UserID"]);
+                                this.FirstName = Convert.ToString(reader["FirstName"]);
+                                this.LastName = Convert.ToString(reader["LastName"]);
+                                this.Email = email;
+                                this.PasswordHash = Security.PasswordHash.Hash(password);
+                                this.Theme = Convert.ToInt32(reader["UserTheme"]);
+                                this.BirthDay = Convert.ToInt32(reader["UserBirthMonth"]);
+                                this.BirthMonth = Convert.ToInt32(reader["UserBirthDay"]);
+                                this.DateJoined = (DateTime)(reader["TimeCreated"]);
+                                this.Bio = Convert.ToString(reader["UserBio"]);
                             }
                         }
                     }
@@ -114,7 +114,7 @@ namespace GiftServer
 
             public bool UpdatePassword(string pass)
             {
-                if (this.UserID == -1)
+                if (this.UserId == -1)
                 {
                     return false;
                 }
@@ -125,8 +125,8 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "UPDATE passwords SET PasswordHash = @pwd WHERE UserID = @id;";
-                        cmd.Parameters.AddWithValue("@pwd", PasswordHash.Hash(pass));
-                        cmd.Parameters.AddWithValue("@id", this.UserID);
+                        cmd.Parameters.AddWithValue("@pwd", Security.PasswordHash.Hash(pass));
+                        cmd.Parameters.AddWithValue("@id", this.UserId);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                     }
@@ -143,14 +143,14 @@ namespace GiftServer
                         // Check if email present:
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT UserID FROM users WHERE UserEmail = @email;";
-                        cmd.Parameters.AddWithValue("@email", this.email);
+                        cmd.Parameters.AddWithValue("@email", this.Email);
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
                             if (reader.Read())
                             {
                                 // User already exists; throw exception:
-                                throw new DuplicateUserException(this.email);
+                                throw new DuplicateUserException(this.Email);
                             }
                         }
                     }
@@ -159,27 +159,27 @@ namespace GiftServer
                         cmd.Connection = con;
                         cmd.CommandText = "INSERT INTO users (FirstName, LastName, UserEmail, UserTheme, UserBirthMonth, UserBirthDay, UserBio) "
                             + "VALUES (@fName, @lName, @email, @pid, @theme, @bmonth, @bday, @bio);";
-                        cmd.Parameters.AddWithValue("@fName", this.firstName);
-                        cmd.Parameters.AddWithValue("@lName", this.lastName);
-                        cmd.Parameters.AddWithValue("@email", this.email);
-                        cmd.Parameters.AddWithValue("@theme", this.theme);
-                        cmd.Parameters.AddWithValue("@bmonth", this.birthMonth);
-                        cmd.Parameters.AddWithValue("@bday", this.birthDay);
-                        cmd.Parameters.AddWithValue("@bio", this.bio);
+                        cmd.Parameters.AddWithValue("@fName", this.FirstName);
+                        cmd.Parameters.AddWithValue("@lName", this.LastName);
+                        cmd.Parameters.AddWithValue("@email", this.Email);
+                        cmd.Parameters.AddWithValue("@theme", this.Theme);
+                        cmd.Parameters.AddWithValue("@bmonth", this.BirthMonth);
+                        cmd.Parameters.AddWithValue("@bday", this.BirthDay);
+                        cmd.Parameters.AddWithValue("@bio", this.Bio);
                         cmd.Prepare();
                         if (cmd.ExecuteNonQuery() == 0)
                         {
                             return false;
                         }
-                        this.UserID = cmd.LastInsertedId;
+                        this.UserId = cmd.LastInsertedId;
                     }
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
                         // Create new password:
                         cmd.CommandText = "INSERT INTO passwords (PasswordHash, UserID) VALUES (@pwd, @id);";
-                        cmd.Parameters.AddWithValue("@pwd", PasswordHash.Hash(this.passwordHash));
-                        cmd.Parameters.AddWithValue("@id", this.UserID);
+                        cmd.Parameters.AddWithValue("@pwd", Security.PasswordHash.Hash(this.PasswordHash));
+                        cmd.Parameters.AddWithValue("@id", this.UserId);
                         cmd.Prepare();
                         if (cmd.ExecuteNonQuery() == 0)
                         {
@@ -191,11 +191,11 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT TimeCreated FROM users WHERE UserID = @id;";
-                        cmd.Parameters.AddWithValue("@id", this.UserID);
+                        cmd.Parameters.AddWithValue("@id", this.UserId);
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            this.dateJoined = (DateTime)(reader["TimeCreated"]);
+                            this.DateJoined = (DateTime)(reader["TimeCreated"]);
                         }
                     }
                 }
@@ -204,7 +204,7 @@ namespace GiftServer
 
             public bool Update()
             {
-                if (this.UserID == -1)
+                if (this.UserId == -1)
                 {
                     // User does not exist - create new one instead.
                     return Create();
@@ -217,15 +217,15 @@ namespace GiftServer
                         // Check if email present:
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT UserID FROM users WHERE UserEmail = @email AND UserID <> @id;";
-                        cmd.Parameters.AddWithValue("@email", this.email);
-                        cmd.Parameters.AddWithValue("@id", this.UserID);
+                        cmd.Parameters.AddWithValue("@email", this.Email);
+                        cmd.Parameters.AddWithValue("@id", this.UserId);
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
                             if (reader.Read())
                             {
                                 // User already exists; throw exception:
-                                throw new DuplicateUserException(this.email);
+                                throw new DuplicateUserException(this.Email);
                             }
                         }
                     }
@@ -242,14 +242,14 @@ namespace GiftServer
                             + "UserBirthMonth = @bmonth, "
                             + "UserBirthDay = @bday "
                             + "WHERE UserID = @id;";
-                        cmd.Parameters.AddWithValue("@fName", this.firstName);
-                        cmd.Parameters.AddWithValue("@lName", this.lastName);
-                        cmd.Parameters.AddWithValue("@email", this.email);
-                        cmd.Parameters.AddWithValue("@theme", this.theme);
-                        cmd.Parameters.AddWithValue("@bio", this.bio);
-                        cmd.Parameters.AddWithValue("@bmonth", this.birthMonth);
-                        cmd.Parameters.AddWithValue("@bday", this.birthDay);
-                        cmd.Parameters.AddWithValue("@id", this.UserID);
+                        cmd.Parameters.AddWithValue("@fName", this.FirstName);
+                        cmd.Parameters.AddWithValue("@lName", this.LastName);
+                        cmd.Parameters.AddWithValue("@email", this.Email);
+                        cmd.Parameters.AddWithValue("@theme", this.Theme);
+                        cmd.Parameters.AddWithValue("@bio", this.Bio);
+                        cmd.Parameters.AddWithValue("@bmonth", this.BirthMonth);
+                        cmd.Parameters.AddWithValue("@bday", this.BirthDay);
+                        cmd.Parameters.AddWithValue("@id", this.UserId);
                         cmd.Prepare();
                         return (cmd.ExecuteNonQuery() == 1);
                     }
@@ -260,7 +260,7 @@ namespace GiftServer
             public bool Delete()
             {
                 // TODO: Gauruntee not admin of any group
-                if (this.UserID == -1)
+                if (this.UserId == -1)
                 {
                     // User doesn't exist - don't delete
                     return false;
@@ -276,7 +276,7 @@ namespace GiftServer
                             // Get EventUserID:
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM events_users_futures WHERE EventUserID IN (SELECT EventUserID FROM events_users WHERE UserID = @id);";
-                            cmd.Parameters.AddWithValue("@id", this.UserID);
+                            cmd.Parameters.AddWithValue("@id", this.UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -285,7 +285,7 @@ namespace GiftServer
                             // Get EventUserID:
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM events_users_groups WHERE EventUserID IN (SELECT EventUserID FROM events_users WHERE UserID = @id);";
-                            cmd.Parameters.AddWithValue("@id", this.UserID);
+                            cmd.Parameters.AddWithValue("@id", this.UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -293,7 +293,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM events_users WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.UserID);
+                            cmd.Parameters.AddWithValue("@id", this.UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -302,7 +302,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM purchases WHERE ReservationID IN (SELECT ReservationID FROM reservations WHERE UserID = @id);";
-                            cmd.Parameters.AddWithValue("@id", this.UserID);
+                            cmd.Parameters.AddWithValue("@id", this.UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -311,7 +311,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM reservations WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.UserID);
+                            cmd.Parameters.AddWithValue("@id", this.UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -320,7 +320,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM receptions WHERE GiftID IN (SELECT GiftID FROM gifts WHERE UserID = @id);";
-                            cmd.Parameters.AddWithValue("@id", this.UserID);
+                            cmd.Parameters.AddWithValue("@id", this.UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -328,7 +328,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM groups_gifts WHERE GiftID IN (SELECT GiftID FROM gifts WHERE UserID = @id);";
-                            cmd.Parameters.AddWithValue("@id", this.UserID);
+                            cmd.Parameters.AddWithValue("@id", this.UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -336,7 +336,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM gifts WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.UserID);
+                            cmd.Parameters.AddWithValue("@id", this.UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -345,7 +345,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM groups_users WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.UserID);
+                            cmd.Parameters.AddWithValue("@id", this.UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -355,7 +355,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM passwordresets WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.UserID);
+                            cmd.Parameters.AddWithValue("@id", this.UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -364,7 +364,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM users_preferences WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.UserID);
+                            cmd.Parameters.AddWithValue("@id", this.UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -373,7 +373,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM passwords WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.UserID);
+                            cmd.Parameters.AddWithValue("@id", this.UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -382,11 +382,11 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM users WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.UserID);
+                            cmd.Parameters.AddWithValue("@id", this.UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
-                        this.UserID = -1;
+                        this.UserId = -1;
                         return true;
                     }
                 }
@@ -394,15 +394,15 @@ namespace GiftServer
             public void SaveImage(MultipartParser parser)
             {
                 ImageProcessor processor = new ImageProcessor(parser);
-                File.WriteAllBytes(Resources.BasePath + "/resources/images/users/User" + this.UserID + Resources.ImageFormat, processor.Data);
+                File.WriteAllBytes(Resources.BasePath + "/resources/images/users/User" + this.UserId + Resources.ImageFormat, processor.Data);
             }
             public void RemoveImage()
             {
-                File.Delete(Resources.BasePath + "/resources/images/users/User" + this.UserID + Resources.ImageFormat);
+                File.Delete(Resources.BasePath + "/resources/images/users/User" + this.UserId + Resources.ImageFormat);
             }
             public string GetImage()
             {
-                return GetImage(this.UserID);
+                return GetImage(this.UserId);
             }
             public static string GetImage(long userID)
             {

@@ -20,16 +20,16 @@ namespace GiftServer
                 HtmlNode img = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userImage \")]");
                 img.Attributes["src"].Value = user.GetImage();
                 HtmlNode name = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
-                name.InnerHtml = HttpUtility.HtmlEncode(user.firstName + " " + user.lastName);
+                name.InnerHtml = HttpUtility.HtmlEncode(user.FirstName + " " + user.LastName);
                 HtmlNode timeMember = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" timeMember \")]");
-                timeMember.InnerHtml = HttpUtility.HtmlEncode("Member since " + user.dateJoined.ToString("MMMM d, yyyy"));
+                timeMember.InnerHtml = HttpUtility.HtmlEncode("Member since " + user.DateJoined.ToString("MMMM d, yyyy"));
                 HtmlNode email = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" email \")]");
-                email.InnerHtml = HttpUtility.HtmlEncode("Email: " + user.email);
+                email.InnerHtml = HttpUtility.HtmlEncode("Email: " + user.Email);
                 HtmlNode id = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@name), \" \"), \" userID \")]");
-                id.Attributes["value"].Value = user.UserID.ToString();
-                if (user.birthMonth != 0)
+                id.Attributes["value"].Value = user.UserId.ToString();
+                if (user.BirthMonth != 0)
                 {
-                    DateTime dob = new DateTime(1999, user.birthMonth, user.birthDay);
+                    DateTime dob = new DateTime(1999, user.BirthMonth, user.BirthDay);
                     HtmlNode birthday = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" birthday \")]");
                     birthday.InnerHtml = HttpUtility.HtmlEncode("Birthday: " + dob.ToString("MMMM d"));
                 }
@@ -39,7 +39,7 @@ namespace GiftServer
                     birthday.InnerHtml = HttpUtility.HtmlEncode("Birthday: " + "Not Set");
                 }
                 HtmlNode theme = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" theme \")]");
-                switch (user.theme)
+                switch (user.Theme)
                 {
                     case 1:
                         theme.Attributes["style"].Value = "background: red;";
@@ -52,7 +52,7 @@ namespace GiftServer
                         break;
                 }
                 HtmlNode bio = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" bio \")]");
-                bio.InnerHtml = HttpUtility.HtmlEncode(user.bio);
+                bio.InnerHtml = HttpUtility.HtmlEncode(user.Bio);
 
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -62,7 +62,7 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT EventUserID FROM events_users WHERE UserID = @id;";
-                        cmd.Parameters.AddWithValue("@id", user.UserID);
+                        cmd.Parameters.AddWithValue("@id", user.UserId);
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
@@ -81,7 +81,7 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT GroupID FROM groups_users WHERE groups_users.UserID = @id;";
-                        cmd.Parameters.AddWithValue("@id", user.UserID);
+                        cmd.Parameters.AddWithValue("@id", user.UserId);
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
