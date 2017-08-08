@@ -13,7 +13,7 @@ namespace GiftServer
     {
         public class User : ISynchronizable, IShowable
         {
-            public long Id = -1;
+            public long UserID = -1;
             public string firstName;
             public string lastName;
             public string email;
@@ -42,7 +42,7 @@ namespace GiftServer
                         {
                             if (reader.Read())
                             {
-                                this.Id = id;
+                                this.UserID = id;
                                 this.firstName = Convert.ToString(reader["FirstName"]);
                                 this.lastName = Convert.ToString(reader["LastName"]);
                                 this.email = Convert.ToString(reader["UserEmail"]);
@@ -94,7 +94,7 @@ namespace GiftServer
                                     // Not correct, throw new exception!
                                     throw new InvalidPasswordException();
                                 }
-                                Id = Convert.ToInt64(reader["UserID"]);
+                                UserID = Convert.ToInt64(reader["UserID"]);
                                 this.firstName = Convert.ToString(reader["FirstName"]);
                                 this.lastName = Convert.ToString(reader["LastName"]);
                                 this.email = email;
@@ -114,7 +114,7 @@ namespace GiftServer
 
             public bool UpdatePassword(string pass)
             {
-                if (this.Id == -1)
+                if (this.UserID == -1)
                 {
                     return false;
                 }
@@ -126,7 +126,7 @@ namespace GiftServer
                         cmd.Connection = con;
                         cmd.CommandText = "UPDATE passwords SET PasswordHash = @pwd WHERE UserID = @id;";
                         cmd.Parameters.AddWithValue("@pwd", PasswordHash.Hash(pass));
-                        cmd.Parameters.AddWithValue("@id", this.Id);
+                        cmd.Parameters.AddWithValue("@id", this.UserID);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                     }
@@ -171,7 +171,7 @@ namespace GiftServer
                         {
                             return false;
                         }
-                        this.Id = cmd.LastInsertedId;
+                        this.UserID = cmd.LastInsertedId;
                     }
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
@@ -179,7 +179,7 @@ namespace GiftServer
                         // Create new password:
                         cmd.CommandText = "INSERT INTO passwords (PasswordHash, UserID) VALUES (@pwd, @id);";
                         cmd.Parameters.AddWithValue("@pwd", PasswordHash.Hash(this.passwordHash));
-                        cmd.Parameters.AddWithValue("@id", this.Id);
+                        cmd.Parameters.AddWithValue("@id", this.UserID);
                         cmd.Prepare();
                         if (cmd.ExecuteNonQuery() == 0)
                         {
@@ -191,7 +191,7 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT TimeCreated FROM users WHERE UserID = @id;";
-                        cmd.Parameters.AddWithValue("@id", this.Id);
+                        cmd.Parameters.AddWithValue("@id", this.UserID);
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
@@ -204,7 +204,7 @@ namespace GiftServer
 
             public bool Update()
             {
-                if (this.Id == -1)
+                if (this.UserID == -1)
                 {
                     // User does not exist - create new one instead.
                     return Create();
@@ -218,7 +218,7 @@ namespace GiftServer
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT UserID FROM users WHERE UserEmail = @email AND UserID <> @id;";
                         cmd.Parameters.AddWithValue("@email", this.email);
-                        cmd.Parameters.AddWithValue("@id", this.Id);
+                        cmd.Parameters.AddWithValue("@id", this.UserID);
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
@@ -249,7 +249,7 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@bio", this.bio);
                         cmd.Parameters.AddWithValue("@bmonth", this.birthMonth);
                         cmd.Parameters.AddWithValue("@bday", this.birthDay);
-                        cmd.Parameters.AddWithValue("@id", this.Id);
+                        cmd.Parameters.AddWithValue("@id", this.UserID);
                         cmd.Prepare();
                         return (cmd.ExecuteNonQuery() == 1);
                     }
@@ -260,7 +260,7 @@ namespace GiftServer
             public bool Delete()
             {
                 // TODO: Gauruntee not admin of any group
-                if (this.Id == -1)
+                if (this.UserID == -1)
                 {
                     // User doesn't exist - don't delete
                     return false;
@@ -276,7 +276,7 @@ namespace GiftServer
                             // Get EventUserID:
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM events_users_futures WHERE EventUserID IN (SELECT EventUserID FROM events_users WHERE UserID = @id);";
-                            cmd.Parameters.AddWithValue("@id", this.Id);
+                            cmd.Parameters.AddWithValue("@id", this.UserID);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -285,7 +285,7 @@ namespace GiftServer
                             // Get EventUserID:
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM events_users_groups WHERE EventUserID IN (SELECT EventUserID FROM events_users WHERE UserID = @id);";
-                            cmd.Parameters.AddWithValue("@id", this.Id);
+                            cmd.Parameters.AddWithValue("@id", this.UserID);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -293,7 +293,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM events_users WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.Id);
+                            cmd.Parameters.AddWithValue("@id", this.UserID);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -302,7 +302,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM purchases WHERE ReservationID IN (SELECT ReservationID FROM reservations WHERE UserID = @id);";
-                            cmd.Parameters.AddWithValue("@id", this.Id);
+                            cmd.Parameters.AddWithValue("@id", this.UserID);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -311,7 +311,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM reservations WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.Id);
+                            cmd.Parameters.AddWithValue("@id", this.UserID);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -320,7 +320,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM receptions WHERE GiftID IN (SELECT GiftID FROM gifts WHERE UserID = @id);";
-                            cmd.Parameters.AddWithValue("@id", this.Id);
+                            cmd.Parameters.AddWithValue("@id", this.UserID);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -328,7 +328,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM groups_gifts WHERE GiftID IN (SELECT GiftID FROM gifts WHERE UserID = @id);";
-                            cmd.Parameters.AddWithValue("@id", this.Id);
+                            cmd.Parameters.AddWithValue("@id", this.UserID);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -336,7 +336,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM gifts WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.Id);
+                            cmd.Parameters.AddWithValue("@id", this.UserID);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -345,7 +345,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM groups_users WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.Id);
+                            cmd.Parameters.AddWithValue("@id", this.UserID);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -355,7 +355,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM passwordresets WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.Id);
+                            cmd.Parameters.AddWithValue("@id", this.UserID);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -364,7 +364,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM users_preferences WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.Id);
+                            cmd.Parameters.AddWithValue("@id", this.UserID);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -373,7 +373,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM passwords WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.Id);
+                            cmd.Parameters.AddWithValue("@id", this.UserID);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -382,11 +382,11 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM users WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.Id);
+                            cmd.Parameters.AddWithValue("@id", this.UserID);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
-                        this.Id = -1;
+                        this.UserID = -1;
                         return true;
                     }
                 }
@@ -394,15 +394,15 @@ namespace GiftServer
             public void SaveImage(MultipartParser parser)
             {
                 ImageProcessor processor = new ImageProcessor(parser);
-                File.WriteAllBytes(Resources.BasePath + "/resources/images/users/User" + this.Id + Resources.ImageFormat, processor.Data);
+                File.WriteAllBytes(Resources.BasePath + "/resources/images/users/User" + this.UserID + Resources.ImageFormat, processor.Data);
             }
             public void RemoveImage()
             {
-                File.Delete(Resources.BasePath + "/resources/images/users/User" + this.Id + Resources.ImageFormat);
+                File.Delete(Resources.BasePath + "/resources/images/users/User" + this.UserID + Resources.ImageFormat);
             }
             public string GetImage()
             {
-                return GetImage(this.Id);
+                return GetImage(this.UserID);
             }
             public static string GetImage(long userID)
             {

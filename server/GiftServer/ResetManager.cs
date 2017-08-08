@@ -42,7 +42,7 @@ namespace GiftServer
                 HtmlDocument pg = new HtmlDocument();
                 pg.LoadHtml(Resources.header + Resources.passwordReset);
                 HtmlNode hidden = pg.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@name), \" \"), \" userID \")]");
-                hidden.Attributes["value"].Value = Convert.ToString(user.Id);
+                hidden.Attributes["value"].Value = Convert.ToString(user.UserID);
                 return pg.DocumentNode.OuterHtml;
             }
             public static string GenerateEmail(string token)

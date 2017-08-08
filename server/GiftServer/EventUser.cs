@@ -245,7 +245,7 @@ namespace GiftServer
                         cmd.Connection = con;
                         cmd.CommandText = "INSERT INTO events_users (UserID, EventID, EventName, EventDescription, EventDay, EventMonth, EventYear, EventRecurs) "
                                         + " VALUES (@uid, @eid, @eName, @eDesc, @eDay, @eMonth, @eYear, @eRecurs);";
-                        cmd.Parameters.AddWithValue("@uid", this.user.Id);
+                        cmd.Parameters.AddWithValue("@uid", this.user.UserID);
                         if (_defaultEvent != null)
                         {
                             cmd.Parameters.AddWithValue("@eid", this._defaultEvent.EventID);
@@ -269,45 +269,61 @@ namespace GiftServer
             }
             public bool Update()
             {
-                // TODO: Finish this!
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
                     if (!IsDefault)
                     {
                         // If we're not default, then just update existing event.
-                        if (IsRecurring)
+                        using (MySqlCommand cmd = new MySqlCommand())
                         {
-                            // No more event futures
-                            using (MySqlCommand cmd = new MySqlCommand())
+                            cmd.Connection = con;
+                            cmd.CommandText = "DELETE FROM events_users_futures WHERE EventUserID = @id;";
+                            cmd.Parameters.AddWithValue("@id", this.EventUserID);
+                            cmd.Prepare();
+                            cmd.ExecuteNonQuery();
+                        }
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "UPDATE events_users "
+                                            + "SET UserID = @uid, "
+                                            + "EventID = NULL, "
+                                            + "EventDay = @day, "
+                                            + "EventMonth = @month, "
+                                            + "EventYear = @year, "
+                                            + "EventRecurs = TRUE, "
+                                            + "EventName = @name, "
+                                            + "EventDescription = @descrip "
+                                            + "WHERE EventUserID = @id;";
+                            cmd.Parameters.AddWithValue("@uid", this.user.UserID);
+                            cmd.Parameters.AddWithValue("@day", this.Day);
+                            cmd.Parameters.AddWithValue("@month", this.Month);
+                            cmd.Parameters.AddWithValue("@year", this.Year);
+                            cmd.Parameters.AddWithValue("@name", this.Name);
+                            cmd.Parameters.AddWithValue("@description", this.Description);
+                            cmd.Parameters.AddWithValue("@id", this.EventUserID);
+                            cmd.Prepare();
+                            cmd.ExecuteNonQuery();
+                        }
+                        if (!IsRecurring)
+                        {
+                            // Recreate EventFutures
+                            // For each event future, insert it:
+                            foreach (EventFuture future in this.Futures)
                             {
-                                cmd.Connection = con;
-                                cmd.CommandText = "DELETE FROM events_users_futures WHERE EventUserID = @id;";
-                                cmd.Parameters.AddWithValue("@id", this.EventUserID);
-                                cmd.Prepare();
-                                cmd.ExecuteNonQuery();
-                            }
-                            using (MySqlCommand cmd = new MySqlCommand())
-                            {
-                                cmd.Connection = con;
-                                cmd.CommandText = "UPDATE events_users "
-                                                + "SET UserID = @uid, "
-                                                + "EventID = NULL, "
-                                                + "EventDay = @day, "
-                                                + "EventMonth = @month, "
-                                                + "EventYear = @year, "
-                                                + "EventRecurs = TRUE, "
-                                                + "EventName = @name, "
-                                                + "EventDescription = @descrip "
-                                                + "WHERE EventUserID = @id;";
-                                cmd.Parameters.AddWithValue("@uid", this.user.Id);
-                                cmd.Parameters.AddWithValue("@day", this.Day);
-                                cmd.Parameters.AddWithValue("@month", this.Month);
-                                cmd.Parameters.AddWithValue("@year", this.Year);
-                                cmd.Parameters.AddWithValue("@name", this.Name);
-                                cmd.Parameters.AddWithValue("@description", this.Description);
-                                cmd.Parameters.AddWithValue("@id", this.EventUserID);
-
+                                using (MySqlCommand cmd = new MySqlCommand())
+                                {
+                                    cmd.Connection = con;
+                                    cmd.CommandText = "INSERT INTO events_users_futures (EventUserID, EventYear, EventMonth, EventDay) "
+                                                    + "VALUES (@euid, @year, @month, @day);";
+                                    cmd.Parameters.AddWithValue("@euid", this.EventUserID);
+                                    cmd.Parameters.AddWithValue("@year", future.Year);
+                                    cmd.Parameters.AddWithValue("@month", future.Month);
+                                    cmd.Parameters.AddWithValue("@day", future.Day);
+                                    cmd.Prepare();
+                                    cmd.ExecuteNonQuery();
+                                }
                             }
                         }
                     }
@@ -315,6 +331,16 @@ namespace GiftServer
                     {
                         // We'll need to copy event - We wouldn't be updating if we were using a default event
                         // Copy over all data, then call ourself AFTER isDefault is false!
+                        this.Name = _defaultEvent.Name;
+                        this.Description = _defaultEvent.Description;
+                        this.Day = _defaultEvent.Day;
+                        this.Month = _defaultEvent.Month;
+                        this.Year = _defaultEvent.Year;
+                        this.IsRecurring = _defaultEvent.IsRecurring;
+                        this.Futures = _defaultEvent.Futures;
+                        this.IsDefault = false;
+                        _defaultEvent = null;
+                        return Update();
                     }
                 }
                 // If isdefault, remove this and make it it's own event?

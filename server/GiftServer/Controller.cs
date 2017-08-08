@@ -188,7 +188,7 @@ namespace GiftServer
                     // File exists: Check if filename even needs authentication:
                     if (Path.GetFileName(Path.GetDirectoryName(path)).Equals("users"))
                     {
-                        if (_user != null && Path.GetFileNameWithoutExtension(path).Equals("User" + _user.Id))
+                        if (_user != null && Path.GetFileNameWithoutExtension(path).Equals("User" + _user.UserID))
                         {
                             byte[] buffer = File.ReadAllBytes(path);
                             _response.ContentLength64 = buffer.Length;
@@ -209,7 +209,7 @@ namespace GiftServer
                             {
                                 cmd.Connection = con;
                                 cmd.CommandText = "SELECT GiftID FROM gifts WHERE UserID = @id;";
-                                cmd.Parameters.AddWithValue("@id", _user.Id);
+                                cmd.Parameters.AddWithValue("@id", _user.UserID);
                                 cmd.Prepare();
                                 using (MySqlDataReader reader = cmd.ExecuteReader())
                                 {
@@ -274,7 +274,7 @@ namespace GiftServer
                 try
                 {
                     _user = new User(email, password);
-                    Cookie logger = new Cookie("UserID", Convert.ToString(_user.Id));
+                    Cookie logger = new Cookie("UserID", Convert.ToString(_user.UserID));
                     _response.Cookies.Add(logger);
                     _response.AppendHeader("dest", "dashboard");
                     return ParseQuery();
