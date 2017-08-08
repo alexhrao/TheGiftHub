@@ -11,6 +11,8 @@
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -63,6 +65,7 @@
     <Compile Include="Category.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="DefaultEvent.cs" />
+    <Compile Include="EventFuture.cs" />
     <Compile Include="Gift.cs" />
     <Compile Include="Group.cs" />
     <Compile Include="ImageProcessor.cs" />

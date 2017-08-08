@@ -223,7 +223,11 @@ namespace GiftServer
                                 while (reader.Read())
                                 {
                                     // Create new event future, add to list.
-                                    Futures.Add(new EventFuture(Convert.ToInt32(reader["EventYear"]), Convert.ToInt32(reader["EventMonth"]), Convert.ToInt32(reader["EventDay"])));
+                                    Futures.Add(new EventFuture(
+                                        Convert.ToInt64(reader["EventUserFutureID"]), 
+                                        Convert.ToInt32(reader["EventYear"]), 
+                                        Convert.ToInt32(reader["EventMonth"]), 
+                                        Convert.ToInt32(reader["EventDay"])));
                                 }
                             }
                         }

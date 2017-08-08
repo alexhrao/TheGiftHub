@@ -29,6 +29,7 @@ namespace GiftServer
                         {
                             if (reader.Read())
                             {
+                                this.GroupId = groupID;
                                 this.Name = Convert.ToString(reader["GroupName"]);
                                 this.Description = Convert.ToString(reader["GroupDescription"]);
                                 this.Admin = new User(Convert.ToInt64(reader["AdminID"]));

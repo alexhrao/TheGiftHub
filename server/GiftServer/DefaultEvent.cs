@@ -16,6 +16,7 @@ namespace GiftServer
             public readonly int Month;
             public readonly int Year;
             public readonly bool IsRecurring;
+
             public List<EventFuture> Futures = new List<EventFuture>();
 
             public DefaultEvent(long EventID)
@@ -58,25 +59,16 @@ namespace GiftServer
                                 while (reader.Read())
                                 {
                                     // Create new event future, add to list.
-                                    Futures.Add(new EventFuture(Convert.ToInt32(reader["EventYear"]), Convert.ToInt32(reader["EventMonth"]), Convert.ToInt32(reader["EventDay"])));
+                                    Futures.Add(new EventFuture(
+                                        Convert.ToInt64(reader["EventUserFutureID"]),
+                                        Convert.ToInt32(reader["EventYear"]), 
+                                        Convert.ToInt32(reader["EventMonth"]), 
+                                        Convert.ToInt32(reader["EventDay"])));
                                 }
                             }
                         }
                     }
                 }
-            }
-        }
-
-        public class EventFuture
-        {
-            public readonly int Day;
-            public readonly int Month;
-            public readonly int Year;
-            public EventFuture(int Year, int Month, int Day)
-            {
-                this.Year = Year;
-                this.Month = Month;
-                this.Day = Day;
             }
         }
     }

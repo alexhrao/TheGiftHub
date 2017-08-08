@@ -55,7 +55,7 @@ namespace GiftServer
 
         public class CategoryNotFoundException : Exception
         {
-            public CategoryNotFoundException(long id) : base("Category with " + id + " Not Found") { }
+            public CategoryNotFoundException(long id) : base("Category with ID " + id + " Not Found") { }
         }
 
         public abstract class GroupException : Exception
@@ -64,7 +64,7 @@ namespace GiftServer
         }
         public class GroupNotFoundException : GroupException
         {
-            public GroupNotFoundException(long id) : base("Group with " + id + " Not Found") { }
+            public GroupNotFoundException(long id) : base("Group with ID " + id + " Not Found") { }
         }
     }
 }
