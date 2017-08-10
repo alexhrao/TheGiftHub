@@ -6,6 +6,7 @@ using GiftServer.Exceptions;
 using System.IO;
 using GiftServer.Properties;
 using GiftServer.Server;
+using System.Collections.Generic;
 
 namespace GiftServer
 {
@@ -23,6 +24,98 @@ namespace GiftServer
             public int BirthDay;
             public string Bio;
             public DateTime DateJoined;
+            // On demand? Or on load?
+            private List<Gift> _gifts = null;
+            public List<Gift> Gifts
+            {
+                get
+                {
+                    _gifts = new List<Gift>();
+                    if (UserId != -1)
+                    {
+                        using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                        {
+                            con.Open();
+                            using (MySqlCommand cmd = new MySqlCommand())
+                            {
+                                cmd.Connection = con;
+                                cmd.CommandText = "SELECT GiftID FROM gifts WHERE UserID = @id;";
+                                cmd.Parameters.AddWithValue("@id", UserId);
+                                cmd.Prepare();
+                                using (MySqlDataReader reader = cmd.ExecuteReader())
+                                {
+                                    // add a new gift for each id:
+                                    while (reader.Read())
+                                    {
+                                        _gifts.Add(new Gift(Convert.ToInt64(reader["GiftID"])));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return _gifts;
+                }
+            }
+            private List<Group> _groups = null;
+            public List<Group> Groups
+            {
+                get
+                {
+                    _groups = new List<Group>();
+                    if (UserId != -1)
+                    {
+                        using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                        {
+                            con.Open();
+                            using (MySqlCommand cmd = new MySqlCommand())
+                            {
+                                cmd.Connection = con;
+                                cmd.CommandText = "SELECT GroupID FROM groups_users WHERE UserID = @id;";
+                                cmd.Parameters.AddWithValue("@id", UserId);
+                                cmd.Prepare();
+                                using (MySqlDataReader reader = cmd.ExecuteReader())
+                                {
+                                    while (reader.Read())
+                                    {
+                                        _groups.Add(new Group(Convert.ToInt64(reader["GroupID"])));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return _groups;
+                }
+            }
+            private List<EventUser> _events;
+            public List<EventUser> Events
+            {
+                get
+                {
+                    _events = new List<EventUser>();
+                    if (UserId != -1)
+                    {
+                        using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                        {
+                            con.Open();
+                            using (MySqlCommand cmd = new MySqlCommand())
+                            {
+                                cmd.Connection = con;
+                                cmd.CommandText = "SELECT EventUserID FROM events_users WHERE UserID = @id;";
+                                cmd.Parameters.AddWithValue("@id", UserId);
+                                cmd.Prepare();
+                                using (MySqlDataReader reader = cmd.ExecuteReader())
+                                {
+                                    while (reader.Read())
+                                    {
+                                        _events.Add(new EventUser(Convert.ToInt64(reader["EventUserID"])));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return _events;
+                }
+            }
             public User(long id)
             {
                 // User is already logged in; just fetch their information!

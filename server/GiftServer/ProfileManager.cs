@@ -54,51 +54,25 @@ namespace GiftServer
                 HtmlNode bio = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" bio \")]");
                 bio.InnerHtml = HttpUtility.HtmlEncode(user.Bio);
 
-                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                HtmlNode events = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" events \")]");
+                foreach (EventUser evnt in user.Events)
                 {
-                    con.Open();
-                    // Get events
-                    using (MySqlCommand cmd = new MySqlCommand())
-                    {
-                        cmd.Connection = con;
-                        cmd.CommandText = "SELECT EventUserID FROM events_users WHERE UserID = @id;";
-                        cmd.Parameters.AddWithValue("@id", user.UserId);
-                        cmd.Prepare();
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            HtmlNode events = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" events \")]");
-                            while (reader.Read())
-                            {
-                                EventUser evnt = new EventUser(Convert.ToInt64(reader["EventUserID"]));
-                                HtmlNode eventEntry = HtmlNode.CreateNode("<tr id=\"event" + evnt.EventUserId + "\"><td><h3><span id=\"eventCloser" + evnt.EventUserId + "\" class=\"glyphicon glyphicon-remove event-closer\"></span></h3></td>"
-                                                                        + "<td class=\"event-name\"><h3>" + HttpUtility.HtmlEncode(evnt.Name) + " </h3></td></tr>");
-                                events.AppendChild(eventEntry);
-                            }
-                        }
-                    }
-                    // Get groups
-                    using (MySqlCommand cmd = new MySqlCommand())
-                    {
-                        cmd.Connection = con;
-                        cmd.CommandText = "SELECT GroupID FROM groups_users WHERE groups_users.UserID = @id;";
-                        cmd.Parameters.AddWithValue("@id", user.UserId);
-                        cmd.Prepare();
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            // For each one, create a group
-                            HtmlNode groups = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" groups \")]");
-                            while (reader.Read())
-                            {
-                                // Create a group
-                                Group group = new Group(Convert.ToInt64(reader["GroupID"]));
-                                HtmlNode groupEntry = HtmlNode.CreateNode("<tr id=\"group" + group.GroupId + "\"><td><h3><span id=\"groupCloser" + group.GroupId + "\" class=\"glyphicon glyphicon-remove group-closer\"></span></h3></td>"
-                                                                        + "<td class=\"group-name\"><h3>" + HttpUtility.HtmlEncode(group.Name) + " </h3></td></tr>");
-                                groups.AppendChild(groupEntry);
-                            }
-                        }
-                    }
-                    
+                    HtmlNode eventEntry = HtmlNode.CreateNode("<tr id=\"event" + evnt.EventUserId + "\"><td><h3><span id=\"eventCloser" + evnt.EventUserId + "\" class=\"glyphicon glyphicon-remove event-closer\"></span></h3></td>"
+                                                            + "<td class=\"event-name\"><h3>" + HttpUtility.HtmlEncode(evnt.Name) + " </h3></td></tr>");
+                    events.AppendChild(eventEntry);
                 }
+                HtmlNode addEvent = HtmlNode.CreateNode("<tr id=\"eventAdder\" data-toggle=\"modal\" href=\"#addEvent\"><td><h3><span class=\"glyphicon glyphicon-plus\"></span></h3></td><td></td></tr>");
+                events.AppendChild(addEvent);
+
+                HtmlNode groups = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" groups \")]");
+                foreach (Group group in user.Groups)
+                {
+                    HtmlNode groupEntry = HtmlNode.CreateNode("<tr id=\"group" + group.GroupId + "\"><td><h3><span id=\"groupCloser" + group.GroupId + "\" class=\"glyphicon glyphicon-remove group-closer\"></span></h3></td>"
+                                               + "<td class=\"group-name\"><h3>" + HttpUtility.HtmlEncode(group.Name) + " </h3></td></tr>");
+                    groups.AppendChild(groupEntry);
+                }
+                HtmlNode addGroup = HtmlNode.CreateNode("<tr id=\"groupAdder\" type=\"button\" data-toggle=\"modal\" href=\"#addGroup\"><td><h3><span class=\"glyphicon glyphicon-plus\"></span></h3></td><td></td></tr>");
+                groups.AppendChild(addGroup);
                 return profile.DocumentNode.OuterHtml;
             }
         }

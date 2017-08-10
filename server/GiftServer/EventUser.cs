@@ -235,9 +235,10 @@ namespace GiftServer
                 }
             }
 
-            public EventUser() { }
+            public EventUser()
+            {
 
-            // TODO: Contstructor for event with default information.
+            }
 
             public bool Create()
             {

@@ -80,11 +80,14 @@ namespace GiftServer.Properties {
         ///            color: black;
         ///            font-family: &apos;Segoe UI&apos;, Tahoma, Geneva, Verdana, sans-serif;
         ///        }
+        ///        #eventHolder &gt; li {
+        ///            cursor: pointer;
+        ///        }
         ///    &lt;/style&gt;
         ///    &lt;script&gt;
         ///        $(document).ready(function () {
         ///            $(&apos;#menu-dropdown&apos;).click(function () {
-        ///                $(this).find(&apos;span&apos;).toggleClass(&apos;glyphicon-chevron-right&apos;).toggle [rest of string was truncated]&quot;;.
+        ///             [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string dashboard {
             get {
@@ -126,6 +129,23 @@ namespace GiftServer.Properties {
         internal static string ImageFormat {
             get {
                 return ResourceManager.GetString("ImageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+        ///&lt;head&gt;
+        ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
+        ///    &lt;title&gt;&lt;/title&gt;
+        ///&lt;/head&gt;
+        ///&lt;body&gt;
+        ///
+        ///&lt;/body&gt;
+        ///&lt;/html&gt;.
+        /// </summary>
+        internal static string list {
+            get {
+                return ResourceManager.GetString("list", resourceCulture);
             }
         }
         
@@ -179,12 +199,13 @@ namespace GiftServer.Properties {
         ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
         ///    &lt;title&gt;Reset Password for The Gift Hub&lt;/title&gt;
         ///    &lt;script&gt;
-        ///            $(document).ready(function () {
-        ///                $(&apos;#resetSubmit&apos;).hide();
-        ///                $(&apos;#secondResetPass&apos;).keyup(function () {
-        ///                    if ($(&apos;#secondResetPass&apos;).val() === $(&apos;#firstResetPass&apos;).val() &amp;&amp; $(&apos;#secondResetPass&apos;).val()) {
-        ///                        // We are good to go!
-        ///                        $(&apos;#secondResetPa [rest of string was truncated]&quot;;.
+        ///        $(document).ready(function () {
+        ///            $(window).keydown(function (event) {
+        ///                if (event.keyCode == 13) {
+        ///                    // Validate:
+        ///                    if ($(&apos;#secondResetPass&apos;).val() &amp;&amp; $(&apos;#secondResetPass&apos;).val() === $(&apos;#firstResetPass&apos;).val()) {
+        ///                        return true;
+        ///                    } else { [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string passwordReset {
             get {
@@ -228,12 +249,13 @@ namespace GiftServer.Properties {
         ///            $(&quot;#image&quot;).change(function () {
         ///                readURL(this);
         ///            });
+        ///
         ///        });
-        ///        function readURL(input) {
-        ///            if (input.files &amp;&amp; input.files[0]) {
-        ///                var reader = new FileReader();
-        ///                reader.onload = function (e) {
-        ///                    $(&apos;#previewImage&apos;).attr( [rest of string was truncated]&quot;;.
+        ///        $(document).ready(function () {
+        ///            $(&apos;#events .event-closer&apos;).click(function () {
+        ///                var eNumber = this.id;
+        ///                eNumber = parseInt(eNumber.substring(11))
+        ///                $.post( [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string profile {
             get {

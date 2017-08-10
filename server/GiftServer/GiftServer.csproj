@@ -70,6 +70,7 @@
     <Compile Include="Group.cs" />
     <Compile Include="ImageProcessor.cs" />
     <Compile Include="IShowable.cs" />
+    <Compile Include="ListManager.cs" />
     <Compile Include="MultipartParser.cs" />
     <Compile Include="ProfileManager.cs" />
     <Compile Include="DashboardManager.cs" />
@@ -128,6 +129,7 @@
     <None Include="resources\emailPassword.txt" />
     <None Include="resources\htmlTemplates\passwordReset.html" />
     <None Include="resources\htmlTemplates\passwordResetEmail.html" />
+    <None Include="resources\htmlTemplates\list.html" />
     <Content Include="resources\htmlTemplates\profile.html" />
     <Content Include="resources\images\users\default.png" />
     <Content Include="Scripts\bootstrap.js" />

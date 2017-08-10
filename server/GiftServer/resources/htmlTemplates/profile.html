@@ -281,7 +281,9 @@
         .event-closer,
         .group-closer,
         .event-name,
-        .group-name {
+        .group-name,
+        #eventAdder,
+        #groupAdder {
             cursor: pointer;
         }
     </style>
@@ -368,6 +370,66 @@
                 </div>
             </div>
         </div>
+        <div id="addEvent" class="modal fade panel-info" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content panel-info">
+                    <div class="modal-header panel-heading">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Add New Event</h4>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="addGroup" class="modal fade panel-info" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content panel-info">
+                    <div class="modal-header panel-heading">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Add New Group</h4>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="editEvent" class="modal fade panel-success" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content panel-success">
+                    <div class="modal-header panel-heading">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 id="editEventTitle" class="modal-title">Edit Event</h4>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="editGroup" class="modal fade panel-success" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content panel-success">
+                    <div class="modal-header panel-heading">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 id="editGroupTitle" class="modal-title">Edit Group</h4>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-sm-4 text-center">
                 <!-- User Image -->
@@ -437,18 +499,18 @@
                         <div class="col-md-4">
                             <select class="form-control" id="userBirthdayMonthChange">
                                 <optgroup label="Month">
-                                    <option id="userChangeMonthJan" value="1">January</option>
-                                    <option id="userChangeMonthFeb" value="2">February</option>
-                                    <option id="userChangeMonthMar" value="3">March</option>
-                                    <option id="userChangeMonthApr" value="4">April</option>
-                                    <option id="userChangeMonthMay" value="5">May</option>
-                                    <option id="userChangeMonthJun" value="6">June</option>
-                                    <option id="userChangeMonthJul" value="7">July</option>
-                                    <option id="userChangeMonthAug" value="8">August</option>
-                                    <option id="userChangeMonthSep" value="9">September</option>
-                                    <option id="userChangeMonthOct" value="10">October</option>
-                                    <option id="userChangeMonthNov" value="11">November</option>
-                                    <option id="userChangeMonthDec" value="12">December</option>
+                                    <option value="1">January</option>
+                                    <option value="2">February</option>
+                                    <option value="3">March</option>
+                                    <option value="4">April</option>
+                                    <option value="5">May</option>
+                                    <option value="6">June</option>
+                                    <option value="7">July</option>
+                                    <option value="8">August</option>
+                                    <option value="9">September</option>
+                                    <option value="10">October</option>
+                                    <option value="11">November</option>
+                                    <option value="12">December</option>
                                 </optgroup>
                             </select>
                         </div>

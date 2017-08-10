@@ -33,7 +33,7 @@ namespace GiftServer
             /// Dispatch will, given a request, return the webpage that will be shown to the user.
             /// </summary>
             /// <param name="request">The incoming HTML request, in it's entirety</param>
-            /// <remarks></remarks>
+            /// <remarks>Dispatch is used to communicate with the server</remarks>
             /// <returns>The html to be sent back to the user. Additionally, it will also alter the response, if necessary</returns>
             public string Dispatch()
             {
@@ -175,6 +175,8 @@ namespace GiftServer
                         return DashboardManager.Dashboard(_user);
                     case "profile":
                         return ProfileManager.ProfilePage(_user);
+                    case "myList":
+                        return ListManager.MyList(_user);
                     default:
                         return DashboardManager.Dashboard(_user);
                 }

@@ -154,4 +154,7 @@
     <value>.png</value>
     <comment>The default image format we use</comment>
   </data>
+  <data name="list" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\htmlTemplates\list.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
 </root>
