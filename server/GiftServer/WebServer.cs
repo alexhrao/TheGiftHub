@@ -47,6 +47,13 @@ namespace GiftServer
                                                 rtx.Response.OutputStream.Write(respBuffer, 0, respBuffer.Length);
                                             }
                                         }
+                                        else
+                                    {
+                                        if (rtx.Response.OutputStream.CanWrite)
+                                        {
+                                            rtx.Response.OutputStream.Close();
+                                        }
+                                    }
 #if !DEBUG
 
                                     }

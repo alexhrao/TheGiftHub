@@ -98,7 +98,17 @@ namespace GiftServer
             }
             public string GetImage(long id)
             {
-                return Resources.BasePath + "/resources/images/gifts/Gift" + this.GiftId + Resources.ImageFormat;
+                string path = Resources.BasePath + "/resources/images/gifts/Gift" + id + Resources.ImageFormat;
+                // if file exists, return path. Otherwise, return default
+                // Race condition, but I don't know how to solve (yet)
+                if (File.Exists(path))
+                {
+                    return path;
+                }
+                else
+                {
+                    return "resources/images/gifts/default" + Resources.ImageFormat;
+                }
             }
         }
     }

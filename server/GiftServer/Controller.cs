@@ -193,37 +193,40 @@ namespace GiftServer
                     {
                         if (_user != null && Path.GetFileNameWithoutExtension(path).Equals("User" + _user.UserId))
                         {
-                            byte[] buffer = File.ReadAllBytes(path);
-                            _response.ContentLength64 = buffer.Length;
-                            using (Stream response = _response.OutputStream)
-                            {
-                                response.Write(buffer, 0, buffer.Length);
-                            }
+                            Write(path);
                         }
                     }
                     else if (Path.GetFileName(Path.GetDirectoryName(path)).Equals("gifts"))
                     {
-                        // Get gift ID, see if any gifts attached to user has gift id
-                        long giftID = Convert.ToInt64(Path.GetFileNameWithoutExtension(path).Substring(4));
-                        using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                        // If default image is desired, serve up immediately:
+                        if (Path.GetFileNameWithoutExtension(path).Equals("default"))
                         {
-                            con.Open();
-                            using (MySqlCommand cmd = new MySqlCommand())
+                            Write(path);
+#if DEBUG
+                            Console.WriteLine("Resource at " + path + " Does not need authentication and was served.");
+#endif
+                        }
+                        else if (_user != null)
+                        {
+                            // If GiftID and UserID match, we will be able to read; otherwise, no
+                            // Get GID:
+                            long gid = Convert.ToInt64(Path.GetFileNameWithoutExtension(path).Substring(4));
+                            using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                             {
-                                cmd.Connection = con;
-                                cmd.CommandText = "SELECT GiftID FROM gifts WHERE UserID = @id;";
-                                cmd.Parameters.AddWithValue("@id", _user.UserId);
-                                cmd.Prepare();
-                                using (MySqlDataReader reader = cmd.ExecuteReader())
+                                con.Open();
+                                using (MySqlCommand cmd = new MySqlCommand())
                                 {
-                                    if (reader.Read())
+                                    cmd.Connection = con;
+                                    cmd.CommandText = "SELECT UserID FROM gifts WHERE UserID = @uid AND GiftID = @gid;";
+                                    cmd.Parameters.AddWithValue("@uid", _user.UserId);
+                                    cmd.Parameters.AddWithValue("@gid", gid);
+                                    cmd.Prepare();
+                                    using (MySqlDataReader reader = cmd.ExecuteReader())
                                     {
-                                        // OK; serve up image
-                                        byte[] buffer = File.ReadAllBytes(path);
-                                        _response.ContentLength64 = buffer.Length;
-                                        using (Stream response = _response.OutputStream)
+                                        if (reader.Read())
                                         {
-                                            response.Write(buffer, 0, buffer.Length);
+                                            // Ok; serve up image
+                                            Write(path);
                                         }
                                     }
                                 }
@@ -233,12 +236,7 @@ namespace GiftServer
                     else
                     {
                         // Not accessing images or gifts, so OK to just send info:
-                        byte[] buffer = File.ReadAllBytes(path);
-                        _response.ContentLength64 = buffer.Length;
-                        using (Stream response = _response.OutputStream)
-                        {
-                            response.Write(buffer, 0, buffer.Length);
-                        }
+                        Write(path);
 #if DEBUG
                         Console.WriteLine("Resource at " + path + " Does not need authentication and was served.");
 #endif
@@ -247,6 +245,15 @@ namespace GiftServer
                 return null;
             }
 
+            private void Write(string path)
+            {
+                byte[] buffer = File.ReadAllBytes(path);
+                _response.ContentLength64 = buffer.Length;
+                using (Stream response = _response.OutputStream)
+                {
+                    response.Write(buffer, 0, buffer.Length);
+                }
+            }
             private User GetUser()
             {
                 // Check if user is logged in (via cookies?)
