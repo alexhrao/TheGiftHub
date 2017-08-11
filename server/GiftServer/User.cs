@@ -363,6 +363,8 @@ namespace GiftServer
                     using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                     {
                         con.Open();
+                        // Remove image:
+                        this.RemoveImage();
                         // Delete from event futures, groups, and events:
                         using (MySqlCommand cmd = new MySqlCommand())
                         {

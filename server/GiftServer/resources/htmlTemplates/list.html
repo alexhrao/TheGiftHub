@@ -1,23 +1,34 @@
 ﻿<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>My Gift List</title>
+    <script>
+        jQuery(document).ready(function ($) {
+            $(".clickable-row").click(function () {
+                window.location = $(this).data("href");
+            });
+        });
+    </script>
     <style>
+        tr {
+            cursor: pointer;
+        }
         body {
             background-color: #CECECE;
             color: black;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        .centered {
+        img {
             text-align: center;
             width: 128px;
             height: 128px;
+            display: inline;
         }
     </style>
 </head>
 <body>
     <div class="container-fluid">
-        <table id="giftHolder" class="table table-hover table-striped">
+        <table class="table hidden-xs table-hover table-striped table-responsive">
             <thead>
                 <tr>
                     <th>
@@ -37,6 +48,23 @@
                     </th>
                 </tr>
             </thead>
+            <tbody id="giftHolder">
+
+            </tbody>
+        </table>
+        <table class="table visible-xs table-hover table-striped table-responsive">
+            <thead>
+                <tr>
+                    <th>
+                        Item
+                    </th>
+                    <th>
+                        Name
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="xsGiftHolder">
+            </tbody>
         </table>
     </div>
 </body>

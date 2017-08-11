@@ -176,7 +176,7 @@ namespace GiftServer
                     case "profile":
                         return ProfileManager.ProfilePage(_user);
                     case "myList":
-                        return ListManager.MyList(_user);
+                        return ListManager.GiftList(_user);
                     default:
                         return DashboardManager.Dashboard(_user);
                 }
