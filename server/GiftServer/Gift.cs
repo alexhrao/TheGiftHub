@@ -11,7 +11,11 @@ namespace GiftServer
     {
         public class Gift : ISynchronizable, IShowable
         {
-            public long GiftId = -1;
+            public ulong GiftId
+            {
+                get;
+                private set;
+            } = 0;
             public User User;
             public string Name;
             public string Description;
@@ -27,7 +31,7 @@ namespace GiftServer
             public DateTime TimeStamp;
             public DateTime ReceivedDate;
 
-            public Gift(long id)
+            public Gift(ulong id)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -43,7 +47,7 @@ namespace GiftServer
                             if (reader.Read())
                             {
                                 GiftId = id;
-                                User = new User(Convert.ToInt64(reader["UserID"]));
+                                User = new User(Convert.ToUInt64(reader["UserID"]));
                                 Name = Convert.ToString(reader["GiftName"]);
                                 Description = Convert.ToString(reader["GiftDescription"]);
                                 Url = Convert.ToString(reader["GiftURL"]);
@@ -53,7 +57,7 @@ namespace GiftServer
                                 Color = Convert.ToString(reader["GiftColor"]);
                                 ColorText = Convert.ToString(reader["GiftColorText"]);
                                 Size = Convert.ToString(reader["GiftSize"]);
-                                Category = new Category(Convert.ToInt64(reader["CategoryID"]));
+                                Category = new Category(Convert.ToUInt64(reader["CategoryID"]));
                                 Rating = Convert.ToDouble(reader["GiftRating"]);
                                 TimeStamp = (DateTime)(reader["GiftAddStamp"]);
                                 try
@@ -97,7 +101,7 @@ namespace GiftServer
             {
                 return GetImage(this.GiftId);
             }
-            public string GetImage(long id)
+            public string GetImage(ulong id)
             {
                 string path = Resources.BasePath + "/resources/images/gifts/Gift" + id + Resources.ImageFormat;
                 // if file exists, return path. Otherwise, return default

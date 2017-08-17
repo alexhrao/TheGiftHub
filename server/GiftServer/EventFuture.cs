@@ -6,11 +6,15 @@ namespace GiftServer
     {
         public class EventFuture
         {
-            public readonly long EventFutureId;
+            public ulong EventFutureId
+            {
+                get;
+                private set;
+            } = 0;
             public readonly int Day;
             public readonly int Month;
             public readonly int Year;
-            public EventFuture(long id, int Year, int Month, int Day)
+            public EventFuture(ulong id, int Year, int Month, int Day)
             {
                 this.EventFutureId = id;
                 this.Year = Year;
@@ -20,7 +24,6 @@ namespace GiftServer
             
             public EventFuture(int Year, int Month, int Day)
             {
-                this.EventFutureId = -1;
                 this.Year = Year;
                 this.Month = Month;
                 this.Day = Day;

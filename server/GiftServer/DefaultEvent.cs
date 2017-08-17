@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using GiftServer.Exceptions;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -9,7 +10,7 @@ namespace GiftServer
     {
         public class DefaultEvent
         {
-            public readonly long EventID;
+            public readonly ulong EventID;
             public readonly string Name;
             public readonly string Description;
             public readonly int Day;
@@ -19,7 +20,7 @@ namespace GiftServer
 
             public List<EventFuture> Futures = new List<EventFuture>();
 
-            public DefaultEvent(long EventID)
+            public DefaultEvent(ulong EventID)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -43,6 +44,10 @@ namespace GiftServer
                                 this.Year = Convert.ToInt32(reader["EventYear"]);
                                 this.IsRecurring = Convert.ToBoolean(reader["EventRecurs"]);
                             }
+                            else
+                            {
+                                throw new EventNotFoundException(EventID);
+                            }
                         }
                     }
                     if (!IsRecurring)
@@ -60,7 +65,7 @@ namespace GiftServer
                                 {
                                     // Create new event future, add to list.
                                     Futures.Add(new EventFuture(
-                                        Convert.ToInt64(reader["EventUserFutureID"]),
+                                        Convert.ToUInt64(reader["EventUserFutureID"]),
                                         Convert.ToInt32(reader["EventYear"]), 
                                         Convert.ToInt32(reader["EventMonth"]), 
                                         Convert.ToInt32(reader["EventDay"])));

@@ -13,13 +13,13 @@ namespace GiftServer
         {
             // A user wasn't found.
             public UserNotFoundException(string email) : base(email) { }
-            public UserNotFoundException(long id) : base(Convert.ToString(id)) { }
+            public UserNotFoundException(ulong id) : base(Convert.ToString(id)) { }
             public UserNotFoundException(byte[] pHash) : base(Convert.ToBase64String(pHash)) { }
         }
         public class DuplicateUserException : UserException
         {
             public DuplicateUserException(string email) : base(email) { }
-            public DuplicateUserException(long id) : base(Convert.ToString(id)) { }
+            public DuplicateUserException(ulong id) : base(Convert.ToString(id)) { }
         }
 
         public abstract class PasswordException : Exception
@@ -41,8 +41,8 @@ namespace GiftServer
         }
         public class EventNotFoundException : EventException
         {
-            public EventNotFoundException(long id, string name) : base("Event " + name + " for user " + id + " Does not exist") { }
-            public EventNotFoundException(long id) : base("Event " + id + " does not exist") { }
+            public EventNotFoundException(ulong id, string name) : base("Event " + name + " for user " + id + " Does not exist") { }
+            public EventNotFoundException(ulong id) : base("Event " + id + " does not exist") { }
         }
         public class InvalidEventException : EventException
         {
@@ -55,7 +55,7 @@ namespace GiftServer
 
         public class CategoryNotFoundException : Exception
         {
-            public CategoryNotFoundException(long id) : base("Category with ID " + id + " Not Found") { }
+            public CategoryNotFoundException(ulong id) : base("Category with ID " + id + " Not Found") { }
         }
 
         public abstract class GroupException : Exception
@@ -64,7 +64,7 @@ namespace GiftServer
         }
         public class GroupNotFoundException : GroupException
         {
-            public GroupNotFoundException(long id) : base("Group with ID " + id + " Not Found") { }
+            public GroupNotFoundException(ulong id) : base("Group with ID " + id + " Not Found") { }
         }
     }
 }

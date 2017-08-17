@@ -59,7 +59,7 @@ namespace GiftServer
                                             _user.SaveImage(parser);
                                             break;
                                         case "gift":
-                                            Gift gift = new Gift(Convert.ToInt64(parser.Parameters["giftID"]));
+                                            Gift gift = new Gift(Convert.ToUInt64(parser.Parameters["giftID"]));
                                             gift.SaveImage(parser);
                                             break;
                                     }
@@ -107,7 +107,7 @@ namespace GiftServer
                                         case "PasswordReset":
                                             // Reset password and direct to login page
                                             // POST data will have userID in userID input. Reset the password and let the user know.
-                                            _user = new User(Convert.ToInt64(_dict["userID"]));
+                                            _user = new User(Convert.ToUInt64(_dict["userID"]));
                                             string password = _dict["password"];
                                             PasswordReset.ResetPassword(_user, password);
                                             return ResetManager.SuccessResetPassword();
@@ -256,7 +256,7 @@ namespace GiftServer
                         {
                             // If GiftID and UserID match, we will be able to read; otherwise, no
                             // Get GID:
-                            long gid = Convert.ToInt64(Path.GetFileNameWithoutExtension(path).Substring(4));
+                            ulong gid = Convert.ToUInt64(Path.GetFileNameWithoutExtension(path).Substring(4));
                             if (_user.Gifts.Exists(new Predicate<Gift>((Gift g) => g.GiftId == gid)))
                             {
                                 // Found in our own gifts; write
@@ -336,7 +336,7 @@ namespace GiftServer
                 Cookie reqLogger = _request.Cookies["UserID"];
                 if (reqLogger != null)
                 {
-                    return new User(Convert.ToInt64(reqLogger.Value));
+                    return new User(Convert.ToUInt64(reqLogger.Value));
                 }
                 else
                 {
@@ -410,7 +410,7 @@ namespace GiftServer
 
             private string UpdateEvent()
             {
-                EventUser evnt = new EventUser(Convert.ToInt64(_dict["eventID"]));
+                EventUser evnt = new EventUser(Convert.ToUInt64(_dict["eventID"]));
                 switch (_dict["item"])
                 {
                     case "name":
@@ -429,7 +429,7 @@ namespace GiftServer
 
             private string UpdateGroup()
             {
-                Group group = new Group(Convert.ToInt64(_dict["groupID"]));
+                Group group = new Group(Convert.ToUInt64(_dict["groupID"]));
                 switch (_dict["item"])
                 {
                     case "name":

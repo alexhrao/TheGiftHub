@@ -9,11 +9,11 @@ namespace GiftServer
     {
         public class Category
         {
-            public readonly long CategoryId = -1;
+            public readonly ulong CategoryId = 0;
             public readonly string Name;
             public readonly string Description;
 
-            public Category(long id)
+            public Category(ulong id)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {

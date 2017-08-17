@@ -18,8 +18,10 @@ namespace GiftServer
                 alert.AddClass("in");
                 alert.RemoveClass("hidden");
                 HtmlNode message = HtmlNode.CreateNode("<p><strong>Recovery email sent</strong> - check your inbox</p>");
-                HtmlNodeCollection children = new HtmlNodeCollection(alert);
-                children.Add(message);
+                HtmlNodeCollection children = new HtmlNodeCollection(alert)
+                {
+                    message
+                };
                 alert.AppendChildren(children);
                 return login.DocumentNode.OuterHtml;
             }
@@ -32,8 +34,10 @@ namespace GiftServer
                 alert.AddClass("in");
                 alert.RemoveClass("hidden");
                 HtmlNode message = HtmlNode.CreateNode("<p><strong>Password Reset</strong> Please login below with your new password</p>");
-                HtmlNodeCollection children = new HtmlNodeCollection(alert);
-                children.Add(message);
+                HtmlNodeCollection children = new HtmlNodeCollection(alert)
+                {
+                    message
+                };
                 alert.AppendChildren(children);
                 return login.DocumentNode.OuterHtml;
             }

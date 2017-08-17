@@ -14,7 +14,11 @@ namespace GiftServer
     {
         public class User : ISynchronizable, IShowable
         {
-            public long UserId = -1;
+            public ulong UserId
+            {
+                get;
+                private set;
+            } = 0;
             public string FirstName;
             public string LastName;
             public string Email;
@@ -31,7 +35,7 @@ namespace GiftServer
                 get
                 {
                     _gifts = new List<Gift>();
-                    if (UserId != -1)
+                    if (UserId != 0)
                     {
                         using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                         {
@@ -47,7 +51,7 @@ namespace GiftServer
                                     // add a new gift for each id:
                                     while (reader.Read())
                                     {
-                                        _gifts.Add(new Gift(Convert.ToInt64(reader["GiftID"])));
+                                        _gifts.Add(new Gift(Convert.ToUInt64(reader["GiftID"])));
                                     }
                                 }
                             }
@@ -62,7 +66,7 @@ namespace GiftServer
                 get
                 {
                     _groups = new List<Group>();
-                    if (UserId != -1)
+                    if (UserId != 0)
                     {
                         using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                         {
@@ -77,7 +81,7 @@ namespace GiftServer
                                 {
                                     while (reader.Read())
                                     {
-                                        _groups.Add(new Group(Convert.ToInt64(reader["GroupID"])));
+                                        _groups.Add(new Group(Convert.ToUInt64(reader["GroupID"])));
                                     }
                                 }
                             }
@@ -92,7 +96,7 @@ namespace GiftServer
                 get
                 {
                     _events = new List<EventUser>();
-                    if (UserId != -1)
+                    if (UserId != 0)
                     {
                         using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                         {
@@ -107,7 +111,7 @@ namespace GiftServer
                                 {
                                     while (reader.Read())
                                     {
-                                        _events.Add(new EventUser(Convert.ToInt64(reader["EventUserID"])));
+                                        _events.Add(new EventUser(Convert.ToUInt64(reader["EventUserID"])));
                                     }
                                 }
                             }
@@ -116,7 +120,7 @@ namespace GiftServer
                     return _events;
                 }
             }
-            public User(long id)
+            public User(ulong id)
             {
                 // User is already logged in; just fetch their information!
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -187,7 +191,7 @@ namespace GiftServer
                                     // Not correct, throw new exception!
                                     throw new InvalidPasswordException();
                                 }
-                                UserId = Convert.ToInt64(reader["UserID"]);
+                                UserId = Convert.ToUInt64(reader["UserID"]);
                                 this.FirstName = Convert.ToString(reader["FirstName"]);
                                 this.LastName = Convert.ToString(reader["LastName"]);
                                 this.Email = email;
@@ -207,7 +211,7 @@ namespace GiftServer
 
             public bool UpdatePassword(string pass)
             {
-                if (this.UserId == -1)
+                if (this.UserId == 0)
                 {
                     return false;
                 }
@@ -264,7 +268,7 @@ namespace GiftServer
                         {
                             return false;
                         }
-                        this.UserId = cmd.LastInsertedId;
+                        this.UserId = Convert.ToUInt64(cmd.LastInsertedId);
                     }
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
@@ -297,7 +301,7 @@ namespace GiftServer
 
             public bool Update()
             {
-                if (this.UserId == -1)
+                if (this.UserId == 0)
                 {
                     // User does not exist - create new one instead.
                     return Create();
@@ -353,7 +357,7 @@ namespace GiftServer
             public bool Delete()
             {
                 // TODO: Gauruntee not admin of any group
-                if (this.UserId == -1)
+                if (this.UserId == 0)
                 {
                     // User doesn't exist - don't delete
                     return false;
@@ -481,7 +485,7 @@ namespace GiftServer
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
-                        this.UserId = -1;
+                        this.UserId = 0;
                         return true;
                     }
                 }
@@ -499,7 +503,7 @@ namespace GiftServer
             {
                 return GetImage(this.UserId);
             }
-            public static string GetImage(long userID)
+            public static string GetImage(ulong userID)
             {
                 // Build path:
                 string path = Resources.BasePath + "/resources/images/users/User" + userID + Resources.ImageFormat;

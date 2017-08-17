@@ -67,7 +67,7 @@ namespace GiftServer
                             else
                             {
                                 reader.Read();
-                                ret = new User(Convert.ToInt64(reader["UserID"]));
+                                ret = new User(Convert.ToUInt64(reader["UserID"]));
                                 timestamp = (DateTime)(reader["TimeCreated"]);
                                 if (timestamp.AddMinutes(30) < DateTime.Now)
                                 {
@@ -136,10 +136,12 @@ namespace GiftServer
                         }
                     }
                 }
-                MailMessage email = new MailMessage(new MailAddress("The Gift Hub<support@TheGiftHub.org>"), new MailAddress(emailAddress));
-                email.Body = body;
-                email.Subject = "Password Reset";
-                email.IsBodyHtml = true;
+                MailMessage email = new MailMessage(new MailAddress("The Gift Hub<support@TheGiftHub.org>"), new MailAddress(emailAddress))
+                {
+                    Body = body,
+                    Subject = "Password Reset",
+                    IsBodyHtml = true
+                };
                 using (SmtpClient sender = new SmtpClient("smtp.gmail.com", 587))
                 {
                     sender.EnableSsl = true;

@@ -9,12 +9,16 @@ namespace GiftServer
     {
         public class Group : ISynchronizable
         {
-            public long GroupId = -1;
+            public ulong GroupId
+            {
+                get;
+                private set;
+            } = 0;
             public string Name;
             public string Description;
             public User Admin;
 
-            public Group(long groupID)
+            public Group(ulong groupID)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -32,7 +36,7 @@ namespace GiftServer
                                 this.GroupId = groupID;
                                 this.Name = Convert.ToString(reader["GroupName"]);
                                 this.Description = Convert.ToString(reader["GroupDescription"]);
-                                this.Admin = new User(Convert.ToInt64(reader["AdminID"]));
+                                this.Admin = new User(Convert.ToUInt64(reader["AdminID"]));
                             }
                             else
                             {
@@ -64,14 +68,14 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@admin", this.Admin.UserId);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
-                        this.GroupId = cmd.LastInsertedId;
+                        this.GroupId = Convert.ToUInt64(cmd.LastInsertedId);
                     }
                 }
                 return true;
             }
             public bool Update()
             {
-                if (GroupId == -1)
+                if (GroupId == 0)
                 {
                     return Create();
                 }
@@ -97,7 +101,7 @@ namespace GiftServer
             }
             public bool Delete()
             {
-                if (GroupId == -1)
+                if (GroupId == 0)
                 {
                     return false;
                 }
@@ -140,7 +144,7 @@ namespace GiftServer
                         cmd.Prepare();
                         if (cmd.ExecuteNonQuery() == 1)
                         {
-                            this.GroupId = -1;
+                            this.GroupId = 0;
                             return true;
                         }
                         else

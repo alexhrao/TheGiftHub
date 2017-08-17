@@ -42,12 +42,6 @@ namespace GiftServer
                                                         "<div class=\"parent\"><h3 class=\"child\"><input class=\"star-rating\" data-show-clear=\"false\" data-show-caption=\"false\" value=\"" + gift.Rating.ToString("N2") + "\" /></h3></div></td>" +
                                                         "<td><div class=\"parent\"><h3 classs\"child\">" + HttpUtility.HtmlEncode(gift.Name) + "</h3></div></td>" +
                                                         "</tr>");
-
-                    //HtmlNode item = HtmlNode.CreateNode("<tr>" +
-                     //                                   "<td><img class=\"img-responsive text-center img-thumbnail text-center\" src=\"" + 
-                      //                                  gift.GetImage() + "\" /><h4 class=\"text-center\">" + gift.Rating + "</h4></td>" +
-                       //                                 "<td><h3 class=\"text-center\">" + HttpUtility.HtmlEncode(gift.Name) + "<h3></td>" +
-                        //                                "</tr>");
                     giftTableMicro.AppendChild(item);
 
                 }

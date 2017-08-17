@@ -10,7 +10,11 @@ namespace GiftServer
     {
         public class EventUser : ISynchronizable
         {
-            public long EventUserId = -1;
+            public ulong EventUserId
+            {
+                get;
+                private set;
+            } = 0;
             public User User;
             private string _name;
             private string _description;
@@ -171,7 +175,7 @@ namespace GiftServer
                 this.Futures = _defaultEvent.Futures;
                 this.IsDefault = true;
             }
-            public EventUser(long EventUserID)
+            public EventUser(ulong EventUserID)
             {
                 // Get information; if from Default Events, create a new default event and then copy over information
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -188,10 +192,10 @@ namespace GiftServer
                             if (reader.Read())
                             {
                                 // Get user:
-                                this.User = new User(Convert.ToInt64(reader["UserID"]));
+                                this.User = new User(Convert.ToUInt64(reader["UserID"]));
                                 if (!Convert.IsDBNull(reader["EventID"]))
                                 {
-                                    this._defaultEvent = new DefaultEvent(Convert.ToInt64(reader["EventID"]));
+                                    this._defaultEvent = new DefaultEvent(Convert.ToUInt64(reader["EventID"]));
                                     this.IsDefault = true;
                                     this.EventUserId = EventUserID;
                                     return;
@@ -224,7 +228,7 @@ namespace GiftServer
                                 {
                                     // Create new event future, add to list.
                                     Futures.Add(new EventFuture(
-                                        Convert.ToInt64(reader["EventUserFutureID"]), 
+                                        Convert.ToUInt64(reader["EventUserFutureID"]), 
                                         Convert.ToInt32(reader["EventYear"]), 
                                         Convert.ToInt32(reader["EventMonth"]), 
                                         Convert.ToInt32(reader["EventDay"])));
@@ -267,7 +271,7 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@eRecurs", this.IsRecurring);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
-                        EventUserId = cmd.LastInsertedId;
+                        EventUserId = Convert.ToUInt64(cmd.LastInsertedId);
                     }
                 }
                 return false;
@@ -354,7 +358,7 @@ namespace GiftServer
             public bool Delete()
             {
                 // if ID == -1, don't do anything
-                if (EventUserId == -1)
+                if (EventUserId == 0)
                 {
                     return false;
                 }
@@ -392,7 +396,7 @@ namespace GiftServer
                         }
                         else
                         {
-                            this.EventUserId = -1;
+                            this.EventUserId = 0;
                             return true;
                         }
 
