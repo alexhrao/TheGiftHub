@@ -59,7 +59,8 @@ namespace GiftServer
                                             _user.SaveImage(parser);
                                             break;
                                         case "gift":
-                                            // TODO: Save Gift
+                                            Gift gift = new Gift(Convert.ToInt64(parser.Parameters["giftID"]));
+                                            gift.SaveImage(parser);
                                             break;
                                     }
                                     return ParseQuery();
