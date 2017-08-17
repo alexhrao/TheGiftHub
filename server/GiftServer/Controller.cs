@@ -85,12 +85,7 @@ namespace GiftServer
                                     switch (_dict["submit"])
                                     {
                                         case "Logout":
-                                            _response.Cookies.Add(new Cookie
-                                            {
-                                                Name = "UserID",
-                                                Value = "-1",
-                                                Expires = DateTime.Now.AddDays(-1d)
-                                            });
+                                            InvalidateCookie();
                                             return LoginManager.Login();
                                         case "Signup":
                                             _user = new User
@@ -131,6 +126,10 @@ namespace GiftServer
                                 }
                             }
                         }
+                        else if (path.Length != 0)
+                        {
+                            return ServeResource(path);
+                        }
                         else if (_user == null)
                         {
                             // Send login page EXCEPT if requesting password reset:
@@ -146,10 +145,6 @@ namespace GiftServer
                         else if (_request.QueryString["dest"] != null)
                         {
                             return ParseQuery();
-                        }
-                        else if (path.Length != 0)
-                        {
-                            return ServeResource(path);
                         }
                         else
                         {
@@ -182,18 +177,68 @@ namespace GiftServer
                 }
             }
 
-            private string ServeResource(string path)
+            private string ServeResource(string serverPath)
             {
-                path = GeneratePath(path);
+                string message = null;
+                string path = GeneratePath(serverPath);
                 // Check existence:
                 if (File.Exists(path))
                 {
                     // File exists: Check if filename even needs authentication:
                     if (Path.GetFileName(Path.GetDirectoryName(path)).Equals("users"))
                     {
-                        if (_user != null && Path.GetFileNameWithoutExtension(path).Equals("User" + _user.UserId))
+                        if (Path.GetFileNameWithoutExtension(path).Equals("default"))
                         {
+                            // Serve up immediately
                             Write(path);
+#if DEBUG
+                            Console.WriteLine("Resource at " + path + " Does not need authentication and was served.");
+#endif
+                        }
+                        else if (_user != null)
+                        {
+                            if (Path.GetFileNameWithoutExtension(path).Equals("User" + _user.UserId))
+                            {
+                                // This user - write path
+                                Write(path);
+                            }
+                            else
+                            {
+                                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                                {
+                                    con.Open();
+                                    using (MySqlCommand cmd = new MySqlCommand())
+                                    {
+                                        // See if our user (_user) and requested user (from string) have common groups
+                                        // Subquery selects Groups tied to _user; 
+                                        cmd.Connection = con;
+                                        cmd.CommandText = "SELECT users.UserID "
+                                                        + "FROM users "
+                                                        + "INNER JOIN groups_users ON groups_users.UserID = users.UserID "
+                                                        + "WHERE groups_users.UserID = @otherID "
+                                                        + "AND groups_users.GroupID IN "
+                                                        + "( "
+                                                            + "SELECT GroupID FROM groups_users WHERE groups_users.UserID = @meID "
+                                                        + ");";
+                                        cmd.Parameters.AddWithValue("@meID", _user.UserId);
+                                        cmd.Parameters.AddWithValue("@otherID", Path.GetFileNameWithoutExtension(path).Substring(4));
+                                        cmd.Prepare();
+                                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                                        {
+                                            if (reader.Read())
+                                            {
+                                                // connected
+                                                Write(path);
+                                            }
+                                            else
+                                            {
+                                                _response.StatusCode = 403;
+                                                message = "Forbidden - You are not in any common groups with this user.";
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                     else if (Path.GetFileName(Path.GetDirectoryName(path)).Equals("gifts"))
@@ -211,22 +256,43 @@ namespace GiftServer
                             // If GiftID and UserID match, we will be able to read; otherwise, no
                             // Get GID:
                             long gid = Convert.ToInt64(Path.GetFileNameWithoutExtension(path).Substring(4));
-                            using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                            if (_user.Gifts.Exists(new Predicate<Gift>((Gift g) => g.GiftId == gid)))
                             {
-                                con.Open();
-                                using (MySqlCommand cmd = new MySqlCommand())
+                                // Found in our own gifts; write
+                                Write(path);
+                            }
+                            else
+                            {
+                                // See if tied to gift through groups_gifts
+                                // Subquery selects groups tied to user:
+                                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                                 {
-                                    cmd.Connection = con;
-                                    cmd.CommandText = "SELECT UserID FROM gifts WHERE UserID = @uid AND GiftID = @gid;";
-                                    cmd.Parameters.AddWithValue("@uid", _user.UserId);
-                                    cmd.Parameters.AddWithValue("@gid", gid);
-                                    cmd.Prepare();
-                                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                                    con.Open();
+                                    using (MySqlCommand cmd = new MySqlCommand())
                                     {
-                                        if (reader.Read())
+                                        cmd.Connection = con;
+                                        cmd.CommandText = "SELECT GiftID "
+                                                        + "FROM groups_gifts "
+                                                        + "WHERE groups_gifts.GiftID = @gid "
+                                                        + "AND groups_gifts.GroupID IN "
+                                                        + "( "
+                                                            + "SELECT GroupID FROM groups_users WHERE groups_users.UserID = @uid "
+                                                        + ");";
+                                        cmd.Parameters.AddWithValue("@gid", gid);
+                                        cmd.Parameters.AddWithValue("@uid", _user.UserId);
+                                        cmd.Prepare();
+                                        using (MySqlDataReader reader = cmd.ExecuteReader())
                                         {
-                                            // Ok; serve up image
-                                            Write(path);
+                                            if (reader.Read())
+                                            {
+                                                // Tied; write
+                                                Write(path);
+                                            }
+                                            else
+                                            {
+                                                _response.StatusCode = 403;
+                                                message = "Forbidden - this gift is not currently shared with you.";
+                                            }
                                         }
                                     }
                                 }
@@ -242,7 +308,16 @@ namespace GiftServer
 #endif
                     }
                 }
-                return null;
+                else if (Path.GetFileNameWithoutExtension(path).Equals("favicon"))
+                {
+                    Write(GeneratePath("/resources/images/branding/favicon.ico"));
+                }
+                else
+                {
+                    _response.StatusCode = 404;
+                    message = "File Not Found: Unknown resource " + serverPath + ".";
+                }
+                return message;
             }
 
             private void Write(string path)
@@ -320,11 +395,12 @@ namespace GiftServer
                         break;
                     case "delete":
                         _user.Delete();
-                        // TODO: Invalidate cookie
+                        InvalidateCookie();
                         return LoginManager.Login();
                         // Return so that 
                         // will return HERE so as to not update a null user
                     default:
+                        _response.StatusCode = 404;
                         return "404";
                 }
                 _user.Update();
@@ -342,6 +418,7 @@ namespace GiftServer
                         evnt.Delete();
                         return "200";
                     default:
+                        _response.StatusCode = 404;
                         return "404";
                 }
                 evnt.Update();
@@ -360,10 +437,21 @@ namespace GiftServer
                         group.Delete();
                         return "200";
                     default:
+                        _response.StatusCode = 404;
                         return "404";
                 }
                 group.Update();
                 return "200";
+            }
+
+            private void InvalidateCookie()
+            {
+                _response.Cookies.Add(new Cookie
+                {
+                    Name = "UserID",
+                    Value = "-1",
+                    Expires = DateTime.Now.AddDays(-1d)
+                });
             }
 
 

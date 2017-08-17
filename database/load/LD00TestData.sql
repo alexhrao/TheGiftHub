@@ -81,6 +81,8 @@ INSERT INTO groups (GroupName, AdminID)
 -- Create gift
 INSERT INTO gifts (UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating)
     VALUES (1, 'Webcam', 'Logitech BRIO webcam', 'https://www.google.com', 100.00, 'Logitech, Target', 1, 'FFFFFF', 'White', 'N/A', 2, 5.0);
+INSERT INTO gifts (UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating)
+    VALUES (2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1000, '000000', 'black', 'BIG', 1, 5.0);
 
 -- Add user to group
 INSERT INTO groups_users (GroupID, UserID)
@@ -91,7 +93,9 @@ INSERT INTO groups_users (GroupID, UserID, IsChild)
 -- Add gift to group
 INSERT INTO groups_gifts (GroupID, GiftID)
     VALUES (1, 1);
-
+INSERT INTO groups_gifts (GroupID, GiftID)
+    VALUES (1, 2);
+    
 -- Make new year's visible to group
 INSERT INTO events_users_groups (EventUserID, GroupID)
     VALUES (2, 1);

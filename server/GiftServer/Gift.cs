@@ -42,6 +42,7 @@ namespace GiftServer
                         {
                             if (reader.Read())
                             {
+                                GiftId = id;
                                 User = new User(Convert.ToInt64(reader["UserID"]));
                                 Name = Convert.ToString(reader["GiftName"]);
                                 Description = Convert.ToString(reader["GiftDescription"]);
@@ -103,7 +104,7 @@ namespace GiftServer
                 // Race condition, but I don't know how to solve (yet)
                 if (File.Exists(path))
                 {
-                    return path;
+                    return "/resources/images/gifts/Gift" + id + Resources.ImageFormat;
                 }
                 else
                 {
