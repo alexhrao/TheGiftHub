@@ -132,6 +132,8 @@
     <None Include="resources\htmlTemplates\list.html" />
     <Content Include="resources\htmlTemplates\profile.html" />
     <Content Include="resources\images\users\default.png" />
+    <Content Include="resources\plugins\starRating\star-rating.min.css" />
+    <Content Include="resources\plugins\starRating\star-rating.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-3.1.1.intellisense.js" />
