@@ -75,16 +75,55 @@ namespace GiftServer
             }
             public Gift() { }
 
+            // TODO: Add Update and Delete
             public bool Create()
             {
-                return false;
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        // TODO: Add received date?
+                        cmd.Connection = con;
+                        cmd.CommandText = "INSERT INTO gifts (UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating) "
+                                        + "VALUES (@uid, @name, @desc, @url, @cost, @stores, @quantity, @hex, @color, @size, @category, @rating);";
+                        cmd.Parameters.AddWithValue("@uid", User.UserId);
+                        cmd.Parameters.AddWithValue("@name", Name);
+                        cmd.Parameters.AddWithValue("@desc", Description);
+                        cmd.Parameters.AddWithValue("@url", Url);
+                        cmd.Parameters.AddWithValue("@cost", Cost);
+                        cmd.Parameters.AddWithValue("@hex", Color);
+                        cmd.Parameters.AddWithValue("@color", ColorText);
+                        cmd.Parameters.AddWithValue("@size", Size);
+                        cmd.Parameters.AddWithValue("@category", Category.CategoryId);
+                        cmd.Parameters.AddWithValue("@rating", Rating);
+                        cmd.Prepare();
+                        if (cmd.ExecuteNonQuery() == 1)
+                        {
+                            GiftId = Convert.ToUInt64(cmd.LastInsertedId);
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
             }
             public bool Update()
             {
+                if (GiftId == 0)
+                {
+                    return Create();
+                }
                 return false;
             }
             public bool Delete()
             {
+                if (GiftId == 0)
+                {
+                    return false;
+                }
                 return false;
             }
 
