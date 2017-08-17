@@ -24,10 +24,10 @@ namespace GiftServer
             private NameValueCollection _dict;
             public Controller(HttpListenerContext ctx)
             {
-                this._ctx = ctx;
-                this._request = ctx.Request;
-                this._response = ctx.Response;
-                this._user = GetUser();
+                _ctx = ctx;
+                _request = ctx.Request;
+                _response = ctx.Response;
+                _user = GetUser();
             }
             /// <summary>
             /// Dispatch will, given a request, return the webpage that will be shown to the user.

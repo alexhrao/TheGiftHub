@@ -22,11 +22,11 @@ namespace GiftServer
                 {
                     // Print gift information
                     HtmlNode giftRow = HtmlNode.CreateNode("<tr></tr>");
-                    HtmlNode pic = HtmlNode.CreateNode("<td><img class=\"img-thumbnail img-responsive centered\" src=\"" + gift.GetImage() + "\" /></td>");
-                    HtmlNode rating = HtmlNode.CreateNode("<td><h3>TODO: Create Rating</h3></td>");
-                    HtmlNode name = HtmlNode.CreateNode("<td><h3>" + HttpUtility.HtmlEncode(gift.Name) + "</h3></td>");
-                    HtmlNode quant = HtmlNode.CreateNode("<td><h3>" + gift.Quantity + "</h3></td>");
-                    HtmlNode cost = HtmlNode.CreateNode("<td><h3>" + gift.Cost.ToString("C") + "</h3></td>");
+                    HtmlNode pic = HtmlNode.CreateNode("<td><div class=\"parent\"><img class=\"img-thumbnail img-responsive child\" src=\"" + gift.GetImage() + "\" /></div></td>");
+                    HtmlNode rating = HtmlNode.CreateNode("<td><div class=\"parent\"><h3 class=\"child\">TODO: Create Rating</h3></div></td>");
+                    HtmlNode name = HtmlNode.CreateNode("<td><div class=\"parent\"><h3 class=\"child\">" + HttpUtility.HtmlEncode(gift.Name) + "</h3></div></td>");
+                    HtmlNode quant = HtmlNode.CreateNode("<td><div class=\"parent\"><h3 class=\"child\">" + gift.Quantity + "</h3></div></td>");
+                    HtmlNode cost = HtmlNode.CreateNode("<td><div class=\"parent\"><h3 class=\"child\">" + gift.Cost.ToString("C") + "</h3></div></td>");
                     giftRow.AppendChild(pic);
                     giftRow.AppendChild(rating);
                     giftRow.AppendChild(name);

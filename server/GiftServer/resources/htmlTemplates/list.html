@@ -10,8 +10,14 @@
         });
     </script>
     <style>
+        table {
+            max-width: 75%;
+        }
         tr {
             cursor: pointer;
+        }
+        th {
+            text-align: center;
         }
         body {
             background-color: #CECECE;
@@ -19,10 +25,15 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         img {
-            text-align: center;
-            width: 128px;
-            height: 128px;
-            display: inline;
+            max-height: 128px;
+            max-width: 128px;
+        }
+        .parent {
+            display: flex;
+            flex-flow: row;
+        }
+        .child {
+            margin: auto;
         }
     </style>
 </head>
