@@ -154,6 +154,57 @@ namespace GiftServer
                     }
                 }
             }
+
+            /// <summary>
+            /// Add a user to the group
+            /// </summary>
+            /// <param name="user">The user to be added</param>
+            public void Add(User user)
+            {
+
+            }
+            /// <summary>
+            /// Remove a user from the group
+            /// </summary>
+            /// <param name="user">The user to be removed from the group</param>
+            public void Remove(User user)
+            {
+
+            }
+
+            /// <summary>
+            /// Allow a given event to be seen by all members of this group
+            /// </summary>
+            /// <param name="evnt">The event</param>
+            public void Add(EventUser evnt)
+            {
+
+            }
+            /// <summary>
+            /// Don't allow a given event to be seen by all members of this group
+            /// </summary>
+            /// <param name="evnt"></param>
+            public void Remove(EventUser evnt)
+            {
+
+            }
+
+            /// <summary>
+            /// Allow a given gift to be seen by all members of this group
+            /// </summary>
+            /// <param name="gift"></param>
+            public void Add(Gift gift)
+            {
+
+            }
+            /// <summary>
+            /// Don't allow a given gift to be seen by all members of this group
+            /// </summary>
+            /// <param name="gift"></param>
+            public void Remove(Gift gift)
+            {
+
+            }
         }
     }
 }

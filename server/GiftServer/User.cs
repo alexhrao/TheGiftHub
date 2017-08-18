@@ -1,5 +1,4 @@
 ﻿using System;
-using GiftServer.Security;
 using MySql.Data.MySqlClient;
 using System.Configuration;
 using GiftServer.Exceptions;
@@ -23,12 +22,15 @@ namespace GiftServer
             public string LastName;
             public string Email;
             public string PasswordHash;
-            public int Theme;
-            public int BirthMonth;
-            public int BirthDay;
-            public string Bio;
-            public DateTime DateJoined;
-            // On demand? Or on load?
+            public int Theme = 1;
+            public int BirthMonth = 0;
+            public int BirthDay = 0;
+            public string Bio = "";
+            public DateTime DateJoined
+            {
+                get;
+                private set;
+            }
             private List<Gift> _gifts = null;
             public List<Gift> Gifts
             {
@@ -149,7 +151,6 @@ namespace GiftServer
                                 this.BirthMonth = Convert.ToInt32(reader["UserBirthMonth"]);
                                 this.DateJoined = (DateTime)(reader["TimeCreated"]);
                                 this.Bio = Convert.ToString(reader["UserBio"]);
-                                
                             }
                             else
                             {
@@ -517,6 +518,41 @@ namespace GiftServer
                 {
                     return "resources/images/users/default" + Resources.ImageFormat;
                 }
+            }
+
+            /// <summary>
+            /// Create a new group with this User as admin
+            /// </summary>
+            /// <param name="group"></param>
+            public void Add(Group group)
+            {
+
+            }
+            /// <summary>
+            /// ????
+            /// </summary>
+            /// <param name="group"></param>
+            public void Remove(Group group)
+            {
+
+            }
+
+            public void Add(EventUser evnt)
+            {
+
+            }
+            public void Remove(EventUser evnt)
+            {
+
+            }
+
+            public void Add(Gift gift)
+            {
+
+            }
+            public void Remove(Gift gift)
+            {
+
             }
         }
     }

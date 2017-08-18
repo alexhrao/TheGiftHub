@@ -55,13 +55,17 @@ namespace GiftServer
                                     switch (_request.QueryString["dest"])
                                     {
                                         case "profile":
-                                            // Save user image:
-                                            _user.SaveImage(parser);
-                                            break;
+                                            {
+                                                // Save user image:
+                                                _user.SaveImage(parser);
+                                                break;
+                                            }
                                         case "gift":
-                                            Gift gift = new Gift(Convert.ToUInt64(parser.Parameters["giftID"]));
-                                            gift.SaveImage(parser);
-                                            break;
+                                            {
+                                                Gift gift = new Gift(Convert.ToUInt64(parser.Parameters["giftID"]));
+                                                gift.SaveImage(parser);
+                                                break;
+                                            }
                                     }
                                     return ParseQuery();
                                 }
@@ -459,14 +463,45 @@ namespace GiftServer
                 Group group = new Group(Convert.ToUInt64(_dict["groupID"]));
                 switch (_dict["item"])
                 {
+                    case "addUser":
+                        {
+                            // Get ID of user to add to this group
+                            User added = new User(Convert.ToUInt64(_dict["userID"]));
+                            group.Add(added);
+                            break;
+                        }
+                    case "removeUser":
+                        {
+                            User removed = new User(Convert.ToUInt64(_dict["userID"]));
+                            group.Remove(removed);
+                            break;
+                        }
+                    case "addEvent":
+                        {
+                            EventUser added = new EventUser(Convert.ToUInt64(_dict["eventID"]));
+                            group.Add(added);
+                            break;
+                        }
+                    case "removeEvent":
+                        {
+                            EventUser removed = new EventUser(Convert.ToUInt64(_dict["eventID"]));
+                            group.Remove(removed);
+                            break;
+                        }
                     case "name":
-                        break;
+                        {
+                            break;
+                        }
                     case "delete":
-                        group.Delete();
-                        return "200";
+                        {
+                            group.Delete();
+                            return "200";
+                        }
                     default:
-                        _response.StatusCode = 404;
-                        return "404";
+                        {
+                            _response.StatusCode = 404;
+                            return "404";
+                        }
                 }
                 group.Update();
                 return "200";
