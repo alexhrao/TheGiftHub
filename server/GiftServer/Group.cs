@@ -161,6 +161,19 @@ namespace GiftServer
             /// <param name="user">The user to be added</param>
             public void Add(User user)
             {
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "INSERT INTO groups_users (GroupID, UserID) VALUES (@gid, @uid);";
+                        cmd.Parameters.AddWithValue("@gid", GroupId);
+                        cmd.Parameters.AddWithValue("@uid", user.UserId);
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
 
             }
             /// <summary>
@@ -169,7 +182,19 @@ namespace GiftServer
             /// <param name="user">The user to be removed from the group</param>
             public void Remove(User user)
             {
-
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "DELETE FROM groups_users WHERE GroupID = @gid AND UserID = @uid;";
+                        cmd.Parameters.AddWithValue("@gid", GroupId);
+                        cmd.Parameters.AddWithValue("@uid", user.UserId);
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
             }
 
             /// <summary>
@@ -178,7 +203,19 @@ namespace GiftServer
             /// <param name="evnt">The event</param>
             public void Add(EventUser evnt)
             {
-
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "INSERT INTO events_users_groups (EventUserID, GroupID) VALUES (@eid, @gid);";
+                        cmd.Parameters.AddWithValue("@eid", evnt.EventUserId);
+                        cmd.Parameters.AddWithValue("@gid", GroupId);
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
             }
             /// <summary>
             /// Don't allow a given event to be seen by all members of this group
@@ -186,7 +223,19 @@ namespace GiftServer
             /// <param name="evnt"></param>
             public void Remove(EventUser evnt)
             {
-
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "DELETE FROM events_users_groups WHERE GroupID = @gid AND EventUserID = @eid;";
+                        cmd.Parameters.AddWithValue("@gid", GroupId);
+                        cmd.Parameters.AddWithValue("@eid", evnt.EventUserId);
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
             }
 
             /// <summary>
@@ -195,7 +244,19 @@ namespace GiftServer
             /// <param name="gift"></param>
             public void Add(Gift gift)
             {
-
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "INSERT INTO groups_gifts (GroupID, GiftID) VALUES (@grid, @gid);";
+                        cmd.Parameters.AddWithValue("@grid", GroupId);
+                        cmd.Parameters.AddWithValue("@gid", gift.GiftId);
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
             }
             /// <summary>
             /// Don't allow a given gift to be seen by all members of this group
@@ -203,7 +264,19 @@ namespace GiftServer
             /// <param name="gift"></param>
             public void Remove(Gift gift)
             {
-
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "DELETE FROM groups_gifts WHERE GroupID = @grid AND GiftID = @gid;";
+                        cmd.Parameters.AddWithValue("@grid", GroupId);
+                        cmd.Parameters.AddWithValue("@gid", gift.GiftId);
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
             }
         }
     }

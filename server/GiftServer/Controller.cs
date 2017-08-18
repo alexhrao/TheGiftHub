@@ -476,6 +476,11 @@ namespace GiftServer
                             group.Remove(removed);
                             break;
                         }
+                    case "removeMe":
+                        {
+                            group.Remove(_user);
+                            break;
+                        }
                     case "addEvent":
                         {
                             EventUser added = new EventUser(Convert.ToUInt64(_dict["eventID"]));
