@@ -27,7 +27,7 @@ namespace GiftServer
                 _ctx = ctx;
                 _request = ctx.Request;
                 _response = ctx.Response;
-                _user = GetUser();
+                GetUser();
             }
             /// <summary>
             /// Dispatch will, given a request, return the webpage that will be shown to the user.
@@ -323,6 +323,33 @@ namespace GiftServer
 
             private void Write(string path)
             {
+                switch (Path.GetExtension(path))
+                {
+                    case "bm":
+                    case "bmp":
+                        _response.ContentType = "image/bmp";
+                        break;
+                    case "css":
+                        _response.ContentType = "text/css";
+                        break;
+                    case "gif":
+                        _response.ContentType = "image/gif";
+                        break;
+                    case "jpe":
+                    case "jpeg":
+                    case "jpg":
+                        _response.ContentType = "image/jpeg";
+                        break;
+                    case "js":
+                        _response.ContentType = "text/javascript";
+                        break;
+                    case "png":
+                        _response.ContentType = "image/png";
+                        break;
+
+                    default:
+                        break;
+                }
                 byte[] buffer = File.ReadAllBytes(path);
                 _response.ContentLength64 = buffer.Length;
                 using (Stream response = _response.OutputStream)
@@ -330,17 +357,18 @@ namespace GiftServer
                     response.Write(buffer, 0, buffer.Length);
                 }
             }
-            private User GetUser()
+
+            private void GetUser()
             {
                 // Check if user is logged in (via cookies?)
                 Cookie reqLogger = _request.Cookies["UserID"];
                 if (reqLogger != null)
                 {
-                    return new User(Convert.ToUInt64(reqLogger.Value));
+                    _user =  new User(Convert.ToUInt64(reqLogger.Value));
                 }
                 else
                 {
-                    return null;
+                    _user = null;
                 }
             }
 
@@ -398,7 +426,6 @@ namespace GiftServer
                         _user.Delete();
                         InvalidateCookie();
                         return LoginManager.Login();
-                        // Return so that 
                         // will return HERE so as to not update a null user
                     default:
                         _response.StatusCode = 404;

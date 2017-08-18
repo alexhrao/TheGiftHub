@@ -18,18 +18,18 @@ namespace GiftServer
             } = 0;
             public User User;
             public string Name;
-            public string Description;
-            public string Url;
-            public double Cost;
-            public string Stores;
-            public int Quantity;
-            public string Color;
-            public string ColorText;
-            public string Size;
+            public string Description = "";
+            public string Url = "";
+            public double Cost = 0.00;
+            public string Stores = "";
+            public int Quantity = 1;
+            public string Color = "000000";
+            public string ColorText = "";
+            public string Size = "";
             public Category Category;
-            public double Rating;
+            public double Rating = 0.00;
             public DateTime TimeStamp;
-            public DateTime ReceivedDate;
+            public DateTime DateReceived = DateTime.MinValue;
 
             public Gift(ulong id)
             {
@@ -62,12 +62,9 @@ namespace GiftServer
                                 TimeStamp = (DateTime)(reader["GiftAddStamp"]);
                                 try
                                 {
-                                    ReceivedDate = (DateTime)(reader["GiftReceivedDate"]);
+                                    DateReceived = (DateTime)(reader["GiftReceivedDate"]);
                                 }
-                                catch (InvalidCastException)
-                                {
-                                    ReceivedDate = DateTime.MinValue;
-                                }
+                                catch (InvalidCastException) { }
                             }
                         }
                     }
@@ -85,8 +82,8 @@ namespace GiftServer
                     {
                         // TODO: Add received date?
                         cmd.Connection = con;
-                        cmd.CommandText = "INSERT INTO gifts (UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating) "
-                                        + "VALUES (@uid, @name, @desc, @url, @cost, @stores, @quantity, @hex, @color, @size, @category, @rating);";
+                        cmd.CommandText = "INSERT INTO gifts (UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating, GiftReceivedDate) "
+                                        + "VALUES (@uid, @name, @desc, @url, @cost, @stores, @quantity, @hex, @color, @size, @category, @rating, @rec);";
                         cmd.Parameters.AddWithValue("@uid", User.UserId);
                         cmd.Parameters.AddWithValue("@name", Name);
                         cmd.Parameters.AddWithValue("@desc", Description);
@@ -97,10 +94,33 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@size", Size);
                         cmd.Parameters.AddWithValue("@category", Category.CategoryId);
                         cmd.Parameters.AddWithValue("@rating", Rating);
+                        if (DateReceived == DateTime.MinValue)
+                        {
+                            cmd.Parameters.AddWithValue("@rec", "");
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@rec", DateReceived.ToString("yyyy-MM-dd"));
+                        }
                         cmd.Prepare();
                         if (cmd.ExecuteNonQuery() == 1)
                         {
                             GiftId = Convert.ToUInt64(cmd.LastInsertedId);
+                            using (MySqlCommand timer = new MySqlCommand())
+                            {
+                                timer.Connection = con;
+                                timer.CommandText = "SELECT GiftAddStamp FROM gifts WHERE GiftID = @gid;";
+                                timer.Parameters.AddWithValue("@gid", GiftId);
+                                timer.Prepare();
+                                using (MySqlDataReader reader = timer.ExecuteReader())
+                                {
+                                    if (reader.Read())
+                                    {
+                                        TimeStamp = (DateTime)(reader["GiftAddStamp"]);
+                                        return true;
+                                    }
+                                }
+                            }
                             return true;
                         }
                         else
@@ -115,6 +135,15 @@ namespace GiftServer
                 if (GiftId == 0)
                 {
                     return Create();
+                }
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "UPDATE gifts ";
+                    }
                 }
                 return false;
             }
