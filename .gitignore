@@ -262,5 +262,6 @@ __pycache__/
 
 # Personal
 /server/GiftServer/resources/emailPassword.txt
+*.pem
 /server/GiftServer/resources/images/*
 *.db
