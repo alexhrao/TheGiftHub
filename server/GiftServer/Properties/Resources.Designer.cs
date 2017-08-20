@@ -112,10 +112,9 @@ namespace GiftServer.Properties {
         ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
         ///    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
         ///    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css&quot;&gt;
+        ///    &lt;link href=&quot;resources/plugins/starRating/star-rating.min.css&quot; media=&quot;all&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;
         ///    &lt;script src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js&quot;&gt;&lt;/script&gt;
-        ///    &lt;script src=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js&quot;&gt;&lt;/script&gt;
-        ///    &lt;script&gt;
-        ///        $(doc [rest of string was truncated]&quot;;.
+        ///    &lt;scri [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string header {
             get {
@@ -136,12 +135,21 @@ namespace GiftServer.Properties {
         ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
         ///&lt;head&gt;
         ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
-        ///    &lt;title&gt;&lt;/title&gt;
-        ///&lt;/head&gt;
-        ///&lt;body&gt;
-        ///
-        ///&lt;/body&gt;
-        ///&lt;/html&gt;.
+        ///    &lt;title&gt;My Gift List&lt;/title&gt;
+        ///    &lt;script&gt;
+        ///        jQuery(document).ready(function ($) {
+        ///            $(&quot;.clickable-row&quot;).click(function () {
+        ///                window.location = $(this).data(&quot;href&quot;);
+        ///            });
+        ///            $(&apos;.star-rating&apos;).rating({
+        ///                displayOnly: true,
+        ///                step: 0.5,
+        ///                size: &apos;xs&apos;
+        ///            });
+        ///        });
+        ///    &lt;/script&gt;
+        ///    &lt;style&gt;
+        ///         [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string list {
             get {

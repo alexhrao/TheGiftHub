@@ -14,9 +14,12 @@ namespace GiftServer
             private readonly HttpListener _listener = new HttpListener();
             private readonly Func<HttpListenerContext, string> _responseGenerator;
 
-            public WebServer(string prefixes, Func<HttpListenerContext, string> method)
+            public WebServer(string[] prefixes, Func<HttpListenerContext, string> method)
             {
-                _listener.Prefixes.Add(prefixes);
+                foreach (string prefix in prefixes)
+                {
+                    _listener.Prefixes.Add(prefix);
+                }
                 _responseGenerator = method;
                 _listener.Start();
             }

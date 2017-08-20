@@ -24,7 +24,9 @@ namespace GiftServer
 
             public void Start()
             {
-                Server.WebServer server = new Server.WebServer(Resources.URL + "/", this.Route);
+                string[] prefixes = new string[1];
+                prefixes[0] = "http://localhost:60001/";
+                Server.WebServer server = new Server.WebServer(prefixes, this.Route);
                 server.Run();
                 Console.WriteLine("Server is Active...\nType help for available commands");
                 string input = null;

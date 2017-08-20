@@ -5,6 +5,7 @@ using GiftServer.Properties;
 using GiftServer.Security;
 using MySql.Data.MySqlClient;
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
 using System.IO;
@@ -17,6 +18,7 @@ namespace GiftServer
     {
         public class Controller
         {
+            private static List<ulong> _logged = new List<ulong>();
             private User _user;
             private HttpListenerContext _ctx;
             private HttpListenerRequest _request;
@@ -90,7 +92,7 @@ namespace GiftServer
                                     switch (_dict["submit"])
                                     {
                                         case "Logout":
-                                            InvalidateCookie();
+                                            Logout();
                                             return LoginManager.Login();
                                         case "Signup":
                                             _user = new User
@@ -366,7 +368,7 @@ namespace GiftServer
             {
                 // Check if user is logged in (via cookies?)
                 Cookie reqLogger = _request.Cookies["UserID"];
-                if (reqLogger != null)
+                if (reqLogger != null && IsLogged(Convert.ToUInt64(reqLogger.Value)))
                 {
                     _user =  new User(Convert.ToUInt64(reqLogger.Value));
                 }
@@ -395,6 +397,7 @@ namespace GiftServer
                     Cookie logger = new Cookie("UserID", Convert.ToString(_user.UserId));
                     _response.Cookies.Add(logger);
                     _response.AppendHeader("dest", "dashboard");
+                    _logged.Add(_user.UserId);
                     return ParseQuery();
                 }
                 catch (InvalidPasswordException)
@@ -428,7 +431,7 @@ namespace GiftServer
                         break;
                     case "delete":
                         _user.Delete();
-                        InvalidateCookie();
+                        Logout();
                         return LoginManager.Login();
                         // will return HERE so as to not update a null user
                     default:
@@ -512,7 +515,7 @@ namespace GiftServer
                 return "200";
             }
 
-            private void InvalidateCookie()
+            private void Logout()
             {
                 _response.Cookies.Add(new Cookie
                 {
@@ -520,8 +523,26 @@ namespace GiftServer
                     Value = "-1",
                     Expires = DateTime.Now.AddDays(-1d)
                 });
+                // If currently logged in, request will have cookie. See if cookie exists, and remove if so
+                if (_request.Cookies["UserID"] != null)
+                {
+                    // Get UserID (Make sure not -1)
+                    ulong id = Convert.ToUInt64(_request.Cookies["UserId"].Value);
+                    if (IsLogged(id))
+                    {
+                        _logged.Remove(id);
+                    }
+                }
             }
 
+
+            private static bool IsLogged(ulong id)
+            {
+                return _logged.Exists(new Predicate<ulong>((ulong target) =>
+                {
+                    return target == id;
+                }));
+            }
 
             private static string GeneratePath(string uri)
             {
