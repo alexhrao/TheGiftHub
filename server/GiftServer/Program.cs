@@ -42,7 +42,8 @@ namespace GiftServer
                                             + "\n\tquit - stops this instance of the server"
                                             + "\n\thelp - shows this information"
                                             + "\n\tconnections - shows information about connections to the server"
-                                            + "\n\tstatistics - shows various statistics about this server session");
+                                            + "\n\tstatistics - shows various statistics about this server session"
+                                            + "\n\tlogged - shows UserIDs currently logged in");
                             break;
                         case "connections":
                             if (NumContacts == 0)
@@ -60,6 +61,15 @@ namespace GiftServer
                                 {
                                     Console.WriteLine("\t" + end.ToString());
                                 }
+                            }
+                            break;
+                        case "statistics":
+                            break;
+                        case "logged":
+                            Console.WriteLine("Users logged in:");
+                            foreach (ulong id in Controller.Logged)
+                            {
+                                Console.WriteLine("\tUser " + id);
                             }
                             break;
                         default:

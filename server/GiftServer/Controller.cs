@@ -18,7 +18,7 @@ namespace GiftServer
     {
         public class Controller
         {
-            private static List<ulong> _logged = new List<ulong>();
+            public static readonly List<ulong> Logged = new List<ulong>();
             private User _user;
             private HttpListenerContext _ctx;
             private HttpListenerRequest _request;
@@ -397,7 +397,7 @@ namespace GiftServer
                     Cookie logger = new Cookie("UserID", Convert.ToString(_user.UserId));
                     _response.Cookies.Add(logger);
                     _response.AppendHeader("dest", "dashboard");
-                    _logged.Add(_user.UserId);
+                    Logged.Add(_user.UserId);
                     return ParseQuery();
                 }
                 catch (InvalidPasswordException)
@@ -530,15 +530,15 @@ namespace GiftServer
                     ulong id = Convert.ToUInt64(_request.Cookies["UserId"].Value);
                     if (IsLogged(id))
                     {
-                        _logged.Remove(id);
+                        Logged.Remove(id);
                     }
                 }
             }
 
 
-            private static bool IsLogged(ulong id)
+            private bool IsLogged(ulong id)
             {
-                return _logged.Exists(new Predicate<ulong>((ulong target) =>
+                return Logged.Exists(new Predicate<ulong>((ulong target) =>
                 {
                     return target == id;
                 }));
