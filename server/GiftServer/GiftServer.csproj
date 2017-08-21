@@ -91,6 +91,7 @@
     </Compile>
     <Compile Include="ResetManager.cs" />
     <Compile Include="User.cs" />
+    <Compile Include="Warning.cs" />
     <Compile Include="WebServer.cs" />
   </ItemGroup>
   <ItemGroup>

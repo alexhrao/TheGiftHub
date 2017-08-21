@@ -3,6 +3,7 @@ using GiftServer.Server;
 using GiftServer.Properties;
 using System.Net;
 using System.Collections.Generic;
+using GiftServer.Exceptions;
 
 namespace GiftServer
 {
@@ -26,7 +27,7 @@ namespace GiftServer
             {
                 string[] prefixes = new string[1];
                 prefixes[0] = "http://localhost:60001/";
-                Server.WebServer server = new Server.WebServer(prefixes, this.Route);
+                WebServer server = new WebServer(prefixes, this.Route);
                 server.Run();
                 Console.WriteLine("Server is Active...\nType help for available commands");
                 string input = null;
@@ -43,7 +44,8 @@ namespace GiftServer
                                             + "\n\thelp - shows this information"
                                             + "\n\tconnections - shows information about connections to the server"
                                             + "\n\tstatistics - shows various statistics about this server session"
-                                            + "\n\tlogged - shows UserIDs currently logged in");
+                                            + "\n\tlogged - shows UserIDs currently logged in"
+                                            + "\n\twarnings - shows any warnings that have been issued");
                             break;
                         case "connections":
                             if (NumContacts == 0)
@@ -67,12 +69,26 @@ namespace GiftServer
                             break;
                         case "logged":
                             Console.WriteLine("Users logged in:");
-                            foreach (ulong id in Controller.Logged)
+
+                            foreach (ulong id in Controller.Connections.Keys)
                             {
-                                Console.WriteLine("\tUser " + id);
+                                Console.WriteLine("\tUser " + id + " Connected from following locations:");
+                                foreach (IPEndPoint end in Controller.Connections[id])
+                                {
+                                    Console.WriteLine("\t\t" + end.ToString());
+                                }
+                            }
+                            break;
+                        case "warnings":
+                            Console.WriteLine("Warnings Issued:");
+                            foreach (Warning warn in Controller.Warnings)
+                            {
+                                Console.WriteLine("\t" + warn.ToString());
                             }
                             break;
                         default:
+                            Console.WriteLine("Unknown command \"" + input + "\"");
+                            Console.WriteLine("Type \"help\" for available commands");
                             break;
                     }
                 }

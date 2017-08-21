@@ -18,7 +18,8 @@ namespace GiftServer
     {
         public class Controller
         {
-            public static readonly List<ulong> Logged = new List<ulong>();
+            public static readonly Dictionary<ulong, IPEndPointCollection> Connections = new Dictionary<ulong, IPEndPointCollection>();
+            public static readonly List<Warning> Warnings = new List<Warning>();
             private User _user;
             private HttpListenerContext _ctx;
             private HttpListenerRequest _request;
@@ -198,9 +199,7 @@ namespace GiftServer
                         {
                             // Serve up immediately
                             Write(path);
-#if DEBUG
-                            Console.WriteLine("Resource at " + path + " Does not need authentication and was served.");
-#endif
+                            Warnings.Add(new PublicResourceWarning(path));
                         }
                         else if (_user != null)
                         {
@@ -254,9 +253,7 @@ namespace GiftServer
                         if (Path.GetFileNameWithoutExtension(path).Equals("default"))
                         {
                             Write(path);
-#if DEBUG
-                            Console.WriteLine("Resource at " + path + " Does not need authentication and was served.");
-#endif
+                            Warnings.Add(new PublicResourceWarning(path));
                         }
                         else if (_user != null)
                         {
@@ -310,9 +307,7 @@ namespace GiftServer
                     {
                         // Not accessing images or gifts, so OK to just send info:
                         Write(path);
-#if DEBUG
-                        Console.WriteLine("Resource at " + path + " Does not need authentication and was served.");
-#endif
+                        Warnings.Add(new PublicResourceWarning(path));
                     }
                 }
                 else if (Path.GetFileNameWithoutExtension(path).Equals("favicon"))
@@ -368,11 +363,19 @@ namespace GiftServer
             {
                 // Check if user is logged in (via cookies?)
                 Cookie reqLogger = _request.Cookies["UserID"];
-                if (reqLogger != null && IsLogged(Convert.ToUInt64(reqLogger.Value)))
+                if (reqLogger != null)
                 {
-                    _user =  new User(Convert.ToUInt64(reqLogger.Value));
+                    if (IsLogged(Convert.ToUInt64(reqLogger.Value)))
+                    {
+                        _user = new User(Convert.ToUInt64(reqLogger.Value));
+                    }
+                    else
+                    {
+                        _user = null;
+                        Warnings.Add(new CookieNotInvalidWarning(Convert.ToUInt64(reqLogger.Value)));
+                    }
                 }
-                else
+                else 
                 {
                     _user = null;
                 }
@@ -397,7 +400,12 @@ namespace GiftServer
                     Cookie logger = new Cookie("UserID", Convert.ToString(_user.UserId));
                     _response.Cookies.Add(logger);
                     _response.AppendHeader("dest", "dashboard");
-                    Logged.Add(_user.UserId);
+                    // If already logged in, just add remote end point:
+                    if (!Connections.ContainsKey(_user.UserId))
+                    {
+                        Connections.Add(_user.UserId, new IPEndPointCollection());
+                    }
+                    Connections[_user.UserId].Add(_request.RemoteEndPoint);
                     return ParseQuery();
                 }
                 catch (InvalidPasswordException)
@@ -520,17 +528,17 @@ namespace GiftServer
                 _response.Cookies.Add(new Cookie
                 {
                     Name = "UserID",
-                    Value = "-1",
+                    Value = "0",
                     Expires = DateTime.Now.AddDays(-1d)
                 });
                 // If currently logged in, request will have cookie. See if cookie exists, and remove if so
                 if (_request.Cookies["UserID"] != null)
                 {
-                    // Get UserID (Make sure not -1)
+                    // Get UserID (Make sure not 0)
                     ulong id = Convert.ToUInt64(_request.Cookies["UserId"].Value);
                     if (IsLogged(id))
                     {
-                        Logged.Remove(id);
+                        Connections.Remove(id);
                     }
                 }
             }
@@ -538,10 +546,7 @@ namespace GiftServer
 
             private bool IsLogged(ulong id)
             {
-                return Logged.Exists(new Predicate<ulong>((ulong target) =>
-                {
-                    return target == id;
-                }));
+                return id > 0 && Connections.ContainsKey(id);
             }
 
             private static string GeneratePath(string uri)
