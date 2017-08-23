@@ -13,7 +13,7 @@ namespace GiftServer
             public static string GiftList(User user)
             {
                 HtmlDocument myList = new HtmlDocument();
-                myList.LoadHtml(Resources.header + NavigationManager.NavigationBar(user) + Resources.list);
+                myList.LoadHtml(NavigationManager.NavigationBar(user) + Resources.list);
                 HtmlNode giftTable = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" giftHolder \")]");
                 HtmlNode giftTableMicro = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" xsGiftHolder \")]");
                 List<Gift> gifts = user.Gifts;
@@ -43,10 +43,7 @@ namespace GiftServer
                                                         "<td><div class=\"parent\"><h3 classs\"child\">" + HttpUtility.HtmlEncode(gift.Name) + "</h3></div></td>" +
                                                         "</tr>");
                     giftTableMicro.AppendChild(item);
-
                 }
-                // Get all gifts associated with me
-
                 return myList.DocumentNode.OuterHtml;
             }
         }
