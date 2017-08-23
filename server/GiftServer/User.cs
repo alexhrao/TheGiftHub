@@ -583,10 +583,11 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "DELETE FROM reservations "
-                                        + "WHERE ReserveStamp = "
+                                        + "WHERE ReserveStamp IN "
                                         + "( "
                                             + "SELECT MIN(ReserveStamp) FROM reservations WHERE GiftID = @gid AND UserID = @uid "
-                                        + ");";
+                                        + ")"
+                                        + "AND ReservationID NOT IN purchases.ReservationID;";
                         cmd.Parameters.AddWithValue("@gid", gift.GiftId);
                         cmd.Parameters.AddWithValue("@uid", UserId);
                         cmd.Prepare();
@@ -601,7 +602,40 @@ namespace GiftServer
             /// <param name="gift"></param>
             public void Purchase(Gift gift)
             {
-
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    uint resID = 0;
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        // Get ID of reservation NOT in purchases!
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT reservations.ReservationID "
+                                        + "FROM reservations "
+                                        + "WHERE reservations.ReservationID NOT IN purchases.ReservationID AND reservations.UserID = @uid AND reservations.GiftID = @gid;";
+                        cmd.Parameters.AddWithValue("@uid", UserId);
+                        cmd.Parameters.AddWithValue("@gid", gift.GiftId);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                resID = Convert.ToUInt32(reader["ReservationID"]);
+                            }
+                        }
+                    }
+                    if (resID != 0)
+                    {
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "INSERT INTO purchases (ReservationID) VALUES (@rid);";
+                            cmd.Parameters.AddWithValue("@rid", resID);
+                            cmd.Prepare();
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                }
             }
 
             /// <summary>
@@ -610,7 +644,26 @@ namespace GiftServer
             /// <param name="gift"></param>
             public void Return(Gift gift)
             {
-
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "DELETE FROM purchases "
+                                        + "WHERE PurchaseStamp IN "
+                                        + "("
+                                            + "SELECT MIN(PurchaseStamp) "
+                                            + "FROM purchases "
+                                            + "INNER JOIN reservations ON reservations.ReservationID = purchases.ReservationID "
+                                            + "WHERE reservations.GiftID = @gid AND reservations.UserID = @uid "
+                                        + ");";
+                        cmd.Parameters.AddWithValue("@gid", gift.GiftId);
+                        cmd.Parameters.AddWithValue("@uid", UserId);
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
             }
         }
     }
