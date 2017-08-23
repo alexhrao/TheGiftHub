@@ -178,7 +178,7 @@ CREATE TABLE gift_registry_db.receptions (
     ReceptionID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     GiftID INT NOT NULL,
     NumReceived INT NOT NULL DEFAULT 0,
-    DateReceived DATE NULL
+    ReceptionStamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 ALTER TABLE gift_registry_db.receptions
     ADD CONSTRAINT FK_GiftsReceptions FOREIGN KEY (GiftID)
@@ -188,7 +188,7 @@ CREATE TABLE gift_registry_db.reservations (
     ReservationID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     GiftID INT NOT NULL,
     UserID INT NOT NULL,
-    DateReceived DATE NULL
+    ReserveStamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 ALTER TABLE gift_registry_db.reservations
     ADD CONSTRAINT FK_ReservationsGifts FOREIGN KEY (GiftID)

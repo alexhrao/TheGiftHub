@@ -521,36 +521,94 @@ namespace GiftServer
             }
 
             /// <summary>
-            /// Create a new group with this User as admin
+            /// Reserve ONE of a given gift;
             /// </summary>
-            /// <param name="group"></param>
-            public void Add(Group group)
+            /// <param name="gift"></param>
+            public void Reserve(Gift gift)
             {
-
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    // Check if any left
+                    bool left = false;
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT COUNT(*) AS NumRes FROM reservations WHERE GiftID = @gid;";
+                        cmd.Parameters.AddWithValue("@gid", gift.GiftId);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read() && Convert.ToUInt32(reader["NumRes"]) < gift.Quantity)
+                            {
+                                left = true;
+                            }
+                            else
+                            {
+                                left = false;
+                            }
+                        }
+                    }
+                    if (left)
+                    {
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            // Add to reserved:
+                            cmd.CommandText = "INSERT INTO reservations (GiftID, UserID) VALUES (@gid, @uid);";
+                            cmd.Parameters.AddWithValue("@gid", gift.GiftId);
+                            cmd.Parameters.AddWithValue("@uid", UserId);
+                            cmd.Prepare();
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                    else
+                    {
+                        // Throw new exception?
+                    }
+                }
             }
+
             /// <summary>
-            /// ????
+            /// Release ONE of the gifts (if multiple are reserved)
+            /// Does NOT release purchased gifts.
             /// </summary>
-            /// <param name="group"></param>
-            public void Remove(Group group)
+            /// <param name="gift"></param>
+            public void Release(Gift gift)
+            {
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "DELETE FROM reservations "
+                                        + "WHERE ReserveStamp = "
+                                        + "( "
+                                            + "SELECT MIN(ReserveStamp) FROM reservations WHERE GiftID = @gid AND UserID = @uid "
+                                        + ");";
+                        cmd.Parameters.AddWithValue("@gid", gift.GiftId);
+                        cmd.Parameters.AddWithValue("@uid", UserId);
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Mark a gift as purchased
+            /// </summary>
+            /// <param name="gift"></param>
+            public void Purchase(Gift gift)
             {
 
             }
 
-            public void Add(EventUser evnt)
-            {
-
-            }
-            public void Remove(EventUser evnt)
-            {
-
-            }
-
-            public void Add(Gift gift)
-            {
-
-            }
-            public void Remove(Gift gift)
+            /// <summary>
+            /// Unmark as purchased, but it is still reserved!
+            /// </summary>
+            /// <param name="gift"></param>
+            public void Return(Gift gift)
             {
 
             }

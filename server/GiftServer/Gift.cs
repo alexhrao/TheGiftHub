@@ -22,7 +22,7 @@ namespace GiftServer
             public string Url = "";
             public double Cost = 0.00;
             public string Stores = "";
-            public int Quantity = 1;
+            public uint Quantity = 1;
             public string Color = "000000";
             public string ColorText = "";
             public string Size = "";
@@ -53,7 +53,7 @@ namespace GiftServer
                                 Url = Convert.ToString(reader["GiftURL"]);
                                 Cost = Convert.ToDouble(reader["GiftCost"]);
                                 Stores = Convert.ToString(reader["GiftStores"]);
-                                Quantity = Convert.ToInt32(reader["GiftQuantity"]);
+                                Quantity = Convert.ToUInt32(reader["GiftQuantity"]);
                                 Color = Convert.ToString(reader["GiftColor"]);
                                 ColorText = Convert.ToString(reader["GiftColorText"]);
                                 Size = Convert.ToString(reader["GiftSize"]);
