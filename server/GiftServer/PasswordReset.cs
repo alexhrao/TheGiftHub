@@ -90,10 +90,6 @@ namespace GiftServer
                     return ret;
                 }
             }
-            public static void ResetPassword(User user, string password)
-            {
-                user.UpdatePassword(password);
-            }
             public static void SendRecoveryEmail(string emailAddress)
             {
                 long id = -1;
