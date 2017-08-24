@@ -18,7 +18,30 @@ namespace GiftServer
     {
         public class Controller
         {
-            public static readonly Dictionary<ulong, IPEndPointCollection> Connections = new Dictionary<ulong, IPEndPointCollection>();
+            // When user logs in:
+                // If NOT found among userinformation, 
+            public class Connection
+            {
+                public class UserInformation
+                {
+                    public readonly ulong UserId;
+                    public readonly string Hash;
+                    public UserInformation(ulong id)
+                    {
+                        UserId = id;
+                        Hash = PasswordHash.Hash(id.ToString("00000000"));
+                    }
+                }
+                public UserInformation Info;
+                public IPEndPointCollection Ends;
+                public Connection(ulong userId)
+                {
+                    this.Info = new UserInformation(userId);
+                    this.Ends = new IPEndPointCollection();
+                }
+            }
+            public static readonly List<Connection> Connections = new List<Connection>();
+            //public static readonly Dictionary<ulong, IPEndPointCollection> Connections = new Dictionary<ulong, IPEndPointCollection>();
             public static readonly List<Warning> Warnings = new List<Warning>();
             private User _user;
             private HttpListenerContext _ctx;
@@ -362,17 +385,19 @@ namespace GiftServer
             private void GetUser()
             {
                 // Check if user is logged in (via cookies?)
-                Cookie reqLogger = _request.Cookies["UserID"];
+                Cookie reqLogger = _request.Cookies["UserHash"];
                 if (reqLogger != null)
                 {
-                    if (IsLogged(Convert.ToUInt64(reqLogger.Value)))
+                    string hash = Convert.ToString(reqLogger.Value);
+                    ulong id;
+                    if ((id = GetLogged(hash)) != 0)
                     {
-                        _user = new User(Convert.ToUInt64(reqLogger.Value));
+                        _user = new User(id);
                     }
                     else
                     {
                         _user = null;
-                        Warnings.Add(new CookieNotInvalidWarning(Convert.ToUInt64(reqLogger.Value)));
+                        Warnings.Add(new CookieNotInvalidWarning(hash));
                     }
                 }
                 else 
@@ -397,15 +422,12 @@ namespace GiftServer
                 try
                 {
                     _user = new User(email, password);
-                    Cookie logger = new Cookie("UserID", Convert.ToString(_user.UserId));
+                    // Get hash
+                    string hash = AddConnection(_user.UserId, _request.RemoteEndPoint);
+                    Cookie logger = new Cookie("UserHash", hash);
                     _response.Cookies.Add(logger);
                     _response.AppendHeader("dest", "dashboard");
                     // If already logged in, just add remote end point:
-                    if (!Connections.ContainsKey(_user.UserId))
-                    {
-                        Connections.Add(_user.UserId, new IPEndPointCollection());
-                    }
-                    Connections[_user.UserId].Add(_request.RemoteEndPoint);
                     return ParseQuery();
                 }
                 catch (InvalidPasswordException)
@@ -527,28 +549,80 @@ namespace GiftServer
             {
                 _response.Cookies.Add(new Cookie
                 {
-                    Name = "UserID",
-                    Value = "0",
+                    Name = "UserHash",
+                    Value = "",
                     Expires = DateTime.Now.AddDays(-1d)
                 });
                 // If currently logged in, request will have cookie. See if cookie exists, and remove if so
-                if (_request.Cookies["UserID"] != null)
+                if (_request.Cookies["UserHash"] != null)
                 {
-                    // Get UserID (Make sure not 0)
-                    ulong id = Convert.ToUInt64(_request.Cookies["UserId"].Value);
-                    if (IsLogged(id))
-                    {
-                        Connections.Remove(id);
-                    }
+                    RemoveConnection(_request.Cookies["UserHash"].Value);
                 }
             }
 
-
-            private bool IsLogged(ulong id)
+            private bool IsLogged(string hash)
             {
-                return id > 0 && Connections.ContainsKey(id);
+                return Connections.Exists(new Predicate<Connection>((Connection con) =>
+                {
+                    return con.Info != null && hash.Equals(con.Info.Hash);
+                }));
+            }
+            private ulong GetLogged(string hash)
+            {
+                ulong id = 0;
+                Connections.Exists(new Predicate<Connection>((Connection con) =>
+                {
+                    if (con.Info != null && hash.Equals(con.Info.Hash))
+                    {
+                        id = con.Info.UserId;
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }));
+                return id;
             }
 
+            private string AddConnection(ulong userId, IPEndPoint iPEndPoint)
+            {
+                string hash = "";
+                if (!Connections.Exists(new Predicate<Connection>((Connection con) =>
+                {
+                    if (con.Info != null && userId.Equals(con.Info.UserId))
+                    {
+                        hash = con.Info.Hash;
+                        con.Ends.Add(iPEndPoint);
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                })))
+                {
+                    Connection con = new Connection(userId);
+                    con.Ends.Add(iPEndPoint);
+                    Connections.Add(con);
+                    hash = con.Info.Hash;
+                }
+                return hash;
+            }
+            private void RemoveConnection(ulong userId)
+            {
+                Connections.RemoveAll(new Predicate<Connection>((Connection con) =>
+                {
+                    return con.Info.UserId == userId;
+                }));
+            }
+            private void RemoveConnection(string hash)
+            {
+                Connections.RemoveAll(new Predicate<Connection>((Connection con) =>
+                {
+                    return hash.Equals(con.Info.Hash);
+                }));
+            }
             private static string GeneratePath(string uri)
             {
                 return Resources.BasePath + uri;

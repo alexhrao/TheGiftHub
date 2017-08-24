@@ -27,7 +27,7 @@ namespace GiftServer
         }
         public class CookieNotInvalidWarning : Warning
         {
-            public CookieNotInvalidWarning(ulong id) : base("Invalid User detected", "User with ID " + id + " is not signed in, but given request assuming otherwise") { }
+            public CookieNotInvalidWarning(string hash) : base("Invalid User detected", "User with hash " + hash + " is not signed in, but given request assuming otherwise") { }
         }
     }
 }
