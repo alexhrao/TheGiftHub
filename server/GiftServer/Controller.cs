@@ -18,8 +18,6 @@ namespace GiftServer
     {
         public class Controller
         {
-            // When user logs in:
-                // If NOT found among userinformation, 
             public class Connection
             {
                 public class UserInformation
