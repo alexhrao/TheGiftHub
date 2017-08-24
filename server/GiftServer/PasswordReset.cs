@@ -54,7 +54,7 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT passwordResets.UserID, passwordResets.TimeCreated FROM passwordResets WHERE passwordResets.ResetHash = @hash;";
+                        cmd.CommandText = "SELECT CURRENT_TIMESTAMP AS CurrTime, passwordResets.UserID, passwordResets.TimeCreated FROM passwordResets WHERE passwordResets.ResetHash = @hash;";
                         cmd.Parameters.AddWithValue("@hash", hashed);
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
@@ -69,7 +69,8 @@ namespace GiftServer
                                 reader.Read();
                                 ret = new User(Convert.ToUInt64(reader["UserID"]));
                                 timestamp = (DateTime)(reader["TimeCreated"]);
-                                if (timestamp.AddMinutes(30) < DateTime.Now)
+                                DateTime curr = (DateTime)(reader["CurrTime"]);
+                                if (timestamp.AddMinutes(30) < curr)
                                 {
                                     // More than 30 minutes have passed; throw error:
                                     throw new PasswordResetTimeoutException();

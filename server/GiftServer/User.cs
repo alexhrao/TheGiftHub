@@ -6,6 +6,7 @@ using System.IO;
 using GiftServer.Properties;
 using GiftServer.Server;
 using System.Collections.Generic;
+using GiftServer.Security;
 
 namespace GiftServer
 {
@@ -21,7 +22,7 @@ namespace GiftServer
             public string FirstName;
             public string LastName;
             public string Email;
-            public string PasswordHash;
+            public Password Password;
             public int Theme = 1;
             public int BirthMonth = 0;
             public int BirthDay = 0;
@@ -131,7 +132,7 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT users.FirstName, users.LastName, users.UserEmail, passwords.PasswordHash, users.UserTheme, users.UserBirthMonth, users.UserBirthDay, users.TimeCreated, users.UserBio "
+                        cmd.CommandText = "SELECT users.*, passwords.PasswordHash, passwords.PasswordSalt, passwords.PasswordIter "
                                         + "FROM users "
                                         + "INNER JOIN passwords ON passwords.UserID = users.UserID "
                                         + "WHERE users.UserID = @id;";
@@ -145,7 +146,9 @@ namespace GiftServer
                                 this.FirstName = Convert.ToString(reader["FirstName"]);
                                 this.LastName = Convert.ToString(reader["LastName"]);
                                 this.Email = Convert.ToString(reader["UserEmail"]);
-                                this.PasswordHash = Convert.ToString(reader["PasswordHash"]);
+                                this.Password = new Password(Convert.ToString(reader["PasswordHash"]),
+                                                             Convert.ToString(reader["PasswordSalt"]),
+                                                             Convert.ToInt32(reader["PasswordIter"]));
                                 this.Theme = Convert.ToInt32(reader["UserTheme"]);
                                 this.BirthDay = Convert.ToInt32(reader["UserBirthDay"]);
                                 this.BirthMonth = Convert.ToInt32(reader["UserBirthMonth"]);
@@ -170,7 +173,7 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT users.UserID, users.FirstName, users.LastName, passwords.PasswordHash, users.UserTheme, users.UserBirthMonth, users.UserBirthDay, users.TimeCreated, users.UserBio "
+                        cmd.CommandText = "SELECT users.*, passwords.PasswordHash, passwords.PasswordSalt, passwords.PasswordIter "
                                         + "FROM users "
                                         + "INNER JOIN passwords ON passwords.UserID = users.UserID "
                                         + "WHERE users.UserEmail = @email;";
@@ -186,17 +189,18 @@ namespace GiftServer
                             }
                             else
                             {
+                                this.Password = new Password(Convert.ToString(reader["PasswordHash"]),
+                                                             Convert.ToString(reader["PasswordSalt"]),
+                                                             Convert.ToInt32(reader["PasswordIter"]));
                                 // Check password
-                                if (!Security.PasswordHash.Verify(password, Convert.ToString(reader["PasswordHash"])))
+                                if (!Password.Verify(password))
                                 {
-                                    // Not correct, throw new exception!
                                     throw new InvalidPasswordException();
                                 }
                                 UserId = Convert.ToUInt64(reader["UserID"]);
                                 this.FirstName = Convert.ToString(reader["FirstName"]);
                                 this.LastName = Convert.ToString(reader["LastName"]);
                                 this.Email = email;
-                                this.PasswordHash = Security.PasswordHash.Hash(password);
                                 this.Theme = Convert.ToInt32(reader["UserTheme"]);
                                 this.BirthDay = Convert.ToInt32(reader["UserBirthMonth"]);
                                 this.BirthMonth = Convert.ToInt32(reader["UserBirthDay"]);
@@ -210,7 +214,7 @@ namespace GiftServer
             }
             public User() { }
 
-            public bool UpdatePassword(string pass)
+            public bool UpdatePassword(string password)
             {
                 if (this.UserId == 0)
                 {
@@ -221,9 +225,12 @@ namespace GiftServer
                     con.Open();
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
+                        Password = new Password(password);
                         cmd.Connection = con;
-                        cmd.CommandText = "UPDATE passwords SET PasswordHash = @pwd WHERE UserID = @id;";
-                        cmd.Parameters.AddWithValue("@pwd", Security.PasswordHash.Hash(pass));
+                        cmd.CommandText = "UPDATE passwords SET PasswordHash = @hsh, PasswordSalt = @slt, PasswordIter = @itr WHERE UserID = @id;";
+                        cmd.Parameters.AddWithValue("@hsh", Password.Hash);
+                        cmd.Parameters.AddWithValue("@slt", Password.Salt);
+                        cmd.Parameters.AddWithValue("@itr", Password.Iterations);
                         cmd.Parameters.AddWithValue("@id", this.UserId);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
@@ -275,9 +282,11 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         // Create new password:
-                        cmd.CommandText = "INSERT INTO passwords (PasswordHash, UserID) VALUES (@pwd, @id);";
-                        cmd.Parameters.AddWithValue("@pwd", Security.PasswordHash.Hash(this.PasswordHash));
-                        cmd.Parameters.AddWithValue("@id", this.UserId);
+                        cmd.CommandText = "INSERT INTO passwords (UserID, PasswordHash, PasswordSalt, PasswordIter) VALUES (@uid, @hsh, @slt, @itr);";
+                        cmd.Parameters.AddWithValue("@uid", this.UserId);
+                        cmd.Parameters.AddWithValue("@hsh", Password.Hash);
+                        cmd.Parameters.AddWithValue("@slt", Password.Salt);
+                        cmd.Parameters.AddWithValue("@itr", Password.Iterations);
                         cmd.Prepare();
                         if (cmd.ExecuteNonQuery() == 0)
                         {

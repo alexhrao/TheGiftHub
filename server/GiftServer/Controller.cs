@@ -27,7 +27,7 @@ namespace GiftServer
                     public UserInformation(ulong id)
                     {
                         UserId = id;
-                        Hash = PasswordHash.Hash(id.ToString("00000000"));
+                        Hash = new Password(id.ToString("00000000")).Hash;
                     }
                 }
                 public UserInformation Info;
@@ -39,7 +39,6 @@ namespace GiftServer
                 }
             }
             public static readonly List<Connection> Connections = new List<Connection>();
-            //public static readonly Dictionary<ulong, IPEndPointCollection> Connections = new Dictionary<ulong, IPEndPointCollection>();
             public static readonly List<Warning> Warnings = new List<Warning>();
             private User _user;
             private HttpListenerContext _ctx;
@@ -122,7 +121,7 @@ namespace GiftServer
                                                 FirstName = _dict["firstName"],
                                                 LastName = _dict["lastName"],
                                                 Email = _dict["email"],
-                                                PasswordHash = _dict["password"]
+                                                Password = new Password(_dict["password"])
                                             };
                                             _user.Create();
                                             return LoginManager.SuccessSignup();
@@ -164,7 +163,14 @@ namespace GiftServer
                             // Send login page EXCEPT if requesting password reset:
                             if (_request.QueryString["ResetToken"] != null)
                             {
-                                return ResetManager.CreateReset(PasswordReset.GetUser(_request.QueryString["ResetToken"]));
+                                try
+                                {
+                                    return ResetManager.CreateReset(PasswordReset.GetUser(_request.QueryString["ResetToken"]));
+                                } catch (PasswordResetTimeoutException)
+                                {
+                                    return ResetManager.ResetFailed();
+                                }
+
                             }
                             else
                             {

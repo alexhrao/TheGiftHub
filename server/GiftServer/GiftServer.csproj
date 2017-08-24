@@ -80,7 +80,7 @@
     <Compile Include="ISynchronizable.cs" />
     <Compile Include="LoginManager.cs" />
     <Compile Include="NavigationManager.cs" />
-    <Compile Include="PasswordHash.cs" />
+    <Compile Include="Password.cs" />
     <Compile Include="PasswordReset.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

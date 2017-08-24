@@ -37,10 +37,10 @@ INSERT INTO users (FirstName, LastName, UserEmail, UserBirthMonth, UserBirthDay,
     VALUES ('Raeedah', 'Choudhury', 'rchoudhury@gmail.com', 11, 19, "I love my boyfriend");
 
 -- Insert into Password:
-INSERT INTO passwords (UserID, PasswordHash)
-    VALUES (1, 'fdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafd');
-INSERT INTO passwords (UserID, PasswordHash)
-    VALUES (2, 'fdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsafdfdsa32');
+INSERT INTO passwords (UserID, PasswordHash, PasswordSalt, PasswordIter)
+    VALUES (1, 'UJIOl8xUU7ccIQH5Ofs+Awfdsa==', 'UJIOl8xUU7ccIQH5Ofs+Aw==', 10000);
+INSERT INTO passwords (UserID, PasswordHash, PasswordSalt, PasswordIter)
+    VALUES (1, '12345678901234567890', '1234567890123567', 10000);
 
 -- Default Event Futures:
 INSERT INTO default_events_futures (EventID, EventYear, EventMonth, EventDay)

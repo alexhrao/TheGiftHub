@@ -41,6 +41,20 @@ namespace GiftServer
                 alert.AppendChildren(children);
                 return login.DocumentNode.OuterHtml;
             }
+            public static string ResetFailed()
+            {
+                HtmlDocument login = new HtmlDocument();
+                login.LoadHtml(Resources.header + Resources.login);
+                HtmlNode alert = login.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@class), \" \"), \" alert \")]");
+                alert.AddClass("alert-danger in");
+                alert.RemoveClass("hidden");
+                HtmlNode message = HtmlNode.CreateNode("<p><strong>Uh-Oh...</strong> Looks like that code expired."
+                                                        + " <a data-toggle=\"modal\" href=\"#resetPassword\">Reset your Password</a></p>");
+                HtmlNodeCollection children = new HtmlNodeCollection(alert);
+                children.Add(message);
+                alert.AppendChildren(children);
+                return login.DocumentNode.OuterHtml;
+            }
             public static string CreateReset(User user)
             {
                 HtmlDocument pg = new HtmlDocument();
