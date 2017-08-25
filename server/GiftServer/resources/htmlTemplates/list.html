@@ -12,6 +12,33 @@
                 step: 0.5,
                 size: 'xs'
             });
+
+            $('.gift-row').click(function () {
+                // Get ID of this
+                var id = this.id;
+                id = parseInt(id);
+                $.post(".", {
+                    submit: "GiftFetch",
+                    GiftID: id
+                },
+                function (data, status, xhr) {
+                    if (status == "success") {
+                        var data = xhr.responseText;
+                        var dom = $.parseXML(data);
+                        $('#editGiftImage').attr("src", dom.getElementsByTagName("image")[0].innerHTML);
+                        $('#editGiftId').val(dom.getElementsByTagName("giftId")[0].innerHTML);
+                        $("#editGiftName").val(dom.getElementsByTagName("name")[0].innerHTML);
+                        $('#editGiftDescription').val(dom.getElementsByTagName("description")[0].innerHTML);
+                        $('#editGiftUrl').val(dom.getElementsByTagName("url")[0].innerHTML);
+                        $('#editGiftStores').val(dom.getElementsByTagName("stores")[0].innerHTML);
+                        $('#editGiftCost').val(dom.getElementsByTagName("cost")[0].innerHTML);
+                        $('#editGiftQuantity').val(dom.getElementsByTagName("quantity")[0].innerHTML);
+                        $('#editGiftColor').css("background-color", dom.getElementsByTagName("color")[0].innerHTML);
+                        $('#editGiftColorText').val(dom.getElementsByTagName("colorText")[0].innerHTML);
+                        $('#editGiftItem').modal();
+                    }
+                });
+            })
         });
     </script>
     <style>
@@ -40,10 +67,114 @@
         .child {
             margin: auto;
         }
+        .circle {
+            width: 25px;
+            height: 25px;
+            border-width: 2px;
+            border-style: solid;
+            border-radius: 50%;
+            border-color: black;
+            display: inline-flex;
+        }
     </style>
 </head>
 <body>
+    <!-- Format: id, name, class, type, placeholder, tooltip-->
     <div class="container-fluid">
+        <div id="editGiftItem" class="modal fade panel-primary" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content panel-primary">
+                    <div class="modal-header panel-heading">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Edit Gift Information</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="giftForm" method="post">
+                            <input id="editGiftId" name="giftId" class="form-control" type="hidden" value="" />
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-sm-2 parent">
+                                        <img id="editGiftImage" class="img-thumbnail img-responsive child" type="button" data-tooltip="tooltip" data-placement="bottom auto" title="Click to select new image" 
+                                             data-toggle="modal" href="#uploadImage" src="resources/images/gifts/default.png" />
+                                    </div>
+                                    <div class="col-sm-10">
+                                        <div class="form-group">
+                                            <input id="editGiftName" name="giftName" class="form-control" type="text" placeholder="Name" />
+                                        </div>
+                                        <div class="form-group">
+                                            <textarea id="editGiftDescription" name="giftDescription" class="form-control" placeholder="Description"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="form-group">
+                                            <input id="editGiftUrl" name="giftURL" class="form-control" type="url" placeholder="URL" />
+                                        </div>
+                                        <div class="form-group">
+                                            <input id="editGiftStores" name="giftStores" class="form-control" type="text" placeholder="Stores" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-10">
+                                        <div class="form-group">
+                                            <select id="editGiftCategory" class="form-control" multiple>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">$</span>
+                                                <input id="editGiftCost" name="giftCost" class="form-control" type="text" placeholder="Cost"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <input id="editGiftQuantity" name="giftQuantity" class="form-control" type="number" placeholder="Quantity" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group parent">
+                                        <div class="col-sm-1">
+                                            <span id="editGiftColor" class="circle child"></span>
+                                        </div>
+                                        <div class="col-sm-8">
+                                            <input id="editGiftColorText" name="giftColorText" class="form-control child" type="text" placeholder="Color Description" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <div class="col-xs-12">
+                                            <input id="editGiftSize" name="giftSize" class="form-control" type="text" placeholder="Size" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer panel-footer panel-primary">
+                        <div class="form-group">
+                            <button id="editGiftCancel" name="cancel" class="btn btn-danger" type="button" data-dismiss="modal">
+                                Cancel
+                            </button>
+                            <button id="editGiftSubmit" name="submit" class="btn btn-success" type="submit" form="giftForm" value="GiftChange">
+                                Apply Changes
+                            </button>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </div>
         <table class="table hidden-xs table-hover table-striped table-responsive">
             <thead>
                 <tr>

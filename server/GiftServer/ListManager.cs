@@ -20,7 +20,7 @@ namespace GiftServer
                 foreach (Gift gift in gifts)
                 {
                     // Print gift information
-                    HtmlNode giftRow = HtmlNode.CreateNode("<tr></tr>");
+                    HtmlNode giftRow = HtmlNode.CreateNode("<tr id=\"" + gift.GiftId + "\" class=\"gift-row\"></tr>");
 
                     HtmlNode pict = HtmlNode.CreateNode("<td><div class=\"parent\"><img class=\"img-thumbnail img-responsive child\" src=\"" + gift.GetImage() + "\" /></div></td>");
                     HtmlNode rate = HtmlNode.CreateNode("<td><div class=\"parent\"><h3 class=\"child\"><input class=\"star-rating\" data-show-clear=\"false\" data-show-caption=\"false\" value=\"" + gift.Rating.ToString("N2") + "\" /></h3></div></td>");
@@ -37,7 +37,7 @@ namespace GiftServer
 
                     giftTable.AppendChild(giftRow);
 
-                    HtmlNode item = HtmlNode.CreateNode("<tr>" +
+                    HtmlNode item = HtmlNode.CreateNode("<tr id=\"" + gift.GiftId + "\" class=\"gift-row\">" +
                                                         "<td><div class=\"parent\"><img class=\"img-thumbnail img-responsive child\" src=\"" + gift.GetImage() + "\" /></div>" +
                                                         "<div class=\"parent\"><h3 class=\"child\"><input class=\"star-rating\" data-show-clear=\"false\" data-show-caption=\"false\" value=\"" + gift.Rating.ToString("N2") + "\" /></h3></div></td>" +
                                                         "<td><div class=\"parent\"><h3 classs\"child\">" + HttpUtility.HtmlEncode(gift.Name) + "</h3></div></td>" +

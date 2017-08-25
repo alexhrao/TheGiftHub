@@ -11,6 +11,7 @@ using System.Configuration;
 using System.IO;
 using System.Net;
 using System.Web;
+using System.Xml;
 
 namespace GiftServer
 {
@@ -144,6 +145,10 @@ namespace GiftServer
                                             return UpdateEvent();
                                         case "GroupChange":
                                             return UpdateGroup();
+                                        case "GiftChange":
+                                            return UpdateGift();
+                                        case "GiftFetch":
+                                            return FetchGift();
                                         default:
                                             return LoginManager.Login();
                                     }
@@ -547,6 +552,97 @@ namespace GiftServer
                 }
                 group.Update();
                 return "200";
+            }
+
+            private string UpdateGift()
+            {
+                if (_user != null)
+                {
+                    Gift gift = new Gift(Convert.ToUInt64(_dict["giftId"]))
+                    {
+                        Name = _dict["giftName"],
+                        Description = _dict["giftDescription"],
+                        Url = _dict["giftUrl"],
+                        Cost = Convert.ToDouble(_dict["giftCost"]),
+                        Quantity = Convert.ToUInt32(_dict["giftQuantity"]),
+                        Rating = Convert.ToDouble(_dict["giftRating"]),
+                        ColorText = _dict["giftColorText"]
+                    };
+                    gift.Update();
+                    return ListManager.GiftList(_user);
+                }
+                else
+                {
+                    return LoginManager.Login();
+                }
+            }
+
+            private string FetchGift()
+            {
+                Gift gift = new Gift(Convert.ToUInt64(_dict["GiftID"]));
+                XmlDocument info = new XmlDocument();
+                XmlElement container = info.CreateElement("gift");
+                info.AppendChild(container);
+
+                XmlElement id = info.CreateElement("giftId");
+                id.InnerText = HttpUtility.HtmlEncode(gift.GiftId);
+
+                XmlElement user = info.CreateElement("user");
+                user.InnerText = HttpUtility.HtmlEncode(gift.User.UserId);
+
+                XmlElement name = info.CreateElement("name");
+                name.InnerText = HttpUtility.HtmlEncode(gift.Name);
+
+                XmlElement description = info.CreateElement("description");
+                description.InnerText = HttpUtility.HtmlEncode(gift.Description);
+
+                XmlElement url = info.CreateElement("url");
+                url.InnerText = HttpUtility.HtmlEncode(gift.Url);
+
+                XmlElement cost = info.CreateElement("cost");
+                cost.InnerText = HttpUtility.HtmlEncode(gift.Cost.ToString("#.##"));
+
+                XmlElement stores = info.CreateElement("stores");
+                stores.InnerText = HttpUtility.HtmlEncode(gift.Stores);
+
+                XmlElement quantity = info.CreateElement("quantity");
+                quantity.InnerText = HttpUtility.HtmlEncode(gift.Quantity);
+
+                XmlElement color = info.CreateElement("color");
+                color.InnerText = "#" + HttpUtility.HtmlEncode(gift.Color);
+
+                XmlElement colorText = info.CreateElement("colorText");
+                colorText.InnerText = HttpUtility.HtmlEncode(gift.ColorText);
+
+                XmlElement size = info.CreateElement("size");
+                size.InnerText = HttpUtility.HtmlEncode(gift.Size);
+
+                XmlElement category = info.CreateElement("category");
+                category.SetAttribute("name", gift.Category.Name);
+                category.InnerText = HttpUtility.HtmlEncode(gift.Category.CategoryId);
+
+                XmlElement rating = info.CreateElement("rating");
+                rating.InnerText = HttpUtility.HtmlEncode(gift.Rating);
+
+                XmlElement image = info.CreateElement("image");
+                image.InnerText = gift.GetImage();
+
+                container.AppendChild(id);
+                container.AppendChild(user);
+                container.AppendChild(name);
+                container.AppendChild(description);
+                container.AppendChild(url);
+                container.AppendChild(cost);
+                container.AppendChild(stores);
+                container.AppendChild(quantity);
+                container.AppendChild(color);
+                container.AppendChild(colorText);
+                container.AppendChild(size);
+                container.AppendChild(category);
+                container.AppendChild(rating);
+                container.AppendChild(image);
+
+                return info.OuterXml;
             }
 
             private void Logout()
