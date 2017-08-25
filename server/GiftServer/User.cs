@@ -19,8 +19,8 @@ namespace GiftServer
                 get;
                 private set;
             } = 0;
-            public string FirstName;
-            public string LastName;
+            public string FirstName = "";
+            public string LastName = "";
             public string Email;
             public Password Password;
             public int Theme = 1;
@@ -32,12 +32,11 @@ namespace GiftServer
                 get;
                 private set;
             }
-            private List<Gift> _gifts = null;
             public List<Gift> Gifts
             {
                 get
                 {
-                    _gifts = new List<Gift>();
+                    List<Gift> _gifts = new List<Gift>();
                     if (UserId != 0)
                     {
                         using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -63,12 +62,11 @@ namespace GiftServer
                     return _gifts;
                 }
             }
-            private List<Group> _groups = null;
             public List<Group> Groups
             {
                 get
                 {
-                    _groups = new List<Group>();
+                    List<Group> _groups = new List<Group>();
                     if (UserId != 0)
                     {
                         using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -93,12 +91,11 @@ namespace GiftServer
                     return _groups;
                 }
             }
-            private List<EventUser> _events;
             public List<EventUser> Events
             {
                 get
                 {
-                    _events = new List<EventUser>();
+                    List<EventUser> _events = new List<EventUser>();
                     if (UserId != 0)
                     {
                         using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -210,9 +207,13 @@ namespace GiftServer
                         }
                     }
                 }
-                
             }
-            public User() { }
+
+            public User(string Email, Password Password)
+            {
+                this.Email = Email;
+                this.Password = Password;
+            }
 
             public bool UpdatePassword(string password)
             {

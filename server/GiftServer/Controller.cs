@@ -117,12 +117,10 @@ namespace GiftServer
                                             Logout();
                                             return LoginManager.Login();
                                         case "Signup":
-                                            _user = new User
+                                            _user = new User(HttpUtility.HtmlEncode(_dict["email"]), new Password(_dict["password"]))
                                             {
                                                 FirstName = _dict["firstName"],
                                                 LastName = _dict["lastName"],
-                                                Email = _dict["email"],
-                                                Password = new Password(_dict["password"])
                                             };
                                             _user.Create();
                                             return LoginManager.SuccessSignup();
@@ -560,13 +558,13 @@ namespace GiftServer
                 {
                     Gift gift = new Gift(Convert.ToUInt64(_dict["giftId"]))
                     {
-                        Name = _dict["giftName"],
-                        Description = _dict["giftDescription"],
-                        Url = _dict["giftUrl"],
+                        Name = HttpUtility.HtmlEncode(_dict["giftName"]),
+                        Description = HttpUtility.HtmlEncode(_dict["giftDescription"]),
+                        Url = HttpUtility.HtmlEncode(_dict["giftUrl"]),
                         Cost = Convert.ToDouble(_dict["giftCost"]),
                         Quantity = Convert.ToUInt32(_dict["giftQuantity"]),
                         Rating = Convert.ToDouble(_dict["giftRating"]),
-                        ColorText = _dict["giftColorText"]
+                        ColorText = HttpUtility.HtmlEncode(_dict["giftColorText"])
                     };
                     gift.Update();
                     return ListManager.GiftList(_user);
@@ -579,6 +577,7 @@ namespace GiftServer
 
             private string FetchGift()
             {
+                // TODO: Remove HtmlEncode from here (Should not be necessary?)
                 Gift gift = new Gift(Convert.ToUInt64(_dict["GiftID"]));
                 XmlDocument info = new XmlDocument();
                 XmlElement container = info.CreateElement("gift");

@@ -2,6 +2,7 @@
 using GiftServer.Server;
 using MySql.Data.MySqlClient;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 
@@ -30,6 +31,32 @@ namespace GiftServer
             public double Rating = 0.00;
             public DateTime TimeStamp;
             public DateTime DateReceived = DateTime.MinValue;
+            public List<Group> Groups
+            {
+                get
+                {
+                    List<Group> _groups = new List<Group>();
+                    using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                    {
+                        con.Open();
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "SELECT GroupID FROM groups_gifts WHERE GiftID = @gid;";
+                            cmd.Parameters.AddWithValue("@gid", GiftId);
+                            cmd.Prepare();
+                            using (MySqlDataReader reader = cmd.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    _groups.Add(new Group(Convert.ToUInt64(reader["GroupID"])));
+                                }
+                                return _groups;
+                            }
+                        }
+                    }
+                }
+            }
 
             public Gift(ulong id)
             {
@@ -64,15 +91,20 @@ namespace GiftServer
                                 {
                                     DateReceived = (DateTime)(reader["GiftReceivedDate"]);
                                 }
-                                catch (InvalidCastException) { }
+                                catch (InvalidCastException)
+                                {
+                                    DateReceived = DateTime.MinValue;
+                                }
                             }
                         }
                     }
                 }
             }
-            public Gift() { }
+            public Gift(string Name)
+            {
+                this.Name = Name;
+            }
 
-            // TODO: Add Update and Delete
             public bool Create()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -80,7 +112,6 @@ namespace GiftServer
                     con.Open();
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
-                        // TODO: Add received date?
                         cmd.Connection = con;
                         cmd.CommandText = "INSERT INTO gifts (UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating, GiftReceivedDate) "
                                         + "VALUES (@uid, @name, @desc, @url, @cost, @stores, @quantity, @hex, @color, @size, @category, @rating, @rec);";
@@ -142,10 +173,45 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "UPDATE gifts ";
+                        cmd.CommandText = "UPDATE gifts " +
+                                            "GiftName = @name, " +
+                                            "GiftDescription = @description, " +
+                                            "GiftURL = @url, " +
+                                            "GiftCost = @cost, " +
+                                            "GiftStores = @stores, " +
+                                            "GiftQuantity = @quant, " +
+                                            "GiftColor = @color, " +
+                                            "GiftColorText = @colorText, " +
+                                            "GiftSize = @size, " +
+                                            "CategoryID = @cid, " +
+                                            "GiftRating = @rating, " +
+                                            "GiftReceivedDate = @rec " +
+                                            "WHERE GiftID = @gid;";
+                        cmd.Parameters.AddWithValue("@name", Name);
+                        cmd.Parameters.AddWithValue("@description", Description);
+                        cmd.Parameters.AddWithValue("@url", Url);
+                        cmd.Parameters.AddWithValue("@cost", Cost);
+                        cmd.Parameters.AddWithValue("@stores", Stores);
+                        cmd.Parameters.AddWithValue("@quant", Quantity);
+                        cmd.Parameters.AddWithValue("@color", Color);
+                        cmd.Parameters.AddWithValue("@colorText", ColorText);
+                        cmd.Parameters.AddWithValue("@size", Size);
+                        cmd.Parameters.AddWithValue("@cid", Category.CategoryId);
+                        cmd.Parameters.AddWithValue("@rating", Rating);
+                        cmd.Parameters.AddWithValue("@gid", GiftId);
+                        if (DateReceived == DateTime.MinValue)
+                        {
+                            cmd.Parameters.AddWithValue("@rec", "");
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@rec", DateReceived.ToString("yyyy-MM-dd"));
+                        }
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                        return true;
                     }
                 }
-                return false;
             }
             public bool Delete()
             {
@@ -153,7 +219,55 @@ namespace GiftServer
                 {
                     return false;
                 }
-                return false;
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "DELETE " +
+                                            "FROM purchases " +
+                                            "INNER JOIN reservations ON reservations.ReservationID = purchases.ReservationID " +
+                                            "WHERE reservations.GiftID = @gid;";
+                        cmd.Parameters.AddWithValue("@gid", GiftId);
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                    }
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "DELETE FROM reservations WHERE GiftID = @gid;";
+                        cmd.Parameters.AddWithValue("@gid", GiftId);
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                    }
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "DELETE FROM receptions WHERE GiftID = @gid;";
+                        cmd.Parameters.AddWithValue("@gid", GiftId);
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                    }
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "DELETE FROM groups_gifts WHERE GiftID = @gid;";
+                        cmd.Parameters.AddWithValue("@gid", GiftId);
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                    }
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "DELETE FROM gifts WHERE GiftID = @gid;";
+                        cmd.Parameters.AddWithValue("@gid", GiftId);
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                        GiftId = 0;
+                        return true;
+                    }
+                }
             }
 
             public void SaveImage(MultipartParser parser)
@@ -169,7 +283,7 @@ namespace GiftServer
             {
                 return GetImage(this.GiftId);
             }
-            public string GetImage(ulong id)
+            public static string GetImage(ulong id)
             {
                 string path = Resources.BasePath + "/resources/images/gifts/Gift" + id + Resources.ImageFormat;
                 // if file exists, return path. Otherwise, return default
@@ -181,6 +295,40 @@ namespace GiftServer
                 else
                 {
                     return "resources/images/gifts/default" + Resources.ImageFormat;
+                }
+            }
+
+            public void Add(Group group)
+            {
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "INSERT INTO groups_gifts (GroupID, GiftID) VALUES (@groupId, @giftId);";
+                        cmd.Parameters.AddWithValue("@groupId", group.GroupId);
+                        cmd.Parameters.AddWithValue("@giftId", GiftId);
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+
+            public void Remove(Group group)
+            {
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "DELETE FROM groups_gifts WHERE GiftID = @giftId AND GroupID = @groupId;";
+                        cmd.Parameters.AddWithValue("@giftId", GiftId);
+                        cmd.Parameters.AddWithValue("@groupId", group.GroupId);
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                    }
                 }
             }
         }
