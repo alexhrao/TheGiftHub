@@ -117,7 +117,7 @@ namespace GiftServer
                                             Logout();
                                             return LoginManager.Login();
                                         case "Signup":
-                                            _user = new User(HttpUtility.HtmlEncode(_dict["email"]), new Password(_dict["password"]))
+                                            _user = new User(_dict["email"], new Password(_dict["password"]))
                                             {
                                                 FirstName = _dict["firstName"],
                                                 LastName = _dict["lastName"],
@@ -558,13 +558,13 @@ namespace GiftServer
                 {
                     Gift gift = new Gift(Convert.ToUInt64(_dict["giftId"]))
                     {
-                        Name = HttpUtility.HtmlEncode(_dict["giftName"]),
-                        Description = HttpUtility.HtmlEncode(_dict["giftDescription"]),
-                        Url = HttpUtility.HtmlEncode(_dict["giftUrl"]),
-                        Cost = Convert.ToDouble(_dict["giftCost"]),
-                        Quantity = Convert.ToUInt32(_dict["giftQuantity"]),
-                        Rating = Convert.ToDouble(_dict["giftRating"]),
-                        ColorText = HttpUtility.HtmlEncode(_dict["giftColorText"])
+                        Name = _dict["giftName"],
+                        Description = _dict["giftDescription"],
+                        Url = _dict["giftUrl"],
+                        Cost = Convert.ToDouble(_dict["giftCost"] == null || _dict["giftCost"].Length == 0 ? "0.00" : _dict["giftCost"]),
+                        Quantity = Convert.ToUInt32(_dict["giftQuantity"] == null || _dict["giftQuantity"].Length == 0 ? "1" : _dict["giftQuantity"]),
+                        Rating = Convert.ToDouble(_dict["giftRating"] == null || _dict["giftRating"].Length == 0 ? "0.0": _dict["giftRating"]),
+                        ColorText = _dict["giftColorText"]
                     };
                     gift.Update();
                     return ListManager.GiftList(_user);
@@ -577,52 +577,37 @@ namespace GiftServer
 
             private string FetchGift()
             {
-                // TODO: Remove HtmlEncode from here (Should not be necessary?)
                 Gift gift = new Gift(Convert.ToUInt64(_dict["GiftID"]));
                 XmlDocument info = new XmlDocument();
                 XmlElement container = info.CreateElement("gift");
                 info.AppendChild(container);
-
                 XmlElement id = info.CreateElement("giftId");
                 id.InnerText = HttpUtility.HtmlEncode(gift.GiftId);
-
                 XmlElement user = info.CreateElement("user");
                 user.InnerText = HttpUtility.HtmlEncode(gift.User.UserId);
-
                 XmlElement name = info.CreateElement("name");
                 name.InnerText = HttpUtility.HtmlEncode(gift.Name);
-
                 XmlElement description = info.CreateElement("description");
                 description.InnerText = HttpUtility.HtmlEncode(gift.Description);
-
                 XmlElement url = info.CreateElement("url");
                 url.InnerText = HttpUtility.HtmlEncode(gift.Url);
-
                 XmlElement cost = info.CreateElement("cost");
                 cost.InnerText = HttpUtility.HtmlEncode(gift.Cost.ToString("#.##"));
-
                 XmlElement stores = info.CreateElement("stores");
                 stores.InnerText = HttpUtility.HtmlEncode(gift.Stores);
-
                 XmlElement quantity = info.CreateElement("quantity");
                 quantity.InnerText = HttpUtility.HtmlEncode(gift.Quantity);
-
                 XmlElement color = info.CreateElement("color");
                 color.InnerText = "#" + HttpUtility.HtmlEncode(gift.Color);
-
                 XmlElement colorText = info.CreateElement("colorText");
                 colorText.InnerText = HttpUtility.HtmlEncode(gift.ColorText);
-
                 XmlElement size = info.CreateElement("size");
                 size.InnerText = HttpUtility.HtmlEncode(gift.Size);
-
                 XmlElement category = info.CreateElement("category");
                 category.SetAttribute("name", gift.Category.Name);
                 category.InnerText = HttpUtility.HtmlEncode(gift.Category.CategoryId);
-
                 XmlElement rating = info.CreateElement("rating");
                 rating.InnerText = HttpUtility.HtmlEncode(gift.Rating);
-
                 XmlElement image = info.CreateElement("image");
                 image.InnerText = gift.GetImage();
 

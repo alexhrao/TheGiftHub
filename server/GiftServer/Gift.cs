@@ -174,7 +174,7 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "UPDATE gifts " +
-                                            "GiftName = @name, " +
+                                            "SET GiftName = @name, " +
                                             "GiftDescription = @description, " +
                                             "GiftURL = @url, " +
                                             "GiftCost = @cost, " +
@@ -201,7 +201,7 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@gid", GiftId);
                         if (DateReceived == DateTime.MinValue)
                         {
-                            cmd.Parameters.AddWithValue("@rec", "");
+                            cmd.Parameters.AddWithValue("@rec", null);
                         }
                         else
                         {

@@ -12,6 +12,10 @@
                 step: 0.5,
                 size: 'xs'
             });
+            $('#editGiftRating').rating({
+                step: 0.5,
+                size: 'xs'
+            })
 
             $('.gift-row').click(function () {
                 // Get ID of this
@@ -26,6 +30,7 @@
                         var data = xhr.responseText;
                         var dom = $.parseXML(data);
                         $('#editGiftImage').attr("src", dom.getElementsByTagName("image")[0].innerHTML);
+                        $('#editGiftRating').rating("update", parseFloat(dom.getElementsByTagName("rating")[0].innerHTML));
                         $('#editGiftId').val(dom.getElementsByTagName("giftId")[0].innerHTML);
                         $("#editGiftName").val(dom.getElementsByTagName("name")[0].innerHTML);
                         $('#editGiftDescription').val(dom.getElementsByTagName("description")[0].innerHTML);
@@ -76,6 +81,17 @@
             border-color: black;
             display: inline-flex;
         }
+        .description {
+            font-size: 12px;
+            font-weight: 100 !important;
+        }
+        .star-rating {
+            font-size: 10px;
+        }
+        .gift-row p {
+            font-size: 20px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -93,11 +109,18 @@
                             <input id="editGiftId" name="giftId" class="form-control" type="hidden" value="" />
                             <div class="container-fluid">
                                 <div class="row">
-                                    <div class="col-sm-2 parent">
-                                        <img id="editGiftImage" class="img-thumbnail img-responsive child" type="button" data-tooltip="tooltip" data-placement="bottom auto" title="Click to select new image" 
-                                             data-toggle="modal" href="#uploadImage" src="resources/images/gifts/default.png" />
+                                    <div class="col-sm-5">
+                                        <div class="row parent">
+                                            <img id="editGiftImage" class="text-center img-thumbnail img-responsive child" type="button" data-tooltip="tooltip" data-placement="bottom auto" title="Click to select new image"
+                                                 data-toggle="modal" href="#uploadImage" src="resources/images/gifts/default.png" />
+                                        </div>
+                                        <div class="row parent">
+                                            <div class="child">
+                                                <input id="editGiftRating" name="giftRating" data-show-caption="false" value="0.0" />
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col-sm-10">
+                                    <div class="col-sm-7">
                                         <div class="form-group">
                                             <input id="editGiftName" name="giftName" class="form-control" type="text" placeholder="Name" />
                                         </div>
@@ -156,6 +179,15 @@
                                     <div class="form-group">
                                         <div class="col-xs-12">
                                             <input id="editGiftSize" name="giftSize" class="form-control" type="text" placeholder="Size" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <div class="col-xs-12">
+                                            <button id="editGiftDelete" name="deleteGift" type="button" class="text-center form-control btn btn-danger" value="delete" style="margin-top: 5px;">
+                                                Delete this Gift
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
