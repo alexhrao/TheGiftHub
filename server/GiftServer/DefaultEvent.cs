@@ -3,12 +3,13 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Xml;
 
 namespace GiftServer
 {
     namespace Data
     {
-        public class DefaultEvent
+        public class DefaultEvent : IFetchable
         {
             public readonly ulong EventID;
             public readonly string Name;
@@ -74,6 +75,13 @@ namespace GiftServer
                         }
                     }
                 }
+            }
+
+            public XmlDocument Fetch()
+            {
+                XmlDocument info = new XmlDocument();
+
+                return info;
             }
         }
     }

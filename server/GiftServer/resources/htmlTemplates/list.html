@@ -22,8 +22,9 @@
                 var id = this.id;
                 id = parseInt(id);
                 $.post(".", {
-                    submit: "GiftFetch",
-                    GiftID: id
+                    submit: "Fetch",
+                    type: "Gift",
+                    itemId: id
                 },
                 function (data, status, xhr) {
                     if (status == "success") {

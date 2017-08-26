@@ -2,12 +2,13 @@
 using MySql.Data.MySqlClient;
 using System;
 using System.Configuration;
+using System.Xml;
 
 namespace GiftServer
 {
     namespace Data
     {
-        public class Category
+        public class Category : IFetchable
         {
             public readonly ulong CategoryId = 0;
             public readonly string Name;
@@ -39,6 +40,13 @@ namespace GiftServer
                         }
                     }
                 }
+            }
+
+            public XmlDocument Fetch()
+            {
+                XmlDocument info = new XmlDocument();
+
+                return info;
             }
         }
     }

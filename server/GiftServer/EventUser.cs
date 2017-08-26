@@ -3,12 +3,13 @@ using MySql.Data.MySqlClient;
 using System.Configuration;
 using GiftServer.Exceptions;
 using System.Collections.Generic;
+using System.Xml;
 
 namespace GiftServer
 {
     namespace Data
     {
-        public class EventUser : ISynchronizable
+        public class EventUser : ISynchronizable, IFetchable
         {
             public ulong EventUserId
             {
@@ -399,9 +400,14 @@ namespace GiftServer
                             this.EventUserId = 0;
                             return true;
                         }
-
                     }
                 }
+            }
+            public XmlDocument Fetch()
+            {
+                XmlDocument info = new XmlDocument();
+
+                return info;
             }
         }
     }

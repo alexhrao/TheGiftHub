@@ -2,12 +2,13 @@
 using MySql.Data.MySqlClient;
 using System;
 using System.Configuration;
+using System.Xml;
 
 namespace GiftServer
 {
     namespace Data
     {
-        public class Group : ISynchronizable
+        public class Group : ISynchronizable, IFetchable
         {
             public ulong GroupId
             {
@@ -277,6 +278,13 @@ namespace GiftServer
                         cmd.ExecuteNonQuery();
                     }
                 }
+            }
+
+            public XmlDocument Fetch()
+            {
+                XmlDocument info = new XmlDocument();
+
+                return info;
             }
         }
     }

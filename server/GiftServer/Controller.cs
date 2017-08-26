@@ -137,16 +137,43 @@ namespace GiftServer
                                             string password = _dict["password"];
                                             _user.UpdatePassword(password);
                                             return ResetManager.SuccessResetPassword();
-                                        case "UserChange":
-                                            return UpdateUser();
-                                        case "EventChange":
-                                            return UpdateEvent();
-                                        case "GroupChange":
-                                            return UpdateGroup();
-                                        case "GiftChange":
-                                            return UpdateGift();
-                                        case "GiftFetch":
-                                            return FetchGift();
+                                        case "Change":
+                                            ulong changeId = Convert.ToUInt64(_dict["itemId"]);
+                                            switch (_dict["type"])
+                                            {
+                                                case "User":
+                                                    return Update();
+                                                case "Event":
+                                                    return Update(new EventUser(changeId));
+                                                case "Group":
+                                                    return Update(new Group(changeId));
+                                                case "Gift":
+                                                    return Update(new Gift(changeId));
+                                                default:
+                                                    return "";
+                                            }
+                                        case "Fetch":
+                                            ulong fetchId = Convert.ToUInt64(_dict["itemId"]);
+                                            IFetchable item = null;
+                                            switch (_dict["type"])
+                                            {
+                                                case "Gift":
+                                                    item = new Gift(fetchId);
+                                                    break;
+                                                case "User":
+                                                    item = new User(fetchId);
+                                                    break;
+                                                case "Event":
+                                                    item = new EventUser(fetchId);
+                                                    break;
+                                                case "Group":
+                                                    item = new Group(fetchId);
+                                                    break;
+                                                default:
+                                                    _response.StatusCode = 404;
+                                                    return "Specified information not found";
+                                            }
+                                            return item.Fetch().OuterXml;
                                         default:
                                             return LoginManager.Login();
                                     }
@@ -446,8 +473,7 @@ namespace GiftServer
                     return LoginManager.FailLogin();
                 }
             }
-
-            private string UpdateUser()
+            private string Update()
             {
                 switch (_dict["item"])
                 {
@@ -470,7 +496,7 @@ namespace GiftServer
                         _user.Delete();
                         Logout();
                         return LoginManager.Login();
-                        // will return HERE so as to not update a null user
+                    // will return HERE so as to not update a null user
                     default:
                         _response.StatusCode = 404;
                         return "404";
@@ -478,11 +504,9 @@ namespace GiftServer
                 _user.Update();
                 return "200";
             }
-
-            private string UpdateEvent()
+            private string Update(EventUser evnt)
             {
-                EventUser evnt = new EventUser(Convert.ToUInt64(_dict["eventID"]));
-                switch (_dict["item"])
+                                switch (_dict["item"])
                 {
                     case "name":
                         break;
@@ -495,12 +519,9 @@ namespace GiftServer
                 }
                 evnt.Update();
                 return "200";
-
             }
-
-            private string UpdateGroup()
+            private string Update(Group group)
             {
-                Group group = new Group(Convert.ToUInt64(_dict["groupID"]));
                 switch (_dict["item"])
                 {
                     case "addUser":
@@ -551,21 +572,17 @@ namespace GiftServer
                 group.Update();
                 return "200";
             }
-
-            private string UpdateGift()
+            private string Update(Gift gift)
             {
                 if (_user != null)
                 {
-                    Gift gift = new Gift(Convert.ToUInt64(_dict["giftId"]))
-                    {
-                        Name = _dict["giftName"],
-                        Description = _dict["giftDescription"],
-                        Url = _dict["giftUrl"],
-                        Cost = Convert.ToDouble(_dict["giftCost"] == null || _dict["giftCost"].Length == 0 ? "0.00" : _dict["giftCost"]),
-                        Quantity = Convert.ToUInt32(_dict["giftQuantity"] == null || _dict["giftQuantity"].Length == 0 ? "1" : _dict["giftQuantity"]),
-                        Rating = Convert.ToDouble(_dict["giftRating"] == null || _dict["giftRating"].Length == 0 ? "0.0": _dict["giftRating"]),
-                        ColorText = _dict["giftColorText"]
-                    };
+                    gift.Name = _dict["giftName"];
+                    gift.Description = _dict["giftDescription"];
+                    gift.Url = _dict["giftUrl"];
+                    gift.Cost = Convert.ToDouble(_dict["giftCost"] == null || _dict["giftCost"].Length == 0 ? "0.00" : _dict["giftCost"]);
+                    gift.Quantity = Convert.ToUInt32(_dict["giftQuantity"] == null || _dict["giftQuantity"].Length == 0 ? "1" : _dict["giftQuantity"]);
+                    gift.Rating = Convert.ToDouble(_dict["giftRating"] == null || _dict["giftRating"].Length == 0 ? "0.0" : _dict["giftRating"]);
+                    gift.ColorText = _dict["giftColorText"];
                     gift.Update();
                     return ListManager.GiftList(_user);
                 }
@@ -573,60 +590,6 @@ namespace GiftServer
                 {
                     return LoginManager.Login();
                 }
-            }
-
-            private string FetchGift()
-            {
-                Gift gift = new Gift(Convert.ToUInt64(_dict["GiftID"]));
-                XmlDocument info = new XmlDocument();
-                XmlElement container = info.CreateElement("gift");
-                info.AppendChild(container);
-                XmlElement id = info.CreateElement("giftId");
-                id.InnerText = HttpUtility.HtmlEncode(gift.GiftId);
-                XmlElement user = info.CreateElement("user");
-                user.InnerText = HttpUtility.HtmlEncode(gift.User.UserId);
-                XmlElement name = info.CreateElement("name");
-                name.InnerText = HttpUtility.HtmlEncode(gift.Name);
-                XmlElement description = info.CreateElement("description");
-                description.InnerText = HttpUtility.HtmlEncode(gift.Description);
-                XmlElement url = info.CreateElement("url");
-                url.InnerText = HttpUtility.HtmlEncode(gift.Url);
-                XmlElement cost = info.CreateElement("cost");
-                cost.InnerText = HttpUtility.HtmlEncode(gift.Cost.ToString("#.##"));
-                XmlElement stores = info.CreateElement("stores");
-                stores.InnerText = HttpUtility.HtmlEncode(gift.Stores);
-                XmlElement quantity = info.CreateElement("quantity");
-                quantity.InnerText = HttpUtility.HtmlEncode(gift.Quantity);
-                XmlElement color = info.CreateElement("color");
-                color.InnerText = "#" + HttpUtility.HtmlEncode(gift.Color);
-                XmlElement colorText = info.CreateElement("colorText");
-                colorText.InnerText = HttpUtility.HtmlEncode(gift.ColorText);
-                XmlElement size = info.CreateElement("size");
-                size.InnerText = HttpUtility.HtmlEncode(gift.Size);
-                XmlElement category = info.CreateElement("category");
-                category.SetAttribute("name", gift.Category.Name);
-                category.InnerText = HttpUtility.HtmlEncode(gift.Category.CategoryId);
-                XmlElement rating = info.CreateElement("rating");
-                rating.InnerText = HttpUtility.HtmlEncode(gift.Rating);
-                XmlElement image = info.CreateElement("image");
-                image.InnerText = gift.GetImage();
-
-                container.AppendChild(id);
-                container.AppendChild(user);
-                container.AppendChild(name);
-                container.AppendChild(description);
-                container.AppendChild(url);
-                container.AppendChild(cost);
-                container.AppendChild(stores);
-                container.AppendChild(quantity);
-                container.AppendChild(color);
-                container.AppendChild(colorText);
-                container.AppendChild(size);
-                container.AppendChild(category);
-                container.AppendChild(rating);
-                container.AppendChild(image);
-
-                return info.OuterXml;
             }
 
             private void Logout()

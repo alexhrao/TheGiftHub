@@ -7,12 +7,13 @@ using GiftServer.Properties;
 using GiftServer.Server;
 using System.Collections.Generic;
 using GiftServer.Security;
+using System.Xml;
 
 namespace GiftServer
 {
     namespace Data
     {
-        public class User : ISynchronizable, IShowable
+        public class User : ISynchronizable, IShowable, IFetchable
         {
             public ulong UserId
             {
@@ -674,6 +675,14 @@ namespace GiftServer
                         cmd.ExecuteNonQuery();
                     }
                 }
+            }
+            
+            // TODO: Finish
+            public XmlDocument Fetch()
+            {
+                XmlDocument info = new XmlDocument();
+
+                return info;
             }
         }
     }

@@ -5,12 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.Web;
+using System.Xml;
 
 namespace GiftServer
 {
     namespace Data
     {
-        public class Gift : ISynchronizable, IShowable
+        public class Gift : ISynchronizable, IShowable, IFetchable
         {
             public ulong GiftId
             {
@@ -330,6 +332,59 @@ namespace GiftServer
                         cmd.ExecuteNonQuery();
                     }
                 }
+            }
+
+            private XmlDocument Fetch()
+            {
+                XmlDocument info = new XmlDocument();
+                XmlElement container = info.CreateElement("gift");
+                info.AppendChild(container);
+                XmlElement id = info.CreateElement("giftId");
+                id.InnerText = HttpUtility.HtmlEncode(GiftId);
+                XmlElement user = info.CreateElement("user");
+                user.InnerText = HttpUtility.HtmlEncode(User.UserId);
+                XmlElement name = info.CreateElement("name");
+                name.InnerText = HttpUtility.HtmlEncode(Name);
+                XmlElement description = info.CreateElement("description");
+                description.InnerText = HttpUtility.HtmlEncode(Description);
+                XmlElement url = info.CreateElement("url");
+                url.InnerText = HttpUtility.HtmlEncode(Url);
+                XmlElement cost = info.CreateElement("cost");
+                cost.InnerText = HttpUtility.HtmlEncode(Cost.ToString("#.##"));
+                XmlElement stores = info.CreateElement("stores");
+                stores.InnerText = HttpUtility.HtmlEncode(Stores);
+                XmlElement quantity = info.CreateElement("quantity");
+                quantity.InnerText = HttpUtility.HtmlEncode(Quantity);
+                XmlElement color = info.CreateElement("color");
+                color.InnerText = "#" + HttpUtility.HtmlEncode(Color);
+                XmlElement colorText = info.CreateElement("colorText");
+                colorText.InnerText = HttpUtility.HtmlEncode(ColorText);
+                XmlElement size = info.CreateElement("size");
+                size.InnerText = HttpUtility.HtmlEncode(Size);
+                XmlElement category = info.CreateElement("category");
+                category.SetAttribute("name", Category.Name);
+                category.InnerText = HttpUtility.HtmlEncode(Category.CategoryId);
+                XmlElement rating = info.CreateElement("rating");
+                rating.InnerText = HttpUtility.HtmlEncode(Rating);
+                XmlElement image = info.CreateElement("image");
+                image.InnerText = GetImage();
+
+                container.AppendChild(id);
+                container.AppendChild(user);
+                container.AppendChild(name);
+                container.AppendChild(description);
+                container.AppendChild(url);
+                container.AppendChild(cost);
+                container.AppendChild(stores);
+                container.AppendChild(quantity);
+                container.AppendChild(color);
+                container.AppendChild(colorText);
+                container.AppendChild(size);
+                container.AppendChild(category);
+                container.AppendChild(rating);
+                container.AppendChild(image);
+
+                return info;
             }
         }
     }

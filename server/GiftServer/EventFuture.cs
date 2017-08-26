@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Xml;
 
 namespace GiftServer
 {
     namespace Data
     {
-        public class EventFuture
+        public class EventFuture : IFetchable
         {
             public ulong EventFutureId
             {
@@ -27,6 +28,13 @@ namespace GiftServer
                 this.Year = Year;
                 this.Month = Month;
                 this.Day = Day;
+            }
+
+            public XmlDocument Fetch()
+            {
+                XmlDocument info = new XmlDocument();
+
+                return info;
             }
         }
     }

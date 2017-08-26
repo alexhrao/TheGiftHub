@@ -15,9 +15,10 @@
                 eNumber = parseInt(eNumber.substring(11))
                 $.post(".",
                     {
-                        submit: "EventChange",
+                        submit: "Change",
+                        type: "Event",
                         item: "delete",
-                        eventID: eNumber
+                        itemId: eNumber
                     },
                     function (data, status) {
                         if (data == 200) {
@@ -34,9 +35,10 @@
                 gNumber = parseInt(gNumber.substring(11))
                 $.post(".",
                     {
-                        submit: "GroupChange",
+                        submit: "Change",
+                        type: "Group",
                         item: "removeMe",
-                        groupID: gNumber
+                        itemId: gNumber
                     },
                     function (data, status) {
                         if (data == 200) {
@@ -96,7 +98,8 @@
             $('#userNameChangeSubmit').click(function () {
                 $.post(".",
                     {
-                        submit: "UserChange",
+                        submit: "Change",
+                        type: "User",
                         item: "name",
                         firstName: $('#firstNameChange').val(),
                         lastName: $('#lastNameChange').val()
@@ -115,7 +118,8 @@
             $('#userEmailChangeSubmit').click(function () {
                 $.post(".",
                     {
-                        submit: "UserChange",
+                        submit: "Change",
+                        type: "User",
                         item: "email",
                         email: $('#userEmailChange').val(),
                     },
@@ -133,7 +137,8 @@
             $('#userBirthdayChangeSubmit').click(function () {
                 $.post(".",
                     {
-                        submit: "UserChange",
+                        submit: "Change",
+                        type: "User",
                         item: "birthday",
                         month: $('#userBirthdayMonthChange').val(),
                         day: $('#userBirthdayDayChange').val()
@@ -152,7 +157,8 @@
             $('#userBioChangeSubmit').click(function () {
                 $.post(".",
                     {
-                        submit: "UserChange",
+                        submit: "Change",
+                        type: "User",
                         item: "bio",
                         bio: $('#userBioChange').val()
                     },
