@@ -703,21 +703,21 @@ namespace GiftServer
                 XmlElement bio = info.CreateElement("bio");
                 bio.InnerText = HttpUtility.HtmlEncode(Bio);
                 XmlElement dateJoined = info.CreateElement("dateJoined");
-                dateJoined.InnerText = HttpUtility.HtmlEncode(DateJoined.ToString("yyyy-MM-dddd"));
+                dateJoined.InnerText = HttpUtility.HtmlEncode(DateJoined.ToString("yyyy-MM-dd"));
                 XmlElement groups = info.CreateElement("groups");
                 foreach (Group group in Groups)
                 {
-                    groups.AppendChild(group.Fetch().DocumentElement);
+                    groups.AppendChild(info.ImportNode(group.Fetch().DocumentElement, true));
                 }
                 XmlElement events = info.CreateElement("events");
                 foreach (EventUser evnt in Events)
                 {
-                    events.AppendChild(evnt.Fetch().DocumentElement);
+                    events.AppendChild(info.ImportNode(evnt.Fetch().DocumentElement, true));
                 }
                 XmlElement gifts = info.CreateElement("gifts");
                 foreach (Gift gift in Gifts)
                 {
-                    gifts.AppendChild(gift.Fetch().DocumentElement);
+                    gifts.AppendChild(info.ImportNode(gift.Fetch().DocumentElement, true));
                 }
 
                 container.AppendChild(id);
