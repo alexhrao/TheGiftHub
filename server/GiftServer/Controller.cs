@@ -84,9 +84,9 @@ namespace GiftServer
                                                 _user.SaveImage(parser);
                                                 break;
                                             }
-                                        case "gift":
+                                        case "myList":
                                             {
-                                                Gift gift = new Gift(Convert.ToUInt64(parser.Parameters["giftID"]));
+                                                Gift gift = new Gift(Convert.ToUInt64(parser.Parameters["itemid"]));
                                                 gift.SaveImage(parser);
                                                 break;
                                             }
