@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Web;
 using System.Xml;
 
 namespace GiftServer
@@ -33,6 +34,19 @@ namespace GiftServer
             public XmlDocument Fetch()
             {
                 XmlDocument info = new XmlDocument();
+                XmlElement container = info.CreateElement("eventFuture");
+                info.AppendChild(container);
+
+                XmlElement year = info.CreateElement("year");
+                year.InnerText = HttpUtility.HtmlEncode(Year);
+                XmlElement month = info.CreateElement("month");
+                month.InnerText = HttpUtility.HtmlEncode(Month);
+                XmlElement day = info.CreateElement("day");
+                day.InnerText = HttpUtility.HtmlEncode(Day);
+
+                container.AppendChild(year);
+                container.AppendChild(month);
+                container.AppendChild(day);
 
                 return info;
             }

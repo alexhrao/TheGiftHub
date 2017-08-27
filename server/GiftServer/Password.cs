@@ -1,12 +1,15 @@
-﻿using GiftServer.Exceptions;
+﻿using GiftServer.Data;
+using GiftServer.Exceptions;
 using System;
 using System.Security.Cryptography;
+using System.Web;
+using System.Xml;
 
 namespace GiftServer
 {
     namespace Security
     {
-        public sealed class Password
+        public sealed class Password : IFetchable
         {
             /// <summary>
             /// Size of salt
@@ -71,9 +74,24 @@ namespace GiftServer
                 return true;
             }
 
-            public static bool Verify(string password, string hashed)
+            public XmlDocument Fetch()
             {
-                return false;
+                XmlDocument info = new XmlDocument();
+                XmlElement container = info.CreateElement("password");
+                info.AppendChild(container);
+
+                XmlElement hash = info.CreateElement("hash");
+                hash.InnerText = HttpUtility.HtmlEncode(Hash);
+                XmlElement salt = info.CreateElement("salt");
+                salt.InnerText = HttpUtility.HtmlEncode(Salt);
+                XmlElement iterations = info.CreateElement("iterations");
+                iterations.InnerText = HttpUtility.HtmlEncode(Iterations);
+
+                container.AppendChild(hash);
+                container.AppendChild(salt);
+                container.AppendChild(iterations);
+
+                return info;
             }
         }
     }

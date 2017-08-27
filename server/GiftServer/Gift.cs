@@ -334,7 +334,7 @@ namespace GiftServer
                 }
             }
 
-            private XmlDocument Fetch()
+            public XmlDocument Fetch()
             {
                 XmlDocument info = new XmlDocument();
                 XmlElement container = info.CreateElement("gift");

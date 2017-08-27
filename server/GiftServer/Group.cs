@@ -2,6 +2,7 @@
 using MySql.Data.MySqlClient;
 using System;
 using System.Configuration;
+using System.Web;
 using System.Xml;
 
 namespace GiftServer
@@ -283,6 +284,22 @@ namespace GiftServer
             public XmlDocument Fetch()
             {
                 XmlDocument info = new XmlDocument();
+                XmlElement container = info.CreateElement("group");
+                info.AppendChild(container);
+
+                XmlElement id = info.CreateElement("groupId");
+                id.InnerText = HttpUtility.HtmlEncode(GroupId);
+                XmlElement name = info.CreateElement("name");
+                name.InnerText = HttpUtility.HtmlEncode(Name);
+                XmlElement description = info.CreateElement("description");
+                description.InnerText = HttpUtility.HtmlEncode(Description);
+                XmlElement admin = info.CreateElement("adminId");
+                admin.InnerText = HttpUtility.HtmlEncode(Admin.UserId);
+
+                container.AppendChild(id);
+                container.AppendChild(name);
+                container.AppendChild(description);
+                container.AppendChild(admin);
 
                 return info;
             }

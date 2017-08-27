@@ -8,6 +8,7 @@ using GiftServer.Server;
 using System.Collections.Generic;
 using GiftServer.Security;
 using System.Xml;
+using System.Web;
 
 namespace GiftServer
 {
@@ -681,6 +682,57 @@ namespace GiftServer
             public XmlDocument Fetch()
             {
                 XmlDocument info = new XmlDocument();
+                XmlElement container = info.CreateElement("user");
+                info.AppendChild(container);
+
+                XmlElement id = info.CreateElement("userId");
+                id.InnerText = HttpUtility.HtmlEncode(UserId);
+                XmlElement firstName = info.CreateElement("firstName");
+                firstName.InnerText = HttpUtility.HtmlEncode(FirstName);
+                XmlElement lastName = info.CreateElement("lastName");
+                lastName.InnerText = HttpUtility.HtmlEncode(LastName);
+                XmlElement email = info.CreateElement("email");
+                email.InnerText = HttpUtility.HtmlEncode(Email);
+                // XmlElement password = Password.Fetch().DocumentElement;
+                XmlElement theme = info.CreateElement("theme");
+                theme.InnerText = HttpUtility.HtmlEncode(Theme);
+                XmlElement birthMonth = info.CreateElement("birthMonth");
+                birthMonth.InnerText = HttpUtility.HtmlEncode(BirthMonth);
+                XmlElement birthDay = info.CreateElement("birthDay");
+                birthDay.InnerText = HttpUtility.HtmlEncode(BirthDay);
+                XmlElement bio = info.CreateElement("bio");
+                bio.InnerText = HttpUtility.HtmlEncode(Bio);
+                XmlElement dateJoined = info.CreateElement("dateJoined");
+                dateJoined.InnerText = HttpUtility.HtmlEncode(DateJoined.ToString("yyyy-MM-dddd"));
+                XmlElement groups = info.CreateElement("groups");
+                foreach (Group group in Groups)
+                {
+                    groups.AppendChild(group.Fetch().DocumentElement);
+                }
+                XmlElement events = info.CreateElement("events");
+                foreach (EventUser evnt in Events)
+                {
+                    events.AppendChild(evnt.Fetch().DocumentElement);
+                }
+                XmlElement gifts = info.CreateElement("gifts");
+                foreach (Gift gift in Gifts)
+                {
+                    gifts.AppendChild(gift.Fetch().DocumentElement);
+                }
+
+                container.AppendChild(id);
+                container.AppendChild(firstName);
+                container.AppendChild(lastName);
+                container.AppendChild(email);
+                // container.AppendChild(password);
+                container.AppendChild(theme);
+                container.AppendChild(birthMonth);
+                container.AppendChild(birthDay);
+                container.AppendChild(bio);
+                container.AppendChild(dateJoined);
+                container.AppendChild(groups);
+                container.AppendChild(gifts);
+                container.AppendChild(events);
 
                 return info;
             }

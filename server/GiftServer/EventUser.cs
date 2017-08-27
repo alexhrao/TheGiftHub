@@ -4,6 +4,7 @@ using System.Configuration;
 using GiftServer.Exceptions;
 using System.Collections.Generic;
 using System.Xml;
+using System.Web;
 
 namespace GiftServer
 {
@@ -258,7 +259,7 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@uid", this.User.UserId);
                         if (_defaultEvent != null)
                         {
-                            cmd.Parameters.AddWithValue("@eid", this._defaultEvent.EventID);
+                            cmd.Parameters.AddWithValue("@eid", this._defaultEvent.DefaultEventId);
                         }
                         else
                         {
@@ -406,7 +407,38 @@ namespace GiftServer
             public XmlDocument Fetch()
             {
                 XmlDocument info = new XmlDocument();
+                XmlElement container = info.CreateElement("event");
+                info.AppendChild(container);
+                XmlElement id = info.CreateElement("eventId");
+                id.InnerText = HttpUtility.HtmlEncode(EventUserId);
+                XmlElement name = info.CreateElement("name");
+                name.InnerText = HttpUtility.HtmlEncode(Name);
+                XmlElement description = info.CreateElement("description");
+                description.InnerText = HttpUtility.HtmlEncode(Description);
+                XmlElement day = info.CreateElement("day");
+                day.InnerText = HttpUtility.HtmlEncode(Day);
+                XmlElement month = info.CreateElement("month");
+                month.InnerText = HttpUtility.HtmlEncode(Month);
+                XmlElement year = info.CreateElement("year");
+                year.InnerText = HttpUtility.HtmlEncode(Year);
+                XmlElement isRecurring = info.CreateElement("isRecurring");
+                isRecurring.InnerText = HttpUtility.HtmlEncode(IsRecurring.ToString());
 
+                container.AppendChild(id);
+                container.AppendChild(name);
+                container.AppendChild(description);
+                container.AppendChild(day);
+                container.AppendChild(month);
+                container.AppendChild(year);
+                container.AppendChild(isRecurring);
+
+                XmlElement futures = info.CreateElement("eventFutures");
+                foreach (EventFuture future in Futures)
+                {
+                    futures.AppendChild(future.Fetch().DocumentElement);
+                }
+
+                container.AppendChild(futures);
                 return info;
             }
         }
