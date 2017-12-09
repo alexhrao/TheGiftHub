@@ -266,7 +266,7 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "INSERT INTO users (FirstName, LastName, UserEmail, UserTheme, UserBirthMonth, UserBirthDay, UserBio) "
-                            + "VALUES (@fName, @lName, @email, @pid, @theme, @bmonth, @bday, @bio);";
+                            + "VALUES (@fName, @lName, @email, @theme, @bmonth, @bday, @bio);";
                         cmd.Parameters.AddWithValue("@fName", this.FirstName);
                         cmd.Parameters.AddWithValue("@lName", this.LastName);
                         cmd.Parameters.AddWithValue("@email", this.Email);
@@ -305,7 +305,10 @@ namespace GiftServer
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            this.DateJoined = (DateTime)(reader["TimeCreated"]);
+                            while (reader.Read())
+                            {
+                                this.DateJoined = (DateTime)(reader["TimeCreated"]);
+                            }
                         }
                     }
                 }
@@ -506,11 +509,11 @@ namespace GiftServer
             public void SaveImage(MultipartParser parser)
             {
                 ImageProcessor processor = new ImageProcessor(parser);
-                File.WriteAllBytes(Resources.BasePath + "/resources/images/users/User" + this.UserId + Resources.ImageFormat, processor.Data);
+                File.WriteAllBytes(System.IO.Directory.GetCurrentDirectory() + "/resources/images/users/User" + this.UserId + Resources.ImageFormat, processor.Data);
             }
             public void RemoveImage()
             {
-                File.Delete(Resources.BasePath + "/resources/images/users/User" + this.UserId + Resources.ImageFormat);
+                File.Delete(System.IO.Directory.GetCurrentDirectory() + "/resources/images/users/User" + this.UserId + Resources.ImageFormat);
             }
             public string GetImage()
             {
@@ -519,7 +522,7 @@ namespace GiftServer
             public static string GetImage(ulong userID)
             {
                 // Build path:
-                string path = Resources.BasePath + "/resources/images/users/User" + userID + Resources.ImageFormat;
+                string path = System.IO.Directory.GetCurrentDirectory() + "/resources/images/users/User" + userID + Resources.ImageFormat;
                 // if file exists, return path. Otherwise, return default
                 // Race condition, but I don't know how to solve (yet)
                 if (File.Exists(path))

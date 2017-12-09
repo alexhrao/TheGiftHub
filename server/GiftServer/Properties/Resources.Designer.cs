@@ -19,7 +19,7 @@ namespace GiftServer.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -57,15 +57,6 @@ namespace GiftServer.Properties {
             }
             set {
                 resourceCulture = value;
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to C:/Users/alexhrao/Documents/TheGiftHub/server/GiftServer.
-        /// </summary>
-        internal static string BasePath {
-            get {
-                return ResourceManager.GetString("BasePath", resourceCulture);
             }
         }
         
@@ -141,15 +132,12 @@ namespace GiftServer.Properties {
         ///            $(&quot;.clickable-row&quot;).click(function () {
         ///                window.location = $(this).data(&quot;href&quot;);
         ///            });
+        ///            $(&quot;#image&quot;).change(function () {
+        ///                readURL(this);
+        ///            });
         ///            $(&apos;.star-rating&apos;).rating({
         ///                displayOnly: true,
-        ///                step: 0.5,
-        ///                size: &apos;xs&apos;
-        ///            });
-        ///        });
-        ///    &lt;/script&gt;
-        ///    &lt;style&gt;
-        ///         [rest of string was truncated]&quot;;.
+        ///                step: 0.5,        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string list {
             get {

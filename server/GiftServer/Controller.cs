@@ -672,7 +672,7 @@ namespace GiftServer
             }
             private static string GeneratePath(string uri)
             {
-                return Resources.BasePath + uri;
+                return Directory.GetCurrentDirectory() + uri;
             }
         }
     }
