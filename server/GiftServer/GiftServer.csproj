@@ -174,8 +174,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources.en-us.resx" />
-    <EmbeddedResource Include="Resources.fr-FR.resx" />
+    <EmbeddedResource Include="Strings.en-US.resx" />
+    <EmbeddedResource Include="Strings.fr-FR.resx" />
     <EmbeddedResource Include="Properties\HtmlTemplates.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
