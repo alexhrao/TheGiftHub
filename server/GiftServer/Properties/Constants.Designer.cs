@@ -61,6 +61,15 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Notpmah678.
+        /// </summary>
+        internal static string emailPassword {
+            get {
+                return ResourceManager.GetString("emailPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .png.
         /// </summary>
         internal static string ImageFormat {

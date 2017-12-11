@@ -2,6 +2,7 @@
 using HtmlAgilityPack;
 using GiftServer.Properties;
 using System.Globalization;
+using System.Resources;
 
 namespace GiftServer
 {
@@ -11,7 +12,8 @@ namespace GiftServer
         {
             public static string Login()
             {
-                return HtmlTemplates.header + HtmlTemplates.login;
+                ResourceManager rm = new ResourceManager("GiftServer.HtmlTemplates", typeof(LoginManager).Assembly);
+                return rm.GetString("header") + rm.GetString("login");
             }
             public static string FailLogin()
             {

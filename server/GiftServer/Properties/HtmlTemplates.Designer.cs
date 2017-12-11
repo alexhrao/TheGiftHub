@@ -87,15 +87,6 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Notpmah678.
-        /// </summary>
-        internal static string emailPassword {
-            get {
-                return ResourceManager.GetString("emailPassword", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
         ///
         ///&lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
@@ -110,15 +101,6 @@ namespace GiftServer.Properties {
         internal static string header {
             get {
                 return ResourceManager.GetString("header", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .png.
-        /// </summary>
-        internal static string ImageFormat {
-            get {
-                return ResourceManager.GetString("ImageFormat", resourceCulture);
             }
         }
         
@@ -256,15 +238,6 @@ namespace GiftServer.Properties {
         internal static string profile {
             get {
                 return ResourceManager.GetString("profile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to http://localhost:60001.
-        /// </summary>
-        internal static string URL {
-            get {
-                return ResourceManager.GetString("URL", resourceCulture);
             }
         }
     }

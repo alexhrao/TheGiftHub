@@ -20,8 +20,10 @@ namespace GiftServer
             /// <param name="args">Reserved for future use</param>
             public static void Main(string[] args)
             {
-                ResourceManager rm = new ResourceManager("GiftServer.Strings", typeof(Program).Assembly);
-                Console.WriteLine(rm.GetString("ImageFormat"));
+                /* for culture-specific resources
+                ResourceManager rm = new ResourceManager("GiftServer.HtmlTemplates", typeof(Program).Assembly);
+                Console.WriteLine(rm.GetString("profile"));
+                */
                 Program program = new Program();
                 program.Start();
             }

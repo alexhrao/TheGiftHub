@@ -105,15 +105,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Constants.resx</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Strings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Strings.resx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\HtmlTemplates.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>HtmlTemplates.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Strings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
     <Compile Include="ResetManager.cs" />
     <Compile Include="User.cs" />
@@ -160,6 +160,30 @@
     <None Include="resources\htmlTemplates\passwordReset.html" />
     <None Include="resources\htmlTemplates\passwordResetEmail.html" />
     <None Include="resources\htmlTemplates\list.html" />
+    <None Include="resources\htmlTemplates\default\dashboard.html" />
+    <None Include="resources\htmlTemplates\default\header.html" />
+    <None Include="resources\htmlTemplates\default\list.html" />
+    <None Include="resources\htmlTemplates\default\login.html" />
+    <None Include="resources\htmlTemplates\default\navigationBar.html" />
+    <None Include="resources\htmlTemplates\default\passwordReset.html" />
+    <None Include="resources\htmlTemplates\default\passwordResetEmail.html" />
+    <None Include="resources\htmlTemplates\default\profile.html" />
+    <None Include="resources\htmlTemplates\fr-FR\dashboard.html" />
+    <None Include="resources\htmlTemplates\fr-FR\header.html" />
+    <None Include="resources\htmlTemplates\fr-FR\list.html" />
+    <None Include="resources\htmlTemplates\fr-FR\login.html" />
+    <None Include="resources\htmlTemplates\fr-FR\navigationBar.html" />
+    <None Include="resources\htmlTemplates\fr-FR\passwordReset.html" />
+    <None Include="resources\htmlTemplates\fr-FR\passwordResetEmail.html" />
+    <None Include="resources\htmlTemplates\fr-FR\profile.html" />
+    <None Include="resources\htmlTemplates\en-US\dashboard.html" />
+    <None Include="resources\htmlTemplates\en-US\header.html" />
+    <None Include="resources\htmlTemplates\en-US\list.html" />
+    <None Include="resources\htmlTemplates\en-US\login.html" />
+    <None Include="resources\htmlTemplates\en-US\navigationBar.html" />
+    <None Include="resources\htmlTemplates\en-US\passwordReset.html" />
+    <None Include="resources\htmlTemplates\en-US\passwordResetEmail.html" />
+    <None Include="resources\htmlTemplates\en-US\profile.html" />
     <Content Include="resources\htmlTemplates\profile.html" />
     <Content Include="resources\images\users\default.png" />
     <Content Include="resources\plugins\starRating\star-rating.min.css" />
@@ -175,6 +199,8 @@
     <Content Include="resources\htmlTemplates\login.html" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="HtmlTemplates.en-US.resx" />
+    <EmbeddedResource Include="HtmlTemplates.fr-FR.resx" />
     <EmbeddedResource Include="Properties\Constants.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Constants.Designer.cs</LastGenOutput>
