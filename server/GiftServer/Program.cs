@@ -10,7 +10,7 @@ namespace GiftServer
 {
     namespace Server
     {
-        public class Program
+        public class GiftServer
         {
             public ulong NumContacts = 0;
             public List<IPEndPoint> addresses = new List<IPEndPoint>();
@@ -24,77 +24,81 @@ namespace GiftServer
                 ResourceManager rm = new ResourceManager("GiftServer.HtmlTemplates", typeof(Program).Assembly);
                 Console.WriteLine(rm.GetString("profile"));
                 */
-                Program program = new Program();
-                program.Start();
+                GiftServer program = new GiftServer();
+                program.Start(args);
             }
-
-            public void Start()
+            public void Start(string[] prefixes)
             {
-                string[] prefixes = new string[1];
-                prefixes[0] = "http://+:60001/";
-                // prefixes[0] = "https://+:60001/";
-                WebServer server = new WebServer(prefixes, this.Route);
-                server.Run();
-                Console.WriteLine("Server is Active...\nType help for available commands");
-                string input = null;
-                while ((input = Console.ReadLine()) != null)
+                if (prefixes.Length == 0)
                 {
-                    switch (input.ToLower())
+                    prefixes = new string[2];
+                    prefixes[0] = "http://*:80/";
+                    prefixes[1] = "https://*:443/";
+                }
+                // prefixes[0] = "https://+:60001/";
+                using (WebServer server = new WebServer(prefixes, this.Route))
+                {
+                    server.Run();
+                    Console.WriteLine("Server is Active...\nType help for available commands");
+                    string input = null;
+                    while ((input = Console.ReadLine()) != null)
                     {
-                        case "quit":
-                            server.Stop();
-                            return;
-                        case "help":
-                            Console.WriteLine("Available Commands:"
-                                            + "\n\tquit - stops this instance of the server"
-                                            + "\n\thelp - shows this information"
-                                            + "\n\tconnections - shows information about connections to the server"
-                                            + "\n\tstatistics - shows various statistics about this server session"
-                                            + "\n\tlogged - shows UserIDs currently logged in"
-                                            + "\n\twarnings - shows any warnings that have been issued");
-                            break;
-                        case "connections":
-                            if (NumContacts == 0)
-                            {
-                                Console.WriteLine("The server has not yet been contacted");
-                            }
-                            else if (NumContacts == 1)
-                            {
-                                Console.WriteLine("The server has been contacted 1 time by the following location:\n\t" + addresses[0].ToString());
-                            }
-                            else
-                            {
-                                Console.WriteLine("The Server has been contacted " + NumContacts + " times by the following locations:");
-                                foreach (IPEndPoint end in addresses)
+                        switch (input.ToLower())
+                        {
+                            case "quit":
+                                return;
+                            case "help":
+                                Console.WriteLine("Available Commands:"
+                                                + "\n\tquit - stops this instance of the server"
+                                                + "\n\thelp - shows this information"
+                                                + "\n\tconnections - shows information about connections to the server"
+                                                + "\n\tstatistics - shows various statistics about this server session"
+                                                + "\n\tlogged - shows UserIDs currently logged in"
+                                                + "\n\twarnings - shows any warnings that have been issued");
+                                break;
+                            case "connections":
+                                if (NumContacts == 0)
                                 {
-                                    Console.WriteLine("\t" + end.ToString());
+                                    Console.WriteLine("The server has not yet been contacted");
                                 }
-                            }
-                            break;
-                        case "statistics":
-                            break;
-                        case "logged":
-                            Console.WriteLine("Users logged in:");
-                            foreach (Controller.Connection con in Controller.Connections)
-                            {
-                                Console.WriteLine("\tUser " + con.Info.UserId + " (Hash: " + con.Info.Hash + ") Connected from following locations:");
-                                foreach (IPEndPoint end in con.Ends)
+                                else if (NumContacts == 1)
                                 {
-                                    Console.WriteLine("\t\t" + end.ToString());
+                                    Console.WriteLine("The server has been contacted 1 time by the following location:\n\t" + addresses[0].ToString());
                                 }
-                            }
-                            break;
-                        case "warnings":
-                            Console.WriteLine("Warnings Issued:");
-                            foreach (Warning warn in Controller.Warnings)
-                            {
-                                Console.WriteLine("\t" + warn.ToString());
-                            }
-                            break;
-                        default:
-                            Console.WriteLine("Unknown command \"" + input + "\"");
-                            Console.WriteLine("Type \"help\" for available commands");
-                            break;
+                                else
+                                {
+                                    Console.WriteLine("The Server has been contacted " + NumContacts + " times by the following locations:");
+                                    foreach (IPEndPoint end in addresses)
+                                    {
+                                        Console.WriteLine("\t" + end.ToString());
+                                    }
+                                }
+                                break;
+                            case "statistics":
+                                break;
+                            case "logged":
+                                Console.WriteLine("Users logged in:");
+                                foreach (Controller.Connection con in Controller.Connections)
+                                {
+                                    Console.WriteLine("\tUser " + con.Info.UserId + " (Hash: " + con.Info.Hash + ") Connected from following locations:");
+                                    foreach (IPEndPoint end in con.Ends)
+                                    {
+                                        Console.WriteLine("\t\t" + end.ToString());
+                                    }
+                                }
+                                break;
+                            case "warnings":
+                                Console.WriteLine("Warnings Issued:");
+                                foreach (Warning warn in Controller.Warnings)
+                                {
+                                    Console.WriteLine("\t" + warn.ToString());
+                                }
+                                break;
+                            default:
+                                Console.WriteLine("Unknown command \"" + input + "\"");
+                                Console.WriteLine("Type \"help\" for available commands");
+                                break;
+                        }
                     }
                 }
             }

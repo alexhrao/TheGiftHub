@@ -11,7 +11,7 @@ namespace GiftServer
 {
     namespace Server
     {
-        public class WebServer
+        public sealed class WebServer : IDisposable
         {
             private readonly HttpListener _listener = new HttpListener();
             private readonly Func<HttpListenerContext, string> _responseGenerator;
@@ -54,6 +54,7 @@ namespace GiftServer
                 _responseGenerator = method;
                 _listener.Start();
             }
+
             public void Run()
             {
                 try
@@ -66,10 +67,8 @@ namespace GiftServer
                             {
                                 ThreadPool.QueueUserWorkItem((r) =>
                                 {
-#if !DEBUG
                                     try
                                     {
-#endif
                                         HttpListenerContext rtx = (HttpListenerContext)(r);
                                         string resp = _responseGenerator(rtx);
                                         if (resp != null)
@@ -88,14 +87,11 @@ namespace GiftServer
                                             rtx.Response.OutputStream.Close();
                                         }
                                     }
-#if !DEBUG
-
                                     }
                                     catch (Exception)
                                     {
                                         // WebServer is shutting down, so safely ignore!
                                     }
-#endif
                                 }, _listener.GetContext());
                             }
                             catch (Exception)
@@ -109,7 +105,7 @@ namespace GiftServer
                     // If any exception is thrown and NOT caught by Dispatch, then it's time to close down the server! So, don't do anything
                 }
             }
-            public void Stop()
+            public void Dispose()
             {
                 _listener.Stop();
                 _listener.Close();
