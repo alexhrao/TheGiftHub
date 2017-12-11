@@ -100,10 +100,15 @@
     <Compile Include="PasswordReset.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Include="Properties\Strings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\HtmlTemplates.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HtmlTemplates.resx</DependentUpon>
     </Compile>
     <Compile Include="ResetManager.cs" />
     <Compile Include="User.cs" />
@@ -165,12 +170,16 @@
     <Content Include="resources\htmlTemplates\login.html" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Properties\Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources.en-us.resx" />
     <EmbeddedResource Include="Resources.fr-FR.resx" />
-    <EmbeddedResource Include="Properties\Resources.resx">
+    <EmbeddedResource Include="Properties\HtmlTemplates.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <LastGenOutput>HtmlTemplates.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

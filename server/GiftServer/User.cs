@@ -509,11 +509,11 @@ namespace GiftServer
             public void SaveImage(MultipartParser parser)
             {
                 ImageProcessor processor = new ImageProcessor(parser);
-                File.WriteAllBytes(System.IO.Directory.GetCurrentDirectory() + "/resources/images/users/User" + this.UserId + Resources.ImageFormat, processor.Data);
+                File.WriteAllBytes(System.IO.Directory.GetCurrentDirectory() + "/resources/images/users/User" + this.UserId + Strings.ImageFormat, processor.Data);
             }
             public void RemoveImage()
             {
-                File.Delete(System.IO.Directory.GetCurrentDirectory() + "/resources/images/users/User" + this.UserId + Resources.ImageFormat);
+                File.Delete(System.IO.Directory.GetCurrentDirectory() + "/resources/images/users/User" + this.UserId + Strings.ImageFormat);
             }
             public string GetImage()
             {
@@ -522,16 +522,16 @@ namespace GiftServer
             public static string GetImage(ulong userID)
             {
                 // Build path:
-                string path = System.IO.Directory.GetCurrentDirectory() + "/resources/images/users/User" + userID + Resources.ImageFormat;
+                string path = System.IO.Directory.GetCurrentDirectory() + "/resources/images/users/User" + userID + Strings.ImageFormat;
                 // if file exists, return path. Otherwise, return default
                 // Race condition, but I don't know how to solve (yet)
                 if (File.Exists(path))
                 {
-                    return "resources/images/users/User" + userID + Resources.ImageFormat;
+                    return "resources/images/users/User" + userID + String.ImageFormat;
                 }
                 else
                 {
-                    return "resources/images/users/default" + Resources.ImageFormat;
+                    return "resources/images/users/default" + String.ImageFormat;
                 }
             }
 

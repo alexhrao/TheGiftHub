@@ -1,6 +1,8 @@
 ﻿using System;
 using HtmlAgilityPack;
 using GiftServer.Properties;
+using System.Globalization;
+
 namespace GiftServer
 {
     namespace Html
@@ -9,12 +11,12 @@ namespace GiftServer
         {
             public static string Login()
             {
-                return Resources.header + Resources.login;
+                return HtmlTemplates.header + HtmlTemplates.login;
             }
             public static string FailLogin()
             {
                 HtmlDocument login = new HtmlDocument();
-                login.LoadHtml(Resources.header + Resources.login);
+                login.LoadHtml(HtmlTemplates.header + HtmlTemplates.login);
                 HtmlNode alert = login.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@class), \" \"), \" alert \")]");
                 alert.AddClass("alert-danger in");
                 alert.RemoveClass("hidden");
@@ -28,7 +30,7 @@ namespace GiftServer
             public static string SuccessSignup()
             {
                 HtmlDocument login = new HtmlDocument();
-                login.LoadHtml(Resources.header + Resources.login);
+                login.LoadHtml(HtmlTemplates.header + HtmlTemplates.login);
                 HtmlNode alert = login.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@class), \" \"), \" alert \")]");
                 alert.AddClass("alert-success in");
                 alert.RemoveClass("hidden");
@@ -37,6 +39,11 @@ namespace GiftServer
                 children.Add(message);
                 alert.AppendChildren(children);
                 return login.DocumentNode.OuterHtml;
+            }
+            public static string TranslateHeaders(HtmlDocument html)
+            {
+                
+                return "";
             }
         }
     }
