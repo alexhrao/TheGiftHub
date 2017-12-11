@@ -144,7 +144,7 @@ namespace GiftServer
                     sender.EnableSsl = true;
                     sender.DeliveryMethod = SmtpDeliveryMethod.Network;
                     sender.UseDefaultCredentials = false;
-                    sender.Credentials = new NetworkCredential("support@thegifthub.org", Resources.emailPassword);
+                    sender.Credentials = new NetworkCredential("support@thegifthub.org", HtmlTemplates.emailPassword);
                     sender.Send(email);
                 }
             }

@@ -44,7 +44,7 @@ namespace GiftServer
             public static string ResetFailed()
             {
                 HtmlDocument login = new HtmlDocument();
-                login.LoadHtml(Resources.header + Resources.login);
+                login.LoadHtml(HtmlTemplates.header + HtmlTemplates.login);
                 HtmlNode alert = login.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@class), \" \"), \" alert \")]");
                 alert.AddClass("alert-danger in");
                 alert.RemoveClass("hidden");
@@ -58,7 +58,7 @@ namespace GiftServer
             public static string CreateReset(User user)
             {
                 HtmlDocument pg = new HtmlDocument();
-                pg.LoadHtml(Resources.header + Resources.passwordReset);
+                pg.LoadHtml(HtmlTemplates.header + HtmlTemplates.passwordReset);
                 HtmlNode hidden = pg.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@name), \" \"), \" userID \")]");
                 hidden.Attributes["value"].Value = Convert.ToString(user.UserId);
                 return pg.DocumentNode.OuterHtml;
@@ -66,21 +66,21 @@ namespace GiftServer
             public static string GenerateEmail(string token)
             {
                 HtmlDocument email = new HtmlDocument();
-                email.LoadHtml(Resources.header + Resources.passwordResetEmail);
+                email.LoadHtml(HtmlTemplates.header + HtmlTemplates.passwordResetEmail);
                 HtmlNode resetLink = email.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" passwordReset \")]");
-                resetLink.Attributes["href"].Value = Resources.URL + "?ResetToken=" + token;
+                resetLink.Attributes["href"].Value = Constants.URL + "?ResetToken=" + token;
                 HtmlNode resetUrl = email.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" resetURL \")]");
-                resetUrl.Attributes["href"].Value = Resources.URL + "?ResetToken=" + token;
-                resetUrl.InnerHtml = Resources.URL + "?ResetToken=" + token;
+                resetUrl.Attributes["href"].Value = Constants.URL + "?ResetToken=" + token;
+                resetUrl.InnerHtml = Constants.URL + "?ResetToken=" + token;
                 HtmlNode homePage = email.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" changePassword \")]");
-                homePage.Attributes["href"].Value = Resources.URL;
+                homePage.Attributes["href"].Value = Constants.URL;
                 email.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userNotFound \")]").Remove();
                 return email.DocumentNode.OuterHtml;
             }
             public static string GenerateEmail()
             {
                 HtmlDocument email = new HtmlDocument();
-                email.LoadHtml(Resources.header + Resources.passwordResetEmail);
+                email.LoadHtml(HtmlTemplates.header + HtmlTemplates.passwordResetEmail);
                 HtmlNode found = email.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userFound \")]");
                 found.Remove();
                 HtmlNode notfound = email.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userNotFound \")]");

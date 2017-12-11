@@ -14,7 +14,7 @@ namespace GiftServer
             public static string GiftList(User user)
             {
                 HtmlDocument myList = new HtmlDocument();
-                myList.LoadHtml(NavigationManager.NavigationBar(user) + Resources.list);
+                myList.LoadHtml(NavigationManager.NavigationBar(user) + HtmlTemplates.list);
 
                 // Translate into correct culture
 

@@ -117,4 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ImageFormat" xml:space="preserve">
+    <value>.png</value>
+  </data>
+  <data name="URL" xml:space="preserve">
+    <value>http://www.thegifthub.org:60001</value>
+  </data>
 </root>

@@ -4,6 +4,7 @@ using GiftServer.Properties;
 using System.Net;
 using System.Collections.Generic;
 using GiftServer.Exceptions;
+using System.Resources;
 
 namespace GiftServer
 {
@@ -19,6 +20,8 @@ namespace GiftServer
             /// <param name="args">Reserved for future use</param>
             public static void Main(string[] args)
             {
+                ResourceManager rm = new ResourceManager("GiftServer.Strings", typeof(Program).Assembly);
+                Console.WriteLine(rm.GetString("ImageFormat"));
                 Program program = new Program();
                 program.Start();
             }

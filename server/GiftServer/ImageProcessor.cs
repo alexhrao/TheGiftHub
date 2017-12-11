@@ -17,7 +17,7 @@ namespace GiftServer
             {
                 _parser = parser;
                 // Switch data format:
-                switch (Resources.ImageFormat.ToLower())
+                switch (Constants.ImageFormat.ToLower())
                 {
                     case ".jpeg":
                     case ".jpg":
@@ -57,7 +57,7 @@ namespace GiftServer
                         }
                         return;
                     default:
-                        throw new InvalidDataException("Unknown type " + Resources.ImageFormat);
+                        throw new InvalidDataException("Unknown type " + Constants.ImageFormat);
                 }
             }
         }
