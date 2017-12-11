@@ -8,10 +8,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
+using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Threading;
 using System.Web;
-using System.Xml;
 
 namespace GiftServer
 {
@@ -41,6 +42,7 @@ namespace GiftServer
             }
             public static readonly List<Connection> Connections = new List<Connection>();
             public static readonly List<Warning> Warnings = new List<Warning>();
+            public CultureInfo _culture;
             private User _user;
             private HttpListenerContext _ctx;
             private HttpListenerRequest _request;
@@ -61,168 +63,162 @@ namespace GiftServer
             /// <returns>The html to be sent back to the user. Additionally, it will also alter the response, if necessary</returns>
             public string Dispatch()
             {
+                try
                 {
-#if !DEBUG
-                    try
+                    string path = ParsePath();
+                    if (_request.ContentType != null && _request.ContentType.Contains("multipart/form-data"))
                     {
-#endif
-                        string path = ParsePath();
-                        if (_request.ContentType != null && _request.ContentType.Contains("multipart/form-data"))
+                        MultipartParser parser = new MultipartParser(_request.InputStream, "image");
+                        if (parser.Success)
                         {
-                            MultipartParser parser = new MultipartParser(_request.InputStream, "image");
-                            if (parser.Success)
+                            // Image file will be saved in resources/images/users/User[UID].jpg
+                            // Figure out which page user was on, engage.
+                            if (_request.QueryString["dest"] != null)
                             {
-                                // Image file will be saved in resources/images/users/User[UID].jpg
-                                // Figure out which page user was on, engage.
-                                if (_request.QueryString["dest"] != null)
+                                switch (_request.QueryString["dest"])
                                 {
-                                    switch (_request.QueryString["dest"])
-                                    {
-                                        case "profile":
-                                            {
-                                                // Save user image:
-                                                _user.SaveImage(parser);
-                                                break;
-                                            }
-                                        case "myList":
-                                            {
-                                                Gift gift = new Gift(Convert.ToUInt64(parser.Parameters["itemid"]));
-                                                gift.SaveImage(parser);
-                                                break;
-                                            }
-                                    }
-                                    return ParseQuery();
+                                    case "profile":
+                                        {
+                                            // Save user image:
+                                            _user.SaveImage(parser);
+                                            break;
+                                        }
+                                    case "myList":
+                                        {
+                                            Gift gift = new Gift(Convert.ToUInt64(parser.Parameters["itemid"]));
+                                            gift.SaveImage(parser);
+                                            break;
+                                        }
                                 }
-                                else
-                                {
-                                    // Just return dashboard
-                                    return DashboardManager.Dashboard(_user);
-                                }
+                                return ParseQuery();
+                            }
+                            else
+                            {
+                                // Just return dashboard
+                                return DashboardManager.Dashboard(_user);
                             }
                         }
-                        if (_request.HasEntityBody)
+                    }
+                    if (_request.HasEntityBody)
+                    {
+                        string input;
+                        // Read input, then dispatch accordingly
+                        using (StreamReader reader = new StreamReader(_request.InputStream))
                         {
-                            string input;
-                            // Read input, then dispatch accordingly
-                            using (StreamReader reader = new StreamReader(_request.InputStream))
+                            input = reader.ReadToEnd();
+                            _dict = HttpUtility.ParseQueryString(input);
+                            if (_dict["submit"] != null)
                             {
-                                input = reader.ReadToEnd();
-                                _dict = HttpUtility.ParseQueryString(input);
-                                if (_dict["submit"] != null)
+                                // Dispatch to correct logic:
+                                switch (_dict["submit"])
                                 {
-                                    // Dispatch to correct logic:
-                                    switch (_dict["submit"])
-                                    {
-                                        case "Logout":
-                                            Logout();
-                                            return LoginManager.Login();
-                                        case "Signup":
-                                            _user = new User(_dict["email"], new Password(_dict["password"]))
-                                            {
-                                                FirstName = _dict["firstName"],
-                                                LastName = _dict["lastName"],
-                                            };
-                                            _user.Create();
-                                            return LoginManager.SuccessSignup();
-                                        case "Login":
-                                            return Login(_dict["email"], _dict["password"]);
-                                        case "PasswordResetRequest":
-                                            // POST data will have user email. Send recovery email.
-                                            PasswordReset.SendRecoveryEmail(_dict["email"]);
-                                            return ResetManager.ResetPasswordSent();
-                                        case "PasswordReset":
-                                            // Reset password and direct to login page
-                                            // POST data will have userID in userID input. Reset the password and let the user know.
-                                            _user = new User(Convert.ToUInt64(_dict["userID"]));
-                                            string password = _dict["password"];
-                                            _user.UpdatePassword(password);
-                                            return ResetManager.SuccessResetPassword();
-                                        case "Change":
-                                            ulong changeId = Convert.ToUInt64(_dict["itemId"]);
-                                            switch (_dict["type"])
-                                            {
-                                                case "User":
-                                                    return Update();
-                                                case "Event":
-                                                    return Update(new EventUser(changeId));
-                                                case "Group":
-                                                    return Update(new Group(changeId));
-                                                case "Gift":
-                                                    return Update(new Gift(changeId));
-                                                default:
-                                                    return "";
-                                            }
-                                        case "Fetch":
-                                            ulong fetchId = Convert.ToUInt64(_dict["itemId"]);
-                                            IFetchable item = null;
-                                            switch (_dict["type"])
-                                            {
-                                                case "Gift":
-                                                    item = new Gift(fetchId);
-                                                    break;
-                                                case "User":
-                                                    item = new User(fetchId);
-                                                    break;
-                                                case "Event":
-                                                    item = new EventUser(fetchId);
-                                                    break;
-                                                case "Group":
-                                                    item = new Group(fetchId);
-                                                    break;
-                                                default:
-                                                    _response.StatusCode = 404;
-                                                    return "Specified information not found";
-                                            }
-                                            return item.Fetch().OuterXml;
-                                        default:
-                                            return LoginManager.Login();
-                                    }
+                                    case "Logout":
+                                        Logout();
+                                        return LoginManager.Login();
+                                    case "Signup":
+                                        _user = new User(_dict["email"], new Password(_dict["password"]))
+                                        {
+                                            FirstName = _dict["firstName"],
+                                            LastName = _dict["lastName"],
+                                        };
+                                        _user.Create();
+                                        return LoginManager.SuccessSignup();
+                                    case "Login":
+                                        return Login(_dict["email"], _dict["password"]);
+                                    case "PasswordResetRequest":
+                                        // POST data will have user email. Send recovery email.
+                                        PasswordReset.SendRecoveryEmail(_dict["email"]);
+                                        return ResetManager.ResetPasswordSent();
+                                    case "PasswordReset":
+                                        // Reset password and direct to login page
+                                        // POST data will have userID in userID input. Reset the password and let the user know.
+                                        _user = new User(Convert.ToUInt64(_dict["userID"]));
+                                        string password = _dict["password"];
+                                        _user.UpdatePassword(password);
+                                        return ResetManager.SuccessResetPassword();
+                                    case "Change":
+                                        ulong changeId = Convert.ToUInt64(_dict["itemId"]);
+                                        switch (_dict["type"])
+                                        {
+                                            case "User":
+                                                return Update();
+                                            case "Event":
+                                                return Update(new EventUser(changeId));
+                                            case "Group":
+                                                return Update(new Group(changeId));
+                                            case "Gift":
+                                                return Update(new Gift(changeId));
+                                            default:
+                                                return "";
+                                        }
+                                    case "Fetch":
+                                        ulong fetchId = Convert.ToUInt64(_dict["itemId"]);
+                                        IFetchable item = null;
+                                        switch (_dict["type"])
+                                        {
+                                            case "Gift":
+                                                item = new Gift(fetchId);
+                                                break;
+                                            case "User":
+                                                item = new User(fetchId);
+                                                break;
+                                            case "Event":
+                                                item = new EventUser(fetchId);
+                                                break;
+                                            case "Group":
+                                                item = new Group(fetchId);
+                                                break;
+                                            default:
+                                                _response.StatusCode = 404;
+                                                return "Specified information not found";
+                                        }
+                                        return item.Fetch().OuterXml;
+                                    default:
+                                        return LoginManager.Login();
                                 }
-                                else
-                                {
-                                    return LoginManager.Login();
-                                }
-                            }
-                        }
-                        else if (path.Length != 0)
-                        {
-                            return ServeResource(path);
-                        }
-                        else if (_user == null)
-                        {
-                            // Send login page EXCEPT if requesting password reset:
-                            if (_request.QueryString["ResetToken"] != null)
-                            {
-                                try
-                                {
-                                    return ResetManager.CreateReset(PasswordReset.GetUser(_request.QueryString["ResetToken"]));
-                                } catch (PasswordResetTimeoutException)
-                                {
-                                    return ResetManager.ResetFailed();
-                                }
-
                             }
                             else
                             {
                                 return LoginManager.Login();
                             }
                         }
-                        else if (_request.QueryString["dest"] != null)
+                    }
+                    else if (path.Length != 0)
+                    {
+                        return ServeResource(path);
+                    }
+                    else if (_user == null)
+                    {
+                        // Send login page EXCEPT if requesting password reset:
+                        if (_request.QueryString["ResetToken"] != null)
                         {
-                            return ParseQuery();
+                            try
+                            {
+                                return ResetManager.CreateReset(PasswordReset.GetUser(_request.QueryString["ResetToken"]));
+                            } catch (PasswordResetTimeoutException)
+                            {
+                                return ResetManager.ResetFailed();
+                            }
+
                         }
                         else
                         {
-                            // If logged in (but no request), just send back home page:
-                            return DashboardManager.Dashboard(_user);
+                            return LoginManager.Login();
                         }
-#if !DEBUG
-                        // catch exceptions and return something meaningful
-                    } catch (Exception)
-                    {
-                        return LoginManager.Login();
                     }
-#endif
+                    else if (_request.QueryString["dest"] != null)
+                    {
+                        return ParseQuery();
+                    }
+                    else
+                    {
+                        // If logged in (but no request), just send back home page:
+                        return DashboardManager.Dashboard(_user);
+                    }
+                // catch exceptions and return something meaningful
+                } catch (Exception)
+                {
+                    return LoginManager.Login();
                 }
             }
 
@@ -369,7 +365,7 @@ namespace GiftServer
                 }
                 else if (Path.GetFileNameWithoutExtension(path).Equals("favicon"))
                 {
-                    Write(GeneratePath("/resources/images/branding/favicon.ico"));
+                    Write(Constants.favicon);
                 }
                 else
                 {
@@ -408,7 +404,14 @@ namespace GiftServer
                     default:
                         break;
                 }
-                byte[] buffer = File.ReadAllBytes(path);
+                Write(File.ReadAllBytes(path));
+            }
+            private void Write(System.Drawing.Icon icon)
+            {
+                icon.Save(_response.OutputStream);
+            }
+            private void Write(byte[] buffer)
+            {
                 _response.ContentLength64 = buffer.Length;
                 using (Stream response = _response.OutputStream)
                 {
@@ -437,6 +440,37 @@ namespace GiftServer
                 else 
                 {
                     _user = null;
+                }
+            }
+            private void GetCulture()
+            {
+                // First, if logged in, use that.
+                // Then, if in cookies, use that.
+                // Then, if location is in request, use that.
+                // ONLY then, use en-US as default.
+                
+                // If logged in:
+                if (_user != null)
+                {
+                    // Get from settings. For now, we'll use en-US. Store this in cookie? 
+                    // (it will be faster to get from cookie than to query db)
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
+                }
+                // If in cookies:
+                else if (false)
+                {
+                    // use navigator object in javascript.
+                }
+                // If location in request:
+                else if (false)
+                {
+                    // use navigator object in javascript. Store this in cookie!
+                }
+                // otherwise, en-US
+                else
+                {
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
+                    // do NOT store this in cookie!
                 }
             }
 
@@ -506,7 +540,7 @@ namespace GiftServer
             }
             private string Update(EventUser evnt)
             {
-                                switch (_dict["item"])
+                switch (_dict["item"])
                 {
                     case "name":
                         break;

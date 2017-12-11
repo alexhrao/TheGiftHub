@@ -184,7 +184,10 @@
     <None Include="resources\htmlTemplates\en-US\passwordReset.html" />
     <None Include="resources\htmlTemplates\en-US\passwordResetEmail.html" />
     <None Include="resources\htmlTemplates\en-US\profile.html" />
+    <None Include="resources\favicon.ico" />
+    <None Include="resources\favicon.bmp" />
     <Content Include="resources\htmlTemplates\profile.html" />
+    <None Include="resources\images\branding\favicon.ico" />
     <Content Include="resources\images\users\default.png" />
     <Content Include="resources\plugins\starRating\star-rating.min.css" />
     <Content Include="resources\plugins\starRating\star-rating.min.js" />
