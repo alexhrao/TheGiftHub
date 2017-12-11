@@ -15,6 +15,9 @@ namespace GiftServer
             {
                 HtmlDocument myList = new HtmlDocument();
                 myList.LoadHtml(NavigationManager.NavigationBar(user) + Resources.list);
+
+                // Translate into correct culture
+
                 HtmlNode giftTable = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" giftHolder \")]");
                 HtmlNode giftTableMicro = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" xsGiftHolder \")]");
                 List<Gift> gifts = user.Gifts;
