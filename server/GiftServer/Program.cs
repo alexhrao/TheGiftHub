@@ -35,7 +35,6 @@ namespace GiftServer
                     prefixes[0] = "http://*:80/";
                     prefixes[1] = "https://*:443/";
                 }
-                // prefixes[0] = "https://+:60001/";
                 using (WebServer server = new WebServer(prefixes, this.Route))
                 {
                     server.Run();

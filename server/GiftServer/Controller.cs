@@ -65,6 +65,11 @@ namespace GiftServer
             {
                 try
                 {
+                    if (!_request.Url.OriginalString.Contains("https://"))
+                    {
+                        _response.Redirect(Constants.URL);
+                        return null;
+                    }
                     string path = ParsePath();
                     if (_request.ContentType != null && _request.ContentType.Contains("multipart/form-data"))
                     {
@@ -218,7 +223,7 @@ namespace GiftServer
                 // catch exceptions and return something meaningful
                 } catch (Exception)
                 {
-                    return LoginManager.Login();
+                    return "404";
                 }
             }
 
@@ -608,6 +613,7 @@ namespace GiftServer
             }
             private string Update(Gift gift)
             {
+                Console.WriteLine("Updating Gift...");
                 if (_user != null)
                 {
                     gift.Name = _dict["giftName"];
@@ -622,6 +628,7 @@ namespace GiftServer
                 }
                 else
                 {
+                    Console.WriteLine("User is Null??");
                     return LoginManager.Login();
                 }
             }

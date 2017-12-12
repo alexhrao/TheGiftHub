@@ -89,7 +89,7 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to http://www.thegifthub.org:60001.
+        ///   Looks up a localized string similar to https://www.thegifthub.org.
         /// </summary>
         internal static string URL {
             get {
