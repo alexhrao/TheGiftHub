@@ -12,8 +12,7 @@ namespace GiftServer
     {
         public class GiftServer
         {
-            public ulong NumContacts = 0;
-            public List<IPEndPoint> addresses = new List<IPEndPoint>();
+            public List<IPEndPoint> Addresses = new List<IPEndPoint>();
             /// <summary>
             /// Main method and entry point - starts the web server on the specified host/port.
             /// </summary>
@@ -56,18 +55,18 @@ namespace GiftServer
                                                 + "\n\twarnings - shows any warnings that have been issued");
                                 break;
                             case "connections":
-                                if (NumContacts == 0)
+                                if (Addresses.Count == 0)
                                 {
                                     Console.WriteLine("The server has not yet been contacted");
                                 }
-                                else if (NumContacts == 1)
+                                else if (Addresses.Count == 1)
                                 {
-                                    Console.WriteLine("The server has been contacted 1 time by the following location:\n\t" + addresses[0].ToString());
+                                    Console.WriteLine("The server has been contacted 1 time by the following location:\n\t" + Addresses[0].ToString());
                                 }
                                 else
                                 {
-                                    Console.WriteLine("The Server has been contacted " + NumContacts + " times by the following locations:");
-                                    foreach (IPEndPoint end in addresses)
+                                    Console.WriteLine("The Server has been contacted " + Addresses.Count + " times by the following locations:");
+                                    foreach (IPEndPoint end in Addresses)
                                     {
                                         Console.WriteLine("\t" + end.ToString());
                                     }
@@ -103,8 +102,7 @@ namespace GiftServer
             }
             public string Route(HttpListenerContext ctx)
             {
-                this.NumContacts++;
-                addresses.Add(ctx.Request.RemoteEndPoint);
+                Addresses.Add(ctx.Request.RemoteEndPoint);
                 Controller control = new Controller(ctx);
                 return control.Dispatch();
             }
