@@ -16,7 +16,7 @@ namespace GiftServer
             {
                 HtmlDocument dash = new HtmlDocument();
                 dash.LoadHtml(page);
-                HtmlNode eventHolder = dash.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" eventHolder \")]");
+                HtmlNode eventHolder = dash.DocumentNode.SelectSingleNode(@"//*[contains(concat("" "", normalize-space(@id), "" ""), "" eventHolder "")]");
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -60,22 +60,22 @@ namespace GiftServer
                                 string eName = Convert.ToString(reader["EventName"]);
                                 // Create HtmlNode for this event:
                                 // <li><h5>(ENAME) - (MM/DD) (CHEVRON_RIGHT)</h5><ul></ul></li>
-                                HtmlNode eNode = HtmlNode.CreateNode("<li><h5 id=\"menu-dropdown\" data-toggle=\"collapse\" data-target=\"#EventNumber" + eventNum + "\">"
+                                HtmlNode eNode = HtmlNode.CreateNode(@"<li><h5 id=""menu-dropdown"" data-toggle=""collapse"" data-target=""#EventNumber" + eventNum + @""">"
                                                                     + HttpUtility.HtmlEncode(Convert.ToString(reader["EventName"]))
                                                                     + " - ("
                                                                     + Convert.ToInt32(reader["EventMonth"]) + "/"
                                                                     + Convert.ToInt32(reader["EventDay"])
-                                                                    + ") <span class=\"glyphicon glyphicon-chevron-right\"></span></h5></li>");
-                                HtmlNode users = HtmlNode.CreateNode("<ul id=\"EventNumber" + eventNum + "\" class=\"collapse\"></ul>");
+                                                                    + @") <span class=""glyphicon glyphicon-chevron-right""></span></h5></li>");
+                                HtmlNode users = HtmlNode.CreateNode(@"<ul id=""EventNumber" + eventNum + @""" class=""collapse""></ul>");
                                 eNode.AppendChild(users);
                                 while (eName.Equals(Convert.ToString(reader["EventName"])))
                                 {
                                     // Add HtmlNode for this person:
                                     // <li><a>(FIRSTNAME) (LASTNAME) (ARROW_RIGHT)</a></li>
-                                    HtmlNode userInfo = HtmlNode.CreateNode("<li><a href=\"\">"
+                                    HtmlNode userInfo = HtmlNode.CreateNode(@"<li><a href="""">"
                                                                             + HttpUtility.HtmlEncode(Convert.ToString(reader["FirstName"])) + " "
                                                                             + HttpUtility.HtmlEncode(Convert.ToString(reader["LastName"])) + " "
-                                                                            + "<span class=\"glyphicon glyphicon-arrow-right\"></span></a></li>");
+                                                                            + @"<span class=""glyphicon glyphicon-arrow-right""></span></a></li>");
                                     users.AppendChild(userInfo);
                                     if (!reader.Read())
                                     {

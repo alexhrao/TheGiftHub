@@ -200,7 +200,8 @@ namespace GiftServer
                             try
                             {
                                 return ResetManager.CreateReset(PasswordReset.GetUser(_request.QueryString["ResetToken"]));
-                            } catch (PasswordResetTimeoutException)
+                            }
+                            catch (PasswordResetTimeoutException)
                             {
                                 return ResetManager.ResetFailed();
                             }
@@ -221,9 +222,11 @@ namespace GiftServer
                         return DashboardManager.Dashboard(_user);
                     }
                 // catch exceptions and return something meaningful
-                } catch (Exception)
+                }
+                catch (Exception)
                 {
-                    return "404";
+                    _response.StatusCode = 404;
+                    return "";
                 }
             }
 
