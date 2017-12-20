@@ -170,12 +170,7 @@
     <Content Include="docs\MySqlParameterCollection.xml" />
     <Content Include="docs\MySqlTransaction.xml" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
-    <None Include="resources\htmlTemplates\navigationBar.html" />
-    <None Include="resources\htmlTemplates\dashboard.html" />
     <None Include="resources\emailPassword.txt" />
-    <None Include="resources\htmlTemplates\passwordReset.html" />
-    <None Include="resources\htmlTemplates\passwordResetEmail.html" />
-    <None Include="resources\htmlTemplates\list.html" />
     <None Include="resources\htmlTemplates\default\dashboard.html" />
     <None Include="resources\htmlTemplates\default\header.html" />
     <None Include="resources\htmlTemplates\default\list.html" />
@@ -200,9 +195,6 @@
     <None Include="resources\htmlTemplates\en-US\passwordReset.html" />
     <None Include="resources\htmlTemplates\en-US\passwordResetEmail.html" />
     <None Include="resources\htmlTemplates\en-US\profile.html" />
-    <None Include="resources\favicon.ico" />
-    <None Include="resources\favicon.bmp" />
-    <Content Include="resources\htmlTemplates\profile.html" />
     <None Include="resources\images\branding\favicon.ico" />
     <Content Include="resources\images\users\default.png" />
     <Content Include="resources\plugins\starRating\star-rating.min.css" />
@@ -214,8 +206,6 @@
     <Content Include="Scripts\jquery-3.1.1.min.js" />
     <Content Include="Scripts\jquery-3.1.1.slim.js" />
     <Content Include="Scripts\jquery-3.1.1.slim.min.js" />
-    <None Include="resources\htmlTemplates\header.html" />
-    <Content Include="resources\htmlTemplates\login.html" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="HtmlTemplates.en-US.resx" />
