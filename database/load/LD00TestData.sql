@@ -31,10 +31,10 @@ INSERT INTO preferences (PreferenceName, ValueTypeID)
     VALUES ('DefaultTimeZone', 2);
 
 -- Insert into users:
-INSERT INTO users (FirstName, LastName, UserEmail, UserBirthMonth, UserBirthDay, UserBio)
-    VALUES ('Alex', 'Rao', 'alexhrao@gmail.com', 7, 3, "I LOVE to have fun!");
-INSERT INTO users (FirstName, LastName, UserEmail, UserBirthMonth, UserBirthDay, UserBio)
-    VALUES ('Raeedah', 'Choudhury', 'rchoudhury@gmail.com', 11, 19, "I love my boyfriend");
+INSERT INTO users (UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio)
+    VALUES ('Alex Rao', 'alexhrao@gmail.com', 7, 3, "I LOVE to have fun!");
+INSERT INTO users (UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio)
+    VALUES ('Raeedah Choudhury', 'rchoudhury@gmail.com', 11, 19, "I love my boyfriend");
 
 -- Insert into Password:
 INSERT INTO passwords (UserID, PasswordHash, PasswordSalt, PasswordIter)

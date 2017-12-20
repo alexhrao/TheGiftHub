@@ -101,13 +101,12 @@
                         submit: "Change",
                         type: "User",
                         item: "name",
-                        firstName: $('#firstNameChange').val(),
-                        lastName: $('#lastNameChange').val()
+                        firstName: $('#userNameChange').val()
                     },
                     function (data, status) {
                         if (data == 200) {
                             // Change name; we succeeded:
-                            $('#userName').text($('#firstNameChange').val() + " " + $('#lastNameChange').val());
+                            $('#userName').text($('#userNameChange').val());
                         } else {
                             alert("We're unable to make your changes right now - try again in a few minutes.");
                         }
@@ -231,11 +230,11 @@
             }
         }
         function daysInMonth(month) {
-            // No leap day
+            // Leap day
             if (month == 0) {
                 return 0;
             }
-            return new Date(1999, month, 0).getDate();
+            return new Date(2004, month, 0).getDate();
         }
     </script>
     <style>
@@ -443,12 +442,10 @@
                 <div class="form-group">
                     <h1 role="button" id="userName" class="form-control-static"></h1>
                 </div>
+                <!-- User Name -->
                 <div id="userNameChangeSection" class="form-group hidden">
-                    <div class="col-md-4">
-                        <input style="margin:5px;" type="text" class="form-control" id="firstNameChange" placeholder="First Name" />
-                    </div>
-                    <div class="col-md-4">
-                        <input style="margin:5px;" type="text" class="form-control" id="lastNameChange" placeholder="Last Name" />
+                    <div class="col-md-8">
+                        <input style="margin:5px;" type="text" class="form-control" id="userNameChange" placeholder="New Name" />
                     </div>
                     <div class="col-md-2">
                         <button id="userNameChangeSubmit" class="btn btn-success" type="button">

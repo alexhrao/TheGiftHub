@@ -60,27 +60,15 @@
                     }
                     validateSignup();
                 });
-                $('#firstName').keyup(function () {
-                    if ($('#firstName').val()) {
+                $('#userName').keyup(function () {
+                    if ($('#userName').val()) {
                         // We are good to go!
-                        $('#firstName').parent().removeClass('has-error');
-                        $('#firstName').parent().addClass('has-success');
+                        $('#userName').parent().removeClass('has-error');
+                        $('#userName').parent().addClass('has-success');
                     } else {
                         // Passwords don't match; disable submit and warn
-                        $('#firstName').parent().removeClass('has-success');
-                        $('#firstName').parent().addClass('has-error');
-                    }
-                    validateSignup();
-                });
-                $('#lastName').keyup(function () {
-                    if ($('#lastName').val()) {
-                        // We are good to go!
-                        $('#lastName').parent().removeClass('has-error');
-                        $('#lastName').parent().addClass('has-success');
-                    } else {
-                        // Passwords don't match; disable submit and warn
-                        $('#lastName').parent().removeClass('has-success');
-                        $('#lastName').parent().addClass('has-error');
+                        $('#userName').parent().removeClass('has-success');
+                        $('#userName').parent().addClass('has-error');
                     }
                     validateSignup();
                 });
@@ -248,7 +236,7 @@
                     </div>
                 </div>
             </div>
-            <h1 id="welcomeHeader">Bonjour!</h1>
+            <h1 id="welcomeHeader">Welcome to The Gift Hub!</h1>
             <ul class="text-center nav nav-tabs">
                 <li id="loginTab" class="active"><a data-toggle="tab" href="#login">Login</a></li>
                 <li id="signupTab"><a data-toggle="tab" href="#signup">Sign Up</a></li>
@@ -277,11 +265,8 @@
                 <div id="signup" class="tab-pane fade">
                     <form id="signupForm" method="post">
                         <div class="form-group">
-                            <div class="col-sm-6">
-                                <input id="firstName" name="firstName" type="text" class="form-control" placeholder="First Name" />
-                            </div>
-                            <div class="col-sm-6">
-                                <input id="lastName" name="lastName" type="text" class="form-control" placeholder="Last Name" />
+                            <div class="col-sm-12">
+                                <input id="userName" name="userName" type="text" class="form-control" placeholder="Your Name" />
                             </div>
                         </div>
                         <div class="input-group">

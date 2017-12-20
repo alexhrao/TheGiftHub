@@ -123,8 +123,7 @@ namespace GiftServer
                                     case "Signup":
                                         _user = new User(_dict["email"], new Password(_dict["password"]))
                                         {
-                                            FirstName = _dict["firstName"],
-                                            LastName = _dict["lastName"],
+                                            UserName = _dict["userName"]
                                         };
                                         _user.Create();
                                         return LoginManager.SuccessSignup();
@@ -521,8 +520,7 @@ namespace GiftServer
                 {
                     case "name":
                         // Update this user's name, then respond back with success:
-                        _user.FirstName = _dict["firstName"];
-                        _user.LastName = _dict["lastName"];
+                        _user.UserName = _dict["userName"];
                         break;
                     case "email":
                         _user.Email = _dict["email"];

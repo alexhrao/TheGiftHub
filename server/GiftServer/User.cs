@@ -21,8 +21,7 @@ namespace GiftServer
                 get;
                 private set;
             } = 0;
-            public string FirstName = "";
-            public string LastName = "";
+            public string UserName = "";
             public string Email;
             public Password Password;
             public int Theme = 1;
@@ -142,8 +141,7 @@ namespace GiftServer
                             if (reader.Read())
                             {
                                 this.UserId = id;
-                                this.FirstName = Convert.ToString(reader["FirstName"]);
-                                this.LastName = Convert.ToString(reader["LastName"]);
+                                this.UserName = Convert.ToString(reader["UserName"]);
                                 this.Email = Convert.ToString(reader["UserEmail"]);
                                 this.Password = new Password(Convert.ToString(reader["PasswordHash"]),
                                                              Convert.ToString(reader["PasswordSalt"]),
@@ -197,8 +195,7 @@ namespace GiftServer
                                     throw new InvalidPasswordException();
                                 }
                                 UserId = Convert.ToUInt64(reader["UserID"]);
-                                this.FirstName = Convert.ToString(reader["FirstName"]);
-                                this.LastName = Convert.ToString(reader["LastName"]);
+                                this.UserName = Convert.ToString(reader["UserName"]);
                                 this.Email = email;
                                 this.Theme = Convert.ToInt32(reader["UserTheme"]);
                                 this.BirthDay = Convert.ToInt32(reader["UserBirthMonth"]);
@@ -265,10 +262,9 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "INSERT INTO users (FirstName, LastName, UserEmail, UserTheme, UserBirthMonth, UserBirthDay, UserBio) "
-                            + "VALUES (@fName, @lName, @email, @theme, @bmonth, @bday, @bio);";
-                        cmd.Parameters.AddWithValue("@fName", this.FirstName);
-                        cmd.Parameters.AddWithValue("@lName", this.LastName);
+                        cmd.CommandText = "INSERT INTO users (UserName, UserEmail, UserTheme, UserBirthMonth, UserBirthDay, UserBio) "
+                            + "VALUES (@name, @email, @theme, @bmonth, @bday, @bio);";
+                        cmd.Parameters.AddWithValue("@name", this.UserName);
                         cmd.Parameters.AddWithValue("@email", this.Email);
                         cmd.Parameters.AddWithValue("@theme", this.Theme);
                         cmd.Parameters.AddWithValue("@bmonth", this.BirthMonth);
@@ -347,16 +343,14 @@ namespace GiftServer
                         cmd.Connection = con;
                         // Update user information
                         cmd.CommandText = "UPDATE users "
-                            + "SET FirstName = @fName, "
-                            + "LastName = @lName, "
+                            + "SET UserName = @name, "
                             + "UserEmail = @email, "
                             + "UserTheme = @theme, "
                             + "UserBio = @bio, "
                             + "UserBirthMonth = @bmonth, "
                             + "UserBirthDay = @bday "
                             + "WHERE UserID = @id;";
-                        cmd.Parameters.AddWithValue("@fName", this.FirstName);
-                        cmd.Parameters.AddWithValue("@lName", this.LastName);
+                        cmd.Parameters.AddWithValue("@name", this.UserName);
                         cmd.Parameters.AddWithValue("@email", this.Email);
                         cmd.Parameters.AddWithValue("@theme", this.Theme);
                         cmd.Parameters.AddWithValue("@bio", this.Bio);
@@ -690,10 +684,8 @@ namespace GiftServer
 
                 XmlElement id = info.CreateElement("userId");
                 id.InnerText = HttpUtility.HtmlEncode(UserId);
-                XmlElement firstName = info.CreateElement("firstName");
-                firstName.InnerText = HttpUtility.HtmlEncode(FirstName);
-                XmlElement lastName = info.CreateElement("lastName");
-                lastName.InnerText = HttpUtility.HtmlEncode(LastName);
+                XmlElement userName = info.CreateElement("userName");
+                userName.InnerText = HttpUtility.HtmlEncode(UserName);
                 XmlElement email = info.CreateElement("email");
                 email.InnerText = HttpUtility.HtmlEncode(Email);
                 // XmlElement password = Password.Fetch().DocumentElement;
@@ -724,10 +716,8 @@ namespace GiftServer
                 }
 
                 container.AppendChild(id);
-                container.AppendChild(firstName);
-                container.AppendChild(lastName);
+                container.AppendChild(userName);
                 container.AppendChild(email);
-                // container.AppendChild(password);
                 container.AppendChild(theme);
                 container.AppendChild(birthMonth);
                 container.AppendChild(birthDay);

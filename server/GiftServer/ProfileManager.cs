@@ -18,7 +18,7 @@ namespace GiftServer
                 HtmlNode img = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userImage \")]");
                 img.Attributes["src"].Value = user.GetImage();
                 HtmlNode name = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
-                name.InnerHtml = HttpUtility.HtmlEncode(user.FirstName + " " + user.LastName);
+                name.InnerHtml = HttpUtility.HtmlEncode(user.UserName);
                 HtmlNode timeMember = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" timeMember \")]");
                 timeMember.InnerHtml = HttpUtility.HtmlEncode("Member since " + user.DateJoined.ToString("MMMM d, yyyy"));
                 HtmlNode email = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" email \")]");

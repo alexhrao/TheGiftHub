@@ -16,7 +16,7 @@ namespace GiftServer
             /// <summary>
             /// Main method and entry point - starts the web server on the specified host/port.
             /// </summary>
-            /// <param name="args">Reserved for future use</param>
+            /// <param name="args">Optional prefixes</param>
             public static void Main(string[] args)
             {
                 /* for culture-specific resources
