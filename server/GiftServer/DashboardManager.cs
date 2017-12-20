@@ -25,7 +25,7 @@ namespace GiftServer
                         cmd.Connection = con;
                         // Get all events that have anything to do with anyone in any group with our user.
                         // look at template
-                        cmd.CommandText = "SELECT events_users_groups.EventUserID, users.FirstName, users.LastName, users.UserEmail, "
+                        cmd.CommandText = "SELECT events_users_groups.EventUserID, users.UserName, users.UserEmail, "
                                         + "events_users.EventName, events_users.EventDay, events_users.EventMonth, events_users.EventYear, events_users.EventRecurs, events_users.EventDescription "
                                         + "FROM events_users_groups "
                                         + "INNER JOIN events_users ON events_users_groups.EventUserID = events_users.EventUserID "
@@ -71,10 +71,9 @@ namespace GiftServer
                                 while (eName.Equals(Convert.ToString(reader["EventName"])))
                                 {
                                     // Add HtmlNode for this person:
-                                    // <li><a>(FIRSTNAME) (LASTNAME) (ARROW_RIGHT)</a></li>
+                                    // <li><a>(NAME) (ARROW_RIGHT)</a></li>
                                     HtmlNode userInfo = HtmlNode.CreateNode(@"<li><a href="""">"
-                                                                            + HttpUtility.HtmlEncode(Convert.ToString(reader["FirstName"])) + " "
-                                                                            + HttpUtility.HtmlEncode(Convert.ToString(reader["LastName"])) + " "
+                                                                            + HttpUtility.HtmlEncode(Convert.ToString(reader["UserName"])) + " "
                                                                             + @"<span class=""glyphicon glyphicon-arrow-right""></span></a></li>");
                                     users.AppendChild(userInfo);
                                     if (!reader.Read())

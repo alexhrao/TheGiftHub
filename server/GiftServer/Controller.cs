@@ -222,9 +222,10 @@ namespace GiftServer
                     }
                 // catch exceptions and return something meaningful
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     _response.StatusCode = 404;
+                    Warnings.Add(new ExecutionErrorWarning(e));
                     return "";
                 }
             }

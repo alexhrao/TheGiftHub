@@ -29,5 +29,9 @@ namespace GiftServer
         {
             public CookieNotInvalidWarning(string hash) : base("Invalid User detected", "User with hash " + hash + " is not signed in, but given request assuming otherwise") { }
         }
+        public class ExecutionErrorWarning : Warning
+        {
+            public ExecutionErrorWarning(Exception exception) : base("Execution Error", exception.Message) { }
+        }
     }
 }

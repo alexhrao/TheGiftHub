@@ -43,11 +43,6 @@ namespace GiftServer
                 alert.AppendChildren(children);
                 return login.DocumentNode.OuterHtml;
             }
-            public static string TranslateHeaders(HtmlDocument html)
-            {
-                
-                return "";
-            }
         }
     }
 }
