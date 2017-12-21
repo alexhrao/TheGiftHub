@@ -150,8 +150,6 @@
     <None Include="resources\AWS\AWS.rdp" />
     <None Include="resources\AWS\PrimaryServer.pem" />
     <None Include="resources\AWS\PrimaryServer.ppk" />
-    <None Include="Scripts\jquery-3.1.1.min.map" />
-    <None Include="Scripts\jquery-3.1.1.slim.min.map" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -171,14 +169,6 @@
     <Content Include="docs\MySqlTransaction.xml" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <None Include="resources\emailPassword.txt" />
-    <None Include="resources\htmlTemplates\default\dashboard.html" />
-    <None Include="resources\htmlTemplates\default\header.html" />
-    <None Include="resources\htmlTemplates\default\list.html" />
-    <None Include="resources\htmlTemplates\default\login.html" />
-    <None Include="resources\htmlTemplates\default\navigationBar.html" />
-    <None Include="resources\htmlTemplates\default\passwordReset.html" />
-    <None Include="resources\htmlTemplates\default\passwordResetEmail.html" />
-    <None Include="resources\htmlTemplates\default\profile.html" />
     <None Include="resources\htmlTemplates\fr-FR\dashboard.html" />
     <None Include="resources\htmlTemplates\fr-FR\header.html" />
     <None Include="resources\htmlTemplates\fr-FR\list.html" />
@@ -196,19 +186,11 @@
     <None Include="resources\htmlTemplates\en-US\passwordResetEmail.html" />
     <None Include="resources\htmlTemplates\en-US\profile.html" />
     <None Include="resources\images\branding\favicon.ico" />
-    <Content Include="resources\htmlTemplates\default\passwordResetNotification.html" />
     <None Include="resources\htmlTemplates\en-US\passwordResetNotification.html" />
     <None Include="resources\htmlTemplates\fr-FR\passwordResetNotification.html" />
     <Content Include="resources\images\users\default.png" />
     <Content Include="resources\plugins\starRating\star-rating.min.css" />
     <Content Include="resources\plugins\starRating\star-rating.min.js" />
-    <Content Include="Scripts\bootstrap.js" />
-    <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="Scripts\jquery-3.1.1.intellisense.js" />
-    <Content Include="Scripts\jquery-3.1.1.js" />
-    <Content Include="Scripts\jquery-3.1.1.min.js" />
-    <Content Include="Scripts\jquery-3.1.1.slim.js" />
-    <Content Include="Scripts\jquery-3.1.1.slim.min.js" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="HtmlTemplates.en-US.resx" />

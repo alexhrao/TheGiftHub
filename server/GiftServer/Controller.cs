@@ -267,7 +267,17 @@ namespace GiftServer
                 string message = null;
                 string path = GeneratePath(serverPath);
                 // Check existence:
-                if (File.Exists(path))
+                if (serverPath.Equals("star-rating.js"))
+                {
+                    Write(Constants.starJS);
+                    Warnings.Add(new PublicResourceWarning(serverPath));
+                }
+                else if (serverPath.Equals("star-rating.css"))
+                {
+                    Write(Constants.starCSS);
+                    Warnings.Add(new PublicResourceWarning(serverPath));
+                }
+                else if (File.Exists(path))
                 {
                     // File exists: Check if filename even needs authentication:
                     if (Path.GetFileName(Path.GetDirectoryName(path)).Equals("users"))
@@ -382,6 +392,7 @@ namespace GiftServer
                     }
                     else
                     {
+                        
                         // Not accessing images or gifts, so OK to just send info:
                         Write(path);
                         Warnings.Add(new PublicResourceWarning(path));
@@ -424,7 +435,6 @@ namespace GiftServer
                     case "png":
                         _response.ContentType = "image/png";
                         break;
-
                     default:
                         break;
                 }

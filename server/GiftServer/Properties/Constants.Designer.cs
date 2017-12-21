@@ -89,6 +89,42 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to /*!
+        /// * bootstrap-star-rating v4.0.2
+        /// * http://plugins.krajee.com/star-rating
+        /// *
+        /// * Author: Kartik Visweswaran
+        /// * Copyright: 2013 - 2017, Kartik Visweswaran, Krajee.com
+        /// *
+        /// * Licensed under the BSD 3-Clause
+        /// * https://github.com/kartik-v/bootstrap-star-rating/blob/master/LICENSE.md
+        /// */.rating-loading{width:25px;height:25px;font-size:0;color:#fff;background:url(../img/loading.gif) top left no-repeat;border:none}.rating-container .rating-stars{position:relative;cursor:pointer;vertical-align:middle;dis [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string starCSS {
+            get {
+                return ResourceManager.GetString("starCSS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to /*!
+        /// * bootstrap-star-rating v4.0.2
+        /// * http://plugins.krajee.com/star-rating
+        /// *
+        /// * Author: Kartik Visweswaran
+        /// * Copyright: 2013 - 2017, Kartik Visweswaran, Krajee.com
+        /// *
+        /// * Licensed under the BSD 3-Clause
+        /// * https://github.com/kartik-v/bootstrap-star-rating/blob/master/LICENSE.md
+        /// */!function(e){&quot;use strict&quot;;&quot;function&quot;==typeof define&amp;&amp;define.amd?define([&quot;jquery&quot;],e):&quot;object&quot;==typeof module&amp;&amp;module.exports?module.exports=e(require(&quot;jquery&quot;)):e(window.jQuery)}(function(e){&quot;use strict&quot;;e.fn.ratingLoc [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string starJS {
+            get {
+                return ResourceManager.GetString("starJS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to https://www.thegifthub.org.
         /// </summary>
         internal static string URL {
