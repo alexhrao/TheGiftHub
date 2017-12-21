@@ -154,7 +154,7 @@ namespace GiftServer
                                         // POST data will have userID in userID input. Reset the password and let the user know.
                                         _user = new User(Convert.ToUInt64(_dict["userID"]));
                                         string password = _dict["password"];
-                                        _user.UpdatePassword(password);
+                                        _user.UpdatePassword(password, ResetManager);
                                         return ResetManager.SuccessResetPassword();
                                     case "Change":
                                         ulong changeId = Convert.ToUInt64(_dict["itemId"]);

@@ -217,7 +217,7 @@ namespace GiftServer
                 this.Password = Password;
             }
 
-            public bool UpdatePassword(string password)
+            public bool UpdatePassword(string password, ResetManager ResetManager)
             {
                 if (this.UserId == 0)
                 {
