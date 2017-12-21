@@ -117,4 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="codeExpired" xml:space="preserve">
+    <value>&lt;p&gt;&lt;strong&gt;Uh-Oh...&lt;/strong&gt; Looks like that code expired. &lt;a data-toggle="modal" href="#resetPassword"&gt;Reset your Password&lt;/a&gt;&lt;/p&gt;</value>
+  </data>
+  <data name="newLogin" xml:space="preserve">
+    <value>&lt;p&gt;&lt;strong&gt;Password Reset&lt;/strong&gt; Please login below with your new password&lt;/p&gt;</value>
+  </data>
+  <data name="recoveryEmailSent" xml:space="preserve">
+    <value>&lt;p&gt;&lt;strong&gt;Recovery email sent&lt;/strong&gt; - check your inbox&lt;/p&gt;</value>
+  </data>
 </root>

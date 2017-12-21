@@ -12,11 +12,13 @@ namespace GiftServer
     {
         public class ResetManager
         {
-            private ResourceManager ResourceManager;
+            private ResourceManager HtmlManager;
+            private ResourceManager StringManager;
             private LoginManager LoginManager;
             public ResetManager(Controller controller)
             {
-                ResourceManager = new ResourceManager("GiftServer.HtmlTemplates", typeof(ResetManager).Assembly);
+                HtmlManager = new ResourceManager("GiftServer.HtmlTemplates", typeof(ResetManager).Assembly);
+                StringManager = new ResourceManager("GiftServer.Strings", typeof(ResetManager).Assembly);
                 LoginManager = controller.LoginManager;
             }
             public string ResetPasswordSent()
@@ -27,7 +29,7 @@ namespace GiftServer
                 alert.AddClass("alert-success");
                 alert.AddClass("in");
                 alert.RemoveClass("hidden");
-                HtmlNode message = HtmlNode.CreateNode("<p><strong>Recovery email sent</strong> - check your inbox</p>");
+                HtmlNode message = HtmlNode.CreateNode(StringManager.GetString("recoveryEmailSent"));
                 HtmlNodeCollection children = new HtmlNodeCollection(alert)
                 {
                     message
@@ -43,7 +45,7 @@ namespace GiftServer
                 alert.AddClass("alert-success");
                 alert.AddClass("in");
                 alert.RemoveClass("hidden");
-                HtmlNode message = HtmlNode.CreateNode("<p><strong>Password Reset</strong> Please login below with your new password</p>");
+                HtmlNode message = HtmlNode.CreateNode(StringManager.GetString("newLogin"));
                 HtmlNodeCollection children = new HtmlNodeCollection(alert)
                 {
                     message
@@ -54,12 +56,11 @@ namespace GiftServer
             public string ResetFailed()
             {
                 HtmlDocument login = new HtmlDocument();
-                login.LoadHtml(HtmlTemplates.header + HtmlTemplates.login);
+                login.LoadHtml(LoginManager.Login());
                 HtmlNode alert = login.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@class), \" \"), \" alert \")]");
                 alert.AddClass("alert-danger in");
                 alert.RemoveClass("hidden");
-                HtmlNode message = HtmlNode.CreateNode("<p><strong>Uh-Oh...</strong> Looks like that code expired."
-                                                        + " <a data-toggle=\"modal\" href=\"#resetPassword\">Reset your Password</a></p>");
+                HtmlNode message = HtmlNode.CreateNode(StringManager.GetString("codeExpired"));
                 HtmlNodeCollection children = new HtmlNodeCollection(alert);
                 children.Add(message);
                 alert.AppendChildren(children);
@@ -68,7 +69,7 @@ namespace GiftServer
             public string CreateReset(User user)
             {
                 HtmlDocument pg = new HtmlDocument();
-                pg.LoadHtml(HtmlTemplates.header + HtmlTemplates.passwordReset);
+                pg.LoadHtml(HtmlManager.GetString("header") + HtmlManager.GetString("passwordReset"));
                 HtmlNode hidden = pg.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@name), \" \"), \" userID \")]");
                 hidden.Attributes["value"].Value = Convert.ToString(user.UserId);
                 return pg.DocumentNode.OuterHtml;
@@ -76,7 +77,7 @@ namespace GiftServer
             public string GenerateEmail(string token)
             {
                 HtmlDocument email = new HtmlDocument();
-                email.LoadHtml(HtmlTemplates.header + HtmlTemplates.passwordResetEmail);
+                email.LoadHtml(HtmlManager.GetString("header") + HtmlManager.GetString("passwordResetEmail"));
                 HtmlNode resetLink = email.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" passwordReset \")]");
                 resetLink.Attributes["href"].Value = Constants.URL + "?ResetToken=" + token;
                 HtmlNode resetUrl = email.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" resetURL \")]");
@@ -90,7 +91,7 @@ namespace GiftServer
             public string GenerateEmail()
             {
                 HtmlDocument email = new HtmlDocument();
-                email.LoadHtml(HtmlTemplates.header + HtmlTemplates.passwordResetEmail);
+                email.LoadHtml(HtmlManager.GetString("header") + HtmlManager.GetString("passwordResetEmail"));
                 HtmlNode found = email.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userFound \")]");
                 found.Remove();
                 HtmlNode notfound = email.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userNotFound \")]");
@@ -99,7 +100,7 @@ namespace GiftServer
             public string GenerateNotification(User user)
             {
                 HtmlDocument email = new HtmlDocument();
-                email.LoadHtml(HtmlTemplates.header + HtmlTemplates.passwordResetNotification);
+                email.LoadHtml(HtmlManager.GetString("header") + HtmlManager.GetString("passwordResetNotification"));
                 HtmlNode name = email.DocumentNode.SelectSingleNode(@"//*[contains(concat("" "", normalize-space(@id), "" ""), "" userName "")]");
                 name.InnerHtml = HttpUtility.HtmlEncode(user.UserName);
                 return email.DocumentNode.OuterHtml;

@@ -59,5 +59,32 @@ namespace GiftServer.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;p&gt;&lt;strong&gt;Uh-Oh...&lt;/strong&gt; Looks like that code expired. &lt;a data-toggle=&quot;modal&quot; href=&quot;#resetPassword&quot;&gt;Reset your Password&lt;/a&gt;&lt;/p&gt;.
+        /// </summary>
+        internal static string codeExpired {
+            get {
+                return ResourceManager.GetString("codeExpired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;p&gt;&lt;strong&gt;Password Reset&lt;/strong&gt; Please login below with your new password&lt;/p&gt;.
+        /// </summary>
+        internal static string newLogin {
+            get {
+                return ResourceManager.GetString("newLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;p&gt;&lt;strong&gt;Recovery email sent&lt;/strong&gt; - check your inbox&lt;/p&gt;.
+        /// </summary>
+        internal static string recoveryEmailSent {
+            get {
+                return ResourceManager.GetString("recoveryEmailSent", resourceCulture);
+            }
+        }
     }
 }
