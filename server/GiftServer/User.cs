@@ -9,6 +9,9 @@ using System.Collections.Generic;
 using GiftServer.Security;
 using System.Xml;
 using System.Web;
+using System.Net.Mail;
+using GiftServer.Html;
+using System.Net;
 
 namespace GiftServer
 {
@@ -235,6 +238,22 @@ namespace GiftServer
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                     }
+                }
+                // Send email
+                
+                MailMessage email = new MailMessage(new MailAddress("The Gift Hub<support@TheGiftHub.org>"), new MailAddress(this.Email))
+                {
+                    Body = ResetManager.GenerateNotification(this),
+                    Subject = "Password Reset Notification",
+                    IsBodyHtml = true
+                };
+                using (SmtpClient sender = new SmtpClient("smtp.gmail.com", 587))
+                {
+                    sender.EnableSsl = true;
+                    sender.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    sender.UseDefaultCredentials = false;
+                    sender.Credentials = new NetworkCredential("support@thegifthub.org", Constants.emailPassword);
+                    sender.Send(email);
                 }
                 return true;
             }

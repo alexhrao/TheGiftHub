@@ -48,12 +48,28 @@ namespace GiftServer
             private HttpListenerRequest _request;
             private HttpListenerResponse _response;
             private NameValueCollection _dict;
+
+            public readonly LoginManager LoginManager;
+            public readonly NavigationManager NavigationManager;
+            public readonly GroupManager GroupManager;
+            public readonly DashboardManager DashboardManager;
+            public readonly ProfileManager ProfileManager;
+            public readonly ListManager ListManager;
+            public readonly ResetManager ResetManager;
+
+
             public Controller(HttpListenerContext ctx)
             {
                 _ctx = ctx;
                 _request = ctx.Request;
                 _response = ctx.Response;
                 GetUser();
+                LoginManager = new LoginManager(this);
+                GroupManager = new GroupManager(this);
+                DashboardManager = new DashboardManager(this);
+                ProfileManager = new ProfileManager(this);
+                ListManager = new ListManager(this);
+                ResetManager = new ResetManager(this);
             }
             /// <summary>
             /// Dispatch will, given a request, return the webpage that will be shown to the user.
@@ -131,7 +147,7 @@ namespace GiftServer
                                         return Login(_dict["email"], _dict["password"]);
                                     case "PasswordResetRequest":
                                         // POST data will have user email. Send recovery email.
-                                        PasswordReset.SendRecoveryEmail(_dict["email"]);
+                                        PasswordReset.SendRecoveryEmail(_dict["email"], ResetManager);
                                         return ResetManager.ResetPasswordSent();
                                     case "PasswordReset":
                                         // Reset password and direct to login page

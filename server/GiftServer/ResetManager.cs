@@ -2,14 +2,24 @@
 using HtmlAgilityPack;
 using GiftServer.Properties;
 using GiftServer.Data;
+using System.Web;
+using System.Resources;
+using GiftServer.Server;
 
 namespace GiftServer
 {
     namespace Html
     {
-        public static class ResetManager
+        public class ResetManager
         {
-            public static string ResetPasswordSent()
+            private ResourceManager ResourceManager;
+            private LoginManager LoginManager;
+            public ResetManager(Controller controller)
+            {
+                ResourceManager = new ResourceManager("GiftServer.HtmlTemplates", typeof(ResetManager).Assembly);
+                LoginManager = controller.LoginManager;
+            }
+            public string ResetPasswordSent()
             {
                 HtmlDocument login = new HtmlDocument();
                 login.LoadHtml(LoginManager.Login());
@@ -25,7 +35,7 @@ namespace GiftServer
                 alert.AppendChildren(children);
                 return login.DocumentNode.OuterHtml;
             }
-            public static string SuccessResetPassword()
+            public string SuccessResetPassword()
             {
                 HtmlDocument login = new HtmlDocument();
                 login.LoadHtml(LoginManager.Login());
@@ -41,7 +51,7 @@ namespace GiftServer
                 alert.AppendChildren(children);
                 return login.DocumentNode.OuterHtml;
             }
-            public static string ResetFailed()
+            public string ResetFailed()
             {
                 HtmlDocument login = new HtmlDocument();
                 login.LoadHtml(HtmlTemplates.header + HtmlTemplates.login);
@@ -55,7 +65,7 @@ namespace GiftServer
                 alert.AppendChildren(children);
                 return login.DocumentNode.OuterHtml;
             }
-            public static string CreateReset(User user)
+            public string CreateReset(User user)
             {
                 HtmlDocument pg = new HtmlDocument();
                 pg.LoadHtml(HtmlTemplates.header + HtmlTemplates.passwordReset);
@@ -63,7 +73,7 @@ namespace GiftServer
                 hidden.Attributes["value"].Value = Convert.ToString(user.UserId);
                 return pg.DocumentNode.OuterHtml;
             }
-            public static string GenerateEmail(string token)
+            public string GenerateEmail(string token)
             {
                 HtmlDocument email = new HtmlDocument();
                 email.LoadHtml(HtmlTemplates.header + HtmlTemplates.passwordResetEmail);
@@ -77,13 +87,21 @@ namespace GiftServer
                 email.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userNotFound \")]").Remove();
                 return email.DocumentNode.OuterHtml;
             }
-            public static string GenerateEmail()
+            public string GenerateEmail()
             {
                 HtmlDocument email = new HtmlDocument();
                 email.LoadHtml(HtmlTemplates.header + HtmlTemplates.passwordResetEmail);
                 HtmlNode found = email.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userFound \")]");
                 found.Remove();
                 HtmlNode notfound = email.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userNotFound \")]");
+                return email.DocumentNode.OuterHtml;
+            }
+            public string GenerateNotification(User user)
+            {
+                HtmlDocument email = new HtmlDocument();
+                email.LoadHtml(HtmlTemplates.header + HtmlTemplates.passwordResetNotification);
+                HtmlNode name = email.DocumentNode.SelectSingleNode(@"//*[contains(concat("" "", normalize-space(@id), "" ""), "" userName "")]");
+                name.InnerHtml = HttpUtility.HtmlEncode(user.UserName);
                 return email.DocumentNode.OuterHtml;
             }
         }

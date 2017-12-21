@@ -1,17 +1,27 @@
 ﻿using GiftServer.Data;
 using GiftServer.Properties;
+using GiftServer.Server;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
+using System.Resources;
 using System.Web;
 
 namespace GiftServer
 {
     namespace Html
     {
-        public static class ListManager
+        public class ListManager
         {
-            public static string GiftList(User user)
+            private ResourceManager ResourceManager;
+            private NavigationManager NavigationManager;
+
+            public ListManager(Controller controller)
+            {
+                ResourceManager = new ResourceManager("GiftServer.HtmlTemplates", typeof(ListManager).Assembly);
+                NavigationManager = controller.NavigationManager;
+            }
+            public string GiftList(User user)
             {
                 HtmlDocument myList = new HtmlDocument();
                 myList.LoadHtml(NavigationManager.NavigationBar(user) + HtmlTemplates.list);

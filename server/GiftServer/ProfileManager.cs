@@ -3,13 +3,23 @@ using HtmlAgilityPack;
 using GiftServer.Properties;
 using GiftServer.Data;
 using System.Web;
+using System.Resources;
+using GiftServer.Server;
+
 namespace GiftServer
 {
     namespace Html
     {
-        public static class ProfileManager
+        public class ProfileManager
         {
-            public static string ProfilePage(User user)
+            private ResourceManager ResourceManager;
+            private NavigationManager NavigationManager;
+            public ProfileManager(Controller controller)
+            {
+                ResourceManager = new ResourceManager("GiftServer.HtmlTemplates", typeof(ProfileManager).Assembly);
+                NavigationManager = controller.NavigationManager;
+            }
+            public string ProfilePage(User user)
             {
                 // Add Side Navigation Bar (From Dashboard)
                 HtmlDocument profile = new HtmlDocument();

@@ -218,6 +218,32 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
+        ///
+        ///&lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+        ///&lt;head&gt;
+        ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
+        ///    &lt;title&gt;&lt;/title&gt;
+        ///&lt;/head&gt;
+        ///&lt;body&gt;
+        ///    &lt;h1&gt;Hi There.&lt;/h1&gt;
+        ///    &lt;h2&gt;Looks like you reset your password.&lt;/h2&gt;
+        ///    &lt;p&gt;Dear &lt;div id=&quot;userName&quot;&gt;&lt;/div&gt;,&lt;/p&gt;
+        ///    &lt;br /&gt;
+        ///    &lt;p&gt;&amp;nbsp;Looks like you reset your password. If you initiated this, then you&apos;re good to go! Otherwise, please reply to this email and we&apos;ll work all this out.&lt;/p&gt;
+        ///    &lt;p&gt;
+        ///        Best Regards,
+        ///    &lt;/p&gt;
+        ///    &lt;p&gt;
+        ///        The G [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string passwordResetNotification {
+            get {
+                return ResourceManager.GetString("passwordResetNotification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
         ///&lt;head&gt;
         ///    &lt;meta charset=&quot;utf-8&quot; /&gt;

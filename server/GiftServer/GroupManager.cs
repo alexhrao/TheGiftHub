@@ -1,12 +1,19 @@
-﻿using System;
+﻿using GiftServer.Server;
+using System;
+using System.Resources;
 
 namespace GiftServer
 {
     namespace Html
     {
-        public static class GroupManager
+        public class GroupManager
         {
+            private ResourceManager ResourceManager;
 
+            public GroupManager(Controller controller)
+            {
+                ResourceManager = new ResourceManager("GiftServer.HtmlTemplates", typeof(GroupManager).Assembly);
+            }
         }
     }
 }

@@ -5,6 +5,8 @@ using GiftServer.Data;
 using MySql.Data.MySqlClient;
 using System.Configuration;
 using System.Web;
+using System.Resources;
+using GiftServer.Server;
 
 namespace GiftServer
 {
@@ -12,7 +14,14 @@ namespace GiftServer
     {
         public class DashboardManager
         {
-            public static string UpdateEvents(User user, string page)
+            private ResourceManager ResourceManager;
+            private NavigationManager NavigationManager;
+            public DashboardManager(Controller controller)
+            {
+                ResourceManager = new ResourceManager("GiftServer.HtmlTemplates", typeof(DashboardManager).Assembly);
+                NavigationManager = controller.NavigationManager;
+            }
+            public string UpdateEvents(User user, string page)
             {
                 HtmlDocument dash = new HtmlDocument();
                 dash.LoadHtml(page);
@@ -89,21 +98,21 @@ namespace GiftServer
                 }
                 return dash.DocumentNode.OuterHtml;
             }
-            public static string UpdateEvents(User user)
+            public string UpdateEvents(User user)
             {
                 return UpdateEvents(user, NavigationManager.NavigationBar(user) + HtmlTemplates.dashboard);
             }
 
-            public static string UpdateFeed(User user, string page)
+            public string UpdateFeed(User user, string page)
             {
                 return page;
             }
-            public static string UpdateFeed(User user)
+            public string UpdateFeed(User user)
             {
                 return UpdateFeed(user, NavigationManager.NavigationBar(user) + HtmlTemplates.dashboard);
             }
 
-            public static string Dashboard(User user)
+            public string Dashboard(User user)
             {
                 string page = UpdateEvents(user);
                 page = UpdateFeed(user, page);

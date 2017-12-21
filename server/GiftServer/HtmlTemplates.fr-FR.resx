@@ -139,6 +139,9 @@
   <data name="passwordResetEmail" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\htmlTemplates\fr-FR\passwordResetEmail.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="passwordResetNotification" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\htmlTemplates\fr-FR\passwordResetNotification.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="profile" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\htmlTemplates\fr-FR\profile.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>

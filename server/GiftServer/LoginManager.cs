@@ -4,19 +4,24 @@ using GiftServer.Properties;
 using System.Globalization;
 using System.Resources;
 using System.Threading;
+using GiftServer.Server;
 
 namespace GiftServer
 {
     namespace Html
     {
-        public static class LoginManager
+        public class LoginManager
         {
-            public static string Login()
+            ResourceManager ResourceManager;
+            public LoginManager(Controller controller)
             {
-                ResourceManager rm = new ResourceManager("GiftServer.HtmlTemplates", typeof(LoginManager).Assembly);
-                return rm.GetString("header") + rm.GetString("login");
+                ResourceManager = new ResourceManager("GiftServer.HtmlTemplates", typeof(LoginManager).Assembly);
             }
-            public static string FailLogin()
+            public string Login()
+            {
+                return ResourceManager.GetString("header") + ResourceManager.GetString("login");
+            }
+            public string FailLogin()
             {
                 HtmlDocument login = new HtmlDocument();
                 login.LoadHtml(HtmlTemplates.header + HtmlTemplates.login);
@@ -30,7 +35,7 @@ namespace GiftServer
                 alert.AppendChildren(children);
                 return login.DocumentNode.OuterHtml;
             }
-            public static string SuccessSignup()
+            public string SuccessSignup()
             {
                 HtmlDocument login = new HtmlDocument();
                 login.LoadHtml(HtmlTemplates.header + HtmlTemplates.login);

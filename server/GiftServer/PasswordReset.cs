@@ -90,7 +90,7 @@ namespace GiftServer
                     return ret;
                 }
             }
-            public static void SendRecoveryEmail(string emailAddress)
+            public static void SendRecoveryEmail(string emailAddress, ResetManager ResetManager)
             {
                 long id = -1;
                 string token = "";
