@@ -95,6 +95,21 @@
                 $('#userBioChangeSection').toggleClass("hidden");
             });
 
+            $('#userNameChange').keyup(function () {
+                if ($('#userNameChange').val() === "") {
+                    $('#userNameChangeSubmit').addClass("hidden");
+                } else {
+                    $('#userNameChangeSubmit').removeClass("hidden");
+                }
+            });
+            $('#userEmailChange').keyup(function () {
+                if ($('#userEmailChange').val() === "") {
+                    $('#userEmailChangeSubmit').addClass("hidden");
+                } else {
+                    $('#userEmailChangeSubmit').removeClass("hidden");
+                }
+            });
+
             $('#userNameChangeSubmit').click(function () {
                 $.post(".",
                     {
@@ -448,7 +463,7 @@
                         <input style="margin:5px;" type="text" class="form-control" id="userNameChange" placeholder="New Name" />
                     </div>
                     <div class="col-md-2">
-                        <button id="userNameChangeSubmit" class="btn btn-success" type="button">
+                        <button id="userNameChangeSubmit" class="btn btn-success hidden" type="button">
                             <span class="glyphicon glyphicon-check"></span>
                         </button>
                     </div>
@@ -483,7 +498,7 @@
                             <input style="margin:5px;" type="email" class="form-control" id="userEmailChange" placeholder="Email Address" />
                         </div>
                         <div class="col-md-2">
-                            <button id="userEmailChangeSubmit" class="btn btn-success" type="button">
+                            <button id="userEmailChangeSubmit" class="btn btn-success hidden" type="button">
                                 <span class="glyphicon glyphicon-check"></span>
                             </button>
                         </div>
