@@ -70,11 +70,20 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;p&gt;&lt;strong&gt;UhOh...&lt;/strong&gt; Looks like we didn&apos;t recognize that Username/Password pair. Try again or &lt;a data-toggle=&quot;modal&quot; href=&quot;#resetPassword&quot;&gt;Reset your Password&lt;/a&gt;&lt;/p&gt;.
+        ///   Looks up a localized string similar to &lt;p&gt;&lt;strong&gt;Uh-Oh...&lt;/strong&gt; Looks like you already made an account! Sign in instead&lt;/p&gt;.
         /// </summary>
-        internal static string loginFailed {
+        internal static string duplicateUser {
             get {
-                return ResourceManager.GetString("loginFailed", resourceCulture);
+                return ResourceManager.GetString("duplicateUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;p&gt;&lt;strong&gt;Uh-Oh...&lt;/strong&gt; Looks like we didn&apos;t recognize that Username/Password pair. Try again or &lt;a data-toggle=&quot;modal&quot; href=&quot;#resetPassword&quot;&gt;Reset your Password&lt;/a&gt;&lt;/p&gt;.
+        /// </summary>
+        internal static string invalidCredentials {
+            get {
+                return ResourceManager.GetString("invalidCredentials", resourceCulture);
             }
         }
         

@@ -120,7 +120,10 @@
   <data name="codeExpired" xml:space="preserve">
     <value>&lt;p&gt;&lt;strong&gt;Uh-Oh...&lt;/strong&gt; Looks like that code expired. &lt;a data-toggle="modal" href="#resetPassword"&gt;Reset your Password&lt;/a&gt;&lt;/p&gt;</value>
   </data>
-  <data name="loginFailed" xml:space="preserve">
+  <data name="duplicateUser" xml:space="preserve">
+    <value>&lt;p&gt;&lt;strong&gt;Uh-Oh...&lt;/strong&gt; Looks like you already made an account! Sign in instead&lt;/p&gt;</value>
+  </data>
+  <data name="invalidCredentials" xml:space="preserve">
     <value>&lt;p&gt;&lt;strong&gt;UhOh...&lt;/strong&gt; Looks like we didn't recognize that Username/Password pair. Try again or &lt;a data-toggle="modal" href="#resetPassword"&gt;Reset your Password&lt;/a&gt;&lt;/p&gt;</value>
   </data>
   <data name="newLogin" xml:space="preserve">

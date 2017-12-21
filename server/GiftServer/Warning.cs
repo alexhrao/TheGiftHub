@@ -31,7 +31,7 @@ namespace GiftServer
         }
         public class ExecutionErrorWarning : Warning
         {
-            public ExecutionErrorWarning(Exception exception) : base("Execution Error", exception.Message) { }
+            public ExecutionErrorWarning(Exception exception) : base("Execution Error", exception.ToString()) { }
         }
     }
 }

@@ -95,6 +95,21 @@
                 $('#userBioChangeSection').toggleClass("hidden");
             });
 
+            $('#userNameChange').keyup(function () {
+                if ($('#userNameChange').val() === "") {
+                    $('#userNameChangeSubmit').addClass("hidden");
+                } else {
+                    $('#userNameChangeSubmit').removeClass("hidden");
+                }
+            });
+            $('#userEmailChange').keyup(function () {
+                if ($('#userEmailChange').val() === "") {
+                    $('#userEmailChangeSubmit').addClass("hidden");
+                } else {
+                    $('#userEmailChangeSubmit').removeClass("hidden");
+                }
+            });
+
             $('#userNameChangeSubmit').click(function () {
                 $.post(".",
                     {
@@ -180,6 +195,24 @@
                     $("<option class=\"days\" value=\"" + i + "\">" + i + "</option>").appendTo($('#days'));
                 }
 
+            });
+
+            $('#submitPref').click(function () {
+                $.post(".",
+                    {
+                        submit: "Change",
+                        type: "Preferences",
+                        language: $('#userLanguage').val(),
+                        location: $('#userLocation').val()
+                    },
+                    function (data, status) {
+                        if (data == 200) {
+                            // change prefs succeeded; close modal
+                            $('changePreferences').modal('hide');
+                        } else {
+                            alert("We're unable to make your changes right now - try again in a few minutes.");
+                        }
+                    });
             });
 
             $('#resetSubmit').hide();
@@ -368,9 +401,36 @@
                         <h4 class="modal-title">Change Preferences</h4>
                     </div>
                     <div class="modal-body">
+                        <form id="preferenceForm" method="post">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-globe"></i></span>
+                                <select name="location" id="userLocation" class="form-control">
+                                    <!-- Filled later -->
+                                    <optgroup id="locations" label="Countries">
+
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-language"></i></span>
+                                <select name="language" id="userLanguage" class="form-control">
+                                    <!-- Filled later -->
+                                    <optgroup id="languages" label="Languages">
+
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button id="submitPref" class="btn btn-primary" name="submit" value="Preferences">
+                                        <span class="glyphicon glyphicon-check"></span> Confirm
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                     </div>
                 </div>
             </div>
@@ -448,7 +508,7 @@
                         <input style="margin:5px;" type="text" class="form-control" id="userNameChange" placeholder="New Name" />
                     </div>
                     <div class="col-md-2">
-                        <button id="userNameChangeSubmit" class="btn btn-success" type="button">
+                        <button id="userNameChangeSubmit" class="btn btn-success hidden" type="button">
                             <span class="glyphicon glyphicon-check"></span>
                         </button>
                     </div>
@@ -466,7 +526,7 @@
                     </div>
                     <div class="col-xs-6">
                         <button class="btn btn-lg btn-primary" type="button" id="changePreferences" data-toggle="modal" data-target="#changePreferences">
-                            <div class="hidden-sm hidden-xs">Change Preferences </div><span class="glyphicon glyphicon-cog"></span>
+                            <div class="hidden-sm hidden-xs">Préfèrences </div><span class="glyphicon glyphicon-cog"></span>
                         </button>
                     </div>
                 </div>
@@ -483,7 +543,7 @@
                             <input style="margin:5px;" type="email" class="form-control" id="userEmailChange" placeholder="Email Address" />
                         </div>
                         <div class="col-md-2">
-                            <button id="userEmailChangeSubmit" class="btn btn-success" type="button">
+                            <button id="userEmailChangeSubmit" class="btn btn-success hidden" type="button">
                                 <span class="glyphicon glyphicon-check"></span>
                             </button>
                         </div>

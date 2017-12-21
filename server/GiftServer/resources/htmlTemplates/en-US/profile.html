@@ -197,6 +197,24 @@
 
             });
 
+            $('#submitPref').click(function () {
+                $.post(".",
+                    {
+                        submit: "Change",
+                        type: "Preferences",
+                        language: $('#userLanguage').val(),
+                        location: $('#userLocation').val()
+                    },
+                    function (data, status) {
+                        if (data == 200) {
+                            // change prefs succeeded; close modal
+                            $('changePreferences').modal('hide');
+                        } else {
+                            alert("We're unable to make your changes right now - try again in a few minutes.");
+                        }
+                    });
+            });
+
             $('#resetSubmit').hide();
             $('#firstResetPass').keyup(function () {
                 if ($('#secondResetPass').val() === $('#firstResetPass').val() && $('#secondResetPass').val()) {
@@ -383,9 +401,36 @@
                         <h4 class="modal-title">Change Preferences</h4>
                     </div>
                     <div class="modal-body">
+                        <form id="preferenceForm" method="post">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-globe"></i></span>
+                                <select name="location" id="userLocation" class="form-control">
+                                    <!-- Filled later -->
+                                    <optgroup id="locations" label="Countries">
+
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-language"></i></span>
+                                <select name="language" id="userLanguage" class="form-control">
+                                    <!-- Filled later -->
+                                    <optgroup id="languages" label="Languages">
+
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button id="submitPref" class="btn btn-primary" name="submit" value="Preferences">
+                                        <span class="glyphicon glyphicon-check"></span> Confirm
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                     </div>
                 </div>
             </div>

@@ -1,14 +1,21 @@
 CREATE DATABASE gift_registry_db;
 
+CREATE TABLE gift_registry_db.countries (
+    CountryID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    CountryCode CHAR(2) NOT NULL,
+    CountryName VARCHAR(45) NOT NULL
+);
+
+CREATE TABLE gift_registry_db.languages (
+    LanguageID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    LanguageCode CHAR(2) NOT NULL,
+    LanguageName VARCHAR(45) NOT NULL
+);
+
 CREATE TABLE gift_registry_db.categories (
     CategoryID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     CategoryName VARCHAR(255) NOT NULL,
     CategoryDescription VARCHAR(4096) NULL
-);
-
-CREATE TABLE gift_registry_db.value_types (
-    ValueTypeID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    ValueTypeName VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE gift_registry_db.default_events (
@@ -20,15 +27,6 @@ CREATE TABLE gift_registry_db.default_events (
     EventName VARCHAR(255) NOT NULL,
     EventDescription VARCHAR(4095) NULL
 );
-
-CREATE TABLE gift_registry_db.preferences (
-    PreferenceID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    PreferenceName VARCHAR(255) NOT NULL,
-    ValueTypeID INT NOT NULL
-);
-ALTER TABLE gift_registry_db.preferences
-    ADD CONSTRAINT FK_PreferencesValues FOREIGN KEY (ValueTypeID)
-        REFERENCES gift_registry_db.value_types(ValueTypeID);
 
 CREATE TABLE gift_registry_db.default_events_futures (
     EventFutureID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -45,13 +43,24 @@ CREATE TABLE gift_registry_db.users (
     UserID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     UserName VARCHAR(255) NOT NULL,
     UserEmail VARCHAR(255) NOT NULL UNIQUE,
-    UserTheme TINYINT UNSIGNED NULL DEFAULT 0,
     UserBio VARCHAR(4095) NULL,
     UserBirthMonth INT NOT NULL DEFAULT 0,
     UserBirthDay INT NOT NULL DEFAULT 0,
     TimeCreated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-
+        
+/* This is a one-to-one relationship - just for simplicity, it has been moved to a different table */
+CREATE TABLE gift_registry_db.preferences (
+    PreferenceID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    UserID INT NOT NULL,
+    UserLanguage CHAR(2) NOT NULL,
+    UserLocation CHAR(2) NOT NULL,
+    UserTheme TINYINT UNSIGNED NULL DEFAULT 0
+);
+ALTER TABLE gift_registry_db.preferences
+    ADD CONSTRAINT FK_UsersPreferences FOREIGN KEY (UserID)
+        REFERENCES gift_registry_db.users(UserID);
+        
 CREATE TABLE gift_registry_db.passwords (
     PasswordID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     UserID INT NOT NULL,
@@ -81,19 +90,6 @@ ALTER TABLE gift_registry_db.events_users
 ALTER TABLE gift_registry_db.events_users
     ADD CONSTRAINT FK_Event_Events FOREIGN KEY (EventID)
         REFERENCES gift_registry_db.default_events(EventID);
-        
-CREATE TABLE gift_registry_db.users_preferences (
-    UserPreferenceID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    UserID INT NOT NULL,
-    PreferenceID INT NOT NULL,
-    PreferenceValue VARCHAR(4095) NOT NULL
-);
-ALTER TABLE gift_registry_db.users_preferences
-    ADD CONSTRAINT FK_PreferencesUsers FOREIGN KEY (UserID)
-        REFERENCES gift_registry_db.users(UserID);
-ALTER TABLE gift_registry_db.users_preferences
-    ADD CONSTRAINT FK_PreferencesPrefs FOREIGN KEY (PreferenceID)
-        REFERENCES gift_registry_db.preferences(PreferenceID);
         
 CREATE TABLE gift_registry_db.events_users_futures (
     EventFutureID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,

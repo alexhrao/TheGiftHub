@@ -42,7 +42,7 @@ namespace GiftServer
             }
             public static readonly List<Connection> Connections = new List<Connection>();
             public static readonly List<Warning> Warnings = new List<Warning>();
-            public CultureInfo _culture;
+            public CultureInfo Culture;
             private User _user;
             private HttpListenerContext _ctx;
             private HttpListenerRequest _request;
@@ -138,12 +138,19 @@ namespace GiftServer
                                         Logout();
                                         return LoginManager.Login();
                                     case "Signup":
-                                        _user = new User(_dict["email"], new Password(_dict["password"]))
+                                        try
                                         {
-                                            UserName = _dict["userName"]
-                                        };
-                                        _user.Create();
-                                        return LoginManager.SuccessSignup();
+                                            _user = new User(_dict["email"], new Password(_dict["password"]))
+                                            {
+                                                UserName = _dict["userName"]
+                                            };
+                                            _user.Create();
+                                            return LoginManager.SuccessSignup();
+                                        }
+                                        catch (Exception e)
+                                        {
+                                            return LoginManager.FailLogin(e);
+                                        }
                                     case "Login":
                                         return Login(_dict["email"], _dict["password"]);
                                     case "PasswordResetRequest":
@@ -163,6 +170,8 @@ namespace GiftServer
                                         {
                                             case "User":
                                                 return Update();
+                                            case "Preferences":
+                                                return Update(_user.Preferences);
                                             case "Event":
                                                 return Update(new EventUser(changeId));
                                             case "Group":
@@ -466,6 +475,7 @@ namespace GiftServer
                 {
                     _user = null;
                 }
+                GetCulture();
             }
             private void GetCulture()
             {
@@ -479,12 +489,12 @@ namespace GiftServer
                 {
                     // Get from settings. For now, we'll use en-US. Store this in cookie? 
                     // (it will be faster to get from cookie than to query db)
-                    Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
+                    Culture = new CultureInfo(_user.Preferences.Language + "-" + _user.Preferences.Location);
                 }
                 // If in cookies:
-                else if (false)
+                else if (_request.Cookies["culture"] != null)
                 {
-                    // use navigator object in javascript.
+                    Culture = new CultureInfo(_request.Cookies["culture"].Value);
                 }
                 // If location in request:
                 else if (false)
@@ -494,9 +504,11 @@ namespace GiftServer
                 // otherwise, en-US
                 else
                 {
-                    Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
+                    Culture = new CultureInfo("en-US");
                     // do NOT store this in cookie!
                 }
+                Thread.CurrentThread.CurrentUICulture = Culture;
+                Thread.CurrentThread.CurrentCulture = Culture;
             }
 
             private string ParsePath()
@@ -523,13 +535,9 @@ namespace GiftServer
                     // If already logged in, just add remote end point:
                     return ParseQuery();
                 }
-                catch (InvalidPasswordException)
+                catch (Exception e)
                 {
-                    return LoginManager.FailLogin();
-                }
-                catch (UserNotFoundException)
-                {
-                    return LoginManager.FailLogin();
+                    return LoginManager.FailLogin(e);
                 }
             }
             private string Update()
@@ -561,6 +569,14 @@ namespace GiftServer
                 }
                 _user.Update();
                 return "200";
+            }
+            private string Update(Preferences preferences)
+            {
+                preferences.Location = _dict["location"];
+                preferences.Language = _dict["language"];
+                // preferences.Theme = Convert.ToInt32(_dict["theme"]);
+                preferences.Update();
+                return "200"    ;
             }
             private string Update(EventUser evnt)
             {

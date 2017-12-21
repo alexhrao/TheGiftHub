@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Resources;
 using System.Threading;
 using GiftServer.Server;
+using GiftServer.Exceptions;
 
 namespace GiftServer
 {
@@ -18,22 +19,33 @@ namespace GiftServer
             {
                 HtmlManager = new ResourceManager("GiftServer.HtmlTemplates", typeof(LoginManager).Assembly);
                 StringManager = new ResourceManager("GiftServer.Strings", typeof(LoginManager).Assembly);
+                Thread.CurrentThread.CurrentUICulture = controller.Culture;
             }
             public string Login()
             {
                 return HtmlManager.GetString("header") + HtmlManager.GetString("login");
             }
-            public string FailLogin()
+            public string FailLogin(Exception e)
             {
                 HtmlDocument login = new HtmlDocument();
                 login.LoadHtml(HtmlManager.GetString("header") + HtmlManager.GetString("login"));
                 HtmlNode alert = login.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@class), \" \"), \" alert \")]");
                 alert.AddClass("alert-danger in");
                 alert.RemoveClass("hidden");
-                HtmlNode message = HtmlNode.CreateNode(StringManager.GetString("loginFailed"));
-                HtmlNodeCollection children = new HtmlNodeCollection(alert);
-                children.Add(message);
-                alert.AppendChildren(children);
+                HtmlNode message;
+                if (e is DuplicateUserException)
+                {
+                    message = HtmlNode.CreateNode(StringManager.GetString("duplicateUser"));
+                }
+                else if (e is InvalidPasswordException || e is UserNotFoundException)
+                {
+                    message = HtmlNode.CreateNode(StringManager.GetString("invalidCredentials"));
+                }
+                else
+                {
+                    message = HtmlNode.CreateNode(StringManager.GetString("invalidCredentials"));
+                }
+                alert.AppendChild(message);
                 return login.DocumentNode.OuterHtml;
             }
             public string SuccessSignup()
@@ -44,8 +56,10 @@ namespace GiftServer
                 alert.AddClass("alert-success in");
                 alert.RemoveClass("hidden");
                 HtmlNode message = HtmlNode.CreateNode(StringManager.GetString("signupSuccess"));
-                HtmlNodeCollection children = new HtmlNodeCollection(alert);
-                children.Add(message);
+                HtmlNodeCollection children = new HtmlNodeCollection(alert)
+                {
+                    message
+                };
                 alert.AppendChildren(children);
                 return login.DocumentNode.OuterHtml;
             }

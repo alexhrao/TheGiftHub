@@ -27,10 +27,10 @@ namespace GiftServer
             public string UserName = "";
             public string Email;
             public Password Password;
-            public int Theme = 1;
             public int BirthMonth = 0;
             public int BirthDay = 0;
             public string Bio = "";
+            public Preferences Preferences;
             public DateTime DateJoined
             {
                 get;
@@ -149,11 +149,11 @@ namespace GiftServer
                                 this.Password = new Password(Convert.ToString(reader["PasswordHash"]),
                                                              Convert.ToString(reader["PasswordSalt"]),
                                                              Convert.ToInt32(reader["PasswordIter"]));
-                                this.Theme = Convert.ToInt32(reader["UserTheme"]);
                                 this.BirthDay = Convert.ToInt32(reader["UserBirthDay"]);
                                 this.BirthMonth = Convert.ToInt32(reader["UserBirthMonth"]);
                                 this.DateJoined = (DateTime)(reader["TimeCreated"]);
                                 this.Bio = Convert.ToString(reader["UserBio"]);
+                                Preferences = new Preferences(this);
                             }
                             else
                             {
@@ -200,11 +200,11 @@ namespace GiftServer
                                 UserId = Convert.ToUInt64(reader["UserID"]);
                                 this.UserName = Convert.ToString(reader["UserName"]);
                                 this.Email = email;
-                                this.Theme = Convert.ToInt32(reader["UserTheme"]);
                                 this.BirthDay = Convert.ToInt32(reader["UserBirthMonth"]);
                                 this.BirthMonth = Convert.ToInt32(reader["UserBirthDay"]);
                                 this.DateJoined = (DateTime)(reader["TimeCreated"]);
                                 this.Bio = Convert.ToString(reader["UserBio"]);
+                                this.Preferences = new Preferences(this);
                             }
                         }
                     }
@@ -281,11 +281,10 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "INSERT INTO users (UserName, UserEmail, UserTheme, UserBirthMonth, UserBirthDay, UserBio) "
-                            + "VALUES (@name, @email, @theme, @bmonth, @bday, @bio);";
+                        cmd.CommandText = "INSERT INTO users (UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio) "
+                            + "VALUES (@name, @email, @bmonth, @bday, @bio);";
                         cmd.Parameters.AddWithValue("@name", this.UserName);
                         cmd.Parameters.AddWithValue("@email", this.Email);
-                        cmd.Parameters.AddWithValue("@theme", this.Theme);
                         cmd.Parameters.AddWithValue("@bmonth", this.BirthMonth);
                         cmd.Parameters.AddWithValue("@bday", this.BirthDay);
                         cmd.Parameters.AddWithValue("@bio", this.Bio);
@@ -326,6 +325,8 @@ namespace GiftServer
                             }
                         }
                     }
+                    Preferences = new Preferences(this);
+                    Preferences.Create();
                 }
                 return true;
             }
@@ -337,6 +338,7 @@ namespace GiftServer
                     // User does not exist - create new one instead.
                     return Create();
                 }
+                Preferences.Update();
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -364,14 +366,12 @@ namespace GiftServer
                         cmd.CommandText = "UPDATE users "
                             + "SET UserName = @name, "
                             + "UserEmail = @email, "
-                            + "UserTheme = @theme, "
                             + "UserBio = @bio, "
                             + "UserBirthMonth = @bmonth, "
                             + "UserBirthDay = @bday "
                             + "WHERE UserID = @id;";
                         cmd.Parameters.AddWithValue("@name", this.UserName);
                         cmd.Parameters.AddWithValue("@email", this.Email);
-                        cmd.Parameters.AddWithValue("@theme", this.Theme);
                         cmd.Parameters.AddWithValue("@bio", this.Bio);
                         cmd.Parameters.AddWithValue("@bmonth", this.BirthMonth);
                         cmd.Parameters.AddWithValue("@bday", this.BirthDay);
@@ -398,6 +398,8 @@ namespace GiftServer
                         con.Open();
                         // Remove image:
                         this.RemoveImage();
+                        // Remove preferences
+                        Preferences.Delete();
                         // Delete from event futures, groups, and events:
                         using (MySqlCommand cmd = new MySqlCommand())
                         {
@@ -708,8 +710,6 @@ namespace GiftServer
                 XmlElement email = info.CreateElement("email");
                 email.InnerText = HttpUtility.HtmlEncode(Email);
                 // XmlElement password = Password.Fetch().DocumentElement;
-                XmlElement theme = info.CreateElement("theme");
-                theme.InnerText = HttpUtility.HtmlEncode(Theme);
                 XmlElement birthMonth = info.CreateElement("birthMonth");
                 birthMonth.InnerText = HttpUtility.HtmlEncode(BirthMonth);
                 XmlElement birthDay = info.CreateElement("birthDay");
@@ -737,7 +737,6 @@ namespace GiftServer
                 container.AppendChild(id);
                 container.AppendChild(userName);
                 container.AppendChild(email);
-                container.AppendChild(theme);
                 container.AppendChild(birthMonth);
                 container.AppendChild(birthDay);
                 container.AppendChild(bio);

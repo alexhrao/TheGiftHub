@@ -95,6 +95,7 @@
     <Compile Include="IShowable.cs" />
     <Compile Include="ListManager.cs" />
     <Compile Include="MultipartParser.cs" />
+    <Compile Include="Preferences.cs" />
     <Compile Include="ProfileManager.cs" />
     <Compile Include="DashboardManager.cs" />
     <Compile Include="EventUser.cs" />

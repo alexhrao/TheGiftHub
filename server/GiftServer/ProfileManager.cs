@@ -5,6 +5,9 @@ using GiftServer.Data;
 using System.Web;
 using System.Resources;
 using GiftServer.Server;
+using MySql.Data.MySqlClient;
+using System.Configuration;
+using System.Threading;
 
 namespace GiftServer
 {
@@ -16,6 +19,8 @@ namespace GiftServer
             private NavigationManager NavigationManager;
             public ProfileManager(Controller controller)
             {
+                Thread.CurrentThread.CurrentUICulture = controller.Culture;
+                Thread.CurrentThread.CurrentCulture = controller.Culture;
                 ResourceManager = new ResourceManager("GiftServer.HtmlTemplates", typeof(ProfileManager).Assembly);
                 NavigationManager = controller.NavigationManager;
             }
@@ -46,6 +51,7 @@ namespace GiftServer
                     HtmlNode birthday = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" birthday \")]");
                     birthday.InnerHtml = HttpUtility.HtmlEncode("Birthday: " + "Not Set");
                 }
+                /*
                 HtmlNode theme = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" theme \")]");
                 switch (user.Theme)
                 {
@@ -59,6 +65,67 @@ namespace GiftServer
                         theme.Attributes["style"].Value = "background: red;";
                         break;
                 }
+                */
+
+                HtmlNode countries = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" locations \")]");
+                HtmlNode languages = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" languages \")]");
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT * FROM countries;";
+                        cmd.Prepare();
+                        bool isFound = false;
+                        using (MySqlDataReader Reader = cmd.ExecuteReader())
+                        {
+                            while (Reader.Read())
+                            {
+                                // Create option node
+                                HtmlNode location;
+                                if (!isFound && Convert.ToString(Reader["CountryCode"]).ToLower().Equals(user.Preferences.Location.ToLower()))
+                                {
+                                    location = HtmlNode.CreateNode("<option selected value=\"" + Convert.ToString(Reader["CountryCode"]) + "\"></option>");
+                                    isFound = true;
+                                }
+                                else
+                                {
+                                    location = HtmlNode.CreateNode("<option value=\"" + Convert.ToString(Reader["CountryCode"]) + "\"></option>");
+                                }
+                                location.InnerHtml = HttpUtility.HtmlEncode(Convert.ToString(Reader["CountryName"]));
+                                countries.AppendChild(location);
+                            }
+                        }
+                    }
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT * FROM languages;";
+                        cmd.Prepare();
+                        using (MySqlDataReader Reader = cmd.ExecuteReader())
+                        {
+                            bool isFound = false;
+                            while (Reader.Read())
+                            {
+                                // Create option node
+                                HtmlNode language;
+                                if (!isFound && Convert.ToString(Reader["LanguageCode"]).ToLower().Equals(user.Preferences.Language.ToLower()))
+                                {
+                                    language = HtmlNode.CreateNode("<option selected value=\"" + Convert.ToString(Reader["LanguageCode"]) + "\"></option>");
+                                    isFound = true;
+                                }
+                                else
+                                {
+                                    language = HtmlNode.CreateNode("<option value=\"" + Convert.ToString(Reader["LanguageCode"]) + "\"></option>");
+                                }
+                                language.InnerHtml = HttpUtility.HtmlEncode(Convert.ToString(Reader["LanguageName"]));
+                                languages.AppendChild(language);
+                            }
+                        }
+                    }
+                }
+
                 HtmlNode bio = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" bio \")]");
                 bio.InnerHtml = HttpUtility.HtmlEncode(user.Bio);
 
