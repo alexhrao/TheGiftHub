@@ -7,6 +7,7 @@ using System.Configuration;
 using System.Web;
 using System.Resources;
 using GiftServer.Server;
+using System.Threading;
 
 namespace GiftServer
 {
@@ -18,6 +19,8 @@ namespace GiftServer
             private NavigationManager NavigationManager;
             public DashboardManager(Controller controller)
             {
+                Thread.CurrentThread.CurrentUICulture = controller.Culture;
+                Thread.CurrentThread.CurrentCulture = controller.Culture;
                 ResourceManager = new ResourceManager("GiftServer.HtmlTemplates", typeof(DashboardManager).Assembly);
                 NavigationManager = controller.NavigationManager;
             }

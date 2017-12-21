@@ -5,6 +5,7 @@ using GiftServer.Data;
 using System.Web;
 using System.Resources;
 using GiftServer.Server;
+using System.Threading;
 
 namespace GiftServer
 {
@@ -17,6 +18,8 @@ namespace GiftServer
             private LoginManager LoginManager;
             public ResetManager(Controller controller)
             {
+                Thread.CurrentThread.CurrentUICulture = controller.Culture;
+                Thread.CurrentThread.CurrentCulture = controller.Culture;
                 HtmlManager = new ResourceManager("GiftServer.HtmlTemplates", typeof(ResetManager).Assembly);
                 StringManager = new ResourceManager("GiftServer.Strings", typeof(ResetManager).Assembly);
                 LoginManager = controller.LoginManager;

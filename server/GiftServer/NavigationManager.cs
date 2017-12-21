@@ -4,6 +4,7 @@ using GiftServer.Data;
 using HtmlAgilityPack;
 using System.Resources;
 using GiftServer.Server;
+using System.Threading;
 
 namespace GiftServer
 {
@@ -14,6 +15,8 @@ namespace GiftServer
             ResourceManager ResourceManager;
             public NavigationManager(Controller controller)
             {
+                Thread.CurrentThread.CurrentUICulture = controller.Culture;
+                Thread.CurrentThread.CurrentCulture = controller.Culture;
                 ResourceManager = new ResourceManager("GiftServer.HtmlTemplates", typeof(NavigationManager).Assembly);
             }
             public string NavigationBar(User user)

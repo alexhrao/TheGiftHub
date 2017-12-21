@@ -392,7 +392,6 @@ namespace GiftServer
                     }
                     else
                     {
-                        
                         // Not accessing images or gifts, so OK to just send info:
                         Write(path);
                         Warnings.Add(new PublicResourceWarning(path));
@@ -576,7 +575,7 @@ namespace GiftServer
                 preferences.Language = _dict["language"];
                 // preferences.Theme = Convert.ToInt32(_dict["theme"]);
                 preferences.Update();
-                return "200"    ;
+                return "200";
             }
             private string Update(EventUser evnt)
             {
