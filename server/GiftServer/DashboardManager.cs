@@ -100,7 +100,7 @@ namespace GiftServer
             }
             public string UpdateEvents(User user)
             {
-                return UpdateEvents(user, NavigationManager.NavigationBar(user) + HtmlTemplates.dashboard);
+                return UpdateEvents(user, NavigationManager.NavigationBar(user) + ResourceManager.GetString("dashboard"));
             }
 
             public string UpdateFeed(User user, string page)
@@ -109,7 +109,7 @@ namespace GiftServer
             }
             public string UpdateFeed(User user)
             {
-                return UpdateFeed(user, NavigationManager.NavigationBar(user) + HtmlTemplates.dashboard);
+                return UpdateFeed(user, NavigationManager.NavigationBar(user) + ResourceManager.GetString("dashboard"));
             }
 
             public string Dashboard(User user)

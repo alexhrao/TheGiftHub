@@ -23,7 +23,7 @@ namespace GiftServer
             {
                 // Add Side Navigation Bar (From Dashboard)
                 HtmlDocument profile = new HtmlDocument();
-                profile.LoadHtml(NavigationManager.NavigationBar(user) + HtmlTemplates.profile);
+                profile.LoadHtml(NavigationManager.NavigationBar(user) + ResourceManager.GetString("profile"));
                 // Set src of image:
                 HtmlNode img = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userImage \")]");
                 img.Attributes["src"].Value = user.GetImage();

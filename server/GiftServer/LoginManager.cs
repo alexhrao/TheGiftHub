@@ -12,24 +12,25 @@ namespace GiftServer
     {
         public class LoginManager
         {
-            ResourceManager ResourceManager;
+            ResourceManager HtmlManager;
+            ResourceManager StringManager;
             public LoginManager(Controller controller)
             {
-                ResourceManager = new ResourceManager("GiftServer.HtmlTemplates", typeof(LoginManager).Assembly);
+                HtmlManager = new ResourceManager("GiftServer.HtmlTemplates", typeof(LoginManager).Assembly);
+                StringManager = new ResourceManager("GiftServer.Strings", typeof(LoginManager).Assembly);
             }
             public string Login()
             {
-                return ResourceManager.GetString("header") + ResourceManager.GetString("login");
+                return HtmlManager.GetString("header") + HtmlManager.GetString("login");
             }
             public string FailLogin()
             {
                 HtmlDocument login = new HtmlDocument();
-                login.LoadHtml(HtmlTemplates.header + HtmlTemplates.login);
+                login.LoadHtml(HtmlManager.GetString("header") + HtmlManager.GetString("login"));
                 HtmlNode alert = login.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@class), \" \"), \" alert \")]");
                 alert.AddClass("alert-danger in");
                 alert.RemoveClass("hidden");
-                HtmlNode message = HtmlNode.CreateNode("<p><strong>Uh-Oh...</strong> Looks like we didn't recognize that Username/Password pair."
-                                                        + " Try again or <a data-toggle=\"modal\" href=\"#resetPassword\">Reset your Password</a></p>");
+                HtmlNode message = HtmlNode.CreateNode(StringManager.GetString("loginFailed"));
                 HtmlNodeCollection children = new HtmlNodeCollection(alert);
                 children.Add(message);
                 alert.AppendChildren(children);
@@ -38,11 +39,11 @@ namespace GiftServer
             public string SuccessSignup()
             {
                 HtmlDocument login = new HtmlDocument();
-                login.LoadHtml(HtmlTemplates.header + HtmlTemplates.login);
+                login.LoadHtml(HtmlManager.GetString("header") + HtmlManager.GetString("login"));
                 HtmlNode alert = login.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@class), \" \"), \" alert \")]");
                 alert.AddClass("alert-success in");
                 alert.RemoveClass("hidden");
-                HtmlNode message = HtmlNode.CreateNode("<p><strong>Success!</strong> Please login below</p>");
+                HtmlNode message = HtmlNode.CreateNode(StringManager.GetString("signupSuccess"));
                 HtmlNodeCollection children = new HtmlNodeCollection(alert);
                 children.Add(message);
                 alert.AppendChildren(children);

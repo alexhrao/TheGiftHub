@@ -70,6 +70,15 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;p&gt;&lt;strong&gt;UhOh...&lt;/strong&gt; Looks like we didn&apos;t recognize that Username/Password pair. Try again or &lt;a data-toggle=&quot;modal&quot; href=&quot;#resetPassword&quot;&gt;Reset your Password&lt;/a&gt;&lt;/p&gt;.
+        /// </summary>
+        internal static string loginFailed {
+            get {
+                return ResourceManager.GetString("loginFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;p&gt;&lt;strong&gt;Password Reset&lt;/strong&gt; Please login below with your new password&lt;/p&gt;.
         /// </summary>
         internal static string newLogin {
@@ -84,6 +93,15 @@ namespace GiftServer.Properties {
         internal static string recoveryEmailSent {
             get {
                 return ResourceManager.GetString("recoveryEmailSent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;p&gt;&lt;strong&gt;Success!&lt;/strong&gt; Please login below&lt;/p&gt;.
+        /// </summary>
+        internal static string signupSuccess {
+            get {
+                return ResourceManager.GetString("signupSuccess", resourceCulture);
             }
         }
     }

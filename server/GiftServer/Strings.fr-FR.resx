@@ -120,10 +120,16 @@
   <data name="codeExpired" xml:space="preserve">
     <value>&lt;p&gt;&lt;strong&gt;Uh-Oh...&lt;/strong&gt; Looks like that code expired. &lt;a data-toggle="modal" href="#resetPassword"&gt;Reset your Password&lt;/a&gt;&lt;/p&gt;</value>
   </data>
+  <data name="loginFailed" xml:space="preserve">
+    <value>&lt;p&gt;&lt;strong&gt;UhOh...&lt;/strong&gt; Looks like we didn't recognize that Username/Password pair. Try again or &lt;a data-toggle="modal" href="#resetPassword"&gt;Reset your Password&lt;/a&gt;&lt;/p&gt;</value>
+  </data>
   <data name="newLogin" xml:space="preserve">
     <value>&lt;p&gt;&lt;strong&gt;Password Reset&lt;/strong&gt; Please login below with your new password&lt;/p&gt;</value>
   </data>
   <data name="recoveryEmailSent" xml:space="preserve">
     <value>&lt;p&gt;&lt;strong&gt;Recovery email sent&lt;/strong&gt; - check your inbox&lt;/p&gt;</value>
+  </data>
+  <data name="signupSuccess" xml:space="preserve">
+    <value>&lt;p&gt;&lt;strong&gt;Success!&lt;/strong&gt; Please login below&lt;/p&gt;</value>
   </data>
 </root>
