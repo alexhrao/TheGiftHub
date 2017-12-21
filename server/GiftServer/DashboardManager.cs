@@ -105,6 +105,7 @@ namespace GiftServer
 
             public string UpdateFeed(User user, string page)
             {
+                // TODO
                 return page;
             }
             public string UpdateFeed(User user)
