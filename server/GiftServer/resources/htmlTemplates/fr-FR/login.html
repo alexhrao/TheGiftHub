@@ -117,7 +117,8 @@
                         $('#resetEmail').parent().addClass('has-error');
                     }
                     validateReset();
-                })
+                });
+                validateLogin();
             });
             function validateLogin() {
                 var invalid = false;
@@ -135,7 +136,7 @@
                 return !invalid;
             }
             function validateSignup() {
-                // Iterate over all inputs; if none are blank, enable!
+                // Iterate over all inputs; if none are blank (and passwords match), enable!
                 var invalid = false;
                 $("#signupForm :input:not(:button)").each(function () {
                     if ($(this).val() === "") {
@@ -143,10 +144,13 @@
                         return false;
                     }
                 });
-                if (!invalid) {
+                
+                if (!invalid && $('#firstPass').val() === $('#secondPass').val()) {
                     $('#signupSubmit').show();
+                    invalid = false;
                 } else {
                     $('#signupSubmit').hide();
+                    invalid = true;
                 }
                 return !invalid;
             }

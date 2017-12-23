@@ -189,11 +189,21 @@
     <None Include="resources\images\branding\favicon.ico" />
     <None Include="resources\htmlTemplates\en-US\passwordResetNotification.html" />
     <None Include="resources\htmlTemplates\fr-FR\passwordResetNotification.html" />
+    <Content Include="resources\htmlTemplates\en-GB\dashboard.html" />
+    <Content Include="resources\htmlTemplates\en-GB\header.html" />
+    <Content Include="resources\htmlTemplates\en-GB\list.html" />
+    <Content Include="resources\htmlTemplates\en-GB\login.html" />
+    <Content Include="resources\htmlTemplates\en-GB\navigationBar.html" />
+    <Content Include="resources\htmlTemplates\en-GB\passwordReset.html" />
+    <Content Include="resources\htmlTemplates\en-GB\passwordResetEmail.html" />
+    <Content Include="resources\htmlTemplates\en-GB\passwordResetNotification.html" />
+    <Content Include="resources\htmlTemplates\en-GB\profile.html" />
     <Content Include="resources\images\users\default.png" />
     <Content Include="resources\plugins\starRating\star-rating.min.css" />
     <Content Include="resources\plugins\starRating\star-rating.min.js" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="HtmlTemplates.en-GB.resx" />
     <EmbeddedResource Include="HtmlTemplates.en-US.resx" />
     <EmbeddedResource Include="HtmlTemplates.fr-FR.resx" />
     <EmbeddedResource Include="Properties\Constants.resx">
@@ -204,6 +214,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Strings.en-GB.resx" />
     <EmbeddedResource Include="Strings.en-US.resx" />
     <EmbeddedResource Include="Strings.fr-FR.resx" />
     <EmbeddedResource Include="Properties\HtmlTemplates.resx">

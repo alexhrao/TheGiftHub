@@ -1,15 +1,10 @@
 CREATE DATABASE gift_registry_db;
 
-CREATE TABLE gift_registry_db.countries (
-    CountryID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    CountryCode CHAR(2) NOT NULL,
-    CountryName VARCHAR(45) NOT NULL
-);
-
-CREATE TABLE gift_registry_db.languages (
-    LanguageID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    LanguageCode CHAR(2) NOT NULL,
-    LanguageName VARCHAR(45) NOT NULL
+CREATE TABLE gift_registry_db.cultures (
+    CultureID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    CultureLanguage CHAR(2) NOT NULL,
+    CultureLocation CHAR(2) NOT NULL,
+    CultureDesc VARCHAR(255) NULL
 );
 
 CREATE TABLE gift_registry_db.categories (
@@ -53,8 +48,7 @@ CREATE TABLE gift_registry_db.users (
 CREATE TABLE gift_registry_db.preferences (
     PreferenceID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     UserID INT NOT NULL,
-    UserLanguage CHAR(2) NOT NULL,
-    UserLocation CHAR(2) NOT NULL,
+    UserCulture CHAR(5) NOT NULL,
     UserTheme TINYINT UNSIGNED NULL DEFAULT 0
 );
 ALTER TABLE gift_registry_db.preferences

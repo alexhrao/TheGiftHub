@@ -75,7 +75,6 @@ namespace GiftServer
             /// <summary>
             /// Dispatch will, given a request, return the webpage that will be shown to the user.
             /// </summary>
-            /// <param name="request">The incoming HTML request, in it's entirety</param>
             /// <remarks>Dispatch is used to communicate with the server</remarks>
             /// <returns>The html to be sent back to the user. Additionally, it will also alter the response, if necessary</returns>
             public string Dispatch()
@@ -488,7 +487,7 @@ namespace GiftServer
                 {
                     // Get from settings. For now, we'll use en-US. Store this in cookie? 
                     // (it will be faster to get from cookie than to query db)
-                    Culture = new CultureInfo(_user.Preferences.Language + "-" + _user.Preferences.Location);
+                    Culture = new CultureInfo(_user.Preferences.Culture);
                 }
                 // If in cookies:
                 else if (_request.Cookies["culture"] != null)
@@ -571,8 +570,7 @@ namespace GiftServer
             }
             private string Update(Preferences preferences)
             {
-                preferences.Location = _dict["location"];
-                preferences.Language = _dict["language"];
+                preferences.Culture = _dict["culture"];
                 // preferences.Theme = Convert.ToInt32(_dict["theme"]);
                 preferences.Update();
                 return "200";

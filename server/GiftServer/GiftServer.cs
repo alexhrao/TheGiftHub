@@ -1,10 +1,7 @@
 ﻿using System;
-using GiftServer.Server;
-using GiftServer.Properties;
 using System.Net;
 using System.Collections.Generic;
 using GiftServer.Exceptions;
-using System.Resources;
 
 namespace GiftServer
 {
@@ -19,10 +16,6 @@ namespace GiftServer
             /// <param name="args">Optional prefixes</param>
             public static void Main(string[] args)
             {
-                /* for culture-specific resources
-                ResourceManager rm = new ResourceManager("GiftServer.HtmlTemplates", typeof(Program).Assembly);
-                Console.WriteLine(rm.GetString("profile"));
-                */
                 GiftServer program = new GiftServer();
                 program.Start(args);
             }

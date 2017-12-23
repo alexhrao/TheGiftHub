@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Web;
 using System.Xml;
 using MySql.Data.MySqlClient;
 namespace GiftServer
@@ -33,41 +34,22 @@ namespace GiftServer
                     }
                 }
             }
-            private string language = "en";
-            public string Language
+            private string culture = "en-US";
+            public string Culture
             {
                 get
                 {
-                    return language;
+                    return culture;
                 }
                 set
                 {
-                    if (value == null || value.Length != 2)
+                    if (value == null || value.Length != 5)
                     {
-                        throw new ArgumentException("Value must be non-null, 2 letters long");
+                        throw new ArgumentException("Value must be non-null, 5 letters long. Format: <lang>-<COUNTRY>");
                     }
                     else
                     {
-                        language = value;
-                    }
-                }
-            }
-            private string location = "US";
-            public string Location
-            {
-                get
-                {
-                    return location;
-                }
-                set
-                {
-                    if (value == null || value.Length != 2)
-                    {
-                        throw new ArgumentException("Value must be non-null, 2 letters long");
-                    }
-                    else
-                    {
-                        location = value;
+                        culture = value;
                     }
                 }
             }
@@ -91,8 +73,7 @@ namespace GiftServer
                             {
                                 // We have data!
                                 this.PreferenceId = Convert.ToUInt64(Reader["PreferenceID"]);
-                                this.language = Convert.ToString(Reader["UserLanguage"]);
-                                this.location = Convert.ToString(Reader["UserLocation"]);
+                                this.culture = Convert.ToString(Reader["UserCulture"]);
                                 this.theme = Convert.ToInt32(Reader["UserTheme"]);
                             }
                         }
@@ -118,8 +99,7 @@ namespace GiftServer
                             {
                                 // We have data!
                                 User = new User(Convert.ToUInt64(Reader["UserID"]));
-                                this.language = Convert.ToString(Reader["UserLanguage"]);
-                                this.location = Convert.ToString(Reader["UserLocation"]);
+                                this.culture = Convert.ToString(Reader["UserCulture"]);
                                 this.theme = Convert.ToInt32(Reader["UserTheme"]);
                             }
                         }
@@ -135,11 +115,10 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "INSERT INTO preferences (UserID, UserLanguage, UserLocation, UserTheme) "
-                                        + "VALUES (@uid, @lng, @loc, @thm);";
+                        cmd.CommandText = "INSERT INTO preferences (UserID, UserCulture, UserTheme) "
+                                        + "VALUES (@uid, @clt, @thm);";
                         cmd.Parameters.AddWithValue("@uid", User.UserId);
-                        cmd.Parameters.AddWithValue("@lng", language);
-                        cmd.Parameters.AddWithValue("@loc", location);
+                        cmd.Parameters.AddWithValue("@clt", this.culture);
                         cmd.Parameters.AddWithValue("@thm", theme);
                         cmd.Prepare();
                         if (cmd.ExecuteNonQuery() == 1)
@@ -163,12 +142,10 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "UPDATE preferences "
-                                        + "SET UserLanguage = @lng, "
-                                        + "UserLocation = @loc, "
+                                        + "SET UserCulture = @clt, "
                                         + "UserTheme = @thm "
                                         + "WHERE PreferenceID = @pid;";
-                        cmd.Parameters.AddWithValue("@lng", language);
-                        cmd.Parameters.AddWithValue("@loc", location);
+                        cmd.Parameters.AddWithValue("@clt", this.culture);
                         cmd.Parameters.AddWithValue("@thm", theme);
                         cmd.Parameters.AddWithValue("@pid", PreferenceId);
                         cmd.Prepare();
@@ -201,7 +178,20 @@ namespace GiftServer
             }
             public XmlDocument Fetch()
             {
-                return new XmlDocument();
+                XmlDocument info = new XmlDocument();
+                XmlElement container = info.CreateElement("preferences");
+                XmlElement id = info.CreateElement("preferenceId");
+                id.InnerText = HttpUtility.HtmlEncode(PreferenceId);
+                XmlElement userTheme = info.CreateElement("theme");
+                userTheme.InnerText = HttpUtility.HtmlEncode(theme);
+                XmlElement userCulture = info.CreateElement("culture");
+                userCulture.InnerText = HttpUtility.HtmlEncode(culture);
+
+                container.AppendChild(id);
+                container.AppendChild(userTheme);
+                container.AppendChild(userCulture);
+
+                return info;
             }
         }
     }

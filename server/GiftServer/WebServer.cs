@@ -3,9 +3,6 @@ using System.Net;
 using System.Threading;
 using System.Text;
 using System.IO;
-using GiftServer.Properties;
-using System.Net.Sockets;
-using System.Net.Security;
 
 namespace GiftServer
 {
@@ -18,35 +15,8 @@ namespace GiftServer
 
             public WebServer(string[] prefixes, Func<HttpListenerContext, string> method)
             {
-                // Right now, this doesn't seem to work for anything but localhost - IDK why.
-                // I think it has something to do with HttpListener requiring the local address... IDK.
-                // Below is trying to use the TcpListener - I have no idea if this will work on an AWS server.
-                // Really hope it does tho - IDK why this won't work on an AWS webserver.
-
-                // Actually, I might have just fixed it. By allowing ALL prefixes with port 60001
-                // This should mean that it's origin does not matter... We'll see when I get back to US
                 // NOTE: To do this, I needed to run the following command in elevated mode:
-                //  netsh http add urlacl url=http://+:60001/ user=<USERNAME>
-                /*
-                Int32 port = 13000;
-                IPAddress localAddr = IPAddress.Parse("127.0.0.1");
-
-                // TcpListener server = new TcpListener(port);
-                TcpListener server = new TcpListener(localAddr, port);
-                server.Start();
-                while (true)
-                {
-                    TcpClient tcpClient = server.AcceptTcpClient();
-                    NetworkStream stream = tcpClient.GetStream();
-                    byte[] buffer = new byte[1024];
-                    int length = 0;
-                    while ((length = stream.Read(buffer, 0, buffer.Length)) != 0)
-                    {
-                        string data = System.Text.Encoding.ASCII.GetString(buffer, 0, length);
-                        Console.WriteLine("Received: {0}", data);
-                    }
-                }
-                */
+                //  netsh http add urlacl url=http://+:80/ user=<USERNAME>
                 foreach (string prefix in prefixes)
                 {
                     _listener.Prefixes.Add(prefix);

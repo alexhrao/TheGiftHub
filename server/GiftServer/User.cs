@@ -200,8 +200,8 @@ namespace GiftServer
                                 UserId = Convert.ToUInt64(reader["UserID"]);
                                 this.UserName = Convert.ToString(reader["UserName"]);
                                 this.Email = email;
-                                this.BirthDay = Convert.ToInt32(reader["UserBirthMonth"]);
-                                this.BirthMonth = Convert.ToInt32(reader["UserBirthDay"]);
+                                this.BirthDay = Convert.ToInt32(reader["UserBirthDay"]);
+                                this.BirthMonth = Convert.ToInt32(reader["UserBirthMonth"]);
                                 this.DateJoined = (DateTime)(reader["TimeCreated"]);
                                 this.Bio = Convert.ToString(reader["UserBio"]);
                                 this.Preferences = new Preferences(this);
@@ -733,6 +733,8 @@ namespace GiftServer
                 {
                     gifts.AppendChild(info.ImportNode(gift.Fetch().DocumentElement, true));
                 }
+                XmlElement preferences = info.CreateElement("preferences");
+                preferences.AppendChild(info.ImportNode(Preferences.Fetch().DocumentElement, true));
 
                 container.AppendChild(id);
                 container.AppendChild(userName);
@@ -744,6 +746,7 @@ namespace GiftServer
                 container.AppendChild(groups);
                 container.AppendChild(gifts);
                 container.AppendChild(events);
+                container.AppendChild(preferences);
 
                 return info;
             }
