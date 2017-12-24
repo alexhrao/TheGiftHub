@@ -21,29 +21,17 @@ namespace GiftServer
     {
         public class Controller
         {
-            public class Connection
-            {
-                public class UserInformation
-                {
-                    public readonly ulong UserId;
-                    public readonly string Hash;
-                    public UserInformation(ulong id)
-                    {
-                        UserId = id;
-                        Hash = new Password(id.ToString("00000000")).Hash;
-                    }
-                }
-                public UserInformation Info;
-                public IPEndPointCollection Ends;
-                public Connection(ulong userId)
-                {
-                    this.Info = new UserInformation(userId);
-                    this.Ends = new IPEndPointCollection();
-                }
-            }
+
             public static readonly List<Connection> Connections = new List<Connection>();
             public static readonly List<Warning> Warnings = new List<Warning>();
-            public CultureInfo Culture;
+            public CultureInfo Culture
+            {
+                get
+                {
+                    return culture;
+                }
+            }
+            private CultureInfo culture;
             private User _user;
             private HttpListenerContext _ctx;
             private HttpListenerRequest _request;
@@ -499,12 +487,12 @@ namespace GiftServer
                 {
                     // Get from settings. For now, we'll use en-US. Store this in cookie? 
                     // (it will be faster to get from cookie than to query db)
-                    Culture = new CultureInfo(_user.Preferences.Culture);
+                    culture = new CultureInfo(_user.Preferences.Culture);
                 }
                 // If in cookies:
                 else if (_request.Cookies["culture"] != null)
                 {
-                    Culture = new CultureInfo(_request.Cookies["culture"].Value);
+                    culture = new CultureInfo(_request.Cookies["culture"].Value);
                 }
                 // If location in request:
                 else if (false)
@@ -514,11 +502,11 @@ namespace GiftServer
                 // otherwise, en-US
                 else
                 {
-                    Culture = new CultureInfo("en-US");
+                    culture = new CultureInfo("en-US");
                     // do NOT store this in cookie!
                 }
-                Thread.CurrentThread.CurrentUICulture = Culture;
-                Thread.CurrentThread.CurrentCulture = Culture;
+                Thread.CurrentThread.CurrentUICulture = culture;
+                Thread.CurrentThread.CurrentCulture = culture;
             }
 
             private string ParsePath()
