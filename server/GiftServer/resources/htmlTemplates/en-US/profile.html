@@ -215,6 +215,46 @@
                     });
             });
 
+            $('#searchNewUser').click(function () {
+                $.post(".",
+                    {
+                        submit: "Query",
+                        type: "Email",
+                        email: $('#newGroupAddUser').val()
+                    },
+                    function (data, status) {
+                        if (data !== "") {
+                            // Iterate over lis, make sure not already added
+                            var exists = false;
+                            $("#newGroupMembers li").each(function (index) {
+                                if ((this).val() === $('#newGroupAddUser').val()) {
+                                    // found
+                                    exists = true;
+                                    return false;
+                                }
+                            });
+                            if (!exists) {
+                                $('#userResult').removeClass("hidden");
+                                $('#foundUser').text(data);
+                                $('#foundUser').val($('#newGroupAddUser').val());
+                            } else {
+                                $('#userResult').addClass("hidden");
+                            }
+                        } else {
+                            $('#userResult').addClass("hidden");
+                        }
+                    });
+            });
+            $('#groupAddUser').click(function () {
+                // Add to list of users (add email as value, name as text)
+                // grab name
+                var name = $('#foundUser').text();
+                var email = $('#foundUser').val();
+                $('#newGroupMembers').prepend("<li value=\"" + email + "\">" + name + "</li>");
+                $('#userResult').addClass("hidden");
+                $('#newGroupAddUser').val("");
+            });
+
             $('#resetSubmit').hide();
             $('#firstResetPass').keyup(function () {
                 if ($('#secondResetPass').val() === $('#firstResetPass').val() && $('#secondResetPass').val()) {
@@ -446,15 +486,39 @@
                         <h4 class="modal-title">Add New Group</h4>
                     </div>
                     <div class="modal-body">
-                        <form id="groupAddForm" method="post">
-                            <div class="row form-group">
-                                <label for="groupName">Group Name</label>
-                                <input name="groupName" id="newGroupName" class="form-control" placeholder="Group Name" />
+                        <div class="row form-group">
+                            <label for="groupName">Group Name</label>
+                            <input name="groupName" id="newGroupName" class="form-control" placeholder="Group Name" />
+                        </div>
+                        <div class="row form-group">
+                            <div class="input-group add-on">
+                                <input class="form-control" placeholder="Search" name="addUser" id="newGroupAddUser" type="email" />
+                                <div class="input-group-btn">
+                                    <button id="searchNewUser" class="btn btn-default" type="button"><i class="glyphicon glyphicon-search"></i></button>
+                                </div>
                             </div>
+                        </div>
+                        <div id="userResult" class="row hidden form-group">
+                            <div class="col-xs-6">
+                                <p id="foundUser"></p>
+                            </div>
+                            <div class="col-xs-4">
+                                <button id="groupAddUser" name="submit" value="addUser" role="button" class="btn btn-success" type="button">
+                                    Add User
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <h2>Members:</h2>
+                            <ul id="newGroupMembers">
+
+                            </ul>
+                        </div>
+                        <div class="row form-group">
                             <button name="submit" value="newGroup" role="button" class="btn btn-success">
                                 Create new Group
                             </button>
-                        </form>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

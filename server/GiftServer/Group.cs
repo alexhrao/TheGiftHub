@@ -1,6 +1,7 @@
 ﻿using GiftServer.Exceptions;
 using MySql.Data.MySqlClient;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Web;
 using System.Xml;
@@ -18,7 +19,23 @@ namespace GiftServer
             } = 0;
             public string Name;
             public string Description;
-            public User Admin;
+            public User Admin
+            {
+                get
+                {
+                    return admin;
+                }
+            }
+            private User admin;
+
+            public List<User> Users
+            {
+                get
+                {
+                    return users;
+                }
+            }
+            private List<User> users = new List<User>();
 
             public Group(ulong groupID)
             {
@@ -38,7 +55,7 @@ namespace GiftServer
                                 this.GroupId = groupID;
                                 this.Name = Convert.ToString(reader["GroupName"]);
                                 this.Description = Convert.ToString(reader["GroupDescription"]);
-                                this.Admin = new User(Convert.ToUInt64(reader["AdminID"]));
+                                this.admin = new User(Convert.ToUInt64(reader["AdminID"]));
                             }
                             else
                             {
@@ -51,8 +68,15 @@ namespace GiftServer
             }
             public Group(User Admin, string Name)
             {
-                this.Admin = Admin;
+                this.admin = Admin;
                 this.Name = Name;
+            }
+            // Eventually, need to add support for children!
+            public Group(User Admin, string Name, List<User> Users)
+            {
+                this.admin = Admin;
+                this.Name = Name;
+                this.users = Users;
             }
 
             public bool Create()
@@ -71,6 +95,19 @@ namespace GiftServer
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                         this.GroupId = Convert.ToUInt64(cmd.LastInsertedId);
+                    }
+                    foreach (User user in Users)
+                    {
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "INSERT INTO groups_users (GroupID, UserID, IsChild) "
+                                            + "VALUES (@gid, @uid, FALSE);";
+                            cmd.Parameters.AddWithValue("@gid", this.GroupId);
+                            cmd.Parameters.AddWithValue("@uid", user.UserId);
+                            cmd.Prepare();
+                            cmd.ExecuteNonQuery();
+                        }
                     }
                 }
                 return true;

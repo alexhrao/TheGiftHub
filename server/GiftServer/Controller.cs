@@ -204,6 +204,15 @@ namespace GiftServer
                                         return item.Fetch().OuterXml;
                                     default:
                                         return LoginManager.Login();
+                                    case "Query":
+                                        switch (_dict["type"])
+                                        {
+                                            case "Email":
+                                                return Fetch(_dict["email"]);
+                                            default:
+                                                _response.StatusCode = 404;
+                                                return "Corrupted Query";
+                                        }
                                 }
                             }
                             else
@@ -662,6 +671,37 @@ namespace GiftServer
                 {
                     Console.WriteLine("User is Null??");
                     return LoginManager.Login();
+                }
+            }
+            private string Fetch(string email)
+            {
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT users.UserID FROM users WHERE UserEmail = @email;";
+                        cmd.Parameters.AddWithValue("@email", email);
+                        cmd.Prepare();
+                        using (MySqlDataReader Reader = cmd.ExecuteReader())
+                        {
+                            // Return true if any results
+                            if (Reader.Read())
+                            {
+                                User user = new User(Convert.ToUInt64(Reader["UserID"]));
+                                _response.StatusCode = 200;
+                                _response.StatusDescription = "success";
+                                return user.UserName;
+                            }
+                            else
+                            {
+                                _response.StatusCode = 200;
+                                _response.StatusDescription = "fail";
+                                return "";
+                            }
+                        }
+                    }
                 }
             }
 
