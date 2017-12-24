@@ -198,6 +198,9 @@
     <Content Include="resources\htmlTemplates\en-GB\passwordResetEmail.html" />
     <Content Include="resources\htmlTemplates\en-GB\passwordResetNotification.html" />
     <Content Include="resources\htmlTemplates\en-GB\profile.html" />
+    <None Include="resources\htmlTemplates\en-US\publicProfile.html" />
+    <None Include="resources\htmlTemplates\fr-FR\publicProfile.html" />
+    <None Include="resources\htmlTemplates\en-GB\publicProfile.html" />
     <Content Include="resources\images\users\default.png" />
     <Content Include="resources\plugins\starRating\star-rating.min.css" />
     <Content Include="resources\plugins\starRating\star-rating.min.js" />

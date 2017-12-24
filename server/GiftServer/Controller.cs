@@ -11,6 +11,7 @@ using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Net.Mail;
 using System.Threading;
 using System.Web;
 
@@ -139,7 +140,7 @@ namespace GiftServer
                                     case "Signup":
                                         try
                                         {
-                                            _user = new User(_dict["email"], new Password(_dict["password"]))
+                                            _user = new User(new MailAddress(_dict["email"]), new Password(_dict["password"]))
                                             {
                                                 UserName = _dict["userName"]
                                             };
@@ -275,6 +276,8 @@ namespace GiftServer
                         return ProfileManager.ProfilePage(_user);
                     case "myList":
                         return ListManager.GiftList(_user);
+                    case "user":
+                        return ProfileManager.PublicProfile(new User(_request.QueryString["user"]));
                     default:
                         return DashboardManager.Dashboard(_user);
                 }
@@ -533,7 +536,7 @@ namespace GiftServer
             {
                 try
                 {
-                    _user = new User(email, password);
+                    _user = new User(new MailAddress(email), password);
                     // Get hash
                     string hash = AddConnection(_user.UserId, _request.RemoteEndPoint);
                     Cookie logger = new Cookie("UserHash", hash);
@@ -556,7 +559,7 @@ namespace GiftServer
                         _user.UserName = _dict["userName"];
                         break;
                     case "email":
-                        _user.Email = _dict["email"];
+                        _user.Email = new MailAddress(_dict["email"]);
                         break;
                     case "birthday":
                         _user.BirthMonth = Convert.ToInt32(_dict["month"]);
@@ -654,7 +657,6 @@ namespace GiftServer
             }
             private string Update(Gift gift)
             {
-                Console.WriteLine("Updating Gift...");
                 if (_user != null)
                 {
                     gift.Name = _dict["giftName"];
@@ -669,12 +671,16 @@ namespace GiftServer
                 }
                 else
                 {
-                    Console.WriteLine("User is Null??");
                     return LoginManager.Login();
                 }
             }
             private string Fetch(string email)
             {
+                if (email.Equals(_user.Email))
+                {
+                    _response.StatusCode = 200;
+                    return "";
+                }
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -689,15 +695,10 @@ namespace GiftServer
                             // Return true if any results
                             if (Reader.Read())
                             {
-                                User user = new User(Convert.ToUInt64(Reader["UserID"]));
-                                _response.StatusCode = 200;
-                                _response.StatusDescription = "success";
-                                return user.UserName;
+                                return (new User(Convert.ToUInt64(Reader["UserID"]))).UserName;
                             }
                             else
                             {
-                                _response.StatusCode = 200;
-                                _response.StatusDescription = "fail";
                                 return "";
                             }
                         }

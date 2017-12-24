@@ -15,10 +15,10 @@ INSERT INTO default_events (EventName, EventYear, EventMonth, EventDay, EventRec
     VALUES ('Mother''s Day', 2017, 5, 8, FALSE);
 
 -- Insert into users:
-INSERT INTO users (UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio)
-    VALUES ('Alex Rao', 'alexhrao@gmail.com', 7, 3, "I LOVE to have fun!");
-INSERT INTO users (UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio)
-    VALUES ('Raeedah Choudhury', 'rchoudhury@gmail.com', 11, 19, "I love my boyfriend");
+INSERT INTO users (UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL)
+    VALUES ('Alex Rao', 'alexhrao@gmail.com', 7, 3, "I LOVE to have fun!", "UJIOl8xUU7ccIQH5Ofs0Awfdsa00");
+INSERT INTO users (UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL)
+    VALUES ('Raeedah Choudhury', 'rchoudhury@gmail.com', 11, 19, "I love my boyfriend", "UJIOl8xUU7ccIQH5Ofs0Awfdsa11");
 
 -- Insert into preferences:
 INSERT INTO preferences (UserID, UserCulture, UserTheme)
@@ -30,7 +30,7 @@ INSERT INTO preferences (UserID, UserCulture, UserTheme)
 INSERT INTO passwords (UserID, PasswordHash, PasswordSalt, PasswordIter)
     VALUES (1, 'UJIOl8xUU7ccIQH5Ofs+Awfdsa==', 'UJIOl8xUU7ccIQH5Ofs+Aw==', 10000);
 INSERT INTO passwords (UserID, PasswordHash, PasswordSalt, PasswordIter)
-    VALUES (1, '12345678901234567890', '1234567890123567', 10000);
+    VALUES (2, '12345678901234567890', '1234567890123567', 10000);
 
 -- Default Event Futures:
 INSERT INTO default_events_futures (EventID, EventYear, EventMonth, EventDay)

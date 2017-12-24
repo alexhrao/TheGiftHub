@@ -1,0 +1,154 @@
+﻿<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>My Profile</title>
+    <script>
+    </script>
+    <style>
+        .input-group,
+        .form-group,
+        .spaced,
+        .input {
+            margin: 10px;
+        }
+        body {
+            background-color: #CECECE;
+            color: black;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        h2 {
+            font-style: italic;
+        }
+        #userImage {
+            height: 256px;
+            width: 256px;
+            display: inline;
+            cursor: pointer;
+        }
+        #previewImage {
+            height: 256px;
+            width: 256px;
+            display: inline;
+        }
+        .circle {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: inline-flex;
+        }
+        p {
+            font-weight: 400;
+            text-indent: each-line 20px;
+            font-size: 22px;
+        }
+        .glyphicon {
+            font-size: 75%;
+        }
+        table {
+            width: 75%;
+        }
+        .btn {
+            width: 100%;
+        }
+        .event-closer,
+        .group-closer,
+        .event-name,
+        .group-name,
+        #eventAdder,
+        #groupAdder {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div id="uploadImage" class="modal fade panel-success" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content panel-success">
+                    <div class="modal-header panel-heading">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Upload new image</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="imgUploadForm" method="post" name="imgUploadForm" enctype="multipart/form-data">
+                            <div class="row text-center">
+                                <div class="form-group">
+                                    <label class="btn btn-default btn-file">
+                                        Browse <input id="image" name="image" accept="image/*" type="file" style="display: none;">
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group text-center">
+                                    <img id="previewImage" src="" class="img-circle img-responsive hidden" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group text-center">
+                                    <button id="submitImg" form="imgUploadForm" type="submit" class="btn btn-primary hidden" name="submit" value="Profile">
+                                        Upload Picture
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4 text-center">
+                <!-- User Image -->
+                <img id="userImage" class="img-circle img-responsive" src="resources/images/users/default.png" />
+                <div class="form-group">
+                    <h1 id="userName" class="form-control-static"></h1>
+                </div>
+                <!-- User Name -->
+                <h3 id="timeMember"></h3>
+            </div>
+            <div class="col-sm-5">
+                <!-- User Information -->
+                <div class="form-group">
+                    <h2 id="email" class="form-control-static"></h2>
+                </div>
+                <div class="form-group">
+                    <h2 id="birthday" class="form-control-static"></h2>
+                </div>
+                <h2>Bio: </h2>
+                <div class="form-group">
+                    <p id="bio" class="form-control-static"></p>
+                </div>
+            </div>
+            <div class="col-sm-3 hidden-xs">
+                <!-- Add Side Navigation Bar (From Dashboard) -->
+                <div id="navigator" class="panel">
+                    <div class="text-center panel-heading">Quick Links</div>
+                    <div class="panel-body">
+                        <ul class="nav nav-pills nav-stacked">
+                            <li><a href=".?dest=dashboard">Dashboard</a></li>
+                            <li><a href=".?dest=myList">My List</a></li>
+                            <li><a href=".?dest=myGroups">My Groups</a></li>
+                            <li><a href=".?dest=profile">My Account</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
+                <h1 class="text-left">Events</h1>
+                <table id="events">
+                </table>
+            </div>
+            <div class="col-sm-4">
+                <h1 class="text-left">Groups</h1>
+                <table id="groups">
+                    
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

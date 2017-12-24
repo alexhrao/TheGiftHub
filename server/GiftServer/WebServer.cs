@@ -19,7 +19,14 @@ namespace GiftServer
                 //  netsh http add urlacl url=http://+:80/ user=<USERNAME>
                 foreach (string prefix in prefixes)
                 {
-                    _listener.Prefixes.Add(prefix);
+                    try
+                    {
+                        _listener.Prefixes.Add(prefix);
+                    }
+                    catch (Exception)
+                    {
+                        // OK - only exception is access is denied - we know this will be ok
+                    }
                 }
                 _responseGenerator = method;
                 _listener.Start();

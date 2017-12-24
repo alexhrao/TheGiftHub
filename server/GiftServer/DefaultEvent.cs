@@ -67,7 +67,7 @@ namespace GiftServer
                                 {
                                     // Create new event future, add to list.
                                     Futures.Add(new EventFuture(
-                                        Convert.ToUInt64(reader["EventUserFutureID"]),
+                                        Convert.ToUInt64(reader["EventFutureID"]),
                                         Convert.ToInt32(reader["EventYear"]), 
                                         Convert.ToInt32(reader["EventMonth"]), 
                                         Convert.ToInt32(reader["EventDay"])));

@@ -41,6 +41,7 @@ CREATE TABLE gift_registry_db.users (
     UserBio VARCHAR(4095) NULL,
     UserBirthMonth INT NOT NULL DEFAULT 0,
     UserBirthDay INT NOT NULL DEFAULT 0,
+    UserURL CHAR(28) NOT NULL UNIQUE,
     TimeCreated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
         

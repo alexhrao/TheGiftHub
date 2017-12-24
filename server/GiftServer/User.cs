@@ -25,12 +25,13 @@ namespace GiftServer
                 private set;
             } = 0;
             public string UserName = "";
-            public string Email;
+            public MailAddress Email;
             public Password Password;
             public int BirthMonth = 0;
             public int BirthDay = 0;
             public string Bio = "";
             public Preferences Preferences;
+            public string UserUrl = "";
             public DateTime DateJoined
             {
                 get;
@@ -52,12 +53,12 @@ namespace GiftServer
                                 cmd.CommandText = "SELECT GiftID FROM gifts WHERE UserID = @id;";
                                 cmd.Parameters.AddWithValue("@id", UserId);
                                 cmd.Prepare();
-                                using (MySqlDataReader reader = cmd.ExecuteReader())
+                                using (MySqlDataReader Reader = cmd.ExecuteReader())
                                 {
                                     // add a new gift for each id:
-                                    while (reader.Read())
+                                    while (Reader.Read())
                                     {
-                                        _gifts.Add(new Gift(Convert.ToUInt64(reader["GiftID"])));
+                                        _gifts.Add(new Gift(Convert.ToUInt64(Reader["GiftID"])));
                                     }
                                 }
                             }
@@ -82,11 +83,11 @@ namespace GiftServer
                                 cmd.CommandText = "SELECT GroupID FROM groups_users WHERE UserID = @id;";
                                 cmd.Parameters.AddWithValue("@id", UserId);
                                 cmd.Prepare();
-                                using (MySqlDataReader reader = cmd.ExecuteReader())
+                                using (MySqlDataReader Reader = cmd.ExecuteReader())
                                 {
-                                    while (reader.Read())
+                                    while (Reader.Read())
                                     {
-                                        _groups.Add(new Group(Convert.ToUInt64(reader["GroupID"])));
+                                        _groups.Add(new Group(Convert.ToUInt64(Reader["GroupID"])));
                                     }
                                 }
                             }
@@ -111,11 +112,11 @@ namespace GiftServer
                                 cmd.CommandText = "SELECT EventUserID FROM events_users WHERE UserID = @id;";
                                 cmd.Parameters.AddWithValue("@id", UserId);
                                 cmd.Prepare();
-                                using (MySqlDataReader reader = cmd.ExecuteReader())
+                                using (MySqlDataReader Reader = cmd.ExecuteReader())
                                 {
-                                    while (reader.Read())
+                                    while (Reader.Read())
                                     {
-                                        _events.Add(new EventUser(Convert.ToUInt64(reader["EventUserID"])));
+                                        _events.Add(new EventUser(Convert.ToUInt64(Reader["EventUserID"])));
                                     }
                                 }
                             }
@@ -127,43 +128,51 @@ namespace GiftServer
             public User(ulong id)
             {
                 // User is already logged in; just fetch their information!
+                FetchInformation(id);
+            }
+            public User(MailAddress email)
+            {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT users.*, passwords.PasswordHash, passwords.PasswordSalt, passwords.PasswordIter "
-                                        + "FROM users "
-                                        + "INNER JOIN passwords ON passwords.UserID = users.UserID "
-                                        + "WHERE users.UserID = @id;";
-                        cmd.Parameters.AddWithValue("@id", id);
+                        cmd.CommandText = "SELECT users.UserID FROM users WHERE UserEmail = @eml;";
+                        cmd.Parameters.AddWithValue("@eml", email.Address);
                         cmd.Prepare();
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        using (MySqlDataReader Reader = cmd.ExecuteReader())
                         {
-                            if (reader.Read())
+                            if (Reader.Read())
                             {
-                                this.UserId = id;
-                                this.UserName = Convert.ToString(reader["UserName"]);
-                                this.Email = Convert.ToString(reader["UserEmail"]);
-                                this.Password = new Password(Convert.ToString(reader["PasswordHash"]),
-                                                             Convert.ToString(reader["PasswordSalt"]),
-                                                             Convert.ToInt32(reader["PasswordIter"]));
-                                this.BirthDay = Convert.ToInt32(reader["UserBirthDay"]);
-                                this.BirthMonth = Convert.ToInt32(reader["UserBirthMonth"]);
-                                this.DateJoined = (DateTime)(reader["TimeCreated"]);
-                                this.Bio = Convert.ToString(reader["UserBio"]);
-                                Preferences = new Preferences(this);
-                            }
-                            else
-                            {
-                                throw new UserNotFoundException(id);
+                                FetchInformation(Convert.ToUInt64(Reader["UserID"]));
                             }
                         }
                     }
                 }
             }
-            public User(string email, string password)
+            public User(string hash)
+            {
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT users.UserID FROM users WHERE UserURL = @url;";
+                        cmd.Parameters.AddWithValue("@url", hash);
+                        cmd.Prepare();
+                        using (MySqlDataReader Reader = cmd.ExecuteReader())
+                        {
+                            if (Reader.Read())
+                            {
+                                FetchInformation(Convert.ToUInt64(Reader["UserID"]));
+                            }
+                        }
+                    }
+                }
+            }
+            public User(MailAddress email, string password)
             {
                 // If this is called, the user already exists in DB; fetch. If it can't find it, throw UserNotFoundException. 
                 // If found, but password mismatch, throw InvalidPasswordException.
@@ -177,33 +186,34 @@ namespace GiftServer
                                         + "FROM users "
                                         + "INNER JOIN passwords ON passwords.UserID = users.UserID "
                                         + "WHERE users.UserEmail = @email;";
-                        cmd.Parameters.AddWithValue("@email", email);
+                        cmd.Parameters.AddWithValue("@email", email.Address);
                         cmd.Prepare();
 
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        using (MySqlDataReader Reader = cmd.ExecuteReader())
                         {
-                            if (!reader.Read())
+                            if (!Reader.Read())
                             {
                                 // User not found, throw correct exception
-                                throw new UserNotFoundException(email);
+                                throw new UserNotFoundException(email.Address);
                             }
                             else
                             {
-                                this.Password = new Password(Convert.ToString(reader["PasswordHash"]),
-                                                             Convert.ToString(reader["PasswordSalt"]),
-                                                             Convert.ToInt32(reader["PasswordIter"]));
+                                this.Password = new Password(Convert.ToString(Reader["PasswordHash"]),
+                                                             Convert.ToString(Reader["PasswordSalt"]),
+                                                             Convert.ToInt32(Reader["PasswordIter"]));
                                 // Check password
                                 if (!Password.Verify(password))
                                 {
                                     throw new InvalidPasswordException();
                                 }
-                                UserId = Convert.ToUInt64(reader["UserID"]);
-                                this.UserName = Convert.ToString(reader["UserName"]);
+                                UserId = Convert.ToUInt64(Reader["UserID"]);
+                                this.UserName = Convert.ToString(Reader["UserName"]);
                                 this.Email = email;
-                                this.BirthDay = Convert.ToInt32(reader["UserBirthDay"]);
-                                this.BirthMonth = Convert.ToInt32(reader["UserBirthMonth"]);
-                                this.DateJoined = (DateTime)(reader["TimeCreated"]);
-                                this.Bio = Convert.ToString(reader["UserBio"]);
+                                this.BirthDay = Convert.ToInt32(Reader["UserBirthDay"]);
+                                this.BirthMonth = Convert.ToInt32(Reader["UserBirthMonth"]);
+                                this.DateJoined = (DateTime)(Reader["TimeCreated"]);
+                                this.Bio = Convert.ToString(Reader["UserBio"]);
+                                this.UserUrl = Convert.ToString(Reader["UserURL"]);
                                 this.Preferences = new Preferences(this);
                             }
                         }
@@ -211,7 +221,7 @@ namespace GiftServer
                 }
             }
 
-            public User(string Email, Password Password)
+            public User(MailAddress Email, Password Password)
             {
                 this.Email = Email;
                 this.Password = Password;
@@ -241,7 +251,7 @@ namespace GiftServer
                 }
                 // Send email
                 
-                MailMessage email = new MailMessage(new MailAddress("The Gift Hub<support@TheGiftHub.org>"), new MailAddress(this.Email))
+                MailMessage email = new MailMessage(new MailAddress("The Gift Hub<support@TheGiftHub.org>"), this.Email)
                 {
                     Body = ResetManager.GenerateNotification(this),
                     Subject = "Password Reset Notification",
@@ -257,6 +267,45 @@ namespace GiftServer
                 }
                 return true;
             }
+            private void FetchInformation(ulong id)
+            {
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT users.*, passwords.PasswordHash, passwords.PasswordSalt, passwords.PasswordIter "
+                                        + "FROM users "
+                                        + "INNER JOIN passwords ON passwords.UserID = users.UserID "
+                                        + "WHERE users.UserID = @id;";
+                        cmd.Parameters.AddWithValue("@id", id);
+                        cmd.Prepare();
+                        using (MySqlDataReader Reader = cmd.ExecuteReader())
+                        {
+                            if (Reader.Read())
+                            {
+                                this.UserId = id;
+                                this.UserName = Convert.ToString(Reader["UserName"]);
+                                this.Email = new MailAddress(Convert.ToString(Reader["UserEmail"]));
+                                this.Password = new Password(Convert.ToString(Reader["PasswordHash"]),
+                                                             Convert.ToString(Reader["PasswordSalt"]),
+                                                             Convert.ToInt32(Reader["PasswordIter"]));
+                                this.BirthDay = Convert.ToInt32(Reader["UserBirthDay"]);
+                                this.BirthMonth = Convert.ToInt32(Reader["UserBirthMonth"]);
+                                this.DateJoined = (DateTime)(Reader["TimeCreated"]);
+                                this.Bio = Convert.ToString(Reader["UserBio"]);
+                                this.UserUrl = Convert.ToString(Reader["UserURL"]);
+                                Preferences = new Preferences(this);
+                            }
+                            else
+                            {
+                                throw new UserNotFoundException(id);
+                            }
+                        }
+                    }
+                }
+            }
             public bool Create()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -267,27 +316,50 @@ namespace GiftServer
                         // Check if email present:
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT UserID FROM users WHERE UserEmail = @email;";
-                        cmd.Parameters.AddWithValue("@email", this.Email);
+                        cmd.Parameters.AddWithValue("@email", this.Email.Address);
                         cmd.Prepare();
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        using (MySqlDataReader Reader = cmd.ExecuteReader())
                         {
-                            if (reader.Read())
+                            if (Reader.Read())
                             {
                                 // User already exists; throw exception:
-                                throw new DuplicateUserException(this.Email);
+                                throw new DuplicateUserException(this.Email.Address);
                             }
                         }
                     }
+                    bool isUnique = false;
+                    while (!isUnique)
+                    {
+                        Password url = new Password(Email.Address);
+                        UserUrl = url.Hash.Replace("+", "0").Replace("/", "0");
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "SELECT users.UserID FROM users WHERE users.UserURL = @url;";
+                            cmd.Parameters.AddWithValue("@url", UserUrl);
+                            cmd.Prepare();
+                            using (MySqlDataReader Reader = cmd.ExecuteReader())
+                            {
+                                if (!Reader.Read())
+                                {
+                                    // Unique!
+                                    isUnique = true;
+                                }
+                            }
+                        }
+                    }
+                    // Look and see
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "INSERT INTO users (UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio) "
-                            + "VALUES (@name, @email, @bmonth, @bday, @bio);";
+                        cmd.CommandText = "INSERT INTO users (UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL) "
+                            + "VALUES (@name, @email, @bmonth, @bday, @bio, @url);";
                         cmd.Parameters.AddWithValue("@name", this.UserName);
                         cmd.Parameters.AddWithValue("@email", this.Email);
                         cmd.Parameters.AddWithValue("@bmonth", this.BirthMonth);
                         cmd.Parameters.AddWithValue("@bday", this.BirthDay);
                         cmd.Parameters.AddWithValue("@bio", this.Bio);
+                        cmd.Parameters.AddWithValue("@url", this.UserUrl);
                         cmd.Prepare();
                         if (cmd.ExecuteNonQuery() == 0)
                         {
@@ -317,11 +389,11 @@ namespace GiftServer
                         cmd.CommandText = "SELECT TimeCreated FROM users WHERE UserID = @id;";
                         cmd.Parameters.AddWithValue("@id", this.UserId);
                         cmd.Prepare();
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        using (MySqlDataReader Reader = cmd.ExecuteReader())
                         {
-                            while (reader.Read())
+                            while (Reader.Read())
                             {
-                                this.DateJoined = (DateTime)(reader["TimeCreated"]);
+                                this.DateJoined = (DateTime)(Reader["TimeCreated"]);
                             }
                         }
                     }
@@ -350,12 +422,12 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@email", this.Email);
                         cmd.Parameters.AddWithValue("@id", this.UserId);
                         cmd.Prepare();
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        using (MySqlDataReader Reader = cmd.ExecuteReader())
                         {
-                            if (reader.Read())
+                            if (Reader.Read())
                             {
                                 // User already exists; throw exception:
-                                throw new DuplicateUserException(this.Email);
+                                throw new DuplicateUserException(this.Email.Address);
                             }
                         }
                     }

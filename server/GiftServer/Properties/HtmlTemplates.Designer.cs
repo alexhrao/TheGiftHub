@@ -266,5 +266,35 @@ namespace GiftServer.Properties {
                 return ResourceManager.GetString("profile", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+        ///&lt;head&gt;
+        ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
+        ///    &lt;title&gt;My Profile&lt;/title&gt;
+        ///    &lt;script&gt;
+        ///    &lt;/script&gt;
+        ///    &lt;style&gt;
+        ///        .input-group,
+        ///        .form-group,
+        ///        .spaced,
+        ///        .input {
+        ///            margin: 10px;
+        ///        }
+        ///        body {
+        ///            background-color: #CECECE;
+        ///            color: black;
+        ///            font-family: &apos;Segoe UI&apos;, Tahoma, Geneva, Verdana, sans-serif;
+        ///        }
+        ///        h2 {
+        ///            font-style: italic;
+        ///        }
+        /// [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string publicProfile {
+            get {
+                return ResourceManager.GetString("publicProfile", resourceCulture);
+            }
+        }
     }
 }

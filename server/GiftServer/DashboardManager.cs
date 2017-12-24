@@ -37,7 +37,7 @@ namespace GiftServer
                         cmd.Connection = con;
                         // Get all events that have anything to do with anyone in any group with our user.
                         // look at template
-                        cmd.CommandText = "SELECT events_users_groups.EventUserID, users.UserName, users.UserEmail, "
+                        cmd.CommandText = "SELECT events_users_groups.EventUserID, users.UserName, users.UserEmail, users.UserURL, "
                                         + "events_users.EventName, events_users.EventDay, events_users.EventMonth, events_users.EventYear, events_users.EventRecurs, events_users.EventDescription "
                                         + "FROM events_users_groups "
                                         + "INNER JOIN events_users ON events_users_groups.EventUserID = events_users.EventUserID "
@@ -64,31 +64,31 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@uid", user.UserId);
                         cmd.Prepare();
                         int eventNum = 0;
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        using (MySqlDataReader Reader = cmd.ExecuteReader())
                         {
-                            while (reader.Read())
+                            while (Reader.Read())
                             {
                                 // Soonest is first. Loop until we reach a different event!
-                                string eName = Convert.ToString(reader["EventName"]);
+                                string eName = Convert.ToString(Reader["EventName"]);
                                 // Create HtmlNode for this event:
                                 // <li><h5>(ENAME) - (MM/DD) (CHEVRON_RIGHT)</h5><ul></ul></li>
                                 HtmlNode eNode = HtmlNode.CreateNode(@"<li><h5 id=""menu-dropdown"" data-toggle=""collapse"" data-target=""#EventNumber" + eventNum + @""">"
-                                                                    + HttpUtility.HtmlEncode(Convert.ToString(reader["EventName"]))
+                                                                    + HttpUtility.HtmlEncode(Convert.ToString(Reader["EventName"]))
                                                                     + " - ("
-                                                                    + Convert.ToInt32(reader["EventMonth"]) + "/"
-                                                                    + Convert.ToInt32(reader["EventDay"])
+                                                                    + Convert.ToInt32(Reader["EventMonth"]) + "/"
+                                                                    + Convert.ToInt32(Reader["EventDay"])
                                                                     + @") <span class=""glyphicon glyphicon-chevron-right""></span></h5></li>");
                                 HtmlNode users = HtmlNode.CreateNode(@"<ul id=""EventNumber" + eventNum + @""" class=""collapse""></ul>");
                                 eNode.AppendChild(users);
-                                while (eName.Equals(Convert.ToString(reader["EventName"])))
+                                while (eName.Equals(Convert.ToString(Reader["EventName"])))
                                 {
                                     // Add HtmlNode for this person:
                                     // <li><a>(NAME) (ARROW_RIGHT)</a></li>
-                                    HtmlNode userInfo = HtmlNode.CreateNode(@"<li><a href="""">"
-                                                                            + HttpUtility.HtmlEncode(Convert.ToString(reader["UserName"])) + " "
+                                    HtmlNode userInfo = HtmlNode.CreateNode(@"<li><a href=""" + Constants.URL + "?dest=user&user=" + Convert.ToString(Reader["UserURL"]) + @""">"
+                                                                            + HttpUtility.HtmlEncode(Convert.ToString(Reader["UserName"])) + " "
                                                                             + @"<span class=""glyphicon glyphicon-arrow-right""></span></a></li>");
                                     users.AppendChild(userInfo);
-                                    if (!reader.Read())
+                                    if (!Reader.Read())
                                     {
                                         break;
                                     }
