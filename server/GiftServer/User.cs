@@ -91,6 +91,20 @@ namespace GiftServer
                                     }
                                 }
                             }
+                            using (MySqlCommand cmd = new MySqlCommand())
+                            {
+                                cmd.Connection = con;
+                                cmd.CommandText = "SELECT GroupID FROM groups WHERE AdminID = @id;";
+                                cmd.Parameters.AddWithValue("@id", UserId);
+                                cmd.Prepare();
+                                using (MySqlDataReader Reader = cmd.ExecuteReader())
+                                {
+                                    while (Reader.Read())
+                                    {
+                                        _groups.Add(new Group(Convert.ToUInt64(Reader["GroupID"])));
+                                    }
+                                }
+                            }
                         }
                     }
                     return _groups;
