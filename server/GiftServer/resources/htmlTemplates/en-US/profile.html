@@ -254,14 +254,13 @@
                     }, function (data, status) {
                         if (data != 0) {
                             // Success! loop over elems, sending email as additions:
-                            var groupId = data;
                             $('#newGroupMembers li').each(function (index) {
                                 // Post this group:
                                 $.post(".", {
                                     submit: "Change",
                                     type: "Group",
                                     item: "addUser",
-                                    itemId: groupId,
+                                    itemId: data,
                                     addUserEmail: $(this).attr("data-user-email")
                                 });
                             });

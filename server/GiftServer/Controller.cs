@@ -175,7 +175,6 @@ namespace GiftServer
                                             case "Group":
                                                 try
                                                 {
-
                                                     Group group = new Group(_user, _dict["name"]);
                                                     group.Create();
                                                     return group.GroupId.ToString();
@@ -669,15 +668,18 @@ namespace GiftServer
             {
                 if (_user != null)
                 {
-                    gift.Name = _dict["giftName"];
-                    gift.Description = _dict["giftDescription"];
-                    gift.Url = _dict["giftUrl"];
-                    gift.Cost = Convert.ToDouble(_dict["giftCost"] == null || _dict["giftCost"].Length == 0 ? "0.00" : _dict["giftCost"]);
-                    gift.Quantity = Convert.ToUInt32(_dict["giftQuantity"] == null || _dict["giftQuantity"].Length == 0 ? "1" : _dict["giftQuantity"]);
-                    gift.Rating = Convert.ToDouble(_dict["giftRating"] == null || _dict["giftRating"].Length == 0 ? "0.0" : _dict["giftRating"]);
-                    gift.ColorText = _dict["giftColorText"];
+                    gift.Name = _dict["name"];
+                    gift.Description = _dict["description"];
+                    gift.Url = _dict["url"];
+                    gift.Cost = Convert.ToDouble(_dict["cost"] == null || _dict["cost"].Length == 0 ? "0.00" : _dict["cost"]);
+                    gift.Quantity = Convert.ToUInt32(_dict["quantity"] == null || _dict["quantity"].Length == 0 ? "1" : _dict["quantity"]);
+                    gift.Rating = Convert.ToDouble(_dict["rating"] == null || _dict["rating"].Length == 0 ? "0.0" : _dict["rating"]);
+                    gift.ColorText = _dict["colorText"];
+                    gift.Stores = _dict["stores"];
+                    gift.Size = _dict["size"];
+                    // gift.Color = _dict["color"]; // as a hex
                     gift.Update();
-                    return ListManager.GiftList(_user);
+                    return "200";
                 }
                 else
                 {
