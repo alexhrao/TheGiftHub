@@ -227,7 +227,7 @@
                             // Iterate over lis, make sure not already added
                             var exists = false;
                             $("#newGroupMembers li").each(function (index) {
-                                if ((this).val() === $('#newGroupAddUser').val()) {
+                                if ($(this).val() === $('#newGroupAddUser').val()) {
                                     // found
                                     exists = true;
                                     return false;
@@ -245,12 +245,37 @@
                         }
                     });
             });
+            $('#createNewGroupSubmit').click(function () {
+                $.post(".",
+                    {
+                        submit: "Create",
+                        type: "Group",
+                        name: $('#newGroupName').val()
+                    }, function (data, status) {
+                        if (data != 0) {
+                            // Success! loop over elems, sending email as additions:
+                            var groupId = data;
+                            $('#newGroupMembers li').each(function (index) {
+                                // Post this group:
+                                $.post(".", {
+                                    submit: "Change",
+                                    type: "Group",
+                                    item: "addUser",
+                                    itemId: groupId,
+                                    addUserEmail: $(this).attr("data-user-email")
+                                });
+                            });
+                            // close modal
+                            $('#addGroup').modal('hide');
+                        }
+                    });
+            });
             $('#groupAddUser').click(function () {
                 // Add to list of users (add email as value, name as text)
                 // grab name
                 var name = $('#foundUser').text();
                 var email = $('#foundUser').val();
-                $('#newGroupMembers').prepend("<li value=\"" + email + "\">" + name + "</li>");
+                $('#newGroupMembers').prepend("<li data-user-email=\"" + email + "\">" + name + "</li>");
                 $('#userResult').addClass("hidden");
                 $('#newGroupAddUser').val("");
             });
@@ -515,7 +540,7 @@
                             </ul>
                         </div>
                         <div class="row form-group">
-                            <button name="submit" value="newGroup" role="button" class="btn btn-success">
+                            <button id="createNewGroupSubmit" name="submit" value="newGroup" role="button" class="btn btn-success">
                                 Create new Group
                             </button>
                         </div>

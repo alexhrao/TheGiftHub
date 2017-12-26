@@ -70,7 +70,7 @@ namespace GiftServer
                                 break;
                             case "logged":
                                 Console.WriteLine("Users logged in:");
-                                foreach (Controller.Connection con in Controller.Connections)
+                                foreach (Connection con in Controller.Connections)
                                 {
                                     Console.WriteLine("\tUser " + con.Info.UserId + " (Hash: " + con.Info.Hash + ") Connected from following locations:");
                                     foreach (IPEndPoint end in con.Ends)

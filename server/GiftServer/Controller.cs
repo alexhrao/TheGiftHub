@@ -125,20 +125,6 @@ namespace GiftServer
                                     case "Logout":
                                         Logout();
                                         return LoginManager.Login();
-                                    case "Signup":
-                                        try
-                                        {
-                                            _user = new User(new MailAddress(_dict["email"]), new Password(_dict["password"]))
-                                            {
-                                                UserName = _dict["userName"]
-                                            };
-                                            _user.Create();
-                                            return LoginManager.SuccessSignup();
-                                        }
-                                        catch (Exception e)
-                                        {
-                                            return LoginManager.FailLogin(e);
-                                        }
                                     case "Login":
                                         return Login(_dict["email"], _dict["password"]);
                                     case "PasswordResetRequest":
@@ -166,6 +152,43 @@ namespace GiftServer
                                                 return Update(new Group(changeId));
                                             case "Gift":
                                                 return Update(new Gift(changeId));
+                                            default:
+                                                return "";
+                                        }
+                                    case "Create":
+                                        switch (_dict["type"])
+                                        {
+                                            case "User":
+                                                try
+                                                {
+                                                    _user = new User(new MailAddress(_dict["email"]), new Password(_dict["password"]))
+                                                    {
+                                                        UserName = _dict["userName"]
+                                                    };
+                                                    _user.Create();
+                                                    return LoginManager.SuccessSignup();
+                                                }
+                                                catch (Exception e)
+                                                {
+                                                    return LoginManager.FailLogin(e);
+                                                }
+                                            case "Group":
+                                                try
+                                                {
+
+                                                    Group group = new Group(_user, _dict["name"]);
+                                                    group.Create();
+                                                    return group.GroupId.ToString();
+                                                }
+                                                catch (Exception)
+                                                {
+                                                    // How act?
+                                                    return "0";
+                                                }
+                                            case "Event":
+
+                                            case "Gift":
+
                                             default:
                                                 return "";
                                         }
@@ -597,8 +620,7 @@ namespace GiftServer
                 {
                     case "addUser":
                         {
-                            // Get ID of user to add to this group
-                            User added = new User(Convert.ToUInt64(_dict["userID"]));
+                            User added = new User(new MailAddress(_dict["addUserEmail"]));
                             group.Add(added);
                             break;
                         }
