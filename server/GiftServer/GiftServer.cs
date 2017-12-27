@@ -10,6 +10,7 @@ namespace GiftServer
         public class GiftServer
         {
             public List<IPEndPoint> Addresses = new List<IPEndPoint>();
+            private Object key = new Object();
             /// <summary>
             /// Main method and entry point - starts the web server on the specified host/port.
             /// </summary>
@@ -67,6 +68,18 @@ namespace GiftServer
                                 }
                                 break;
                             case "statistics":
+                                if (Addresses.Count == 0)
+                                {
+                                    Console.WriteLine("The server has not yet been contacted");
+                                }
+                                else if (Addresses.Count == 1)
+                                {
+                                    Console.WriteLine("The server has been contacted 1 time");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("The Server has been contacted " + Addresses.Count + " times.");
+                                }
                                 break;
                             case "logged":
                                 Console.WriteLine("Users logged in:");
@@ -96,7 +109,10 @@ namespace GiftServer
             }
             public string Route(HttpListenerContext ctx)
             {
-                Addresses.Add(ctx.Request.RemoteEndPoint);
+                lock(key)
+                {
+                    Addresses.Add(ctx.Request.RemoteEndPoint);
+                }
                 Controller control = new Controller(ctx);
                 return control.Dispatch();
             }

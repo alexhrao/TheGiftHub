@@ -79,6 +79,15 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Gift List.
+        /// </summary>
+        internal static string giftList {
+            get {
+                return ResourceManager.GetString("giftList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;p&gt;&lt;strong&gt;Uh-Oh...&lt;/strong&gt; Looks like we didn&apos;t recognize that Username/Password pair. Try again or &lt;a data-toggle=&quot;modal&quot; href=&quot;#resetPassword&quot;&gt;Reset your Password&lt;/a&gt;&lt;/p&gt;.
         /// </summary>
         internal static string invalidCredentials {

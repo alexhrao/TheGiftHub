@@ -31,6 +31,7 @@ namespace GiftServer
                     return culture;
                 }
             }
+            private static Object key = new Object();
             private CultureInfo culture;
             private User _user;
             private HttpListenerContext _ctx;
@@ -187,7 +188,30 @@ namespace GiftServer
                                             case "Event":
 
                                             case "Gift":
-
+                                                try
+                                                {
+                                                    Gift gift = new Gift(_dict["name"])
+                                                    {
+                                                        Description = _dict["description"],
+                                                        Quantity = (_dict["quantity"] == null ? 0u : 1u),
+                                                        Size = _dict["size"],
+                                                        Cost = Convert.ToDouble(_dict["cost"]),
+                                                        Url = _dict["url"],
+                                                        Rating = Convert.ToDouble(_dict["rating"]),
+                                                        Stores = _dict["stores"],
+                                                        User = _user,
+                                                        ColorText = _dict["colorText"],
+                                                        Category = new Category(_dict["category"])
+                                                        // Color = _dict["color"],
+                                                        // Category = new Category(Convert.ToUInt64(_dict["category"]))
+                                                    };
+                                                    gift.Create();
+                                                    return "200";
+                                                }
+                                                catch (Exception e)
+                                                {
+                                                    return "0";
+                                                }
                                             default:
                                                 return "";
                                         }
@@ -286,6 +310,8 @@ namespace GiftServer
                         return ProfileManager.ProfilePage(_user);
                     case "myList":
                         return ListManager.GiftList(_user);
+                    case "list":
+                        return ListManager.PublicList(new User(_request.QueryString["user"]));
                     case "user":
                         return ProfileManager.PublicProfile(new User(_request.QueryString["user"]));
                     default:
@@ -677,6 +703,8 @@ namespace GiftServer
                     gift.ColorText = _dict["colorText"];
                     gift.Stores = _dict["stores"];
                     gift.Size = _dict["size"];
+                    gift.Category = new Category(_dict["category"]);
+                    // gift.DateReceived = DateTime.Parse(_dict["dateReceived"]);
                     // gift.Color = _dict["color"]; // as a hex
                     gift.Update();
                     return "200";
@@ -760,41 +788,50 @@ namespace GiftServer
 
             private string AddConnection(ulong userId, IPEndPoint iPEndPoint)
             {
-                string hash = "";
-                if (!Connections.Exists(new Predicate<Connection>((Connection con) =>
+                lock (key)
                 {
-                    if (con.Info != null && userId.Equals(con.Info.UserId))
+                    string hash = "";
+                    if (!Connections.Exists(new Predicate<Connection>((Connection con) =>
                     {
-                        hash = con.Info.Hash;
+                        if (con.Info != null && userId.Equals(con.Info.UserId))
+                        {
+                            hash = con.Info.Hash;
+                            con.Ends.Add(iPEndPoint);
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    })))
+                    {
+                        Connection con = new Connection(userId);
                         con.Ends.Add(iPEndPoint);
-                        return true;
+                        Connections.Add(con);
+                        hash = con.Info.Hash;
                     }
-                    else
-                    {
-                        return false;
-                    }
-                })))
-                {
-                    Connection con = new Connection(userId);
-                    con.Ends.Add(iPEndPoint);
-                    Connections.Add(con);
-                    hash = con.Info.Hash;
+                    return hash;
                 }
-                return hash;
             }
             private void RemoveConnection(ulong userId)
             {
-                Connections.RemoveAll(new Predicate<Connection>((Connection con) =>
+                lock(key)
                 {
-                    return con.Info.UserId == userId;
-                }));
+                    Connections.RemoveAll(new Predicate<Connection>((Connection con) =>
+                    {
+                        return con.Info.UserId == userId;
+                    }));
+                }
             }
             private void RemoveConnection(string hash)
             {
-                Connections.RemoveAll(new Predicate<Connection>((Connection con) =>
+                lock(key)
                 {
-                    return hash.Equals(con.Info.Hash);
-                }));
+                    Connections.RemoveAll(new Predicate<Connection>((Connection con) =>
+                    {
+                        return hash.Equals(con.Info.Hash);
+                    }));
+                }
             }
             private static string GeneratePath(string uri)
             {

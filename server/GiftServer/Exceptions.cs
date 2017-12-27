@@ -56,6 +56,7 @@ namespace GiftServer
         public class CategoryNotFoundException : Exception
         {
             public CategoryNotFoundException(ulong id) : base("Category with ID " + id + " Not Found") { }
+            public CategoryNotFoundException(string name) : base("Category with name " + name + " Not Found") { }
         }
 
         public abstract class GroupException : Exception

@@ -14,6 +14,7 @@ namespace GiftServer
             public readonly ulong CategoryId = 0;
             public readonly string Name;
             public readonly string Description;
+            private string v;
 
             public Category(ulong id)
             {
@@ -37,6 +38,34 @@ namespace GiftServer
                             else
                             {
                                 throw new CategoryNotFoundException(id);
+                            }
+                        }
+                    }
+                }
+            }
+
+            public Category(string name)
+            {
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT * FROM categories WHERE CategoryName = @name;";
+                        cmd.Parameters.AddWithValue("@name", name);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                this.CategoryId = Convert.ToUInt64(reader["CategoryID"]);
+                                this.Name = Convert.ToString(reader["CategoryName"]);
+                                this.Description = Convert.ToString(reader["CategoryDescription"]);
+                            }
+                            else
+                            {
+                                throw new CategoryNotFoundException(name);
                             }
                         }
                     }

@@ -145,6 +145,9 @@
   <data name="profile" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\htmlTemplates\en-US\profile.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="publicList" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\htmlTemplates\en-GB\publicList.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="publicProfile" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>resources\htmlTemplates\en-GB\publicProfile.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>

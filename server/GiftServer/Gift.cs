@@ -122,19 +122,14 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@desc", Description);
                         cmd.Parameters.AddWithValue("@url", Url);
                         cmd.Parameters.AddWithValue("@cost", Cost);
+                        cmd.Parameters.AddWithValue("@stores", Stores);
+                        cmd.Parameters.AddWithValue("@quantity", Quantity);
                         cmd.Parameters.AddWithValue("@hex", Color);
                         cmd.Parameters.AddWithValue("@color", ColorText);
                         cmd.Parameters.AddWithValue("@size", Size);
                         cmd.Parameters.AddWithValue("@category", Category.CategoryId);
                         cmd.Parameters.AddWithValue("@rating", Rating);
-                        if (DateReceived == DateTime.MinValue)
-                        {
-                            cmd.Parameters.AddWithValue("@rec", "");
-                        }
-                        else
-                        {
-                            cmd.Parameters.AddWithValue("@rec", DateReceived.ToString("yyyy-MM-dd"));
-                        }
+                        cmd.Parameters.AddWithValue("@rec", DateReceived.ToString("yyyy-MM-dd"));
                         cmd.Prepare();
                         if (cmd.ExecuteNonQuery() == 1)
                         {
@@ -362,8 +357,7 @@ namespace GiftServer
                 XmlElement size = info.CreateElement("size");
                 size.InnerText = HttpUtility.HtmlEncode(Size);
                 XmlElement category = info.CreateElement("category");
-                category.SetAttribute("name", Category.Name);
-                category.InnerText = HttpUtility.HtmlEncode(Category.CategoryId);
+                category.InnerText = HttpUtility.HtmlEncode(Category.Name);
                 XmlElement rating = info.CreateElement("rating");
                 rating.InnerText = HttpUtility.HtmlEncode(Rating);
                 XmlElement image = info.CreateElement("image");

@@ -271,6 +271,29 @@ namespace GiftServer.Properties {
         ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
         ///&lt;head&gt;
         ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
+        ///    &lt;title&gt;My Gift List&lt;/title&gt;
+        ///    &lt;script&gt;
+        ///        jQuery(document).ready(function ($) {
+        ///            $(&quot;.clickable-row&quot;).click(function () {
+        ///                window.location = $(this).data(&quot;href&quot;);
+        ///            });
+        ///            $(&quot;#image&quot;).change(function () {
+        ///                readURL(this);
+        ///            });
+        ///            $(&apos;.star-rating&apos;).rating({
+        ///                displayOnly: true,
+        ///                step: 0.5,        /// [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string publicList {
+            get {
+                return ResourceManager.GetString("publicList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+        ///&lt;head&gt;
+        ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
         ///    &lt;title&gt;My Profile&lt;/title&gt;
         ///    &lt;script&gt;
         ///    &lt;/script&gt;

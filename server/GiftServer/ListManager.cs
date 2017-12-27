@@ -2,8 +2,10 @@
 using GiftServer.Properties;
 using GiftServer.Server;
 using HtmlAgilityPack;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Resources;
 using System.Threading;
 using System.Web;
@@ -14,26 +16,56 @@ namespace GiftServer
     {
         public class ListManager
         {
-            private ResourceManager ResourceManager;
+            private ResourceManager HtmlManager;
+            private ResourceManager StringManager;
             private NavigationManager NavigationManager;
 
             public ListManager(Controller controller)
             {
                 Thread.CurrentThread.CurrentUICulture = controller.Culture;
                 Thread.CurrentThread.CurrentCulture = controller.Culture;
-                ResourceManager = new ResourceManager("GiftServer.HtmlTemplates", typeof(ListManager).Assembly);
+                HtmlManager = new ResourceManager("GiftServer.HtmlTemplates", typeof(ListManager).Assembly);
+                StringManager = new ResourceManager("GiftServer.Strings", typeof(ListManager).Assembly);
                 NavigationManager = controller.NavigationManager;
+            }
+            public string PublicList(User user)
+            {
+                return GiftList(user);
             }
             public string GiftList(User user)
             {
                 HtmlDocument myList = new HtmlDocument();
-                myList.LoadHtml(NavigationManager.NavigationBar(user) + ResourceManager.GetString("list"));
-
-                // Translate into correct culture
-
+                myList.LoadHtml(NavigationManager.NavigationBar(user) + HtmlManager.GetString("list"));
+                // Add category options to new and edit:
+                HtmlNode categoryEdit = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" editGiftCategory \")]");
+                HtmlNode categoryNew = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" newGiftCategory \")]");
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT categories.CategoryName FROM categories ORDER BY CategoryName ASC;";
+                        cmd.Prepare();
+                        using (MySqlDataReader Reader = cmd.ExecuteReader())
+                        {
+                            while (Reader.Read())
+                            {
+                                string catName = Convert.ToString(Reader["CategoryName"]);
+                                HtmlNode entry = HtmlNode.CreateNode("<option value=\"" + catName + "\"></option>");
+                                entry.InnerHtml = HttpUtility.HtmlEncode(catName);
+                                categoryEdit.PrependChild(entry);
+                                categoryNew.PrependChild(entry);
+                            }
+                        }
+                    }
+                }
+                HtmlNode userName = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
+                userName.InnerHtml = user.UserName + "'s " + StringManager.GetString("giftList");
                 HtmlNode giftTable = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" giftHolder \")]");
                 HtmlNode giftTableMicro = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" xsGiftHolder \")]");
                 List<Gift> gifts = user.Gifts;
+
                 //int i = 0;
                 foreach (Gift gift in gifts)
                 {
@@ -63,10 +95,6 @@ namespace GiftServer
                                                             "<td><div class=\"parent\"><p classs\"child\">" + HttpUtility.HtmlEncode(gift.Name) + "</p></div></td>" +
                                                             "</tr>");
                         giftTableMicro.AppendChild(item);
-                        //if (i++ >= 9)
-                        //{
-                        //    break;
-                        //}
                     }
                 }
                 return myList.DocumentNode.OuterHtml;

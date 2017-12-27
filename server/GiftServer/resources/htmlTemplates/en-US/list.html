@@ -13,15 +13,18 @@
             $('.star-rating').rating({
                 displayOnly: true,
                 step: 0.5,
-                size: 'xs'
+                size: 'xs',
+                containerClass: 'minimized'
             });
             $('#editGiftRating').rating({
                 step: 0.5,
-                size: 'xs'
+                size: 'xs',
+                containerClass: 'minimized'
             });
             $('#newGiftRating').rating({
                 step: 0.5,
-                size: 'xs'
+                size: 'xs',
+                containerClass: 'minimized'
             })
 
             $('.gift-row').click(function () {
@@ -50,6 +53,7 @@
                         $('#editGiftColor').css("background-color", dom.getElementsByTagName("color")[0].innerHTML);
                         $('#editGiftColorText').val(dom.getElementsByTagName("colorText")[0].innerHTML);
                         $('#editGiftSize').val(dom.getElementsByTagName("size")[0].innerHTML);
+                        $('#editGiftCategory').val(dom.getElementsByTagName("category")[0].innerHTML);
                         $('#editGiftItem').modal();
                     }
                 });
@@ -65,18 +69,44 @@
                     url: $('#editGiftUrl').val(),
                     size: $('#editGiftSize').val(),
                     stores: $('#editGiftStores').val(),
+                    category: $('#editGiftCategory').val(),
                     cost: $('#editGiftCost').val(),
                     quantity: $('#editGiftQuantity').val(),
                     rating: $('#editGiftRating').val(),
-                    color: $('#editGiftColor').css("background-color"),
+                    color: rgb2hex($('#editGiftColor').css("background-color")),
                     colorText: $('#editGiftColorText').val()
                 }, function (data, status) {
                     if (data == 200) {
+                        window.location.reload(true);
+                    } else {
                         $('#editGiftItem').modal('hide');
+                    }
+                    });
+            });
+
+            $('#newGiftSubmit').click(function () {
+                $.post(".", {
+                    submit: "Create",
+                    type: "Gift",
+                    itemId: $('#newGiftId').val(),
+                    name: $('#newGiftName').val(),
+                    description: $('#newGiftDescription').val(),
+                    url: $('#newGiftUrl').val(),
+                    size: $('#newGiftSize').val(),
+                    stores: $('#newGiftStores').val(),
+                    // category: $('#newGiftCategory').val(),
+                    cost: $('#newGiftCost').val(),
+                    quantity: $('#newGiftQuantity').val(),
+                    rating: $('#newGiftRating').val(),
+                    // color: $('#editGiftColor').css("background-color"),
+                    colorText: $('#newGiftColorText').val()
+                }, function (data, status) {
+                    if (data == 200) {
+                        window.location.reload(true);
                     } else {
 
                     }
-                    });
+                });
             });
 
             $('#giftTableLeft').click(function () {
@@ -109,6 +139,7 @@
         }
         tr {
             cursor: pointer;
+            background-color: white;
         }
         th {
             text-align: center;
@@ -121,6 +152,9 @@
         img {
             max-height: 128px;
             max-width: 128px;
+        }
+        #addNew {
+            margin: 10px;
         }
         .parent {
             display: flex;
@@ -148,10 +182,15 @@
         .gift-row p {
             font-size: 20px;
             font-weight: bold;
+            line-height: 1.5em;
+            height: 6em;
+            overflow: hidden;
         }
-        #editGiftImage,
-        #giftTableLeft,
-        #giftTableRight {
+        .minimized {
+            font-size: 75%;
+            text-align: left;
+        }
+        #editGiftImage {
             cursor: pointer;
         }
         #previewImage {
@@ -159,6 +198,19 @@
             width: 256px;
             display: inline;
         }
+        #ratingHeader {
+            width: 8%
+        }
+        #quantHeader {
+            width: 8%;
+        }
+        #costHeader {
+            width: 8%;
+        }
+        #descHeader {
+            width: 32%;
+        }
+        
     </style>
 </head>
 <body>
@@ -209,7 +261,7 @@
                                 <div class="row">
                                     <div class="col-sm-10">
                                         <div class="form-group">
-                                            <select id="editGiftCategory" class="form-control" multiple>
+                                            <select id="editGiftCategory" class="form-control">
 
                                             </select>
                                         </div>
@@ -279,7 +331,7 @@
                 <div class="modal-content panel-primary">
                     <div class="modal-header panel-heading">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 id="newGiftTitle" class="modal-title">Edit Gift Information</h4>
+                        <h4 id="newGiftTitle" class="modal-title">Add a New Gift</h4>
                     </div>
                     <div class="modal-body">
                         <form id="newGiftForm" method="post">
@@ -318,7 +370,7 @@
                                 <div class="row">
                                     <div class="col-sm-10">
                                         <div class="form-group">
-                                            <select id="newGiftCategory" class="form-control" multiple>
+                                            <select id="newGiftCategory" class="form-control">
 
                                             </select>
                                         </div>
@@ -366,7 +418,7 @@
                             <button id="newGiftCancel" name="cancel" class="btn btn-danger" type="button" data-dismiss="modal">
                                 <p id="cancelLabel">Cancel</p>
                             </button>
-                            <button id="newGiftSubmit" name="submit" class="btn btn-success" type="submit" form="newGiftForm" value="GiftChange">
+                            <button id="newGiftSubmit" name="submit" class="btn btn-success" type="button" value="GiftChange">
                                 <p id="applyLabel">Add Gift</p>
                             </button>
                         </div>
@@ -411,29 +463,32 @@
                 </div>
             </div>
         </div>
-        <div class="row text-center">
-            <button href="#newGiftItem" data-toggle="modal" class="btn btn-success text-center">Add New Gift</button>
+        <div class="row text-left">
+            <h1 id="userName"></h1>
         </div>
-        <table class="table hidden-xs table-hover table-striped table-responsive">
+        <div class="row text-center">
+            <button id="addNew" href="#newGiftItem" data-toggle="modal" class="btn btn-success text-center">Add New Gift</button>
+        </div>
+        <table id="fullList" class="table hidden-xs table-hover table-responsive">
             <thead>
                 <tr>
                     <th>
-                        <p id="picHeader">Picture</p>
+                        <p>Picture</p>
+                    </th>
+                    <th id="ratingHeader">
+                        <p>Rating</p>
                     </th>
                     <th>
-                        <p id="ratingHeader">Rating</p>
+                        <p>Name</p>
                     </th>
-                    <th>
-                        <p id="nameHeader">Name</p>
+                    <th id="quantHeader">
+                        <p>Quantity</p>
                     </th>
-                    <th>
-                        <p id="quantityHeader">Quantity</p>
+                    <th id="costHeader">
+                        <p>Cost</p>
                     </th>
-                    <th>
-                        <p id="costHeader">Cost</p>
-                    </th>
-                    <th>
-                        <p id="descHeader">Description</p>
+                    <th id="descHeader">
+                        <p>Description</p>
                     </th>
                 </tr>
             </thead>
@@ -441,18 +496,7 @@
 
             </tbody>
         </table>
-        <div class="row">
-            <div class="col-sm-3">
-
-            </div>
-            <div class="col-sm-3 text-left">
-                <span id="giftTableLeft" class="glyphicon glyphicon-chevron-left"></span>
-            </div>
-            <div class="col-sm-3 text-right">
-                <span id="giftTableRight" class="glyphicon glyphicon-chevron-right"></span>
-            </div>
-        </div>
-        <table class="table visible-xs table-hover table-striped table-responsive">
+        <table id="minList" class="table visible-xs table-hover table-responsive">
             <thead>
                 <tr>
                     <th>

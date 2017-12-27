@@ -84,7 +84,7 @@ namespace GiftServer
                                 {
                                     // Add HtmlNode for this person:
                                     // <li><a>(NAME) (ARROW_RIGHT)</a></li>
-                                    HtmlNode userInfo = HtmlNode.CreateNode(@"<li><a href=""" + Constants.URL + "?dest=user&user=" + Convert.ToString(Reader["UserURL"]) + @""">"
+                                    HtmlNode userInfo = HtmlNode.CreateNode(@"<li><a href=""" + Constants.URL + "?dest=list&user=" + Convert.ToString(Reader["UserURL"]) + @""">"
                                                                             + HttpUtility.HtmlEncode(Convert.ToString(Reader["UserName"])) + " "
                                                                             + @"<span class=""glyphicon glyphicon-arrow-right""></span></a></li>");
                                     users.AppendChild(userInfo);
