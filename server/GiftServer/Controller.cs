@@ -204,7 +204,7 @@ namespace GiftServer
                                                         // Color = _dict["color"],
                                                     };
                                                     gift.Create();
-                                                    return "200";
+                                                    return gift.GiftId.ToString();
                                                 }
                                                 catch (Exception e)
                                                 {
