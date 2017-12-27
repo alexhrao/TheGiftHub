@@ -192,17 +192,16 @@ namespace GiftServer
                                                     Gift gift = new Gift(_dict["name"])
                                                     {
                                                         Description = _dict["description"],
-                                                        Quantity = (_dict["quantity"] == null ? 0u : 1u),
+                                                        Cost = Convert.ToDouble(_dict["cost"] == null || _dict["cost"].Length == 0 ? "0.00" : _dict["cost"]),
+                                                        Quantity = Convert.ToUInt32(_dict["quantity"] == null || _dict["quantity"].Length == 0 ? "1" : _dict["quantity"]),
+                                                        Rating = Convert.ToDouble(_dict["rating"] == null || _dict["rating"].Length == 0 ? "0.0" : _dict["rating"]),
                                                         Size = _dict["size"],
-                                                        Cost = Convert.ToDouble(_dict["cost"]),
                                                         Url = _dict["url"],
-                                                        Rating = Convert.ToDouble(_dict["rating"]),
                                                         Stores = _dict["stores"],
                                                         User = _user,
                                                         ColorText = _dict["colorText"],
                                                         Category = new Category(_dict["category"])
                                                         // Color = _dict["color"],
-                                                        // Category = new Category(Convert.ToUInt64(_dict["category"]))
                                                     };
                                                     gift.Create();
                                                     return "200";
