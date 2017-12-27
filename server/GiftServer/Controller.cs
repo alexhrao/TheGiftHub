@@ -673,6 +673,7 @@ namespace GiftServer
                         }
                     case "name":
                         {
+                            group.Name = _dict["name"];
                             break;
                         }
                     case "delete":
@@ -704,7 +705,7 @@ namespace GiftServer
                     gift.Size = _dict["size"];
                     gift.Category = new Category(_dict["category"]);
                     // gift.DateReceived = DateTime.Parse(_dict["dateReceived"]);
-                    // gift.Color = _dict["color"]; // as a hex
+                    gift.Color = _dict["color"]; // as a hex
                     gift.Update();
                     return "200";
                 }
