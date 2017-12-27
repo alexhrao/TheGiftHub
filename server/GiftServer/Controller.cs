@@ -31,7 +31,7 @@ namespace GiftServer
                     return culture;
                 }
             }
-            private static Object key = new Object();
+            private readonly static Object key = new Object();
             private CultureInfo culture;
             private User _user;
             private HttpListenerContext _ctx;
