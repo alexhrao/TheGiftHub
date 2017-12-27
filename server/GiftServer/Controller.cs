@@ -181,7 +181,7 @@ namespace GiftServer
                                                 }
                                                 catch (Exception)
                                                 {
-                                                    // How act?
+                                                    // What do we do?
                                                     return "0";
                                                 }
                                             case "Event":
@@ -208,6 +208,7 @@ namespace GiftServer
                                                 }
                                                 catch (Exception e)
                                                 {
+                                                    Warnings.Add(new ExecutionErrorWarning(e));
                                                     return "0";
                                                 }
                                             default:
