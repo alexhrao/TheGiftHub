@@ -60,6 +60,7 @@
             });
 
             $('#editGiftSubmit').click(function () {
+                alert(rgb2hex($('#newGiftColor').css("background-color")));
                 $.post(".", {
                     submit: "Change",
                     type: "Gift",
@@ -85,6 +86,7 @@
             });
 
             $('#newGiftSubmit').click(function () {
+                alert(rgb2hex($('#newGiftColor').css("background-color")));
                 $.post(".", {
                     submit: "Create",
                     type: "Gift",
@@ -98,7 +100,7 @@
                     cost: $('#newGiftCost').val(),
                     quantity: $('#newGiftQuantity').val(),
                     rating: $('#newGiftRating').val(),
-                    color: "#000000", //$('#editGiftColor').css("background-color"),
+                    color: rgb2hex($('#newGiftColor').css("background-color")),
                     colorText: $('#newGiftColorText').val()
                 }, function (data, status) {
                     if (data !== "0") {
@@ -138,7 +140,7 @@
 
             function rgb2hex(rgb) {
                 rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
-                return (rgb && rgb.length === 4) ? "#" +
+                return (rgb && rgb.length === 4) ? "" +
                     ("0" + parseInt(rgb[1], 10).toString(16)).slice(-2) +
                     ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
                     ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';

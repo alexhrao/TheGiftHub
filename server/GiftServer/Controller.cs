@@ -200,8 +200,8 @@ namespace GiftServer
                                                         Stores = _dict["stores"],
                                                         User = _user,
                                                         ColorText = _dict["colorText"],
-                                                        Category = new Category(_dict["category"])
-                                                        // Color = _dict["color"],
+                                                        Category = new Category(_dict["category"]),
+                                                        Color = _dict["color"]
                                                     };
                                                     gift.Create();
                                                     return gift.GiftId.ToString();

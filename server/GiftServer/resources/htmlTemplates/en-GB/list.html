@@ -60,6 +60,7 @@
             });
 
             $('#editGiftSubmit').click(function () {
+                alert(rgb2hex($('#newGiftColor').css("background-color")));
                 $.post(".", {
                     submit: "Change",
                     type: "Gift",
@@ -85,6 +86,7 @@
             });
 
             $('#newGiftSubmit').click(function () {
+                alert(rgb2hex($('#newGiftColor').css("background-color")));
                 $.post(".", {
                     submit: "Create",
                     type: "Gift",
@@ -94,23 +96,35 @@
                     url: $('#newGiftUrl').val(),
                     size: $('#newGiftSize').val(),
                     stores: $('#newGiftStores').val(),
-                    // category: $('#newGiftCategory').val(),
+                    category: $('#newGiftCategory').val(),
                     cost: $('#newGiftCost').val(),
                     quantity: $('#newGiftQuantity').val(),
                     rating: $('#newGiftRating').val(),
-                    // color: $('#editGiftColor').css("background-color"),
+                    color: rgb2hex($('#newGiftColor').css("background-color")),
                     colorText: $('#newGiftColorText').val()
                 }, function (data, status) {
-                    if (data == 200) {
-                        window.location.reload(true);
+                    if (data !== "0") {
+                        $('#newImageId').val(data);
+                        $('#addNewImageSubmit').click();
                     } else {
-
                     }
                 });
             });
 
-            $('#giftTableLeft').click(function () {
-                // How do we request "previous gifts"??? What even are the previous gifts?
+            $('#newImage').change(function () {
+                if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#previewNewImage').attr('src', e.target.result);
+                        $('#previewNewImage').removeClass("hidden");
+                        $('#acceptNewImg').removeClass("hidden");
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                }
+            });
+            $('#acceptNewImg').click(function () {
+                $('#newGiftImage').attr('src', $('#previewNewImage').attr('src'));
+                $('#uploadNewImg').modal('hide');
             });
             function readURL(input) {
                 if (input.files && input.files[0]) {
@@ -126,7 +140,7 @@
 
             function rgb2hex(rgb) {
                 rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
-                return (rgb && rgb.length === 4) ? "#" +
+                return (rgb && rgb.length === 4) ? "" +
                     ("0" + parseInt(rgb[1], 10).toString(16)).slice(-2) +
                     ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
                     ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
@@ -261,9 +275,7 @@
                                 <div class="row">
                                     <div class="col-sm-10">
                                         <div class="form-group">
-                                            <select id="editGiftCategory" class="form-control">
-
-                                            </select>
+                                            <select id="editGiftCategory" class="form-control"></select>
                                         </div>
                                     </div>
                                 </div>
@@ -272,7 +284,7 @@
                                         <div class="form-group">
                                             <div class="input-group">
                                                 <span id="currencyType" class="input-group-addon">$</span>
-                                                <input id="editGiftCost" name="giftCost" class="form-control" type="text" placeholder="Cost"/>
+                                                <input id="editGiftCost" name="giftCost" class="form-control" type="text" placeholder="Cost" />
                                             </div>
                                         </div>
                                     </div>
@@ -323,7 +335,7 @@
                             </button>
                         </div>
                     </div>
-                </div> 
+                </div>
             </div>
         </div>
         <div id="newGiftItem" class="modal fade panel-primary" role="dialog">
@@ -340,7 +352,7 @@
                                     <div class="col-sm-5">
                                         <div class="row parent">
                                             <img id="newGiftImage" class="text-center img-thumbnail img-responsive child" type="button" data-tooltip="tooltip" data-placement="bottom auto" title="Click to select new image"
-                                                 data-toggle="modal" href="#uploadImage" src="resources/images/gifts/default.png" />
+                                                 data-toggle="modal" href="#uploadNewImg" src="resources/images/gifts/default.png" />
                                         </div>
                                         <div class="row parent">
                                             <div class="child">
@@ -370,9 +382,7 @@
                                 <div class="row">
                                     <div class="col-sm-10">
                                         <div class="form-group">
-                                            <select id="newGiftCategory" class="form-control">
-
-                                            </select>
+                                            <select id="newGiftCategory" class="form-control"></select>
                                         </div>
                                     </div>
                                 </div>
@@ -381,7 +391,7 @@
                                         <div class="form-group">
                                             <div class="input-group">
                                                 <span id="currencyType" class="input-group-addon">$</span>
-                                                <input id="newGiftCost" name="giftCost" class="form-control" type="text" placeholder="Cost"/>
+                                                <input id="newGiftCost" name="giftCost" class="form-control" type="text" placeholder="Cost" />
                                             </div>
                                         </div>
                                     </div>
@@ -423,7 +433,7 @@
                             </button>
                         </div>
                     </div>
-                </div> 
+                </div>
             </div>
         </div>
         <div id="uploadImage" class="modal fade panel-success" role="dialog">
@@ -463,6 +473,44 @@
                 </div>
             </div>
         </div>
+        <div id="uploadNewImg" class="modal fade panel-success" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content panel-success">
+                    <div class="modal-header panel-heading">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Add an Image</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addNewImage" method="post" name="newGiftImage" enctype="multipart/form-data">
+                            <div class="row text-center">
+                                <div class="form-group">
+                                    <label class="btn btn-default btn-file">
+                                        Browse <input id="newImage" name="image" accept="image/*" type="file" style="display: none;">
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="row text-center">
+                                <div class="form-group text-center">
+                                    <img id="previewNewImage" src="" class="img-thumbnail img-responsive hidden" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group text-center">
+                                    <input id="newImageId" type="hidden" name="itemId" value="" />
+                                    <button id="acceptNewImg" type="button" class="btn btn-primary hidden" value="gift">
+                                        <p>Add new Picture</p>
+                                    </button>
+                                    <button id="addNewImageSubmit" type="submit" class="hidden" value="gift"></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="closeButton" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row text-left">
             <h1 id="userName"></h1>
         </div>
@@ -492,9 +540,7 @@
                     </th>
                 </tr>
             </thead>
-            <tbody id="giftHolder">
-
-            </tbody>
+            <tbody id="giftHolder"></tbody>
         </table>
         <table id="minList" class="table visible-xs table-hover table-responsive">
             <thead>
@@ -507,8 +553,7 @@
                     </th>
                 </tr>
             </thead>
-            <tbody id="xsGiftHolder">
-            </tbody>
+            <tbody id="xsGiftHolder"></tbody>
         </table>
     </div>
 </body>
