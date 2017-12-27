@@ -80,7 +80,7 @@ namespace GiftServer
                                 {
                                     Console.WriteLine("The Server has been contacted " + Addresses.Count + " times.");
                                 }
-                                Console.WriteLine(Controller.Connections.Count + " user(s) are currently logged in");
+                                Console.WriteLine(Controller.Connections.Count " user(s) are currently logged in");
                                 break;
                             case "logged":
                                 Console.WriteLine("Users logged in:");

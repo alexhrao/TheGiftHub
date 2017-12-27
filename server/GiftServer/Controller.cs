@@ -47,7 +47,6 @@ namespace GiftServer
             public readonly ListManager ListManager;
             public readonly ResetManager ResetManager;
 
-
             public Controller(HttpListenerContext ctx)
             {
                 _ctx = ctx;
