@@ -14,7 +14,6 @@ namespace GiftServer
             public readonly ulong CategoryId = 0;
             public readonly string Name;
             public readonly string Description;
-            private string v;
 
             public Category(ulong id)
             {
