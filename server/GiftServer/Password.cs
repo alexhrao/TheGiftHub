@@ -81,11 +81,11 @@ namespace GiftServer
                 info.AppendChild(container);
 
                 XmlElement hash = info.CreateElement("hash");
-                hash.InnerText = HttpUtility.HtmlEncode(Hash);
+                hash.InnerText = Hash;
                 XmlElement salt = info.CreateElement("salt");
-                salt.InnerText = HttpUtility.HtmlEncode(Salt);
+                salt.InnerText = Salt;
                 XmlElement iterations = info.CreateElement("iterations");
-                iterations.InnerText = HttpUtility.HtmlEncode(Iterations);
+                iterations.InnerText = Iterations.ToString() ;
 
                 container.AppendChild(hash);
                 container.AppendChild(salt);

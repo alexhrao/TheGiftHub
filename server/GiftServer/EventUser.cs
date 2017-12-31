@@ -410,19 +410,19 @@ namespace GiftServer
                 XmlElement container = info.CreateElement("event");
                 info.AppendChild(container);
                 XmlElement id = info.CreateElement("eventId");
-                id.InnerText = HttpUtility.HtmlEncode(EventUserId);
+                id.InnerText = EventUserId.ToString();
                 XmlElement name = info.CreateElement("name");
-                name.InnerText = HttpUtility.HtmlEncode(Name);
+                name.InnerText = Name.ToString();
                 XmlElement description = info.CreateElement("description");
-                description.InnerText = HttpUtility.HtmlEncode(Description);
+                description.InnerText = Description;
                 XmlElement day = info.CreateElement("day");
-                day.InnerText = HttpUtility.HtmlEncode(Day);
+                day.InnerText = Day.ToString();
                 XmlElement month = info.CreateElement("month");
-                month.InnerText = HttpUtility.HtmlEncode(Month);
+                month.InnerText = Month.ToString();
                 XmlElement year = info.CreateElement("year");
-                year.InnerText = HttpUtility.HtmlEncode(Year);
+                year.InnerText = Year.ToString();
                 XmlElement isRecurring = info.CreateElement("isRecurring");
-                isRecurring.InnerText = HttpUtility.HtmlEncode(IsRecurring.ToString());
+                isRecurring.InnerText = IsRecurring.ToString();
 
                 container.AppendChild(id);
                 container.AppendChild(name);

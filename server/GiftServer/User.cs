@@ -776,20 +776,20 @@ namespace GiftServer
                 info.AppendChild(container);
 
                 XmlElement id = info.CreateElement("userId");
-                id.InnerText = HttpUtility.HtmlEncode(UserId);
+                id.InnerText = UserId.ToString();
                 XmlElement userName = info.CreateElement("userName");
-                userName.InnerText = HttpUtility.HtmlEncode(UserName);
+                userName.InnerText = (UserName);
                 XmlElement email = info.CreateElement("email");
-                email.InnerText = HttpUtility.HtmlEncode(Email);
+                email.InnerText = Email.Address;
                 // XmlElement password = Password.Fetch().DocumentElement;
                 XmlElement birthMonth = info.CreateElement("birthMonth");
-                birthMonth.InnerText = HttpUtility.HtmlEncode(BirthMonth);
+                birthMonth.InnerText = BirthMonth.ToString();
                 XmlElement birthDay = info.CreateElement("birthDay");
-                birthDay.InnerText = HttpUtility.HtmlEncode(BirthDay);
+                birthDay.InnerText = BirthDay.ToString();
                 XmlElement bio = info.CreateElement("bio");
-                bio.InnerText = HttpUtility.HtmlEncode(Bio);
+                bio.InnerText = Bio;
                 XmlElement dateJoined = info.CreateElement("dateJoined");
-                dateJoined.InnerText = HttpUtility.HtmlEncode(DateJoined.ToString("yyyy-MM-dd"));
+                dateJoined.InnerText = (DateJoined.ToString("yyyy-MM-dd"));
                 XmlElement groups = info.CreateElement("groups");
                 foreach (Group group in Groups)
                 {

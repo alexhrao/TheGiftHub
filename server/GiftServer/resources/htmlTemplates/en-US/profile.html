@@ -61,6 +61,8 @@
                     }
                 }
             });
+        });
+        $(document).ready(function () {
             $('#userBirthdayMonthChange').change(function () {
                 $('.days').remove();
                 $("<option class=\"days\" selected value=\"0\">Select a Day</option>").appendTo($('#days'));
@@ -68,9 +70,7 @@
                     // Create a day:
                     $("<option class=\"days\" value=\"" + i + "\">" + i + "</option>").appendTo($('#days'));
                 }
-
             });
-            var returned = 0;
             function changeName() {
                 if ($('#userNameChange').val() == "") {
                     return Promise.resolve();
@@ -83,7 +83,6 @@
                         name: $('#userNameChange').val()
                     });
             }
-
             function changeEmail() {
                 if ($('#userEmailChange').val() == "") {
                     return Promise.resolve();
@@ -107,7 +106,7 @@
                             item: "birthday",
                             month: $('#userBirthdayMonthChange').val(),
                             day: $('#userBirthdayDayChange').val()
-                    });
+                        });
                 }
             }
             function changeBio() {
@@ -131,7 +130,8 @@
                 changeName().then(changeEmail).then(changeBirthday).then(changeBio).then(changeLocale).then(() => location.reload(true));
                 // chain promises, ending with the location.reload();
             });
-
+        });
+        $(document).ready(function () {
             $('#searchNewUser').click(function () {
                 $.post(".",
                     {
@@ -144,7 +144,7 @@
                             // Iterate over lis, make sure not already added
                             var exists = false;
                             $("#newGroupMembers li").each(function (index) {
-                                if ($(this).val() === $('#newGroupAddUser').val()) {
+                                if ($(this).attr('data-user-email') === $('#newGroupAddUser').val()) {
                                     // found
                                     exists = true;
                                     return false;
@@ -191,11 +191,46 @@
                 // grab name
                 var name = $('#foundUser').text();
                 var email = $('#foundUser').val();
-                $('#newGroupMembers').prepend("<li data-user-email=\"" + email + "\">" + name + "</li>");
+                $('#newGroupMembers').prepend("<li data-user-email=\"" + email + "\">" + name + " <a class=\"remove-user\"><i class=\"fa fa-times\"></i></a></li>");
                 $('#userResult').addClass("hidden");
                 $('#newGroupAddUser').val("");
             });
-
+        });
+        $(document).ready(function () {
+            $('.group-members').on('click', '.remove-user', function () {
+                // var email = $(this.parentElement).attr('data-user-email');
+                $(this.parentElement).remove();
+            });
+        });
+        $(document).ready(function () {
+            $('.group-name').click(function () {
+                // get group information:
+                // Get ID of this
+                var id = $(this).attr('data-group-id');
+                id = parseInt(id);
+                $.post(".", {
+                    submit: "Fetch",
+                    type: "Group",
+                    itemId: id
+                },
+                    function (data, status, xhr) {
+                        if (status == "success") {
+                            var data = xhr.responseText;
+                            var dom = $.parseXML(data);
+                            $('#editGroupName').attr('placeholder', dom.getElementsByTagName("name")[0].innerHTML);
+                            var members = dom.getElementsByTagName("members")[0].children;
+                            for (var i = 0; i < members.length; i++) {
+                                var id = members[i].children[0].innerHTML;
+                                var name = members[i].children[1].innerHTML;
+                                $('#editGroupMembers').prepend("<li data-user-id=\"" + id + "\">" + name + " <a class=\"remove-user\"><i class=\"fa fa-times\"></i></a></li>");
+                                $('#origGroupMembers').prepend("<li data-user-id=\"" + id + "\"></li>");
+                            }
+                            $('#editGroup').modal('show');
+                        }
+                    });
+            });
+        });
+        $(document).ready(function () {
             $('#resetSubmit').hide();
             $('#firstResetPass').keyup(function () {
                 if ($('#secondResetPass').val() === $('#firstResetPass').val() && $('#secondResetPass').val()) {
@@ -501,7 +536,7 @@
                         </div>
                         <div class="row form-group">
                             <h2>Members:</h2>
-                            <ul id="newGroupMembers"></ul>
+                            <ul id="newGroupMembers" class="group-members"></ul>
                         </div>
                         <div class="row form-group">
                             <button id="createNewGroupSubmit" name="submit" value="newGroup" role="button" class="btn btn-success">
@@ -523,6 +558,7 @@
                         <h4 id="editEventTitle" class="modal-title">Edit Event</h4>
                     </div>
                     <div class="modal-body">
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -538,6 +574,38 @@
                         <h4 id="editGroupTitle" class="modal-title">Edit Group</h4>
                     </div>
                     <div class="modal-body">
+                        <div class="row form-group">
+                            <label for="groupName">Group Name</label>
+                            <input name="groupName" id="editGroupName" class="form-control" placeholder="Group Name" />
+                        </div>
+                        <div class="row form-group">
+                            <div class="input-group add-on">
+                                <input class="form-control" placeholder="Search" name="addUser" id="editGroupAddUser" type="email" />
+                                <div class="input-group-btn">
+                                    <button id="searchEditUser" class="btn btn-default" type="button"><i class="glyphicon glyphicon-search"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="userResult" class="row hidden form-group">
+                            <div class="col-xs-6">
+                                <p id="foundEditUser"></p>
+                            </div>
+                            <div class="col-xs-4">
+                                <button id="groupEditAddUser" name="submit" value="addUser" role="button" class="btn btn-success" type="button">
+                                    Add User
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <h2>Members:</h2>
+                            <ul id="editGroupMembers" class="group-members"></ul>
+                            <ul id="origGroupMembers" class="hidden"></ul>
+                        </div>
+                        <div class="row form-group">
+                            <button id="editGroupSubmit" role="button" class="btn btn-success">
+                                Save Changes
+                            </button>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

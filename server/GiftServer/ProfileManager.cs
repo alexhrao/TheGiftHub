@@ -167,7 +167,7 @@ namespace GiftServer
                 foreach (Group group in user.Groups)
                 {
                     HtmlNode groupEntry = HtmlNode.CreateNode("<tr id=\"group" + group.GroupId + "\"><td><h3><span id=\"groupCloser" + group.GroupId + "\" class=\"glyphicon glyphicon-remove group-closer\"></span></h3></td>"
-                                               + "<td class=\"group-name\"><h3>" + HttpUtility.HtmlEncode(group.Name) + " </h3></td></tr>");
+                                               + "<td data-group-id=\"" + group.GroupId + "\" class=\"group-name\"><h3>" + HttpUtility.HtmlEncode(group.Name) + " </h3></td></tr>");
                     groups.AppendChild(groupEntry);
                 }
                 HtmlNode addGroup = HtmlNode.CreateNode("<tr id=\"groupAdder\" type=\"button\" data-toggle=\"modal\" href=\"#addGroup\"><td><h3><span class=\"glyphicon glyphicon-plus\"></span></h3></td><td></td></tr>");

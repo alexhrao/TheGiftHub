@@ -181,11 +181,11 @@ namespace GiftServer
                 XmlDocument info = new XmlDocument();
                 XmlElement container = info.CreateElement("preferences");
                 XmlElement id = info.CreateElement("preferenceId");
-                id.InnerText = HttpUtility.HtmlEncode(PreferenceId);
+                id.InnerText = PreferenceId.ToString();
                 XmlElement userTheme = info.CreateElement("theme");
-                userTheme.InnerText = HttpUtility.HtmlEncode(theme);
+                userTheme.InnerText = theme.ToString();
                 XmlElement userCulture = info.CreateElement("culture");
-                userCulture.InnerText = HttpUtility.HtmlEncode(culture);
+                userCulture.InnerText = culture;
 
                 container.AppendChild(id);
                 container.AppendChild(userTheme);

@@ -77,11 +77,11 @@ namespace GiftServer
                 XmlElement container = info.CreateElement("category");
                 info.AppendChild(container);
                 XmlElement id = info.CreateElement("categoryId");
-                id.InnerText = HttpUtility.HtmlEncode(CategoryId);
+                id.InnerText = CategoryId.ToString();
                 XmlElement name = info.CreateElement("name");
-                name.InnerText = HttpUtility.HtmlEncode(Name);
+                name.InnerText = Name;
                 XmlElement description = info.CreateElement("description");
-                description.InnerText = HttpUtility.HtmlEncode(Description);
+                description.InnerText = Description;
 
                 container.AppendChild(id);
                 container.AppendChild(name);

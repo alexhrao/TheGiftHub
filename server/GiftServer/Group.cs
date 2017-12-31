@@ -62,7 +62,20 @@ namespace GiftServer
                                 throw new GroupNotFoundException(groupID);
                             }
                         }
-
+                    }
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT groups_users.UserID FROM groups_users WHERE groups_users.GroupID = @gid;";
+                        cmd.Parameters.AddWithValue("@gid", this.GroupId);
+                        cmd.Prepare();
+                        using (MySqlDataReader Reader = cmd.ExecuteReader())
+                        {
+                            while (Reader.Read())
+                            {
+                                users.Add(new User(Convert.ToUInt64(Reader["UserID"])));
+                            }
+                        }
                     }
                 }
             }
@@ -325,18 +338,31 @@ namespace GiftServer
                 info.AppendChild(container);
 
                 XmlElement id = info.CreateElement("groupId");
-                id.InnerText = HttpUtility.HtmlEncode(GroupId);
+                id.InnerText = GroupId.ToString();
                 XmlElement name = info.CreateElement("name");
-                name.InnerText = HttpUtility.HtmlEncode(Name);
+                name.InnerText = Name;
                 XmlElement description = info.CreateElement("description");
-                description.InnerText = HttpUtility.HtmlEncode(Description);
+                description.InnerText = Description;
                 XmlElement admin = info.CreateElement("adminId");
-                admin.InnerText = HttpUtility.HtmlEncode(Admin.UserId);
+                admin.InnerText = Admin.UserId.ToString();
+                XmlElement members = info.CreateElement("members");
+                foreach (User user in users)
+                {
+                    XmlElement member = info.CreateElement("member");
+                    XmlElement userId = info.CreateElement("userId");
+                    XmlElement userName = info.CreateElement("userName");
+                    userId.InnerText = user.UserId.ToString();
+                    userName.InnerText = user.UserName;
+                    member.AppendChild(userId);
+                    member.AppendChild(userName);
+                    members.AppendChild(member);
+                }
 
                 container.AppendChild(id);
                 container.AppendChild(name);
                 container.AppendChild(description);
                 container.AppendChild(admin);
+                container.AppendChild(members);
 
                 return info;
             }
