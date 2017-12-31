@@ -61,158 +61,75 @@
                     }
                 }
             });
-            $('#userName').click(function () {
-                $('#userName').toggleClass("hidden");
-                $('#userNameChangeSection').toggleClass("hidden");
-            });
-            $('#email').click(function () {
-                $('#email').toggleClass("hidden");
-                $('#userEmailChangeSection').toggleClass("hidden");
-            });
-            $('#birthday').click(function () {
-                $('#birthday').toggleClass("hidden");
-                $('#userBirthdayChangeSection').toggleClass("hidden");
-            });
-            $('#bio').click(function () {
-                $('#bio').toggleClass("hidden");
-                $('#userBioChangeSection').toggleClass("hidden");
-            });
-
-            $('#userNameChangeCancel').click(function () {
-                $('#userName').toggleClass("hidden");
-                $('#userNameChangeSection').toggleClass("hidden");
-            });
-            $('#userEmailChangeCancel').click(function () {
-                $('#email').toggleClass("hidden");
-                $('#userEmailChangeSection').toggleClass("hidden");
-            });
-            $('#userBirthdayChangeCancel').click(function () {
-                $('#birthday').toggleClass("hidden");
-                $('#userBirthdayChangeSection').toggleClass("hidden");
-            });
-            $('#userBioChangeCancel').click(function () {
-                $('#bio').toggleClass("hidden");
-                $('#userBioChangeSection').toggleClass("hidden");
-            });
-
-            $('#userNameChange').keyup(function () {
-                if ($('#userNameChange').val() === "") {
-                    $('#userNameChangeSubmit').addClass("hidden");
-                } else {
-                    $('#userNameChangeSubmit').removeClass("hidden");
-                }
-            });
-            $('#userEmailChange').keyup(function () {
-                if ($('#userEmailChange').val() === "") {
-                    $('#userEmailChangeSubmit').addClass("hidden");
-                } else {
-                    $('#userEmailChangeSubmit').removeClass("hidden");
-                }
-            });
-
-            $('#userNameChangeSubmit').click(function () {
-                $.post(".",
-                    {
-                        submit: "Change",
-                        type: "User",
-                        item: "name",
-                        userName: $('#userNameChange').val()
-                    },
-                    function (data, status) {
-                        if (data == 200) {
-                            // Change name; we succeeded:
-                            $('#userName').text($('#userNameChange').val());
-                        } else {
-                            alert("We're unable to make your changes right now - try again in a few minutes.");
-                        }
-                        $('#userName').toggleClass("hidden");
-                        $('#userNameChangeSection').toggleClass("hidden");
-                    });
-            });
-            $('#userEmailChangeSubmit').click(function () {
-                $.post(".",
-                    {
-                        submit: "Change",
-                        type: "User",
-                        item: "email",
-                        email: $('#userEmailChange').val(),
-                    },
-                    function (data, status) {
-                        if (data == 200) {
-                            // Change name; we succeeded:
-                            $('#email').text($('#userEmail').val());
-                        } else {
-                            alert("We're unable to make your changes right now - try again in a few minutes.");
-                        }
-                        $('#userEmailChangeSection').toggleClass("hidden");
-                        $('#email').toggleClass("hidden");
-                    });
-            });
-            $('#userBirthdayChangeSubmit').click(function () {
-                $.post(".",
-                    {
-                        submit: "Change",
-                        type: "User",
-                        item: "birthday",
-                        month: $('#userBirthdayMonthChange').val(),
-                        day: $('#userBirthdayDayChange').val()
-                    },
-                    function (data, status) {
-                        if (data == 200) {
-                            // Change name; we succeeded:
-                            $('#birthday').text("Birthday: " + $('#userBirthdayMonthChange').find(':selected').text() + " " + $('#userBirthdayDayChange').val());
-                        } else {
-                            alert("We're unable to make your changes right now - try again in a few minutes.");
-                        }
-                        $('#userBirthdayChangeSection').toggleClass("hidden");
-                        $('#birthday').toggleClass("hidden");
-                    });
-            });
-            $('#userBioChangeSubmit').click(function () {
-                $.post(".",
-                    {
-                        submit: "Change",
-                        type: "User",
-                        item: "bio",
-                        bio: $('#userBioChange').val()
-                    },
-                    function (data, status) {
-                        if (data == 200) {
-                            // Change name; we succeeded:
-                            $('#bio').val($('#userBioChange').val())
-                        } else {
-                            alert("We're unable to make your changes right now - try again in a few minutes.");
-                        }
-                        $('#userBioChangeSection').toggleClass("hidden");
-                        $('#bio').toggleClass("hidden");
-                    });
-            });
-
             $('#userBirthdayMonthChange').change(function () {
                 $('.days').remove();
+                $("<option class=\"days\" selected value=\"0\">Select a Day</option>").appendTo($('#days'));
                 for (var i = 1; i <= daysInMonth($('#userBirthdayMonthChange').val()); i++) {
                     // Create a day:
                     $("<option class=\"days\" value=\"" + i + "\">" + i + "</option>").appendTo($('#days'));
                 }
 
             });
+            var returned = 0;
+            function changeName() {
+                if ($('#userNameChange').val() == "") {
+                    return Promise.resolve();
+                }
+                return $.post(".",
+                    {
+                        submit: "Change",
+                        type: "User",
+                        item: "name",
+                        name: $('#userNameChange').val()
+                    });
+            }
 
-            $('#submitPref').click(function () {
-                $.post(".",
+            function changeEmail() {
+                if ($('#userEmailChange').val() == "") {
+                    return Promise.resolve();
+                }
+                return $.post(".",
+                    {
+                        submit: "Change",
+                        type: "User",
+                        item: "email",
+                        name: $('#userEmailChange').val()
+                    });
+            }
+            function changeBirthday() {
+                if ($('#userBirthdayDayChange').val() == null || $('#userBirthdayDayChange').val() == 0) {
+                    return Promise.resolve();
+                } else {
+                    $.post(".",
+                        {
+                            submit: "Change",
+                            type: "User",
+                            item: "birthday",
+                            month: $('#userBirthdayMonthChange').val(),
+                            day: $('#userBirthdayDayChange').val()
+                    });
+                }
+            }
+            function changeBio() {
+                return $.post(".",
+                    {
+                        submit: "Change",
+                        type: "User",
+                        item: "bio",
+                        bio: $('#userBioChange').val()
+                    });
+            }
+            function changeLocale() {
+                return $.post(".",
                     {
                         submit: "Change",
                         type: "Preferences",
                         culture: $('#userCulture').val()
-                    },
-                    function (data, status) {
-                        if (data == 200) {
-                            // change prefs succeeded; close modal
-                            $('#changePreferences').modal('hide');
-                            location.reload(true);
-                        } else {
-                            alert("We're unable to make your changes right now - try again in a few minutes.");
-                        }
                     });
+            }
+            $('#submitPref').click(function () {
+                changeName().then(changeEmail).then(changeBirthday).then(changeBio).then(changeLocale).then(() => location.reload(true));
+                // chain promises, ending with the location.reload();
             });
 
             $('#searchNewUser').click(function () {
@@ -466,12 +383,62 @@
                     </div>
                     <div class="modal-body">
                         <form id="preferenceForm" method="post">
-                            <label for="culture">Language</label>
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-globe"></i></span>
-                                <select name="culture" id="userCulture" class="form-control"></select>
+                            <h5>Edit any field to update your information</h5>
+                            <div class="row form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                    <input name="userName" id="userNameChange" class="form-control" placeholder="User Name" />
+                                </div>
                             </div>
-                            <h2>Theme: <span id="theme" class="circle" style=""></span></h2>
+                            <div class="row form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-at"></i></span>
+                                    <input name="userEmail" id="userEmailChange" class="form-control" placeholder="Email Address" type="email" />
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-6">
+                                    <label for="birthdayMonth">Birthday (Month)</label>
+                                    <select name="birthdayMonth" class="form-control" id="userBirthdayMonthChange">
+                                        <optgroup label="Month">
+                                            <option value="0">Select a Month</option>
+                                            <option value="1">January</option>
+                                            <option value="2">February</option>
+                                            <option value="3">March</option>
+                                            <option value="4">April</option>
+                                            <option value="5">May</option>
+                                            <option value="6">June</option>
+                                            <option value="7">July</option>
+                                            <option value="8">August</option>
+                                            <option value="9">September</option>
+                                            <option value="10">October</option>
+                                            <option value="11">November</option>
+                                            <option value="12">December</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="birthdayDay">Birthday (Day)</label>
+                                    <select name="birthdayDay" id="userBirthdayDayChange" class="form-control">
+                                        <optgroup id="days" label="Day"></optgroup>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label for="userBio">Bio</label>
+                                <textarea name="userBio" class="form-control" rows="5" id="userBioChange"></textarea>
+                            </div>
+                            <div class="row form-group">
+                                <h2>Theme: <span id="theme" class="circle" style=""></span></h2>
+                            </div>
+                            <div class="row form-group">
+                                <label for="culture">Language</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-globe"></i></span>
+                                    <select name="culture" id="userCulture" class="form-control"></select>
+                                </div>
+                            </div>
+
                             <div class="row">
                                 <div class="col-md-12">
                                     <button id="submitPref" type="button" class="btn btn-success" name="submit" value="Preferences">
@@ -534,9 +501,7 @@
                         </div>
                         <div class="row form-group">
                             <h2>Members:</h2>
-                            <ul id="newGroupMembers">
-
-                            </ul>
+                            <ul id="newGroupMembers"></ul>
                         </div>
                         <div class="row form-group">
                             <button id="createNewGroupSubmit" name="submit" value="newGroup" role="button" class="btn btn-success">
@@ -584,34 +549,17 @@
             <div class="col-sm-4 text-center">
                 <!-- User Image -->
                 <img id="userImage" type="button" data-tooltip="tooltip" data-placement="bottom auto" title="Click to select new image" data-toggle="modal" href="#uploadImage" class="img-circle img-responsive" src="resources/images/users/default.png" />
-                <div class="form-group">
-                    <h1 role="button" id="userName" class="form-control-static"></h1>
-                </div>
+                <h1 id="userName" class="form-control-static"></h1>
                 <!-- User Name -->
-                <div id="userNameChangeSection" class="form-group hidden">
-                    <div class="col-md-8">
-                        <input style="margin:5px;" type="text" class="form-control" id="userNameChange" placeholder="New Name" />
-                    </div>
-                    <div class="col-md-2">
-                        <button id="userNameChangeSubmit" class="btn btn-success hidden" type="button">
-                            <span class="glyphicon glyphicon-check"></span>
-                        </button>
-                    </div>
-                    <div class="col-md-2">
-                        <button id="userNameChangeCancel" class="btn btn-danger" type="button">
-                            <span class="glyphicon glyphicon-remove"></span>
-                        </button>
-                    </div>
-                </div>
                 <div class="row">
                     <div class="col-xs-6">
                         <button class="btn btn-lg btn-danger" type="button" id="resetPassword" data-toggle="modal" data-target="#resetPassword">
-                            <div class="hidden-sm hidden-xs">Change Password </div><span class="glyphicon glyphicon-lock"></span>
+                            <div class="hidden-md hidden-sm hidden-xs">Change Password </div><span class="glyphicon glyphicon-lock"></span>
                         </button>
                     </div>
                     <div class="col-xs-6">
                         <button class="btn btn-lg btn-primary" type="button" id="changePreferences" data-toggle="modal" data-target="#changePreferences">
-                            <div class="hidden-sm hidden-xs">Change Preferences </div><span class="glyphicon glyphicon-cog"></span>
+                            <div class="hidden-md hidden-sm hidden-xs">Preferences </div><span class="glyphicon glyphicon-cog"></span>
                         </button>
                     </div>
                 </div>
@@ -619,119 +567,9 @@
             </div>
             <div class="col-sm-5">
                 <!-- User Information -->
-                <div class="form-group">
-                    <h2 role="button" id="email" class="form-control-static"></h2>
-                </div>
-                <div id="userEmailChangeSection" class="form-group hidden">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <input style="margin:5px;" type="email" class="form-control" id="userEmailChange" placeholder="Email Address" />
-                        </div>
-                        <div class="col-md-2">
-                            <button id="userEmailChangeSubmit" class="btn btn-success hidden" type="button">
-                                <span class="glyphicon glyphicon-check"></span>
-                            </button>
-                        </div>
-                        <div class="col-md-2">
-                            <button id="userEmailChangeCancel" class="btn btn-danger" type="button">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <h2 role="button" id="birthday" class="form-control-static"></h2>
-                </div>
-                <div id="userBirthdayChangeSection" class="form-group hidden">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <select class="form-control" id="userBirthdayMonthChange">
-                                <optgroup label="Month">
-                                    <option value="1">January</option>
-                                    <option value="2">February</option>
-                                    <option value="3">March</option>
-                                    <option value="4">April</option>
-                                    <option value="5">May</option>
-                                    <option value="6">June</option>
-                                    <option value="7">July</option>
-                                    <option value="8">August</option>
-                                    <option value="9">September</option>
-                                    <option value="10">October</option>
-                                    <option value="11">November</option>
-                                    <option value="12">December</option>
-                                </optgroup>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <select id="userBirthdayDayChange" class="form-control">
-                                <optgroup id="days" label="Day">
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                    <option value="10">10</option>
-                                    <option value="11">11</option>
-                                    <option value="12">12</option>
-                                    <option value="13">13</option>
-                                    <option value="14">14</option>
-                                    <option value="15">15</option>
-                                    <option value="16">16</option>
-                                    <option value="17">17</option>
-                                    <option value="18">18</option>
-                                    <option value="19">19</option>
-                                    <option value="20">20</option>
-                                    <option value="21">21</option>
-                                    <option value="22">22</option>
-                                    <option value="23">23</option>
-                                    <option value="24">24</option>
-                                    <option value="25">25</option>
-                                    <option value="26">26</option>
-                                    <option value="27">27</option>
-                                    <option value="28">28</option>
-                                    <option value="29">29</option>
-                                    <option value="30">30</option>
-                                    <option value="31">31</option>
-                                </optgroup>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <button id="userBirthdayChangeSubmit" class="btn btn-success" type="button">
-                                <span class="glyphicon glyphicon-check"></span>
-                            </button>
-                        </div>
-                        <div class="col-md-2">
-                            <button id="userBirthdayChangeCancel" class="btn btn-danger" type="button">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <h2 id="email"></h2>
+                <h2 id="birthday" class="form-control-static"></h2>
                 <h2>Bio: </h2>
-                <div class="form-group">
-                    <p role="button" id="bio" class="form-control-static"></p>
-                </div>
-                <div id="userBioChangeSection" class="form-group hidden">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <textarea class="form-control" rows="5" id="userBioChange"></textarea>
-                        </div>
-                        <div class="col-md-2">
-                            <button id="userBioChangeSubmit" class="btn btn-success" type="button">
-                                <span class="glyphicon glyphicon-check"></span>
-                            </button>
-                        </div>
-                        <div class="col-md-2">
-                            <button id="userBioChangeCancel" class="btn btn-danger" type="button">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
                 <p id="bio"></p>
             </div>
             <div class="col-sm-3 hidden-xs">
@@ -752,14 +590,11 @@
         <div class="row">
             <div class="col-sm-4">
                 <h1 class="text-left">Events</h1>
-                <table id="events">
-                </table>
+                <table id="events"></table>
             </div>
             <div class="col-sm-4">
                 <h1 class="text-left">Groups</h1>
-                <table id="groups">
-                    
-                </table>
+                <table id="groups"></table>
             </div>
         </div>
     </div>

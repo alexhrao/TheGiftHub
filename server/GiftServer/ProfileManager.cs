@@ -150,6 +150,8 @@ namespace GiftServer
 
                 HtmlNode bio = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" bio \")]");
                 bio.InnerHtml = HttpUtility.HtmlEncode(user.Bio);
+                HtmlNode bioChange = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userBioChange \")]");
+                bioChange.InnerHtml = HttpUtility.HtmlEncode(user.Bio);
 
                 HtmlNode events = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" events \")]");
                 foreach (EventUser evnt in user.Events)
