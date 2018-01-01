@@ -19,7 +19,6 @@ namespace GiftServer
             private ResourceManager HtmlManager;
             private ResourceManager StringManager;
             private NavigationManager NavigationManager;
-
             public ListManager(Controller controller)
             {
                 Thread.CurrentThread.CurrentUICulture = controller.Culture;
@@ -28,14 +27,54 @@ namespace GiftServer
                 StringManager = new ResourceManager("GiftServer.Strings", typeof(ListManager).Assembly);
                 NavigationManager = controller.NavigationManager;
             }
-            public string PublicList(User user)
+            public string GiftList(User thisUser, User viewer)
             {
-                return GiftList(user);
+                HtmlDocument list = new HtmlDocument();
+                list.LoadHtml(NavigationManager.NavigationBar(viewer) + HtmlManager.GetString("publicList"));
+                // Get all gifts that are visible to THIS USER
+
+                List<Gift> gifts = thisUser.GetGifts(viewer);
+                HtmlNode userName = list.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
+                userName.InnerHtml = viewer.UserName + "'s " + StringManager.GetString("giftList");
+                HtmlNode giftTable = list.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" giftHolder \")]");
+                HtmlNode giftTableMicro = list.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" xsGiftHolder \")]");
+
+                foreach (Gift gift in gifts)
+                {
+                    // Print gift information
+                    if (gift.DateReceived == DateTime.MinValue)
+                    {
+                        HtmlNode giftRow = HtmlNode.CreateNode("<tr id=\"" + gift.GiftId + "\" class=\"gift-row\"></tr>");
+
+                        HtmlNode pict = HtmlNode.CreateNode("<td><div class=\"parent\"><img class=\"img-thumbnail img-gift img-responsive child\" src=\"" + gift.GetImage() + "\" /></div></td>");
+                        HtmlNode rate = HtmlNode.CreateNode("<td><div class=\"parent\"><p class=\"child\"><input class=\"star-rating\" data-show-clear=\"false\" data-show-caption=\"false\" value=\"" + gift.Rating.ToString("N2") + "\" /></p></div></td>");
+                        HtmlNode name = HtmlNode.CreateNode("<td><div class=\"parent\"><p class=\"child\">" + HttpUtility.HtmlEncode(gift.Name) + "</p></div></td>");
+                        HtmlNode quan = HtmlNode.CreateNode("<td><div class=\"parent\"><p class=\"child\">" + gift.Quantity + "</p></div></td>");
+                        HtmlNode cost = HtmlNode.CreateNode("<td><div class=\"parent\"><p class=\"child\">" + gift.Cost.ToString("C") + "</p></div></td>");
+                        HtmlNode desc = HtmlNode.CreateNode("<td><div class=\"parent\"><p class=\"description child\">" + HttpUtility.HtmlEncode(gift.Description) + "</p></div></td>");
+                        giftRow.AppendChild(pict);
+                        giftRow.AppendChild(rate);
+                        giftRow.AppendChild(name);
+                        giftRow.AppendChild(quan);
+                        giftRow.AppendChild(cost);
+                        giftRow.AppendChild(desc);
+
+                        giftTable.AppendChild(giftRow);
+
+                        HtmlNode item = HtmlNode.CreateNode("<tr id=\"" + gift.GiftId + "\" class=\"gift-row\">" +
+                                                            "<td><div class=\"parent\"><img class=\"img-thumbnail img-responsive child\" src=\"" + gift.GetImage() + "\" /></div>" +
+                                                            "<div class=\"parent\"><p class=\"child\"><input class=\"star-rating\" data-show-clear=\"false\" data-show-caption=\"false\" value=\"" + gift.Rating.ToString("N2") + "\" /></p></div></td>" +
+                                                            "<td><div class=\"parent\"><p classs\"child\">" + HttpUtility.HtmlEncode(gift.Name) + "</p></div></td>" +
+                                                            "</tr>");
+                        giftTableMicro.AppendChild(item);
+                    }
+                }
+                return list.DocumentNode.OuterHtml;
             }
-            public string GiftList(User user)
+            public string GiftList(User thisUser)
             {
                 HtmlDocument myList = new HtmlDocument();
-                myList.LoadHtml(NavigationManager.NavigationBar(user) + HtmlManager.GetString("list"));
+                myList.LoadHtml(NavigationManager.NavigationBar(thisUser) + HtmlManager.GetString("list"));
                 // Add category options to new and edit:
                 HtmlNode categoryEdit = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" editGiftCategory \")]");
                 HtmlNode categoryNew = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" newGiftCategory \")]");
@@ -61,10 +100,10 @@ namespace GiftServer
                     }
                 }
                 HtmlNode userName = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
-                userName.InnerHtml = user.UserName + "'s " + StringManager.GetString("giftList");
+                userName.InnerHtml = thisUser.UserName + "'s " + StringManager.GetString("giftList");
                 HtmlNode giftTable = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" giftHolder \")]");
                 HtmlNode giftTableMicro = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" xsGiftHolder \")]");
-                List<Gift> gifts = user.Gifts;
+                List<Gift> gifts = thisUser.Gifts;
 
                 //int i = 0;
                 foreach (Gift gift in gifts)

@@ -31,6 +31,13 @@ namespace GiftServer
                     return culture;
                 }
             }
+            public User User
+            {
+                get
+                {
+                    return _user;
+                }
+            }
             private readonly static Object key = new Object();
             private CultureInfo culture;
             private User _user;
@@ -304,7 +311,7 @@ namespace GiftServer
                     case "myList":
                         return ListManager.GiftList(_user);
                     case "list":
-                        return ListManager.PublicList(new User(_request.QueryString["user"]));
+                        return ListManager.GiftList(_user, new User(_request.QueryString["user"]));
                     case "user":
                         return ProfileManager.PublicProfile(new User(_request.QueryString["user"]));
                     default:

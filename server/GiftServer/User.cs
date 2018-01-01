@@ -767,8 +767,70 @@ namespace GiftServer
                     }
                 }
             }
-            
-            // TODO: Finish
+            public List<Gift> GetGifts(User viewer)
+            {
+                List<Gift> gifts = new List<Gift>();
+                List<Group> groups = GetGroups(viewer);
+                // get all gifts owned by THIS and that have a record in groups_gifts
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    foreach (Group group in groups)
+                    {
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "SELECT groups_gifts.GiftID "
+                                            + "FROM groups_gifts "
+                                            + "INNER JOIN gifts ON gifts.GiftID = groups_gifts.GiftID "
+                                            + "WHERE GroupID = @gid "
+                                            + "AND gifts.UserID = @uid;";
+                            cmd.Parameters.AddWithValue("@gid", group.GroupId);
+                            cmd.Parameters.AddWithValue("@uid", viewer.UserId);
+                            cmd.Prepare();
+                            using (MySqlDataReader Reader = cmd.ExecuteReader())
+                            {
+                                while (Reader.Read())
+                                {
+                                    gifts.Add(new Gift(Convert.ToUInt64(Reader["GiftID"])));
+                                }
+                            }
+                        }
+                    }
+                }
+                return gifts;
+            }
+            public List<Group> GetGroups(User viewer)
+            {
+                List<Group> groups = new List<Group>();
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT DISTINCT GroupID "
+                                        + "FROM groups_users "
+                                        + "WHERE UserID = @id2 "
+                                        + "AND GroupID IN ( "
+                                            + "SELECT DISTINCT GroupID "
+                                            + "FROM groups_users "
+                                            + "WHERE UserID = @id1 "
+                                        + ");";
+                        cmd.Parameters.AddWithValue("@id1", this.UserId);
+                        cmd.Parameters.AddWithValue("@id2", viewer.UserId);
+                        cmd.Prepare();
+                        using (MySqlDataReader Reader = cmd.ExecuteReader())
+                        {
+                            while (Reader.Read())
+                            {
+                                groups.Add(new Group(Convert.ToUInt64(Reader["GroupID"])));
+                            }
+                        }
+                    }
+                }
+                return groups;
+            }
             public XmlDocument Fetch()
             {
                 XmlDocument info = new XmlDocument();
