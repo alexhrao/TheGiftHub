@@ -61,173 +61,92 @@
                     }
                 }
             });
-            $('#userName').click(function () {
-                $('#userName').toggleClass("hidden");
-                $('#userNameChangeSection').toggleClass("hidden");
-            });
-            $('#email').click(function () {
-                $('#email').toggleClass("hidden");
-                $('#userEmailChangeSection').toggleClass("hidden");
-            });
-            $('#birthday').click(function () {
-                $('#birthday').toggleClass("hidden");
-                $('#userBirthdayChangeSection').toggleClass("hidden");
-            });
-            $('#bio').click(function () {
-                $('#bio').toggleClass("hidden");
-                $('#userBioChangeSection').toggleClass("hidden");
-            });
-
-            $('#userNameChangeCancel').click(function () {
-                $('#userName').toggleClass("hidden");
-                $('#userNameChangeSection').toggleClass("hidden");
-            });
-            $('#userEmailChangeCancel').click(function () {
-                $('#email').toggleClass("hidden");
-                $('#userEmailChangeSection').toggleClass("hidden");
-            });
-            $('#userBirthdayChangeCancel').click(function () {
-                $('#birthday').toggleClass("hidden");
-                $('#userBirthdayChangeSection').toggleClass("hidden");
-            });
-            $('#userBioChangeCancel').click(function () {
-                $('#bio').toggleClass("hidden");
-                $('#userBioChangeSection').toggleClass("hidden");
-            });
-
-            $('#userNameChange').keyup(function () {
-                if ($('#userNameChange').val() === "") {
-                    $('#userNameChangeSubmit').addClass("hidden");
-                } else {
-                    $('#userNameChangeSubmit').removeClass("hidden");
+        });
+        $(document).ready(function () {
+            $('#userBirthdayMonthChange').change(function () {
+                $('.days').remove();
+                $("<option class=\"days\" selected value=\"0\">Select a Day</option>").appendTo($('#days'));
+                for (var i = 1; i <= daysInMonth($('#userBirthdayMonthChange').val()); i++) {
+                    // Create a day:
+                    $("<option class=\"days\" value=\"" + i + "\">" + i + "</option>").appendTo($('#days'));
                 }
             });
-            $('#userEmailChange').keyup(function () {
-                if ($('#userEmailChange').val() === "") {
-                    $('#userEmailChangeSubmit').addClass("hidden");
-                } else {
-                    $('#userEmailChangeSubmit').removeClass("hidden");
+            function changeName() {
+                if ($('#userNameChange').val() == "") {
+                    return Promise.resolve();
                 }
-            });
-
-            $('#userNameChangeSubmit').click(function () {
-                $.post(".",
+                return $.post(".",
                     {
                         submit: "Change",
                         type: "User",
                         item: "name",
-                        userName: $('#userNameChange').val()
-                    },
-                    function (data, status) {
-                        if (data == 200) {
-                            // Change name; we succeeded:
-                            $('#userName').text($('#userNameChange').val());
-                        } else {
-                            alert("We're unable to make your changes right now - try again in a few minutes.");
-                        }
-                        $('#userName').toggleClass("hidden");
-                        $('#userNameChangeSection').toggleClass("hidden");
+                        name: $('#userNameChange').val()
                     });
-            });
-            $('#userEmailChangeSubmit').click(function () {
-                $.post(".",
+            }
+            function changeEmail() {
+                if ($('#userEmailChange').val() == "") {
+                    return Promise.resolve();
+                }
+                return $.post(".",
                     {
                         submit: "Change",
                         type: "User",
                         item: "email",
-                        email: $('#userEmailChange').val(),
-                    },
-                    function (data, status) {
-                        if (data == 200) {
-                            // Change name; we succeeded:
-                            $('#email').text($('#userEmail').val());
-                        } else {
-                            alert("We're unable to make your changes right now - try again in a few minutes.");
-                        }
-                        $('#userEmailChangeSection').toggleClass("hidden");
-                        $('#email').toggleClass("hidden");
+                        name: $('#userEmailChange').val()
                     });
-            });
-            $('#userBirthdayChangeSubmit').click(function () {
-                $.post(".",
-                    {
-                        submit: "Change",
-                        type: "User",
-                        item: "birthday",
-                        month: $('#userBirthdayMonthChange').val(),
-                        day: $('#userBirthdayDayChange').val()
-                    },
-                    function (data, status) {
-                        if (data == 200) {
-                            // Change name; we succeeded:
-                            $('#birthday').text("Birthday: " + $('#userBirthdayMonthChange').find(':selected').text() + " " + $('#userBirthdayDayChange').val());
-                        } else {
-                            alert("We're unable to make your changes right now - try again in a few minutes.");
-                        }
-                        $('#userBirthdayChangeSection').toggleClass("hidden");
-                        $('#birthday').toggleClass("hidden");
-                    });
-            });
-            $('#userBioChangeSubmit').click(function () {
-                $.post(".",
+            }
+            function changeBirthday() {
+                if ($('#userBirthdayDayChange').val() == null || $('#userBirthdayDayChange').val() == 0) {
+                    return Promise.resolve();
+                } else {
+                    $.post(".",
+                        {
+                            submit: "Change",
+                            type: "User",
+                            item: "birthday",
+                            month: $('#userBirthdayMonthChange').val(),
+                            day: $('#userBirthdayDayChange').val()
+                        });
+                }
+            }
+            function changeBio() {
+                return $.post(".",
                     {
                         submit: "Change",
                         type: "User",
                         item: "bio",
                         bio: $('#userBioChange').val()
-                    },
-                    function (data, status) {
-                        if (data == 200) {
-                            // Change name; we succeeded:
-                            $('#bio').val($('#userBioChange').val())
-                        } else {
-                            alert("We're unable to make your changes right now - try again in a few minutes.");
-                        }
-                        $('#userBioChangeSection').toggleClass("hidden");
-                        $('#bio').toggleClass("hidden");
                     });
-            });
-
-            $('#userBirthdayMonthChange').change(function () {
-                $('.days').remove();
-                for (var i = 1; i <= daysInMonth($('#userBirthdayMonthChange').val()); i++) {
-                    // Create a day:
-                    $("<option class=\"days\" value=\"" + i + "\">" + i + "</option>").appendTo($('#days'));
-                }
-
-            });
-
-            $('#submitPref').click(function () {
-                $.post(".",
+            }
+            function changeLocale() {
+                return $.post(".",
                     {
                         submit: "Change",
                         type: "Preferences",
                         culture: $('#userCulture').val()
-                    },
-                    function (data, status) {
-                        if (data == 200) {
-                            // change prefs succeeded; close modal
-                            $('#changePreferences').modal('hide');
-                            location.reload(true);
-                        } else {
-                            alert("We're unable to make your changes right now - try again in a few minutes.");
-                        }
                     });
+            }
+            $('#submitPref').click(function () {
+                changeName().then(changeEmail).then(changeBirthday).then(changeBio).then(changeLocale).then(() => location.reload(true));
+                // chain promises, ending with the location.reload();
             });
-
+        });
+        $(document).ready(function () {
             $('#searchNewUser').click(function () {
                 $.post(".",
                     {
-                        submit: "Query",
+                        submit: "Fetch",
                         type: "Email",
                         email: $('#newGroupAddUser').val()
                     },
-                    function (data, status) {
-                        if (data !== "") {
+                    function (data, status, xhr) {
+                        if (status == "success") {
+                            var dom = $.parseXML(xhr.responseText);
+                            var id = parseInt(dom.getElementsByTagName("userId")[0].innerHTML);
                             // Iterate over lis, make sure not already added
                             var exists = false;
                             $("#newGroupMembers li").each(function (index) {
-                                if ($(this).val() === $('#newGroupAddUser').val()) {
+                                if ($(this).attr('data-user-id') == id) {
                                     // found
                                     exists = true;
                                     return false;
@@ -235,8 +154,8 @@
                             });
                             if (!exists) {
                                 $('#userResult').removeClass("hidden");
-                                $('#foundUser').text(data);
-                                $('#foundUser').val($('#newGroupAddUser').val());
+                                $('#foundUser').text(dom.getElementsByTagName("userName")[0].innerHTML);
+                                $('#foundUser').val(id);
                             } else {
                                 $('#userResult').addClass("hidden");
                             }
@@ -244,6 +163,15 @@
                             $('#userResult').addClass("hidden");
                         }
                     });
+            });
+            $('#groupAddUser').click(function () {
+                // Add to list of users (add email as value, name as text)
+                // grab name
+                var name = $('#foundUser').text();
+                var id = $('#foundUser').val();
+                $('#newGroupMembers').prepend("<li data-user-id=\"" + id + "\">" + name + " <a class=\"remove-user\"><i class=\"fa fa-times\"></i></a></li>");
+                $('#userResult').addClass("hidden");
+                $('#newGroupAddUser').val("");
             });
             $('#createNewGroupSubmit').click(function () {
                 $.post(".",
@@ -261,7 +189,7 @@
                                     type: "Group",
                                     item: "addUser",
                                     itemId: data,
-                                    addUserEmail: $(this).attr("data-user-email")
+                                    userId: $(this).attr("data-user-id")
                                 });
                             });
                             // close modal
@@ -269,16 +197,145 @@
                         }
                     });
             });
-            $('#groupAddUser').click(function () {
-                // Add to list of users (add email as value, name as text)
-                // grab name
-                var name = $('#foundUser').text();
-                var email = $('#foundUser').val();
-                $('#newGroupMembers').prepend("<li data-user-email=\"" + email + "\">" + name + "</li>");
-                $('#userResult').addClass("hidden");
-                $('#newGroupAddUser').val("");
+        });
+        $(document).ready(function () {
+            $('.group-members').on('click', '.remove-user', function () {
+                $(this.parentElement).remove();
             });
-
+        });
+        $(document).ready(function () {
+            $('.group-name').click(function () {
+                // get group information:
+                // Get ID of this
+                var id = $(this).attr('data-group-id');
+                id = parseInt(id);
+                $.post(".", {
+                    submit: "Fetch",
+                    type: "Group",
+                    itemId: id
+                },
+                    function (data, status, xhr) {
+                        if (status == "success") {
+                            var data = xhr.responseText;
+                            var dom = $.parseXML(data);
+                            $('#editGroupName').attr('placeholder', dom.getElementsByTagName("name")[0].innerHTML);
+                            $('#editGroupId').val(dom.getElementsByTagName("groupId")[0].innerHTML);
+                            var members = dom.getElementsByTagName("members")[0].children;
+                            $('#editGroupMembers li').each(function () {
+                                $(this).remove();
+                            });
+                            $('#origGroupMembers li').each(function () {
+                                $(this).remove();
+                            });
+                            for (var i = 0; i < members.length; i++) {
+                                var id = members[i].children[0].innerHTML;
+                                var name = members[i].children[1].innerHTML;
+                                $('#editGroupMembers').prepend("<li data-user-id=\"" + id + "\">" + name + " <a class=\"remove-user\"><i class=\"fa fa-times\"></i></a></li>");
+                                $('#origGroupMembers').prepend("<li data-user-id=\"" + id + "\"></li>");
+                            }
+                            $('#editGroup').modal('show');
+                        }
+                    });
+            });
+            $('#editSearchUser').click(function () {
+                $.post(".",
+                    {
+                        submit: "Fetch",
+                        type: "Email",
+                        email: $('#editGroupAddUser').val()
+                    },
+                    function (data, status, xhr) {
+                        if (status == "success") {
+                            var dom = $.parseXML(xhr.responseText);
+                            var id = parseInt(dom.getElementsByTagName("userId")[0].innerHTML);
+                            // Iterate over lis, make sure not already added
+                            var exists = false;
+                            $("#editGroupMembers li").each(function (index) {
+                                if ($(this).attr('data-user-id') == id) {
+                                    // found
+                                    exists = true;
+                                    return false;
+                                }
+                            });
+                            if (!exists) {
+                                $('#editUserResult').removeClass("hidden");
+                                $('#editFoundUser').text(dom.getElementsByTagName("userName")[0].innerHTML);
+                                $('#editFoundUser').val(id);
+                            } else {
+                                $('#editUserResult').addClass("hidden");
+                            }
+                        } else {
+                            $('#editUserResult').addClass("hidden");
+                        }
+                    });
+            });
+            $('#editGroupNewUser').click(function () {
+                // Add to list of users (add id as value, name as text)
+                // grab name
+                var name = $('#editFoundUser').text();
+                var id = $('#editFoundUser').val();
+                $('#editGroupMembers').prepend("<li data-user-id=\"" + id + "\">" + name + " <a class=\"remove-user\"><i class=\"fa fa-times\"></i></a></li>");
+                $('#editUserResult').addClass("hidden");
+                $('#editGroupAddUser').val("");
+            });
+            $('#editGroupSubmit').click(function () {
+                // loop through original group members. If any of them aren't found, REMOVE that member!
+                $('#origGroupMembers li').each(function () {
+                    // search in new list
+                    var id = $(this).attr('data-user-id');
+                    var isFound = false;
+                    $('#editGroupMembers li').each(function () {
+                        if ($(this).attr('data-user-id') === id) {
+                            isFound = true;
+                            return false;
+                        }
+                    });
+                    if (!isFound) {
+                        // Remove user
+                        $.post(".",
+                            {
+                                submit: "Change",
+                                type: "Group",
+                                item: "removeUser",
+                                itemId: $('#editGroupId').val(),
+                                userID: $(this).attr('data-user-id')
+                            });
+                    }
+                });
+                // loop through edited group members. If any of them aren't found originally, ADD that member!
+                $('#editGroupMembers li').each(function () {
+                    var id = $(this).attr('data-user-id');
+                    var isFound = false;
+                    $('#origGroupMembers li').each(function () {
+                        if ($(this).attr('data-user-id') === id) {
+                            isFound = true;
+                            return false;
+                        }
+                    });
+                    if (!isFound) {
+                        $.post(".",
+                            {
+                                submit: "Change",
+                                type: "Group",
+                                item: "addUser",
+                                itemId: $('#editGroupId').val(),
+                                userId: $(this).attr('data-user-id')
+                            });
+                    }
+                });
+                if ($('#editGroupName').val() !== "") {
+                    $.post(".",
+                        {
+                            submit: "Change",
+                            type: "Group",
+                            item: "name",
+                            name: $('#editGroupName').val()
+                        });
+                }
+                $('#editGroup').modal('hide');
+            });
+        });
+        $(document).ready(function () {
             $('#resetSubmit').hide();
             $('#firstResetPass').keyup(function () {
                 if ($('#secondResetPass').val() === $('#firstResetPass').val() && $('#secondResetPass').val()) {
@@ -466,12 +523,62 @@
                     </div>
                     <div class="modal-body">
                         <form id="preferenceForm" method="post">
-                            <label for="culture">Language</label>
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-globe"></i></span>
-                                <select name="culture" id="userCulture" class="form-control"></select>
+                            <h5>Edit any field to update your information</h5>
+                            <div class="row form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                    <input name="userName" id="userNameChange" class="form-control" placeholder="User Name" />
+                                </div>
                             </div>
-                            <h2>Theme: <span id="theme" class="circle" style=""></span></h2>
+                            <div class="row form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-at"></i></span>
+                                    <input name="userEmail" id="userEmailChange" class="form-control" placeholder="Email Address" type="email" />
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-6">
+                                    <label for="birthdayMonth">Birthday (Month)</label>
+                                    <select name="birthdayMonth" class="form-control" id="userBirthdayMonthChange">
+                                        <optgroup label="Month">
+                                            <option value="0">Select a Month</option>
+                                            <option value="1">January</option>
+                                            <option value="2">February</option>
+                                            <option value="3">March</option>
+                                            <option value="4">April</option>
+                                            <option value="5">May</option>
+                                            <option value="6">June</option>
+                                            <option value="7">July</option>
+                                            <option value="8">August</option>
+                                            <option value="9">September</option>
+                                            <option value="10">October</option>
+                                            <option value="11">November</option>
+                                            <option value="12">December</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="birthdayDay">Birthday (Day)</label>
+                                    <select name="birthdayDay" id="userBirthdayDayChange" class="form-control">
+                                        <optgroup id="days" label="Day"></optgroup>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label for="userBio">Bio</label>
+                                <textarea name="userBio" class="form-control" rows="5" id="userBioChange"></textarea>
+                            </div>
+                            <div class="row form-group">
+                                <h2>Theme: <span id="theme" class="circle" style=""></span></h2>
+                            </div>
+                            <div class="row form-group">
+                                <label for="culture">Language</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-globe"></i></span>
+                                    <select name="culture" id="userCulture" class="form-control"></select>
+                                </div>
+                            </div>
+
                             <div class="row">
                                 <div class="col-md-12">
                                     <button id="submitPref" type="button" class="btn btn-success" name="submit" value="Preferences">
@@ -534,9 +641,7 @@
                         </div>
                         <div class="row form-group">
                             <h2>Members:</h2>
-                            <ul id="newGroupMembers">
-
-                            </ul>
+                            <ul id="newGroupMembers" class="group-members"></ul>
                         </div>
                         <div class="row form-group">
                             <button id="createNewGroupSubmit" name="submit" value="newGroup" role="button" class="btn btn-success">
@@ -558,6 +663,7 @@
                         <h4 id="editEventTitle" class="modal-title">Edit Event</h4>
                     </div>
                     <div class="modal-body">
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -573,6 +679,39 @@
                         <h4 id="editGroupTitle" class="modal-title">Edit Group</h4>
                     </div>
                     <div class="modal-body">
+                        <div class="row form-group">
+                            <label for="groupName">Group Name</label>
+                            <input name="groupName" id="editGroupName" class="form-control" placeholder="Group Name" />
+                            <input type="hidden" id="editGroupId" />
+                        </div>
+                        <div class="row form-group">
+                            <div class="input-group add-on">
+                                <input class="form-control" placeholder="Search" name="addUser" id="editGroupAddUser" type="email" />
+                                <div class="input-group-btn">
+                                    <button id="editSearchUser" class="btn btn-default" type="button"><i class="glyphicon glyphicon-search"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="editUserResult" class="row hidden form-group">
+                            <div class="col-xs-6">
+                                <p id="editFoundUser"></p>
+                            </div>
+                            <div class="col-xs-4">
+                                <button id="editGroupNewUser" name="submit" value="addUser" role="button" class="btn btn-success" type="button">
+                                    Add User
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <h2>Members:</h2>
+                            <ul id="editGroupMembers" class="group-members"></ul>
+                            <ul id="origGroupMembers" class="hidden"></ul>
+                        </div>
+                        <div class="row form-group">
+                            <button id="editGroupSubmit" role="button" class="btn btn-success">
+                                Save Changes
+                            </button>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -584,34 +723,17 @@
             <div class="col-sm-4 text-center">
                 <!-- User Image -->
                 <img id="userImage" type="button" data-tooltip="tooltip" data-placement="bottom auto" title="Click to select new image" data-toggle="modal" href="#uploadImage" class="img-circle img-responsive" src="resources/images/users/default.png" />
-                <div class="form-group">
-                    <h1 role="button" id="userName" class="form-control-static"></h1>
-                </div>
+                <h1 id="userName" class="form-control-static"></h1>
                 <!-- User Name -->
-                <div id="userNameChangeSection" class="form-group hidden">
-                    <div class="col-md-8">
-                        <input style="margin:5px;" type="text" class="form-control" id="userNameChange" placeholder="New Name" />
-                    </div>
-                    <div class="col-md-2">
-                        <button id="userNameChangeSubmit" class="btn btn-success hidden" type="button">
-                            <span class="glyphicon glyphicon-check"></span>
-                        </button>
-                    </div>
-                    <div class="col-md-2">
-                        <button id="userNameChangeCancel" class="btn btn-danger" type="button">
-                            <span class="glyphicon glyphicon-remove"></span>
-                        </button>
-                    </div>
-                </div>
                 <div class="row">
                     <div class="col-xs-6">
                         <button class="btn btn-lg btn-danger" type="button" id="resetPassword" data-toggle="modal" data-target="#resetPassword">
-                            <div class="hidden-sm hidden-xs">Change Password </div><span class="glyphicon glyphicon-lock"></span>
+                            <div class="hidden-md hidden-sm hidden-xs">Change Password </div><span class="glyphicon glyphicon-lock"></span>
                         </button>
                     </div>
                     <div class="col-xs-6">
                         <button class="btn btn-lg btn-primary" type="button" id="changePreferences" data-toggle="modal" data-target="#changePreferences">
-                            <div class="hidden-sm hidden-xs">Change Preferences </div><span class="glyphicon glyphicon-cog"></span>
+                            <div class="hidden-md hidden-sm hidden-xs">Preferences </div><span class="glyphicon glyphicon-cog"></span>
                         </button>
                     </div>
                 </div>
@@ -619,119 +741,9 @@
             </div>
             <div class="col-sm-5">
                 <!-- User Information -->
-                <div class="form-group">
-                    <h2 role="button" id="email" class="form-control-static"></h2>
-                </div>
-                <div id="userEmailChangeSection" class="form-group hidden">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <input style="margin:5px;" type="email" class="form-control" id="userEmailChange" placeholder="Email Address" />
-                        </div>
-                        <div class="col-md-2">
-                            <button id="userEmailChangeSubmit" class="btn btn-success hidden" type="button">
-                                <span class="glyphicon glyphicon-check"></span>
-                            </button>
-                        </div>
-                        <div class="col-md-2">
-                            <button id="userEmailChangeCancel" class="btn btn-danger" type="button">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <h2 role="button" id="birthday" class="form-control-static"></h2>
-                </div>
-                <div id="userBirthdayChangeSection" class="form-group hidden">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <select class="form-control" id="userBirthdayMonthChange">
-                                <optgroup label="Month">
-                                    <option value="1">January</option>
-                                    <option value="2">February</option>
-                                    <option value="3">March</option>
-                                    <option value="4">April</option>
-                                    <option value="5">May</option>
-                                    <option value="6">June</option>
-                                    <option value="7">July</option>
-                                    <option value="8">August</option>
-                                    <option value="9">September</option>
-                                    <option value="10">October</option>
-                                    <option value="11">November</option>
-                                    <option value="12">December</option>
-                                </optgroup>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <select id="userBirthdayDayChange" class="form-control">
-                                <optgroup id="days" label="Day">
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                    <option value="10">10</option>
-                                    <option value="11">11</option>
-                                    <option value="12">12</option>
-                                    <option value="13">13</option>
-                                    <option value="14">14</option>
-                                    <option value="15">15</option>
-                                    <option value="16">16</option>
-                                    <option value="17">17</option>
-                                    <option value="18">18</option>
-                                    <option value="19">19</option>
-                                    <option value="20">20</option>
-                                    <option value="21">21</option>
-                                    <option value="22">22</option>
-                                    <option value="23">23</option>
-                                    <option value="24">24</option>
-                                    <option value="25">25</option>
-                                    <option value="26">26</option>
-                                    <option value="27">27</option>
-                                    <option value="28">28</option>
-                                    <option value="29">29</option>
-                                    <option value="30">30</option>
-                                    <option value="31">31</option>
-                                </optgroup>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <button id="userBirthdayChangeSubmit" class="btn btn-success" type="button">
-                                <span class="glyphicon glyphicon-check"></span>
-                            </button>
-                        </div>
-                        <div class="col-md-2">
-                            <button id="userBirthdayChangeCancel" class="btn btn-danger" type="button">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <h2 id="email"></h2>
+                <h2 id="birthday" class="form-control-static"></h2>
                 <h2>Bio: </h2>
-                <div class="form-group">
-                    <p role="button" id="bio" class="form-control-static"></p>
-                </div>
-                <div id="userBioChangeSection" class="form-group hidden">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <textarea class="form-control" rows="5" id="userBioChange"></textarea>
-                        </div>
-                        <div class="col-md-2">
-                            <button id="userBioChangeSubmit" class="btn btn-success" type="button">
-                                <span class="glyphicon glyphicon-check"></span>
-                            </button>
-                        </div>
-                        <div class="col-md-2">
-                            <button id="userBioChangeCancel" class="btn btn-danger" type="button">
-                                <span class="glyphicon glyphicon-remove"></span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
                 <p id="bio"></p>
             </div>
             <div class="col-sm-3 hidden-xs">
@@ -752,14 +764,11 @@
         <div class="row">
             <div class="col-sm-4">
                 <h1 class="text-left">Events</h1>
-                <table id="events">
-                </table>
+                <table id="events"></table>
             </div>
             <div class="col-sm-4">
                 <h1 class="text-left">Groups</h1>
-                <table id="groups">
-                    
-                </table>
+                <table id="groups"></table>
             </div>
         </div>
     </div>
