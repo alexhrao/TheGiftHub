@@ -36,6 +36,8 @@ namespace GiftServer
                 List<Gift> gifts = viewer.GetGifts(target);
                 HtmlNode userName = list.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
                 userName.InnerHtml = target.UserName + "'s " + StringManager.GetString("giftList");
+                HtmlNode title = list.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" title \")]");
+                title.InnerHtml = target.UserName + "'s " + StringManager.GetString("giftList");
                 HtmlNode giftTable = list.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" giftHolder \")]");
                 HtmlNode giftTableMicro = list.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" xsGiftHolder \")]");
 
