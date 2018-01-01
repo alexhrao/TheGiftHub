@@ -767,11 +767,13 @@ namespace GiftServer
                     }
                 }
             }
-            public List<Gift> GetGifts(User viewer)
+            // NOTE: In all Get*, this is viewer!
+            // In other words, Get* will get all * owned by target and viewable by this
+            public List<Gift> GetGifts(User target)
             {
                 List<Gift> gifts = new List<Gift>();
-                List<Group> groups = GetGroups(viewer);
-                // get all gifts owned by THIS and that have a record in groups_gifts
+                List<Group> groups = GetGroups(target);
+                // get all gifts owned by target and that have a record in groups_gifts
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -786,7 +788,7 @@ namespace GiftServer
                                             + "WHERE GroupID = @gid "
                                             + "AND gifts.UserID = @uid;";
                             cmd.Parameters.AddWithValue("@gid", group.GroupId);
-                            cmd.Parameters.AddWithValue("@uid", viewer.UserId);
+                            cmd.Parameters.AddWithValue("@uid", target.UserId);
                             cmd.Prepare();
                             using (MySqlDataReader Reader = cmd.ExecuteReader())
                             {
@@ -800,7 +802,7 @@ namespace GiftServer
                 }
                 return gifts;
             }
-            public List<Group> GetGroups(User viewer)
+            public List<Group> GetGroups(User target)
             {
                 List<Group> groups = new List<Group>();
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -818,7 +820,7 @@ namespace GiftServer
                                             + "WHERE UserID = @id1 "
                                         + ");";
                         cmd.Parameters.AddWithValue("@id1", this.UserId);
-                        cmd.Parameters.AddWithValue("@id2", viewer.UserId);
+                        cmd.Parameters.AddWithValue("@id2", target.UserId);
                         cmd.Prepare();
                         using (MySqlDataReader Reader = cmd.ExecuteReader())
                         {
@@ -831,8 +833,9 @@ namespace GiftServer
                 }
                 return groups;
             }
-            public List<EventUser> GetEvents(User viewer)
+            public List<EventUser> GetEvents(User target)
             {
+                // TODO
                 List<EventUser> events = new List<EventUser>();
                 return events;
             }

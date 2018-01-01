@@ -24,24 +24,24 @@ namespace GiftServer
                 ResourceManager = new ResourceManager("GiftServer.HtmlTemplates", typeof(ProfileManager).Assembly);
                 NavigationManager = controller.NavigationManager;
             }
-            public string PublicProfile(User user)
+            public string ProfilePage(User viewer, User target)
             {
                 HtmlDocument profile = new HtmlDocument();
-                profile.LoadHtml(NavigationManager.NavigationBar(user) + ResourceManager.GetString("publicProfile"));
+                profile.LoadHtml(NavigationManager.NavigationBar(viewer) + ResourceManager.GetString("publicProfile"));
                 // Set src of image:
                 HtmlNode img = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userImage \")]");
-                img.Attributes["src"].Value = user.GetImage();
+                img.Attributes["src"].Value = viewer.GetImage();
                 HtmlNode name = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
-                name.InnerHtml = HttpUtility.HtmlEncode(user.UserName);
+                name.InnerHtml = HttpUtility.HtmlEncode(viewer.UserName);
                 HtmlNode timeMember = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" timeMember \")]");
-                timeMember.InnerHtml = HttpUtility.HtmlEncode("Member since " + user.DateJoined.ToString("m") + ", " + user.DateJoined.ToString("yyyy"));
+                timeMember.InnerHtml = HttpUtility.HtmlEncode("Member since " + viewer.DateJoined.ToString("m") + ", " + viewer.DateJoined.ToString("yyyy"));
                 HtmlNode listLink = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" listLink \")]");
-                listLink.SetAttributeValue("href", Constants.URL + "?dest=list&user=" + user.UserUrl);
+                listLink.SetAttributeValue("href", Constants.URL + "?dest=list&user=" + viewer.UserUrl);
                 HtmlNode email = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" email \")]");
-                email.InnerHtml = HttpUtility.HtmlEncode("Email: " + user.Email);
-                if (user.BirthMonth != 0)
+                email.InnerHtml = HttpUtility.HtmlEncode("Email: " + viewer.Email);
+                if (viewer.BirthMonth != 0)
                 {
-                    DateTime dob = new DateTime(2004, user.BirthMonth, user.BirthDay);
+                    DateTime dob = new DateTime(2004, viewer.BirthMonth, viewer.BirthDay);
                     HtmlNode birthday = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" birthday \")]");
                     birthday.InnerHtml = HttpUtility.HtmlEncode("Birthday: " + dob.ToString("m"));
                 }
@@ -52,10 +52,10 @@ namespace GiftServer
                 }
 
                 HtmlNode bio = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" bio \")]");
-                bio.InnerHtml = HttpUtility.HtmlEncode(user.Bio);
+                bio.InnerHtml = HttpUtility.HtmlEncode(viewer.Bio);
 
                 HtmlNode events = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" events \")]");
-                foreach (EventUser evnt in user.Events)
+                foreach (EventUser evnt in viewer.GetEvents(target))
                 {
                     HtmlNode eventEntry = HtmlNode.CreateNode("<tr id=\"event" + evnt.EventUserId + "\"><td><h3><span id=\"eventCloser" + evnt.EventUserId + "\"></span></h3></td>"
                                                             + "<td class=\"event-name\"><h3>" + HttpUtility.HtmlEncode(evnt.Name) + " </h3></td></tr>");
@@ -65,7 +65,7 @@ namespace GiftServer
                 events.AppendChild(addEvent);
 
                 HtmlNode groups = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" groups \")]");
-                foreach (Group group in user.Groups)
+                foreach (Group group in viewer.GetGroups(target))
                 {
                     HtmlNode groupEntry = HtmlNode.CreateNode("<tr id=\"group" + group.GroupId + "\"><td><h3><span id=\"groupCloser" + group.GroupId + "\"></span></h3></td>"
                                                + "<td class=\"group-name\"><h3>" + HttpUtility.HtmlEncode(group.Name) + " </h3></td></tr>");

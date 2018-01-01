@@ -310,10 +310,10 @@ namespace GiftServer
                         return ProfileManager.ProfilePage(_user);
                     case "myList":
                         return ListManager.GiftList(_user);
+                    case "user":
+                        return ProfileManager.ProfilePage(_user, new User(_request.QueryString["user"]));
                     case "list":
                         return ListManager.GiftList(_user, new User(_request.QueryString["user"]));
-                    case "user":
-                        return ProfileManager.PublicProfile(new User(_request.QueryString["user"]));
                     default:
                         return DashboardManager.Dashboard(_user);
                 }

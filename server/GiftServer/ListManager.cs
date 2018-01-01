@@ -27,15 +27,15 @@ namespace GiftServer
                 StringManager = new ResourceManager("GiftServer.Strings", typeof(ListManager).Assembly);
                 NavigationManager = controller.NavigationManager;
             }
-            public string GiftList(User thisUser, User viewer)
+            public string GiftList(User viewer, User target)
             {
                 HtmlDocument list = new HtmlDocument();
-                list.LoadHtml(NavigationManager.NavigationBar(viewer) + HtmlManager.GetString("publicList"));
+                list.LoadHtml(NavigationManager.NavigationBar(target) + HtmlManager.GetString("publicList"));
                 // Get all gifts that are visible to THIS USER
 
-                List<Gift> gifts = thisUser.GetGifts(viewer);
+                List<Gift> gifts = viewer.GetGifts(target);
                 HtmlNode userName = list.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
-                userName.InnerHtml = viewer.UserName + "'s " + StringManager.GetString("giftList");
+                userName.InnerHtml = target.UserName + "'s " + StringManager.GetString("giftList");
                 HtmlNode giftTable = list.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" giftHolder \")]");
                 HtmlNode giftTableMicro = list.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" xsGiftHolder \")]");
 
