@@ -831,6 +831,11 @@ namespace GiftServer
                 }
                 return groups;
             }
+            public List<EventUser> GetEvents(User viewer)
+            {
+                List<EventUser> events = new List<EventUser>();
+                return events;
+            }
             public XmlDocument Fetch()
             {
                 XmlDocument info = new XmlDocument();
