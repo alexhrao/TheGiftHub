@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
     <title>My Gift List</title>
     <script>
-        jQuery(document).ready(function ($) {
+        $(document).ready(function ($) {
             $(".clickable-row").click(function () {
                 window.location = $(this).data("href");
             });
@@ -310,6 +310,18 @@
                                     <div class="form-group">
                                         <div class="col-xs-12">
                                             <input id="editGiftSize" name="giftSize" class="form-control" type="text" placeholder="Size" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <div class="col-sm-2">
+                                            <label>Groups</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <div id="editSharedGroups">
+
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

@@ -311,7 +311,10 @@
                             submit: "Change",
                             type: "Group",
                             item: "name",
+                            itemId: $('#editGroupId').val(),
                             name: $('#editGroupName').val()
+                        }, function () {
+                            $('.group-name[data-group-id=' + $('#editGroupId').val() + ']').children().text($('#editGroupName').val());
                         });
                 }
                 $('#editGroup').modal('hide');

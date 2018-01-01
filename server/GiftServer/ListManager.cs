@@ -92,14 +92,25 @@ namespace GiftServer
                         {
                             while (Reader.Read())
                             {
+                                // WHY OH WHY CAN I NOT PREPEND THIS ELEMENT TO BOTH LISTS??????
                                 string catName = Convert.ToString(Reader["CategoryName"]);
-                                HtmlNode entry = HtmlNode.CreateNode("<option value=\"" + catName + "\"></option>");
+                                HtmlNode entry = HtmlNode.CreateNode("<option value=\"" + HttpUtility.HtmlEncode(catName) + "\"></option>");
                                 entry.InnerHtml = HttpUtility.HtmlEncode(catName);
                                 categoryEdit.PrependChild(entry);
+                                entry = HtmlNode.CreateNode("<option value=\"" + HttpUtility.HtmlEncode(catName) + "\"></option>");
+                                entry.InnerHtml = HttpUtility.HtmlEncode(catName);
                                 categoryNew.PrependChild(entry);
                             }
                         }
                     }
+                }
+                // Add group options to new and edit:
+                HtmlNode groupsEdit = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" editSharedGroups \")]");
+                foreach (Group group in thisUser.Groups)
+                {
+                    HtmlNode entry = HtmlNode.CreateNode("<option value=\"" + HttpUtility.HtmlEncode(group.GroupId) + "\"></option>");
+                    entry.InnerHtml = HttpUtility.HtmlEncode(group.Name);
+                    groupsEdit.PrependChild(entry);
                 }
                 HtmlNode userName = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
                 userName.InnerHtml = thisUser.UserName + "'s " + StringManager.GetString("giftList");

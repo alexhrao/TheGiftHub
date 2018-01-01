@@ -362,6 +362,13 @@ namespace GiftServer
                 rating.InnerText = Rating.ToString();
                 XmlElement image = info.CreateElement("image");
                 image.InnerText = GetImage();
+                XmlElement groups = info.CreateElement("groups");
+                foreach (Group group in Groups)
+                {
+                    XmlElement groupElem = info.CreateElement("group");
+                    groupElem.InnerText = group.GroupId.ToString();
+                    groups.AppendChild(groupElem);
+                }
 
                 container.AppendChild(id);
                 container.AppendChild(user);
@@ -377,6 +384,7 @@ namespace GiftServer
                 container.AppendChild(category);
                 container.AppendChild(rating);
                 container.AppendChild(image);
+                container.AppendChild(groups);
 
                 return info;
             }
