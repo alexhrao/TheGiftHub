@@ -138,23 +138,6 @@ namespace GiftServer
                                         string password = _dict["password"];
                                         _user.UpdatePassword(password, ResetManager);
                                         return ResetManager.SuccessResetPassword();
-                                    case "Change":
-                                        ulong changeId = Convert.ToUInt64(_dict["itemId"]);
-                                        switch (_dict["type"])
-                                        {
-                                            case "User":
-                                                return Update();
-                                            case "Preferences":
-                                                return Update(_user.Preferences);
-                                            case "Event":
-                                                return Update(new EventUser(changeId));
-                                            case "Group":
-                                                return Update(new Group(changeId));
-                                            case "Gift":
-                                                return Update(new Gift(changeId));
-                                            default:
-                                                return "";
-                                        }
                                     case "Create":
                                         switch (_dict["type"])
                                         {
@@ -185,7 +168,7 @@ namespace GiftServer
                                                     return "0";
                                                 }
                                             case "Event":
-
+                                                return "0";
                                             case "Gift":
                                                 try
                                                 {
@@ -214,6 +197,23 @@ namespace GiftServer
                                             default:
                                                 return "";
                                         }
+                                    case "Change":
+                                        ulong changeId = Convert.ToUInt64(_dict["itemId"]);
+                                        switch (_dict["type"])
+                                        {
+                                            case "User":
+                                                return Update();
+                                            case "Preferences":
+                                                return Update(_user.Preferences);
+                                            case "Event":
+                                                return Update(new EventUser(changeId));
+                                            case "Group":
+                                                return Update(new Group(changeId));
+                                            case "Gift":
+                                                return Update(new Gift(changeId));
+                                            default:
+                                                return "";
+                                        }
                                     case "Fetch":
                                         ulong fetchId = Convert.ToUInt64(_dict["itemId"]);
                                         IFetchable item = null;
@@ -224,6 +224,9 @@ namespace GiftServer
                                                 break;
                                             case "User":
                                                 item = new User(fetchId);
+                                                break;
+                                            case "Email":
+                                                item = new User(new MailAddress(_dict["email"]));
                                                 break;
                                             case "Event":
                                                 item = new EventUser(fetchId);
@@ -238,15 +241,6 @@ namespace GiftServer
                                         return item.Fetch().OuterXml;
                                     default:
                                         return LoginManager.Login();
-                                    case "Query":
-                                        switch (_dict["type"])
-                                        {
-                                            case "Email":
-                                                return Fetch(_dict["email"]);
-                                            default:
-                                                _response.StatusCode = 404;
-                                                return "Corrupted Query";
-                                        }
                                 }
                             }
                             else
@@ -644,7 +638,7 @@ namespace GiftServer
                 {
                     case "addUser":
                         {
-                            User added = new User(new MailAddress(_dict["addUserEmail"]));
+                            User added = new User(Convert.ToUInt64(_dict["userId"]));
                             group.Add(added);
                             break;
                         }

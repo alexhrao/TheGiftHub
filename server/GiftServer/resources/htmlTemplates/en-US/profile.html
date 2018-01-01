@@ -135,16 +135,18 @@
             $('#searchNewUser').click(function () {
                 $.post(".",
                     {
-                        submit: "Query",
+                        submit: "Fetch",
                         type: "Email",
                         email: $('#newGroupAddUser').val()
                     },
-                    function (data, status) {
-                        if (data !== "") {
+                    function (data, status, xhr) {
+                        if (status == "success") {
+                            var dom = $.parseXML(xhr.responseText);
+                            var id = parseInt(dom.getElementsByTagName("userId")[0].innerHTML);
                             // Iterate over lis, make sure not already added
                             var exists = false;
                             $("#newGroupMembers li").each(function (index) {
-                                if ($(this).attr('data-user-email') === $('#newGroupAddUser').val()) {
+                                if ($(this).attr('data-user-id') == id) {
                                     // found
                                     exists = true;
                                     return false;
@@ -152,8 +154,8 @@
                             });
                             if (!exists) {
                                 $('#userResult').removeClass("hidden");
-                                $('#foundUser').text(data);
-                                $('#foundUser').val($('#newGroupAddUser').val());
+                                $('#foundUser').text(dom.getElementsByTagName("userName")[0].innerHTML);
+                                $('#foundUser').val(id);
                             } else {
                                 $('#userResult').addClass("hidden");
                             }
@@ -161,6 +163,15 @@
                             $('#userResult').addClass("hidden");
                         }
                     });
+            });
+            $('#groupAddUser').click(function () {
+                // Add to list of users (add email as value, name as text)
+                // grab name
+                var name = $('#foundUser').text();
+                var id = $('#foundUser').val();
+                $('#newGroupMembers').prepend("<li data-user-id=\"" + id + "\">" + name + " <a class=\"remove-user\"><i class=\"fa fa-times\"></i></a></li>");
+                $('#userResult').addClass("hidden");
+                $('#newGroupAddUser').val("");
             });
             $('#createNewGroupSubmit').click(function () {
                 $.post(".",
@@ -178,7 +189,7 @@
                                     type: "Group",
                                     item: "addUser",
                                     itemId: data,
-                                    addUserEmail: $(this).attr("data-user-email")
+                                    userId: $(this).attr("data-user-id")
                                 });
                             });
                             // close modal
@@ -186,19 +197,9 @@
                         }
                     });
             });
-            $('#groupAddUser').click(function () {
-                // Add to list of users (add email as value, name as text)
-                // grab name
-                var name = $('#foundUser').text();
-                var email = $('#foundUser').val();
-                $('#newGroupMembers').prepend("<li data-user-email=\"" + email + "\">" + name + " <a class=\"remove-user\"><i class=\"fa fa-times\"></i></a></li>");
-                $('#userResult').addClass("hidden");
-                $('#newGroupAddUser').val("");
-            });
         });
         $(document).ready(function () {
             $('.group-members').on('click', '.remove-user', function () {
-                // var email = $(this.parentElement).attr('data-user-email');
                 $(this.parentElement).remove();
             });
         });
@@ -218,7 +219,14 @@
                             var data = xhr.responseText;
                             var dom = $.parseXML(data);
                             $('#editGroupName').attr('placeholder', dom.getElementsByTagName("name")[0].innerHTML);
+                            $('#editGroupId').val(dom.getElementsByTagName("groupId")[0].innerHTML);
                             var members = dom.getElementsByTagName("members")[0].children;
+                            $('#editGroupMembers li').each(function () {
+                                $(this).remove();
+                            });
+                            $('#origGroupMembers li').each(function () {
+                                $(this).remove();
+                            });
                             for (var i = 0; i < members.length; i++) {
                                 var id = members[i].children[0].innerHTML;
                                 var name = members[i].children[1].innerHTML;
@@ -228,6 +236,103 @@
                             $('#editGroup').modal('show');
                         }
                     });
+            });
+            $('#editSearchUser').click(function () {
+                $.post(".",
+                    {
+                        submit: "Fetch",
+                        type: "Email",
+                        email: $('#editGroupAddUser').val()
+                    },
+                    function (data, status, xhr) {
+                        if (status == "success") {
+                            var dom = $.parseXML(xhr.responseText);
+                            var id = parseInt(dom.getElementsByTagName("userId")[0].innerHTML);
+                            // Iterate over lis, make sure not already added
+                            var exists = false;
+                            $("#editGroupMembers li").each(function (index) {
+                                if ($(this).attr('data-user-id') == id) {
+                                    // found
+                                    exists = true;
+                                    return false;
+                                }
+                            });
+                            if (!exists) {
+                                $('#editUserResult').removeClass("hidden");
+                                $('#editFoundUser').text(dom.getElementsByTagName("userName")[0].innerHTML);
+                                $('#editFoundUser').val(id);
+                            } else {
+                                $('#editUserResult').addClass("hidden");
+                            }
+                        } else {
+                            $('#editUserResult').addClass("hidden");
+                        }
+                    });
+            });
+            $('#editGroupNewUser').click(function () {
+                // Add to list of users (add id as value, name as text)
+                // grab name
+                var name = $('#editFoundUser').text();
+                var id = $('#editFoundUser').val();
+                $('#editGroupMembers').prepend("<li data-user-id=\"" + id + "\">" + name + " <a class=\"remove-user\"><i class=\"fa fa-times\"></i></a></li>");
+                $('#editUserResult').addClass("hidden");
+                $('#editGroupAddUser').val("");
+            });
+            $('#editGroupSubmit').click(function () {
+                // loop through original group members. If any of them aren't found, REMOVE that member!
+                $('#origGroupMembers li').each(function () {
+                    // search in new list
+                    var id = $(this).attr('data-user-id');
+                    var isFound = false;
+                    $('#editGroupMembers li').each(function () {
+                        if ($(this).attr('data-user-id') === id) {
+                            isFound = true;
+                            return false;
+                        }
+                    });
+                    if (!isFound) {
+                        // Remove user
+                        $.post(".",
+                            {
+                                submit: "Change",
+                                type: "Group",
+                                item: "removeUser",
+                                itemId: $('#editGroupId').val(),
+                                userID: $(this).attr('data-user-id')
+                            });
+                    }
+                });
+                // loop through edited group members. If any of them aren't found originally, ADD that member!
+                $('#editGroupMembers li').each(function () {
+                    var id = $(this).attr('data-user-id');
+                    var isFound = false;
+                    $('#origGroupMembers li').each(function () {
+                        if ($(this).attr('data-user-id') === id) {
+                            isFound = true;
+                            return false;
+                        }
+                    });
+                    if (!isFound) {
+                        $.post(".",
+                            {
+                                submit: "Change",
+                                type: "Group",
+                                item: "addUser",
+                                itemId: $('#editGroupId').val(),
+                                userId: $(this).attr('data-user-id')
+                            });
+                    }
+                });
+                if ($('#editGroupName').val() !== "") {
+                    $.post(".",
+                        {
+                            submit: "Change",
+                            type: "Group",
+                            item: "name",
+                            name: $('#editGroupName').val()
+                        });
+                }
+                $('#editGroup').modal('hide');
             });
         });
         $(document).ready(function () {
@@ -577,21 +682,22 @@
                         <div class="row form-group">
                             <label for="groupName">Group Name</label>
                             <input name="groupName" id="editGroupName" class="form-control" placeholder="Group Name" />
+                            <input type="hidden" id="editGroupId" />
                         </div>
                         <div class="row form-group">
                             <div class="input-group add-on">
                                 <input class="form-control" placeholder="Search" name="addUser" id="editGroupAddUser" type="email" />
                                 <div class="input-group-btn">
-                                    <button id="searchEditUser" class="btn btn-default" type="button"><i class="glyphicon glyphicon-search"></i></button>
+                                    <button id="editSearchUser" class="btn btn-default" type="button"><i class="glyphicon glyphicon-search"></i></button>
                                 </div>
                             </div>
                         </div>
-                        <div id="userResult" class="row hidden form-group">
+                        <div id="editUserResult" class="row hidden form-group">
                             <div class="col-xs-6">
-                                <p id="foundEditUser"></p>
+                                <p id="editFoundUser"></p>
                             </div>
                             <div class="col-xs-4">
-                                <button id="groupEditAddUser" name="submit" value="addUser" role="button" class="btn btn-success" type="button">
+                                <button id="editGroupNewUser" name="submit" value="addUser" role="button" class="btn btn-success" type="button">
                                     Add User
                                 </button>
                             </div>

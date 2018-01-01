@@ -180,6 +180,7 @@ namespace GiftServer
             {
                 XmlDocument info = new XmlDocument();
                 XmlElement container = info.CreateElement("preferences");
+                info.AppendChild(container);
                 XmlElement id = info.CreateElement("preferenceId");
                 id.InnerText = PreferenceId.ToString();
                 XmlElement userTheme = info.CreateElement("theme");

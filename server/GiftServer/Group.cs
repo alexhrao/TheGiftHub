@@ -66,8 +66,9 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT groups_users.UserID FROM groups_users WHERE groups_users.GroupID = @gid;";
+                        cmd.CommandText = "SELECT groups_users.UserID FROM groups_users WHERE groups_users.GroupID = @gid AND NOT groups_users.UserID = @aid;";
                         cmd.Parameters.AddWithValue("@gid", this.GroupId);
+                        cmd.Parameters.AddWithValue("@aid", this.Admin.UserId);
                         cmd.Prepare();
                         using (MySqlDataReader Reader = cmd.ExecuteReader())
                         {
