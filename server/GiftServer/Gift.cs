@@ -222,13 +222,11 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "DELETE " +
-                                            "FROM purchases " +
-                                            "INNER JOIN reservations ON reservations.ReservationID = purchases.ReservationID " +
-                                            "WHERE reservations.GiftID = @gid;";
+                        cmd.CommandText = "DELETE p.* FROM purchases p "
+                                        + "INNER JOIN reservations r ON p.ReservationID = r.ReservationID "
+                                        + "WHERE r.GiftID = @gid;";
                         cmd.Parameters.AddWithValue("@gid", GiftId);
                         cmd.Prepare();
-                        cmd.ExecuteNonQuery();
                     }
                     using (MySqlCommand cmd = new MySqlCommand())
                     {

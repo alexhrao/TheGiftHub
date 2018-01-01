@@ -108,9 +108,13 @@ namespace GiftServer
                 HtmlNode groupsEdit = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" editSharedGroups \")]");
                 foreach (Group group in thisUser.Groups)
                 {
-                    HtmlNode entry = HtmlNode.CreateNode("<option value=\"" + HttpUtility.HtmlEncode(group.GroupId) + "\"></option>");
-                    entry.InnerHtml = HttpUtility.HtmlEncode(group.Name);
-                    groupsEdit.PrependChild(entry);
+                    HtmlNode entry = HtmlNode.CreateNode("<label class=\"checkbox-inline col-xs-5\" data-group-id=\"" + HttpUtility.HtmlEncode(group.GroupId) + "\"></label>");
+                    entry.AppendChild(HtmlNode.CreateNode("<input type=\"checkbox\" value=\"\" data-group-id=\"" + HttpUtility.HtmlEncode(group.GroupId) + "\" />"));
+                    HtmlNode node = HtmlNode.CreateNode("<p></p>");
+                    node.InnerHtml = HttpUtility.HtmlEncode(group.Name);
+                    entry.AppendChild(node);
+                    groupsEdit.AppendChild(entry);
+                    groupsEdit.AppendChild(HtmlNode.CreateNode("<div class=\"col-xs-1\"></div>"));
                 }
                 HtmlNode userName = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
                 userName.InnerHtml = thisUser.UserName + "'s " + StringManager.GetString("giftList");

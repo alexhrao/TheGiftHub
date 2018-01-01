@@ -54,6 +54,9 @@
                         $('#editGiftColorText').val(dom.getElementsByTagName("colorText")[0].innerHTML);
                         $('#editGiftSize').val(dom.getElementsByTagName("size")[0].innerHTML);
                         $('#editGiftCategory').val(dom.getElementsByTagName("category")[0].innerHTML);
+                        for (var i = 0; i < dom.getElementsByTagName("groups")[0].children.length; i++) {
+                            $('#editGiftItem #editSharedGroups input[data-group-id=' + dom.getElementsByTagName("groups")[0].children[i].innerHTML + ']')[0].checked = true;
+                        }
                         $('#editGiftItem').modal();
                     }
                 });
@@ -64,6 +67,7 @@
                 $.post(".", {
                     submit: "Change",
                     type: "Gift",
+                    item: "update",
                     itemId: $('#editGiftId').val(),
                     name: $('#editGiftName').val(),
                     description: $('#editGiftDescription').val(),
@@ -81,6 +85,20 @@
                         window.location.reload(true);
                     } else {
                         $('#editGiftItem').modal('hide');
+                    }
+                    });
+            });
+
+            $('#editGiftDelete').click(function () {
+                $.post(".", {
+                    submit: "Change",
+                    type: "Gift",
+                    item: "delete",
+                    itemId: $('#editGiftId').val(),
+
+                }, function (data, status) {
+                    if (data == 200) {
+                        location.reload(true);
                     }
                     });
             });
@@ -315,13 +333,12 @@
                                 </div>
                                 <div class="row">
                                     <div class="form-group">
-                                        <div class="col-sm-2">
-                                            <label>Groups</label>
+                                        <div class="row">
+                                            <div class="col-xs-1"></div>
+                                            <h4 class="col-xs-11">Groups:</h4>
                                         </div>
-                                        <div class="col-md-10">
-                                            <div id="editSharedGroups">
-
-                                            </div>
+                                        <div id="editSharedGroups" class="row">
+                                            <div class="col-xs-1"></div>
                                         </div>
                                     </div>
                                 </div>

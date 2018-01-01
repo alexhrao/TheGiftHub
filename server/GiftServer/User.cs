@@ -8,7 +8,6 @@ using GiftServer.Server;
 using System.Collections.Generic;
 using GiftServer.Security;
 using System.Xml;
-using System.Web;
 using System.Net.Mail;
 using GiftServer.Html;
 using System.Net;
@@ -50,7 +49,7 @@ namespace GiftServer
                             using (MySqlCommand cmd = new MySqlCommand())
                             {
                                 cmd.Connection = con;
-                                cmd.CommandText = "SELECT GiftID FROM gifts WHERE UserID = @id;";
+                                cmd.CommandText = "SELECT GiftID FROM gifts WHERE UserID = @id ORDER BY GiftName ASC;";
                                 cmd.Parameters.AddWithValue("@id", UserId);
                                 cmd.Prepare();
                                 using (MySqlDataReader Reader = cmd.ExecuteReader())
@@ -93,6 +92,7 @@ namespace GiftServer
                             }
                         }
                     }
+                    _groups.Sort((a, b) => a.Name.CompareTo(b.Name));
                     return _groups;
                 }
             }

@@ -693,26 +693,28 @@ namespace GiftServer
             }
             private string Update(Gift gift)
             {
-                if (_user != null)
+                switch (_dict["item"])
                 {
-                    gift.Name = _dict["name"];
-                    gift.Description = _dict["description"];
-                    gift.Url = _dict["url"];
-                    gift.Cost = Convert.ToDouble(_dict["cost"] == null || _dict["cost"].Length == 0 ? "0.00" : _dict["cost"]);
-                    gift.Quantity = Convert.ToUInt32(_dict["quantity"] == null || _dict["quantity"].Length == 0 ? "1" : _dict["quantity"]);
-                    gift.Rating = Convert.ToDouble(_dict["rating"] == null || _dict["rating"].Length == 0 ? "0.0" : _dict["rating"]);
-                    gift.ColorText = _dict["colorText"];
-                    gift.Stores = _dict["stores"];
-                    gift.Size = _dict["size"];
-                    gift.Category = new Category(_dict["category"]);
-                    // gift.DateReceived = DateTime.Parse(_dict["dateReceived"]);
-                    gift.Color = _dict["color"]; // as a hex
-                    gift.Update();
-                    return "200";
-                }
-                else
-                {
-                    return LoginManager.Login();
+                    case "delete":
+                        gift.Delete();
+                        return "200";
+                    case "update":
+                        gift.Name = _dict["name"];
+                        gift.Description = _dict["description"];
+                        gift.Url = _dict["url"];
+                        gift.Cost = Convert.ToDouble(_dict["cost"] == null || _dict["cost"].Length == 0 ? "0.00" : _dict["cost"]);
+                        gift.Quantity = Convert.ToUInt32(_dict["quantity"] == null || _dict["quantity"].Length == 0 ? "1" : _dict["quantity"]);
+                        gift.Rating = Convert.ToDouble(_dict["rating"] == null || _dict["rating"].Length == 0 ? "0.0" : _dict["rating"]);
+                        gift.ColorText = _dict["colorText"];
+                        gift.Stores = _dict["stores"];
+                        gift.Size = _dict["size"];
+                        gift.Category = new Category(_dict["category"]);
+                        // gift.DateReceived = DateTime.Parse(_dict["dateReceived"]);
+                        gift.Color = _dict["color"]; // as a hex
+                        gift.Update();
+                        return "200";
+                    default:
+                        return "0";
                 }
             }
             private string Fetch(string email)
