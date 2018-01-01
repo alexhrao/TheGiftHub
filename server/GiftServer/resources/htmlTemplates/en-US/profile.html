@@ -7,7 +7,6 @@
             $("#image").change(function () {
                 readURL(this);
             });
-
         });
         $(document).ready(function () {
             $('#events .event-closer').click(function () {
@@ -50,84 +49,67 @@
             });
         });
         $(document).ready(function () {
-            $(window).keydown(function (event) {
-                if (event.keyCode == 13) {
-                    // Validate:
-                    if (!$('#resetPassword').hasClass('in') || ($('#secondResetPass').val() && $('#secondResetPass').val() === $('#firstResetPass').val())) {
-                        return true;
-                    } else {
-                        event.preventDefault();
-                        return false;
-                    }
-                }
-            });
-        });
-        $(document).ready(function () {
-            $('#userBirthdayMonthChange').change(function () {
-                $('.days').remove();
-                $("<option class=\"days\" selected value=\"0\">Select a Day</option>").appendTo($('#days'));
-                for (var i = 1; i <= daysInMonth($('#userBirthdayMonthChange').val()); i++) {
-                    // Create a day:
-                    $("<option class=\"days\" value=\"" + i + "\">" + i + "</option>").appendTo($('#days'));
-                }
-            });
-            function changeName() {
-                if ($('#userNameChange').val() == "") {
-                    return Promise.resolve();
-                }
-                return $.post(".",
-                    {
-                        submit: "Change",
-                        type: "User",
-                        item: "name",
-                        name: $('#userNameChange').val()
-                    });
-            }
-            function changeEmail() {
-                if ($('#userEmailChange').val() == "") {
-                    return Promise.resolve();
-                }
-                return $.post(".",
-                    {
-                        submit: "Change",
-                        type: "User",
-                        item: "email",
-                        name: $('#userEmailChange').val()
-                    });
-            }
-            function changeBirthday() {
-                if ($('#userBirthdayDayChange').val() == null || $('#userBirthdayDayChange').val() == 0) {
-                    return Promise.resolve();
-                } else {
-                    $.post(".",
-                        {
-                            submit: "Change",
-                            type: "User",
-                            item: "birthday",
-                            month: $('#userBirthdayMonthChange').val(),
-                            day: $('#userBirthdayDayChange').val()
-                        });
-                }
-            }
-            function changeBio() {
-                return $.post(".",
-                    {
-                        submit: "Change",
-                        type: "User",
-                        item: "bio",
-                        bio: $('#userBioChange').val()
-                    });
-            }
-            function changeLocale() {
-                return $.post(".",
-                    {
-                        submit: "Change",
-                        type: "Preferences",
-                        culture: $('#userCulture').val()
-                    });
-            }
+            $('#userBirthdayMonthChange').change(populateDays);
             $('#submitPref').click(function () {
-                changeName().then(changeEmail).then(changeBirthday).then(changeBio).then(changeLocale).then(() => location.reload(true));
+                changeName()
+                    .then(function () {
+                        if ($('#userNameChange').val() == "") {
+                            return Promise.resolve();
+                        }
+                        return $.post(".",
+                            {
+                                submit: "Change",
+                                type: "User",
+                                item: "name",
+                                name: $('#userNameChange').val()
+                            });
+                    })
+                    .then(function () {
+                        if ($('#userEmailChange').val() == "") {
+                            return Promise.resolve();
+                        }
+                        return $.post(".",
+                            {
+                                submit: "Change",
+                                type: "User",
+                                item: "email",
+                                name: $('#userEmailChange').val()
+                            });
+                    })
+                    .then(function () {
+                        if ($('#userBirthdayDayChange').val() == null || $('#userBirthdayDayChange').val() == 0) {
+                            return Promise.resolve();
+                        } else {
+                            $.post(".",
+                                {
+                                    submit: "Change",
+                                    type: "User",
+                                    item: "birthday",
+                                    month: $('#userBirthdayMonthChange').val(),
+                                    day: $('#userBirthdayDayChange').val()
+                                });
+                        }
+                    })
+                    .then(function () {
+                        return $.post(".",
+                            {
+                                submit: "Change",
+                                type: "User",
+                                item: "bio",
+                                bio: $('#userBioChange').val()
+                            });
+                    })
+                    .then(function () {
+                        return $.post(".",
+                            {
+                                submit: "Change",
+                                type: "Preferences",
+                                culture: $('#userCulture').val()
+                            });
+                    })
+                    .then(function () {
+                        location.reload(true);
+                    });
                 // chain promises, ending with the location.reload();
             });
         });
@@ -336,6 +318,17 @@
             });
         });
         $(document).ready(function () {
+            $(window).keydown(function (event) {
+                if (event.keyCode == 13) {
+                    // Validate:
+                    if (!$('#resetPassword').hasClass('in') || ($('#secondResetPass').val() && $('#secondResetPass').val() === $('#firstResetPass').val())) {
+                        return true;
+                    } else {
+                        event.preventDefault();
+                        return false;
+                    }
+                }
+            });
             $('#resetSubmit').hide();
             $('#firstResetPass').keyup(function () {
                 if ($('#secondResetPass').val() === $('#firstResetPass').val() && $('#secondResetPass').val()) {
@@ -381,6 +374,14 @@
                     $('#submitImg').removeClass("hidden");
                 }
                 reader.readAsDataURL(input.files[0]);
+            }
+        }
+        function populateDays() {
+            $('.days').remove();
+            $("<option class=\"days\" selected value=\"0\">Select a Day</option>").appendTo($('#days'));
+            for (var i = 1; i <= daysInMonth($('#userBirthdayMonthChange').val()); i++) {
+                // Create a day:
+                $("<option class=\"days\" value=\"" + i + "\">" + i + "</option>").appendTo($('#days'));
             }
         }
         function daysInMonth(month) {
