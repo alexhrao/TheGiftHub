@@ -36,30 +36,30 @@
                     type: "Gift",
                     itemId: id
                 },
-                function (data, status, xhr) {
-                    if (status == "success") {
-                        var data = xhr.responseText;
-                        var dom = $.parseXML(data);
-                        $('#editGiftImage').attr("src", dom.getElementsByTagName("image")[0].innerHTML);
-                        $('#uploadImageId').val(dom.getElementsByTagName("giftId")[0].innerHTML);
-                        $('#editGiftRating').rating("update", parseFloat(dom.getElementsByTagName("rating")[0].innerHTML));
-                        $('#editGiftId').val(dom.getElementsByTagName("giftId")[0].innerHTML);
-                        $("#editGiftName").val(dom.getElementsByTagName("name")[0].innerHTML);
-                        $('#editGiftDescription').val(dom.getElementsByTagName("description")[0].innerHTML);
-                        $('#editGiftUrl').val(dom.getElementsByTagName("url")[0].innerHTML);
-                        $('#editGiftStores').val(dom.getElementsByTagName("stores")[0].innerHTML);
-                        $('#editGiftCost').val(dom.getElementsByTagName("cost")[0].innerHTML);
-                        $('#editGiftQuantity').val(dom.getElementsByTagName("quantity")[0].innerHTML);
-                        $('#editGiftColor').css("background-color", dom.getElementsByTagName("color")[0].innerHTML);
-                        $('#editGiftColorText').val(dom.getElementsByTagName("colorText")[0].innerHTML);
-                        $('#editGiftSize').val(dom.getElementsByTagName("size")[0].innerHTML);
-                        $('#editGiftCategory').val(dom.getElementsByTagName("category")[0].innerHTML);
-                        for (var i = 0; i < dom.getElementsByTagName("groups")[0].children.length; i++) {
-                            $('#editGiftItem #editSharedGroups input[data-group-id=' + dom.getElementsByTagName("groups")[0].children[i].innerHTML + ']')[0].checked = true;
+                    function (data, status, xhr) {
+                        if (status == "success") {
+                            var data = xhr.responseText;
+                            var dom = $.parseXML(data);
+                            $('#editGiftImage').attr("src", dom.getElementsByTagName("image")[0].innerHTML);
+                            $('#uploadImageId').val(dom.getElementsByTagName("giftId")[0].innerHTML);
+                            $('#editGiftRating').rating("update", parseFloat(dom.getElementsByTagName("rating")[0].innerHTML));
+                            $('#editGiftId').val(dom.getElementsByTagName("giftId")[0].innerHTML);
+                            $("#editGiftName").val(dom.getElementsByTagName("name")[0].innerHTML);
+                            $('#editGiftDescription').val(dom.getElementsByTagName("description")[0].innerHTML);
+                            $('#editGiftUrl').val(dom.getElementsByTagName("url")[0].innerHTML);
+                            $('#editGiftStores').val(dom.getElementsByTagName("stores")[0].innerHTML);
+                            $('#editGiftCost').val(dom.getElementsByTagName("cost")[0].innerHTML);
+                            $('#editGiftQuantity').val(dom.getElementsByTagName("quantity")[0].innerHTML);
+                            $('#editGiftColor').css("background-color", dom.getElementsByTagName("color")[0].innerHTML);
+                            $('#editGiftColorText').val(dom.getElementsByTagName("colorText")[0].innerHTML);
+                            $('#editGiftSize').val(dom.getElementsByTagName("size")[0].innerHTML);
+                            $('#editGiftCategory').val(dom.getElementsByTagName("category")[0].innerHTML);
+                            for (var i = 0; i < dom.getElementsByTagName("groups")[0].children.length; i++) {
+                                $('#editGiftItem #editSharedGroups input[data-group-id=' + dom.getElementsByTagName("groups")[0].children[i].innerHTML + ']')[0].checked = true;
+                            }
+                            $('#editGiftItem').modal();
                         }
-                        $('#editGiftItem').modal();
-                    }
-                });
+                    });
             });
 
             $('#editGiftSubmit').click(function () {
@@ -103,20 +103,21 @@
                                         giftId: $('#editGiftId').val()
                                     });
                             }
- 
+
                         });
                         window.location.reload(true);
                     } else {
                         $('#editGiftItem').modal('hide');
                     }
-                    });
+                });
             });
 
             $('#editGiftDelete').click(function () {
                 $('#editGiftItem').modal('hide');
                 $('#deleteGiftWarning').modal();
-
             });
+        });
+        $(document).ready(function () {
             $('#deleteGiftConfirm').click(function () {
                 $.post(".", {
                     submit: "Change",
@@ -132,8 +133,10 @@
             });
             $('#deleteGiftCancel').click(function () {
                 $('#deleteGiftWarning').modal('hide');
-            })
-
+                $('#editGiftItem').modal();
+            });
+        });
+        $(document).ready(function () {
             $('#newGiftSubmit').click(function () {
                 alert(rgb2hex($('#newGiftColor').css("background-color")));
                 $.post(".", {
