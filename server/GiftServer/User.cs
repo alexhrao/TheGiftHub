@@ -49,7 +49,7 @@ namespace GiftServer
                             using (MySqlCommand cmd = new MySqlCommand())
                             {
                                 cmd.Connection = con;
-                                cmd.CommandText = "SELECT GiftID FROM gifts WHERE UserID = @id ORDER BY GiftName ASC;";
+                                cmd.CommandText = "SELECT GiftID FROM gifts WHERE UserID = @id ORDER BY GiftRating DESC;";
                                 cmd.Parameters.AddWithValue("@id", UserId);
                                 cmd.Prepare();
                                 using (MySqlDataReader Reader = cmd.ExecuteReader())
