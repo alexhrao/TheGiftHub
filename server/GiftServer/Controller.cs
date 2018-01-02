@@ -458,7 +458,7 @@ namespace GiftServer
 
             private void Write(string path)
             {
-                switch (Path.GetExtension(path))
+                switch (Path.GetExtension(path).Substring(1))
                 {
                     case "bm":
                     case "bmp":
