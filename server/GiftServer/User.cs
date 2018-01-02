@@ -772,12 +772,11 @@ namespace GiftServer
             public List<Gift> GetGifts(User target)
             {
                 List<Gift> gifts = new List<Gift>();
-                List<Group> groups = GetGroups(target);
                 // get all gifts owned by target and that have a record in groups_gifts
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
-                    foreach (Group group in groups)
+                    foreach (Group group in GetGroups(target))
                     {
                         using (MySqlCommand cmd = new MySqlCommand())
                         {
@@ -835,8 +834,33 @@ namespace GiftServer
             }
             public List<EventUser> GetEvents(User target)
             {
-                // TODO
                 List<EventUser> events = new List<EventUser>();
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    foreach (Group group in GetGroups(target))
+                    {
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "SELECT events_users_groups.EventUserID "
+                                            + "FROM events_users_groups "
+                                            + "INNER JOIN events_users ON events_users.EventUserID = events_users_groups.GiftID "
+                                            + "WHERE GroupID = @gid "
+                                            + "AND events_userss.UserID = @uid;";
+                            cmd.Parameters.AddWithValue("@gid", group.GroupId);
+                            cmd.Parameters.AddWithValue("@uid", target.UserId);
+                            cmd.Prepare();
+                            using (MySqlDataReader Reader = cmd.ExecuteReader())
+                            {
+                                while (Reader.Read())
+                                {
+                                    events.Add(new EventUser(Convert.ToUInt64(Reader["EventUserID"])));
+                                }
+                            }
+                        }
+                    }
+                }
                 return events;
             }
             public XmlDocument Fetch()
