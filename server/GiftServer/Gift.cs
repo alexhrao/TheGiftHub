@@ -343,7 +343,7 @@ namespace GiftServer
                 XmlElement url = info.CreateElement("url");
                 url.InnerText = Url;
                 XmlElement cost = info.CreateElement("cost");
-                cost.InnerText = Cost.ToString("C");
+                cost.InnerText = Cost.ToString("#.##");
                 XmlElement stores = info.CreateElement("stores");
                 stores.InnerText = Stores;
                 XmlElement quantity = info.CreateElement("quantity");

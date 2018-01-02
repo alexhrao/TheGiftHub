@@ -63,7 +63,6 @@
             });
 
             $('#editGiftSubmit').click(function () {
-                alert(rgb2hex($('#newGiftColor').css("background-color")));
                 $.post(".", {
                     submit: "Change",
                     type: "Gift",
@@ -82,6 +81,30 @@
                     colorText: $('#editGiftColorText').val()
                 }, function (data, status) {
                     if (data == 200) {
+                        // Add gifts to the group
+                        $('#editSharedGroups input').each(function () {
+                            // post each of these
+                            if ($(this)[0].checked) {
+                                $.post(".",
+                                    {
+                                        submit: "Change",
+                                        type: "Group",
+                                        item: "addGift",
+                                        itemId: $(this).attr('data-group-id'),
+                                        giftId: $('#editGiftId').val()
+                                    });
+                            } else {
+                                $.post(".",
+                                    {
+                                        submit: "Change",
+                                        type: "Group",
+                                        item: "removeGift",
+                                        itemId: $(this).attr('data-group-id'),
+                                        giftId: $('#editGiftId').val()
+                                    });
+                            }
+ 
+                        });
                         window.location.reload(true);
                     } else {
                         $('#editGiftItem').modal('hide');
@@ -90,6 +113,11 @@
             });
 
             $('#editGiftDelete').click(function () {
+                $('#editGiftItem').modal('hide');
+                $('#deleteGiftWarning').modal();
+
+            });
+            $('#deleteGiftConfirm').click(function () {
                 $.post(".", {
                     submit: "Change",
                     type: "Gift",
@@ -100,8 +128,11 @@
                     if (data == 200) {
                         location.reload(true);
                     }
-                    });
+                });
             });
+            $('#deleteGiftCancel').click(function () {
+                $('#deleteGiftWarning').modal('hide');
+            })
 
             $('#newGiftSubmit').click(function () {
                 alert(rgb2hex($('#newGiftColor').css("background-color")));
@@ -246,8 +277,33 @@
     </style>
 </head>
 <body>
-    <!-- Format: id, name, class, type, placeholder, tooltip-->
     <div class="container-fluid">
+        <div id="deleteGiftWarning" class="modal fade panel-danger" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content panel-danger">
+                    <div class="modal-header panel-heading">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Deletion Confirmation</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h4>Are you sure? You can't undo this.</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button type="button" id="deleteGiftConfirm" class="btn btn-danger btn-block">
+                                    <p>Yes, Delete this gift</p>
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="button" id="deleteGiftCancel" class="btn btn-success btn-block">
+                                    <p>No, Don't delete this gift</p>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
         <div id="editGiftItem" class="modal fade panel-primary" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content panel-primary">

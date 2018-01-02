@@ -3,31 +3,26 @@
         <title>The Gift Hub Login</title>
         <script>
             $(document).ready(function () {
-                $('#signupSubmit').hide();
-                $('#loginSubmit').hide();
-                $('#resetSubmit').hide();
-                $(window).keydown(function (event) {
-                    if (event.keyCode == 13) {
-                        // If clicked first tab, validate:
-                        if ($('#resetPassword').hasClass("in")) {
-                            if (!validateReset()) {
-                                event.preventDefault();
-                                return false;
-                            }
-                        } else if ($('#loginTab').hasClass("active")) {
-                            if (!validateLogin()) {
-                                event.preventDefault();
-                                return false;
-                            }
-                        } else if ($('#signupTab').hasClass("active")) {
-                            if (!validateSignup()) {
-                                event.preventDefault();
-                                return false;
-                            }
-                        }
+                $('#loginForm').submit(function (event) {
+                    if (!validateLogin()) {
+                        event.preventDefault();
+                        return false;
                     }
-                    return true;
                 });
+                $('#signupForm').submit(function (event) {
+                    if (!validateSignup()) {
+                        event.preventDefault();
+                        return false;
+                    }
+                });
+                $('#resetForm').submit(function (event) {
+                    if (!validateReset()) {
+                        event.preventDefault();
+                        return false;
+                    }
+                });
+            });
+            $(document).ready(function () {
                 $('#firstPass').keyup(function () {
                     if ($('#secondPass').val() === $('#firstPass').val() && $('#firstPass').val()) {
                         // We are good to go!
@@ -42,7 +37,6 @@
                         $('#secondPass').parent().removeClass('has-success');
                         $('#secondPass').parent().addClass('has-error');
                     }
-                    validateSignup();
                 });
                 $('#secondPass').keyup(function () {
                     if ($('#secondPass').val() === $('#firstPass').val() && $('#secondPass').val()) {
@@ -58,7 +52,6 @@
                         $('#secondPass').parent().removeClass('has-success');
                         $('#secondPass').parent().addClass('has-error');
                     }
-                    validateSignup();
                 });
                 $('#userName').keyup(function () {
                     if ($('#userName').val()) {
@@ -70,7 +63,6 @@
                         $('#userName').parent().removeClass('has-success');
                         $('#userName').parent().addClass('has-error');
                     }
-                    validateSignup();
                 });
                 $('#signupEmail').keyup(function () {
                     if ($('#signupEmail').val()) {
@@ -82,7 +74,6 @@
                         $('#signupEmail').parent().removeClass('has-success');
                         $('#signupEmail').parent().addClass('has-error');
                     }
-                    validateSignup();
                 });
                 $('#loginEmail').keyup(function () {
                     if ($('#loginEmail').val()) {
@@ -94,7 +85,6 @@
                         $('#loginEmail').parent().removeClass('has-success');
                         $('#loginEmail').parent().addClass('has-error');
                     }
-                    validateLogin();
                 });
                 $('#password').keyup(function () {
                     if ($('#password').val()) {
@@ -106,7 +96,6 @@
                         $('#password').parent().removeClass('has-success');
                         $('#password').parent().addClass('has-error');
                     }
-                    validateLogin();
                 });
                 $('#resetEmail').keyup(function () {
                     if ($('#resetEmail').val()) {
@@ -116,10 +105,9 @@
                         $('#resetEmail').parent().removeClass('has-success');
                         $('#resetEmail').parent().addClass('has-error');
                     }
-                    validateReset();
                 });
-                validateLogin();
             });
+
             function validateLogin() {
                 var invalid = false;
                 $("#loginForm :input:not(:button)").each(function () {
@@ -128,11 +116,6 @@
                         return false;
                     }
                 });
-                if (!invalid) {
-                    $('#loginSubmit').show();
-                } else {
-                    $('#loginSubmit').hide();
-                }
                 return !invalid;
             }
             function validateSignup() {
@@ -146,22 +129,14 @@
                 });
                 
                 if (!invalid && $('#firstPass').val() === $('#secondPass').val()) {
-                    $('#signupSubmit').show();
                     invalid = false;
                 } else {
-                    $('#signupSubmit').hide();
                     invalid = true;
                 }
                 return !invalid;
             }
             function validateReset() {
-                if ($('#resetEmail').val() !== "") {
-                    $('#resetSubmit').show();
-                    return true;
-                } else {
-                    $('#resetSubmit').hide();
-                    return false;
-                }
+                return $('#resetEmail').val() !== "";
             }
         </script>
         <style>
@@ -257,10 +232,10 @@
                         </div>
                         <div class="form-group">
                             <button id="passwordReset" type="button" class="btn btn-danger" data-toggle="modal" href="#resetPassword" name="reset">
-                                <p id="resetLabel">Reset Password</p>
+                                <p>Reset Password</p>
                             </button>
                             <button id="loginSubmit" type="submit" name="submit" form="loginForm" value="Login" class="btn btn-success">
-                                <p id="loginLabel">Log In</p>
+                                <p>Log In</p>
                             </button>
                         </div>
                     </form>

@@ -660,6 +660,18 @@ namespace GiftServer
                             group.Remove(_user);
                             break;
                         }
+                    case "addGift":
+                        {
+                            Gift added = new Gift(Convert.ToUInt64(_dict["giftId"]));
+                            group.Add(added);
+                            break;
+                        }
+                    case "removeGift":
+                        {
+                            Gift removed = new Gift(Convert.ToUInt64(_dict["giftId"]));
+                            group.Remove(removed);
+                            break;
+                        }
                     case "addEvent":
                         {
                             EventUser added = new EventUser(Convert.ToUInt64(_dict["eventID"]));
