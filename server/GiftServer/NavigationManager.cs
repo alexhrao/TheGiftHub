@@ -1,5 +1,4 @@
 ﻿using GiftServer.Properties;
-using System;
 using GiftServer.Data;
 using HtmlAgilityPack;
 using System.Resources;
@@ -30,33 +29,28 @@ namespace GiftServer
                 HtmlNode groupHolder = bar.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" groupHolder \")]");
                 foreach (Group group in user.Groups)
                 {
-                    /*
-                    <li class="dropdown-submenu">
-                                <a href="#">Group 1 <span class="caret"></span></a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="">User 1</a></li>
-                                    <li><a href="">User 2</a></li>
-                                </ul>
-                            </li>
-                            */
                     HtmlNode groupMenu = HtmlNode.CreateNode("<li class=\"dropdown-submenu\"></li>");
 
                     HtmlNode groupName = HtmlNode.CreateNode("<p></p>");
-                    groupName.InnerHtml = HttpUtility.HtmlEncode(group.Name) + " <span class=\"caret\"></span>";
+                    groupName.InnerHtml = HttpUtility.HtmlEncode(group.Name) + " <span class=\"glyphicon glyphicon-arrow-right text-right\"></span>";
                     groupMenu.AppendChild(groupName);
 
                     HtmlNode users = HtmlNode.CreateNode("<ul class=\"dropdown-menu\"></ul>");
                     foreach (User member in group.Users)
                     {
                         // Add user to navbar
-                        HtmlNode userNode = HtmlNode.CreateNode("<li></li>");
-                        HtmlNode userLink = HtmlNode.CreateNode("<a></a>");
-                        userLink.SetAttributeValue("href", Constants.URL + "/?dest=user&user=" + user.UserUrl);
-                        userLink.InnerHtml = HttpUtility.HtmlEncode(member.UserName);
-                        userNode.AppendChild(userLink);
-                        users.AppendChild(userNode);
+                        if (user.UserId != member.UserId)
+                        {
+                            HtmlNode userNode = HtmlNode.CreateNode("<li></li>");
+                            HtmlNode userLink = HtmlNode.CreateNode("<a></a>");
+                            userLink.SetAttributeValue("href", Constants.URL + "/?dest=user&user=" + user.UserUrl);
+                            userLink.InnerHtml = HttpUtility.HtmlEncode(member.UserName);
+                            userNode.AppendChild(userLink);
+                            users.AppendChild(userNode);
+                        }
                     }
                     groupMenu.AppendChild(users);
+
                     groupHolder.AppendChild(groupMenu);
                 }
                 return bar.DocumentNode.OuterHtml;
