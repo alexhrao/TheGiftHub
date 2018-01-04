@@ -44,7 +44,7 @@
                 step: 0.5,
                 size: 'xs',
                 containerClass: 'minimized'
-            })
+            });
 
             $('.gift-row').click(function () {
                 // Get ID of this
@@ -152,12 +152,10 @@
             });
             $('#deleteGiftCancel').click(function () {
                 $('#deleteGiftWarning').modal('hide');
-                $('#editGiftItem').modal();
             });
         });
         $(document).ready(function () {
             $('#newGiftSubmit').click(function () {
-                alert(rgb2hex($('#newGiftColor').css("background-color")));
                 $.post(".", {
                     submit: "Create",
                     type: "Gift",
@@ -174,10 +172,11 @@
                     color: rgb2hex($('#newGiftColor').css("background-color")),
                     colorText: $('#newGiftColorText').val()
                 }, function (data, status) {
-                    if (data !== "0") {
+                    if (data !== "0" && $('#newImageAdded').val() == 1) {
                         $('#newImageId').val(data);
                         $('#addNewImageSubmit').click();
                     } else {
+                        location.reload(true);
                     }
                 });
             });
@@ -195,6 +194,7 @@
             });
             $('#acceptNewImg').click(function () {
                 $('#newGiftImage').attr('src', $('#previewNewImage').attr('src'));
+                $('#newImageAdded').val("1");
                 $('#uploadNewImg').modal('hide');
             });
         });
@@ -439,6 +439,7 @@
                                 <div class="row">
                                     <div class="col-sm-5">
                                         <div class="row parent">
+                                            <input type="hidden" value="0" id="newImageAdded" />
                                             <img id="newGiftImage" class="text-center img-thumbnail img-responsive child" type="button" data-tooltip="tooltip" data-placement="bottom auto" title="Click to select new image"
                                                  data-toggle="modal" href="#uploadNewImg" src="resources/images/gifts/default.png" />
                                         </div>
