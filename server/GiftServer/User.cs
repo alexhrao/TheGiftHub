@@ -845,9 +845,9 @@ namespace GiftServer
                             cmd.Connection = con;
                             cmd.CommandText = "SELECT events_users_groups.EventUserID "
                                             + "FROM events_users_groups "
-                                            + "INNER JOIN events_users ON events_users.EventUserID = events_users_groups.GiftID "
+                                            + "INNER JOIN events_users ON events_users.EventUserID = events_users_groups.EventUserID "
                                             + "WHERE GroupID = @gid "
-                                            + "AND events_userss.UserID = @uid;";
+                                            + "AND events_users.UserID = @uid;";
                             cmd.Parameters.AddWithValue("@gid", group.GroupId);
                             cmd.Parameters.AddWithValue("@uid", target.UserId);
                             cmd.Prepare();

@@ -30,18 +30,18 @@ namespace GiftServer
                 profile.LoadHtml(NavigationManager.NavigationBar(viewer) + ResourceManager.GetString("publicProfile"));
                 // Set src of image:
                 HtmlNode img = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userImage \")]");
-                img.Attributes["src"].Value = viewer.GetImage();
+                img.Attributes["src"].Value = target.GetImage();
                 HtmlNode name = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
-                name.InnerHtml = HttpUtility.HtmlEncode(viewer.UserName);
+                name.InnerHtml = HttpUtility.HtmlEncode(target.UserName);
                 HtmlNode timeMember = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" timeMember \")]");
-                timeMember.InnerHtml = HttpUtility.HtmlEncode("Member since " + viewer.DateJoined.ToString("m") + ", " + viewer.DateJoined.ToString("yyyy"));
+                timeMember.InnerHtml = HttpUtility.HtmlEncode("Member since " + target.DateJoined.ToString("m") + ", " + target.DateJoined.ToString("yyyy"));
                 HtmlNode listLink = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" listLink \")]");
-                listLink.SetAttributeValue("href", Constants.URL + "?dest=list&user=" + viewer.UserUrl);
+                listLink.SetAttributeValue("href", Constants.URL + "?dest=list&user=" + target.UserUrl);
                 HtmlNode email = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" email \")]");
-                email.InnerHtml = HttpUtility.HtmlEncode("Email: " + viewer.Email);
+                email.InnerHtml = HttpUtility.HtmlEncode("Email: " + target.Email);
                 if (viewer.BirthMonth != 0)
                 {
-                    DateTime dob = new DateTime(2004, viewer.BirthMonth, viewer.BirthDay);
+                    DateTime dob = new DateTime(2004, target.BirthMonth, target.BirthDay);
                     HtmlNode birthday = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" birthday \")]");
                     birthday.InnerHtml = HttpUtility.HtmlEncode("Birthday: " + dob.ToString("m"));
                 }
@@ -52,7 +52,7 @@ namespace GiftServer
                 }
 
                 HtmlNode bio = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" bio \")]");
-                bio.InnerHtml = HttpUtility.HtmlEncode(viewer.Bio);
+                bio.InnerHtml = HttpUtility.HtmlEncode(target.Bio);
 
                 HtmlNode events = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" events \")]");
                 foreach (EventUser evnt in viewer.GetEvents(target))
