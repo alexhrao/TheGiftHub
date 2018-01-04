@@ -44,7 +44,7 @@
                 step: 0.5,
                 size: 'xs',
                 containerClass: 'minimized'
-            })
+            });
 
             $('.gift-row').click(function () {
                 // Get ID of this
@@ -152,12 +152,10 @@
             });
             $('#deleteGiftCancel').click(function () {
                 $('#deleteGiftWarning').modal('hide');
-                $('#editGiftItem').modal();
             });
         });
         $(document).ready(function () {
             $('#newGiftSubmit').click(function () {
-                alert(rgb2hex($('#newGiftColor').css("background-color")));
                 $.post(".", {
                     submit: "Create",
                     type: "Gift",
