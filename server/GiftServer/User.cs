@@ -127,7 +127,6 @@ namespace GiftServer
             }
             public User(ulong id)
             {
-                // User is already logged in; just fetch their information!
                 FetchInformation(id);
             }
             public User(MailAddress email)
@@ -596,11 +595,11 @@ namespace GiftServer
             public void SaveImage(MultipartParser parser)
             {
                 ImageProcessor processor = new ImageProcessor(parser);
-                File.WriteAllBytes(System.IO.Directory.GetCurrentDirectory() + "/resources/images/users/User" + this.UserId + Constants.ImageFormat, processor.Data);
+                File.WriteAllBytes(Directory.GetCurrentDirectory() + "/resources/images/users/User" + this.UserId + Constants.ImageFormat, processor.Data);
             }
             public void RemoveImage()
             {
-                File.Delete(System.IO.Directory.GetCurrentDirectory() + "/resources/images/users/User" + this.UserId + Constants.ImageFormat);
+                File.Delete(Directory.GetCurrentDirectory() + "/resources/images/users/User" + this.UserId + Constants.ImageFormat);
             }
             public string GetImage()
             {
