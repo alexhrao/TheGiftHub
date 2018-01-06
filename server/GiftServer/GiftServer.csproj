@@ -129,6 +129,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
+    <Compile Include="Reservation.cs" />
     <Compile Include="ResetManager.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Warning.cs" />

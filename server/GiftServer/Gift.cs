@@ -33,6 +33,32 @@ namespace GiftServer
             public double Rating = 0.00;
             public DateTime TimeStamp;
             public DateTime DateReceived = DateTime.MinValue;
+            public List<Reservation> Reservations
+            {
+                get
+                {
+                    List<Reservation> _reservations = new List<Reservation>();
+                    using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                    {
+                        con.Open();
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "SELECT ReservationID FROM reservations WHERE GiftID = @gid;";
+                            cmd.Parameters.AddWithValue("@gid", this.GiftId);
+                            cmd.Prepare();
+                            using (MySqlDataReader reader = cmd.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    _reservations.Add(new Reservation(Convert.ToUInt64(reader["ReservationID"])));
+                                }
+                            }
+                        }
+                    }
+                    return _reservations;
+                }
+            }
             public List<Group> Groups
             {
                 get
@@ -367,6 +393,11 @@ namespace GiftServer
                     groupElem.InnerText = group.GroupId.ToString();
                     groups.AppendChild(groupElem);
                 }
+                XmlElement reservations = info.CreateElement("reservations");
+                foreach (Reservation reservation in Reservations)
+                {
+                    reservations.AppendChild(info.ImportNode(reservation.Fetch().DocumentElement, true));
+                }
 
                 container.AppendChild(id);
                 container.AppendChild(user);
@@ -383,6 +414,7 @@ namespace GiftServer
                 container.AppendChild(rating);
                 container.AppendChild(image);
                 container.AppendChild(groups);
+                container.AppendChild(reservations);
 
                 return info;
             }
