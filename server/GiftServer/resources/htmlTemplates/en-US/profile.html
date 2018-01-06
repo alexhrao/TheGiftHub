@@ -51,7 +51,7 @@
         $(document).ready(function () {
             $('#userBirthdayMonthChange').change(populateDays);
             $('#submitPref').click(function () {
-                changeName()
+                    (Promise.resolve())
                     .then(function () {
                         if ($('#userNameChange').val() == "") {
                             return Promise.resolve();
