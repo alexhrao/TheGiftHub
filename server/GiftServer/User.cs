@@ -330,7 +330,7 @@ namespace GiftServer
                     while (!isUnique)
                     {
                         Password url = new Password(Email.Address);
-                        UserUrl = url.Hash.Replace("+", "0").Replace("/", "0");
+                        UserUrl = url.Hash.Replace("+", "0").Replace("/", "A").Replace("=", "R");
                         using (MySqlCommand cmd = new MySqlCommand())
                         {
                             cmd.Connection = con;
@@ -339,11 +339,7 @@ namespace GiftServer
                             cmd.Prepare();
                             using (MySqlDataReader Reader = cmd.ExecuteReader())
                             {
-                                if (!Reader.Read())
-                                {
-                                    // Unique!
-                                    isUnique = true;
-                                }
+                                isUnique = !Reader.HasRows;
                             }
                         }
                     }
@@ -608,7 +604,7 @@ namespace GiftServer
             public static string GetImage(ulong userID)
             {
                 // Build path:
-                string path = System.IO.Directory.GetCurrentDirectory() + "/resources/images/users/User" + userID + Constants.ImageFormat;
+                string path = Directory.GetCurrentDirectory() + "/resources/images/users/User" + userID + Constants.ImageFormat;
                 // if file exists, return path. Otherwise, return default
                 // Race condition, but I don't know how to solve (yet)
                 if (File.Exists(path))
@@ -640,14 +636,7 @@ namespace GiftServer
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            if (reader.Read() && Convert.ToUInt32(reader["NumRes"]) < gift.Quantity)
-                            {
-                                left = true;
-                            }
-                            else
-                            {
-                                left = false;
-                            }
+                            left = reader.Read() && Convert.ToUInt32(reader["NumRes"]) < gift.Quantity;
                         }
                     }
                     if (left)
