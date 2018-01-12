@@ -49,7 +49,7 @@ namespace GiftServer
             public Password(string password, int iterations)
             {
                 this.Iterations = iterations;
-                if (password == null || password.Length <= 3)
+                if (password == null)
                 {
                     throw new InvalidPasswordException();
                 }
