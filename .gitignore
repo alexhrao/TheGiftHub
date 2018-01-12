@@ -263,5 +263,7 @@ __pycache__/
 # Personal
 /server/GiftServer/resources/emailPassword.txt
 /server/GiftServer/resources/AWS/*
-/server/GiftServer/resources/images/*
+/server/GiftServer/resources/images/
+/server/GiftServer/log.txt
+/server/giftServer/_site/*
 *.db
