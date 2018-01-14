@@ -193,7 +193,7 @@ namespace GiftServer
                             if (!Reader.Read())
                             {
                                 // User not found, throw correct exception
-                                throw new UserNotFoundException(email.Address);
+                                throw new UserNotFoundException(email);
                             }
                             else
                             {
@@ -322,7 +322,7 @@ namespace GiftServer
                             if (Reader.Read())
                             {
                                 // User already exists; throw exception:
-                                throw new DuplicateUserException(this.Email.Address);
+                                throw new DuplicateUserException(this.Email);
                             }
                         }
                     }
@@ -422,7 +422,7 @@ namespace GiftServer
                             if (Reader.Read())
                             {
                                 // User already exists; throw exception:
-                                throw new DuplicateUserException(this.Email.Address);
+                                throw new DuplicateUserException(this.Email);
                             }
                         }
                     }
