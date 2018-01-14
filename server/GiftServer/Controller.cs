@@ -592,9 +592,10 @@ namespace GiftServer
                     culture = new CultureInfo(_request.Cookies["culture"].Value);
                 }
                 // If location in request:
-                else if (false)
+                else if (_request.UserLanguages.Length != 0)
                 {
-                    // use navigator object in javascript. Store this in cookie!
+                    culture = new CultureInfo(_request.UserLanguages[0]);
+                    _response.AppendCookie(new Cookie("culture", _request.UserLanguages[0]));
                 }
                 // otherwise, en-US
                 else

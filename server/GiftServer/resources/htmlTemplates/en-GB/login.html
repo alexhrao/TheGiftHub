@@ -1,6 +1,7 @@
 ﻿<html lang="en" xmlns="https://www.w3.org/1999/xhtml">
     <head>
-        <title>The Gift Hub Login</title>
+        <title>The Gift Hub: Login or Signup Today!</title>
+        <meta name="description" content="The Gift Hub is a place where you can list your gifts and reserve the gifts of others. Sign up today to start gifting!" />
         <script>
             $(document).ready(function () {
                 $('#loginForm').submit(function (event) {
@@ -23,123 +24,83 @@
                 });
             });
             $(document).ready(function () {
-                $('#firstPass').keyup(function () {
-                    if ($('#secondPass').val() === $('#firstPass').val() && $('#firstPass').val()) {
-                        // We are good to go!
-                        $('#firstPass').parent().removeClass('has-error');
-                        $('#firstPass').parent().addClass('has-success');
-                        $('#secondPass').parent().removeClass('has-error');
-                        $('#secondPass').parent().addClass('has-success');
-                    } else {
-                        // Passwords don't match; disable submit and warn
-                        $('#firstPass').parent().removeClass('has-success');
-                        $('#firstPass').parent().addClass('has-error');
-                        $('#secondPass').parent().removeClass('has-success');
-                        $('#secondPass').parent().addClass('has-error');
-                    }
-                });
-                $('#secondPass').keyup(function () {
-                    if ($('#secondPass').val() === $('#firstPass').val() && $('#secondPass').val()) {
-                        // We are good to go!
-                        $('#firstPass').parent().removeClass('has-error');
-                        $('#firstPass').parent().addClass('has-success');
-                        $('#secondPass').parent().removeClass('has-error');
-                        $('#secondPass').parent().addClass('has-success');
-                    } else {
-                        // Passwords don't match; disable submit and warn
-                        $('#firstPass').parent().removeClass('has-success');
-                        $('#firstPass').parent().addClass('has-error');
-                        $('#secondPass').parent().removeClass('has-success');
-                        $('#secondPass').parent().addClass('has-error');
-                    }
-                });
-                $('#userName').keyup(function () {
-                    if ($('#userName').val()) {
-                        // We are good to go!
-                        $('#userName').parent().removeClass('has-error');
-                        $('#userName').parent().addClass('has-success');
-                    } else {
-                        // Passwords don't match; disable submit and warn
-                        $('#userName').parent().removeClass('has-success');
-                        $('#userName').parent().addClass('has-error');
-                    }
-                });
-                $('#signupEmail').keyup(function () {
-                    if ($('#signupEmail').val()) {
-                        // We are good to go!
-                        $('#signupEmail').parent().removeClass('has-error');
-                        $('#signupEmail').parent().addClass('has-success');
-                    } else {
-                        // Passwords don't match; disable submit and warn
-                        $('#signupEmail').parent().removeClass('has-success');
-                        $('#signupEmail').parent().addClass('has-error');
-                    }
-                });
-                $('#loginEmail').keyup(function () {
-                    if ($('#loginEmail').val()) {
-                        // We are good to go!
-                        $('#loginEmail').parent().removeClass('has-error');
-                        $('#loginEmail').parent().addClass('has-success');
-                    } else {
-                        // Passwords don't match; disable submit and warn
-                        $('#loginEmail').parent().removeClass('has-success');
-                        $('#loginEmail').parent().addClass('has-error');
-                    }
-                });
-                $('#password').keyup(function () {
-                    if ($('#password').val()) {
-                        // We are good to go!
-                        $('#password').parent().removeClass('has-error');
-                        $('#password').parent().addClass('has-success');
-                    } else {
-                        // Passwords don't match; disable submit and warn
-                        $('#password').parent().removeClass('has-success');
-                        $('#password').parent().addClass('has-error');
-                    }
-                });
-                $('#resetEmail').keyup(function () {
-                    if ($('#resetEmail').val()) {
-                        $('#resetEmail').parent().removeClass('has-error');
-                        $('#resetEmail').parent().addClass('has-success');
-                    } else {
-                        $('#resetEmail').parent().removeClass('has-success');
-                        $('#resetEmail').parent().addClass('has-error');
-                    }
-                });
+                $('.loginControl').keyup(validateLogin);
+                $('.signupControl').keyup(validateSignup);
             });
-
             function validateLogin() {
-                var invalid = false;
-                $("#loginForm :input:not(:button)").each(function () {
-                    if ($(this).val() === "") {
-                        invalid = true;
-                        return false;
-                    }
-                });
-                return !invalid;
+                // Check email and password
+                var valid = true;
+                if ($('#loginEmail').val()) {
+                    // green email
+                    $('#loginEmail').parent().removeClass('has-error');
+                    $('#loginEmail').parent().addClass('has-success');
+                } else {
+                    $('#loginEmail').parent().removeClass('has-success');
+                    $('#loginEmail').parent().addClass('has-error');
+                    valid = false;
+                }
+                if ($('#password').val()) {
+                    $('#password').parent().removeClass('has-error');
+                    $('#password').parent().addClass('has-success');
+                } else {
+                    $('#password').parent().removeClass('has-success');
+                    $('#password').parent().addClass('has-error');
+                    valid = false;
+                }
+                return valid;
             }
             function validateSignup() {
-                // Iterate over all inputs; if none are blank (and passwords match), enable!
-                var invalid = false;
-                $("#signupForm :input:not(:button)").each(function () {
-                    if ($(this).val() === "") {
-                        invalid = true;
-                        return false;
-                    }
-                });
-                
-                if (!invalid && $('#firstPass').val() === $('#secondPass').val()) {
-                    invalid = false;
+                // Check Name, Email, Passwords
+                var valid = true;
+                if ($('#userName').val()) {
+                    // We are good to go!
+                    $('#userName').parent().removeClass('has-error');
+                    $('#userName').parent().addClass('has-success');
                 } else {
-                    invalid = true;
+                    // Passwords don't match; disable submit and warn
+                    $('#userName').parent().removeClass('has-success');
+                    $('#userName').parent().addClass('has-error');
+                    valid = false;
                 }
-                return !invalid;
+                if ($('#signupEmail').val()) {
+                    // We are good to go!
+                    $('#signupEmail').parent().removeClass('has-error');
+                    $('#signupEmail').parent().addClass('has-success');
+                } else {
+                    // Passwords don't match; disable submit and warn
+                    $('#signupEmail').parent().removeClass('has-success');
+                    $('#signupEmail').parent().addClass('has-error');
+                    valid = false;
+                }
+                if ($('#secondPass').val() === $('#firstPass').val() && $('#firstPass').val()) {
+                    // We are good to go!
+                    $('#firstPass').parent().removeClass('has-error');
+                    $('#firstPass').parent().addClass('has-success');
+                    $('#secondPass').parent().removeClass('has-error');
+                    $('#secondPass').parent().addClass('has-success');
+                } else {
+                    // Passwords don't match; disable submit and warn
+                    $('#firstPass').parent().removeClass('has-success');
+                    $('#firstPass').parent().addClass('has-error');
+                    $('#secondPass').parent().removeClass('has-success');
+                    $('#secondPass').parent().addClass('has-error');
+                    valid = false;
+                }
+                return valid;
             }
             function validateReset() {
                 return $('#resetEmail').val() !== "";
             }
+            function getLocation() {
+
+            }
         </script>
         <style>
+            body {
+                background: linear-gradient(141deg, #0fb8ad 0%, #1fc8db 51%, #2cb5e8 75%);
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+            }
             .input-group,
             .form-group,
             .spaced {
@@ -151,6 +112,36 @@
             }
             a {
                 color: lightgreen;
+            }
+            #userTab {
+                border: 3px solid white;
+                border-radius: 20px;
+                min-height: 350px;
+                padding: 5px;
+                margin-left: 60px;
+            }
+            #location {
+                float: right;
+            }
+            #loginTop {
+                margin-right: -1px;
+                margin-bottom: 10px;
+                padding: 10px;
+            }
+            #logo {
+                width: 45%;
+                float: left;
+                padding-left: 15px;
+            }
+            .desc {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+            p.desc {
+                font-size: xx-large;
+                font-weight: 300;
+            }
+            h1.desc {
+                font-size: xx-large;
             }
             .alert a {
                 color: #172556;
@@ -194,7 +185,7 @@
                     <div class="modal-content panel-warning">
                         <div class="modal-header panel-heading">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 id="resetLabel" class="modal-title">Reset Your Password</h4>
+                            <h4 class="modal-title">Reset Your Password</h4>
                         </div>
                         <div class="modal-body">
                             <form class="form-inline" id="resetForm" method="post">
@@ -203,7 +194,7 @@
                                 </div>
                                 <div class="form-group">
                                     <button id="resetSubmit" form="resetForm" class="btn btn-success" type="submit" name="submit" value="PasswordResetRequest">
-                                        <p id="submitLabel">Submit</p>
+                                        <p>Submit</p>
                                     </button>
                                 </div>
                             </form>
@@ -214,56 +205,75 @@
                     </div>
                 </div>
             </div>
-            <h1 id="welcomeHeader">Welcome to The Gift Hub!</h1>
-            <ul class="text-center nav nav-tabs">
-                <li id="loginTab" class="active"><a data-toggle="tab" href="#login">Login</a></li>
-                <li id="signupTab"><a data-toggle="tab" href="#signup">Sign Up</a></li>
-            </ul>
-            <div class="tab-content">
-                <div id="login" class="tab-pane fade in active">
-                    <form id="loginForm" method="post">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input id="loginEmail" name="email" type="email" class="form-control" placeholder="Email"/>
-                        </div>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input id="password" name="password" type="password" class="form-control" placeholder="Password"/>
-                        </div>
-                        <div class="form-group">
-                            <button id="passwordReset" type="button" class="btn btn-danger" data-toggle="modal" href="#resetPassword" name="reset">
-                                <p>Reset Password</p>
-                            </button>
-                            <button id="loginSubmit" type="submit" name="submit" form="loginForm" value="Login" class="btn btn-success">
-                                <p>Log In</p>
-                            </button>
-                        </div>
-                    </form>
+            <div id="loginTop" class="row container-fluid">
+                <div class="row">
+                    <p id="location">The UK (Change Country)</p>
                 </div>
-                <div id="signup" class="tab-pane fade">
-                    <form id="signupForm" method="post">
-                        <div class="form-group">
-                            <div class="col-sm-12">
-                                <input id="userName" name="userName" type="text" class="form-control" placeholder="Your Name" />
-                            </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <img id="logo" src="resources/images/branding/wideLogo.png" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div id="userTab" class="col-md-3">
+                    <ul class="text-center nav nav-tabs">
+                        <li id="loginTab" class="active"><a data-toggle="tab" href="#login">Login</a></li>
+                        <li id="signupTab"><a data-toggle="tab" href="#signup">Sign Up</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="login" class="tab-pane fade in active">
+                            <form id="loginForm" method="post">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                    <input id="loginEmail" name="email" type="email" class="form-control login-control" placeholder="Email" />
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                    <input id="password" name="password" type="password" class="form-control login-control" placeholder="Password" />
+                                </div>
+                                <div class="form-group">
+                                    <button id="passwordReset" type="button" class="btn btn-danger" data-toggle="modal" href="#resetPassword" name="reset">
+                                        <p>Reset Password</p>
+                                    </button>
+                                    <button id="loginSubmit" type="submit" name="submit" form="loginForm" value="Login" class="btn btn-success">
+                                        <p>Log In</p>
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input id="signupEmail" name="email" type="email" class="form-control" placeholder="Email Address" />
+                        <div id="signup" class="tab-pane fade">
+                            <form id="signupForm" method="post">
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <input id="userName" name="userName" type="text" class="form-control signup-control" placeholder="Your Name" />
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                    <input id="signupEmail" name="email" type="email" class="form-control signup-control" placeholder="Email Address" />
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                    <input id="firstPass" name="password" type="password" class="form-control signup-control" placeholder="Password" />
+                                </div>
+                                <div class="input-group has-feedback">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                    <input id="secondPass" type="password" class="form-control signup-control" placeholder="Confirm Password" />
+                                </div>
+                                <input type="hidden" name="type" value="User" />
+                                <button id="signupSubmit" type="submit" name="submit" form="signupForm" value="Create" class="btn btn-success">
+                                    <p>Sign Up</p>
+                                </button>
+                            </form>
                         </div>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input id="firstPass" name="password" type="password" class="form-control" placeholder="Password" />
-                        </div>
-                        <div class="input-group has-feedback">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input id="secondPass" type="password" class="form-control" placeholder="Confirm Password" />
-                        </div>
-                        <input type="hidden" name="type" value="User" />
-                        <button id="signupSubmit" type="submit" name="submit" form="signupForm" value="Create" class="btn btn-success">
-                            <p id="signUpLabel">Sign Up</p>
-                        </button>
-                    </form>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <h1 class="desc text-left">Why use The Gift Hub?</h1>
+                    <p class="desc text-left">
+                        Because The Gift Hub is your one-stop shop for all gift and holiday related tasks!
+                    </p>
                 </div>
             </div>
         </div>
