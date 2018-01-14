@@ -142,7 +142,7 @@ namespace GiftServer
                 }
             }
         }
-        public static class Misc
+        static class Misc
         {
             public static int IndexOf(byte[] searchWithin, byte[] serachFor, int startIndex)
             {
