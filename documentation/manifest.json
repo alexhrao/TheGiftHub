@@ -1,0 +1,693 @@
+{
+  "homepages": [],
+  "source_base_path": "C:/Users/alexhrao/Documents/TheGiftHub/server/GiftServer",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html",
+          "hash": "zvO323Jkn664erAU4jVFxQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/intro.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/intro.html",
+          "hash": "aHzrq5Ujve8v9/czPDkeBg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "articles/toc.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/toc.html",
+          "hash": "xVlQaX7Tk85omoiWv3O+Ag=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "ct6so5h9r7AvGTMMRpxTug=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Data.Category.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Data.Category.html",
+          "hash": "zYDCA36QhePuus4GX8Xjtw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Data.DefaultEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Data.DefaultEvent.html",
+          "hash": "pUBF3NCxTfh8ukIl99GhcQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Data.EventFuture.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Data.EventFuture.html",
+          "hash": "iWFh/jbQz06kdvJ+X0Gw9Q=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Data.EventUser.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Data.EventUser.html",
+          "hash": "ediUt4d7WJ0FeC04CMuvIw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Data.Gift.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Data.Gift.html",
+          "hash": "eUhMXfRAOk+4hJqhwgBSBw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Data.Group.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Data.Group.html",
+          "hash": "4FhHjKttuUZ2IP0apbwRQA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Data.IFetchable.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Data.IFetchable.html",
+          "hash": "7R3n0V8oyGjrlOmblIDjjA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Data.ImageProcessor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Data.ImageProcessor.html",
+          "hash": "DqQFg5wDOz3FBSP+i0b4XA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Data.Preferences.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Data.Preferences.html",
+          "hash": "4cKcu9F8hoYP/JaUFRFWKA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Data.Reservation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Data.Reservation.html",
+          "hash": "xrtW8Pu8fCghiZpW7Gd/wA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Data.User.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Data.User.html",
+          "hash": "qVB9oMFm91lT6lmA5c09GQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Data.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Data.html",
+          "hash": "DWoBIiDq8NG5C0YwjMqbog=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Exceptions.CategoryNotFoundException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Exceptions.CategoryNotFoundException.html",
+          "hash": "2RLW6OWz/xgMgJ5mg8w2XA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Exceptions.CookieNotInvalidWarning.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Exceptions.CookieNotInvalidWarning.html",
+          "hash": "qQHep0/oF4L4HBPMFz8nxg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Exceptions.DefaultEventException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Exceptions.DefaultEventException.html",
+          "hash": "Hp2BcugTZ581xCnGY1z2Yw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Exceptions.DuplicateUserException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Exceptions.DuplicateUserException.html",
+          "hash": "UDxTPDYL+8io7LW+LjzfmQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Exceptions.EventException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Exceptions.EventException.html",
+          "hash": "/fGNhr6Hppp/MmJcBnKeBQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Exceptions.EventNotFoundException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Exceptions.EventNotFoundException.html",
+          "hash": "hAw30w0Dq6EVwQXRFm5DNg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Exceptions.ExecutionErrorWarning.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Exceptions.ExecutionErrorWarning.html",
+          "hash": "cvgpfqio0MIGchJ2WqOIZA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Exceptions.GroupException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Exceptions.GroupException.html",
+          "hash": "b46xKoNLZ7rbubhFfpuS1A=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Exceptions.GroupNotFoundException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Exceptions.GroupNotFoundException.html",
+          "hash": "1576P9vVKjeXKlBXeuAlcg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Exceptions.InvalidEventException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Exceptions.InvalidEventException.html",
+          "hash": "E7o0erdm67uxmT86izhVrg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Exceptions.InvalidPasswordException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Exceptions.InvalidPasswordException.html",
+          "hash": "CtF8CuheMMwRf2A/0IDrvg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Exceptions.PasswordException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Exceptions.PasswordException.html",
+          "hash": "C5U/fiziWDyspXueeLEHCQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Exceptions.PasswordResetTimeoutException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Exceptions.PasswordResetTimeoutException.html",
+          "hash": "RAbygEvgpQAhStpPiI3wCA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Exceptions.PublicResourceWarning.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Exceptions.PublicResourceWarning.html",
+          "hash": "eRFUv2hI3HEY+Tr2w7HlbA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Exceptions.UserException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Exceptions.UserException.html",
+          "hash": "1r9CZYO2iEJb4BstctoMwQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Exceptions.UserNotFoundException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Exceptions.UserNotFoundException.html",
+          "hash": "hnzFUmPfhUod9W58PJLfVQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Exceptions.Warning.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Exceptions.Warning.html",
+          "hash": "bOVawYI7df+N7WfEDKDzwQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Exceptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Exceptions.html",
+          "hash": "ob7hex19ZpiehlqKLjWyoA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.HtmlManager.DashboardManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.HtmlManager.DashboardManager.html",
+          "hash": "d6HvWkmvVhLVmTJ3Z8b4VA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.HtmlManager.GroupManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.HtmlManager.GroupManager.html",
+          "hash": "QxkC4kH4o45dkBpHLwyZqA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.HtmlManager.ListManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.HtmlManager.ListManager.html",
+          "hash": "+T2FuIn/0doDY1wSbeTD7w=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.HtmlManager.LoginManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.HtmlManager.LoginManager.html",
+          "hash": "6zGXiGj9et5mU5Hgg+gLaQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.HtmlManager.NavigationManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.HtmlManager.NavigationManager.html",
+          "hash": "PkSoKJdHd9YIgXFYArWV+A=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.HtmlManager.ProfileManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.HtmlManager.ProfileManager.html",
+          "hash": "D2YKslAyyMuzCfxvfXKtDg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.HtmlManager.ResetManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.HtmlManager.ResetManager.html",
+          "hash": "zv8+Oxo1QAvNphb/gptWBQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.HtmlManager.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.HtmlManager.html",
+          "hash": "gwM/yT54OC4l94dJKFBksA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Security.Password.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Security.Password.html",
+          "hash": "QSbB3I/fjfIP7O4SoQhtUA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Security.PasswordReset.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Security.PasswordReset.html",
+          "hash": "deGEt6mIwxVKext56bOy+A=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Security.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Security.html",
+          "hash": "0FjJKGnPdYqKNZPYrUGHwQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Server.Connection.UserInformation.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Server.Connection.UserInformation.html",
+          "hash": "NoS/Jb74l/zezt5m9t7BeA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Server.Connection.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Server.Connection.html",
+          "hash": "YA7bfzABunaqFjeJeCge1w=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Server.Controller.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Server.Controller.html",
+          "hash": "vkENfMIK8vVbIsS5ypof3w=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Server.GiftServer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Server.GiftServer.html",
+          "hash": "dwDOf7b97f1oXNJ31iy/KQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Server.MultipartParser.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Server.MultipartParser.html",
+          "hash": "iIISJ+vbYK31It4Xp6BQfw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Server.WebServer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Server.WebServer.html",
+          "hash": "TMc9nfLiwm78suACsxjd1Q=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/GiftServer.Server.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/GiftServer.Server.html",
+          "hash": "YZ4FRTdlYIP1uOmzcBr8aQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "obj/api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html",
+          "hash": "4SfT3XFal3RND/yxemLe/w=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html",
+          "hash": "frPdeW5hGroGiyexwMQIhg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Disable incremental build by force rebuild option.",
+        "incrementalPhase": "build"
+      },
+      "processors": {
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot suppport incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build"
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build"
+        },
+        "ConceptualDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build"
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot support incremental post processing, the reason is: it's disabled.",
+        "incrementalPhase": "postProcessing"
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}
