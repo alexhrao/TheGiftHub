@@ -10,18 +10,53 @@ namespace GiftServer
 {
     namespace Data
     {
+        /// <summary>
+        /// A default (predefined) event, like New Year's, Christmas, etc.
+        /// </summary>
+        /// <remarks>
+        /// This is a predefined event; as such, you can't create, update, or delete this.
+        /// </remarks>
         public class DefaultEvent : IFetchable
         {
+            /// <summary>
+            /// This EventID
+            /// </summary>
             public readonly ulong DefaultEventId;
+            /// <summary>
+            /// The name of this event
+            /// </summary>
             public readonly string Name;
+            /// <summary>
+            /// The description for this event
+            /// </summary>
             public readonly string Description;
+            /// <summary>
+            /// The day this event occurs
+            /// </summary>
             public readonly int Day;
+            /// <summary>
+            /// The month this event occurs
+            /// </summary>
             public readonly int Month;
+            /// <summary>
+            /// The year this event occurs
+            /// </summary>
             public readonly int Year;
+            /// <summary>
+            /// If this event recurs every year.
+            /// </summary>
+            /// <remarks>
+            /// If this is true, refer to the EventFutures for exact dates of occurence in each year
+            /// </remarks>
             public readonly bool IsRecurring;
-
+            /// <summary>
+            /// If this event recurs, Futures store when the event occurs each year
+            /// </summary>
             public List<EventFuture> Futures = new List<EventFuture>();
-
+            /// <summary>
+            /// Create a default Event from the given EventID
+            /// </summary>
+            /// <param name="EventID">The Default EventID</param>
             public DefaultEvent(ulong EventID)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -78,6 +113,22 @@ namespace GiftServer
                 }
             }
 
+            /// <summary>
+            /// Fetch this DefaultEvent
+            /// </summary>
+            /// <remarks>
+            /// This "serializes" the event, with the following fields:
+            ///     - defaultEventId: The ID for this event
+            ///     - name: The Name for this event
+            ///     - description: The description for this event
+            ///     - day: The day this event occurs
+            ///     - month: The month this event occurs
+            ///     - year: The year this event occurs
+            ///     - isRecurring: Whether or not this event recurs, given as "true" or "false"
+            ///     - eventFutures: A collection of nodes that represent the Futures for this event; refer to EventFutures for more information.
+            /// All these fields are held in a container, defaultEvent
+            /// </remarks>
+            /// <returns>A complete XML serialization</returns>
             public XmlDocument Fetch()
             {
                 XmlDocument info = new XmlDocument();

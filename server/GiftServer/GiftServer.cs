@@ -7,8 +7,14 @@ namespace GiftServer
 {
     namespace Server
     {
+        /// <summary>
+        /// The main class for the server, and the entry point
+        /// </summary>
         public class GiftServer
         {
+            /// <summary>
+            /// A list of all addresses contacted
+            /// </summary>
             public List<IPEndPoint> Addresses = new List<IPEndPoint>();
             private Object key = new Object();
             /// <summary>
@@ -20,6 +26,10 @@ namespace GiftServer
                 GiftServer program = new GiftServer();
                 program.Start(args);
             }
+            /// <summary>
+            /// Starts up the webserver with the specified prefixes
+            /// </summary>
+            /// <param name="prefixes">Prefixes for the server to listen on</param>
             public void Start(string[] prefixes)
             {
                 if (prefixes.Length == 0)
@@ -108,6 +118,14 @@ namespace GiftServer
                     }
                 }
             }
+            /// <summary>
+            /// Routes a specific contact and records the contact
+            /// </summary>
+            /// <remarks>
+            /// This is basically just a wrapper for controller.Dispatch();
+            /// </remarks>
+            /// <param name="ctx">This HttpListenerContext</param>
+            /// <returns>Complete HTML markup to be returned</returns>
             public string Route(HttpListenerContext ctx)
             {
                 lock(key)

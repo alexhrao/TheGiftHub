@@ -7,7 +7,7 @@ using GiftServer.Data;
 using GiftServer.Properties;
 using System.Net.Mail;
 using System.Net;
-using GiftServer.Html;
+using GiftServer.HtmlManager;
 
 namespace GiftServer
 {

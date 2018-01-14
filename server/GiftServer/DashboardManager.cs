@@ -11,12 +11,19 @@ using System.Threading;
 
 namespace GiftServer
 {
-    namespace Html
+    namespace HtmlManager
     {
+        /// <summary>
+        /// HTML Manager for the dashboard
+        /// </summary>
         public class DashboardManager
         {
             private ResourceManager ResourceManager;
             private NavigationManager NavigationManager;
+            /// <summary>
+            /// Create a new Dashboard Manager
+            /// </summary>
+            /// <param name="controller">The controller for this thread</param>
             public DashboardManager(Controller controller)
             {
                 Thread.CurrentThread.CurrentUICulture = controller.Culture;
@@ -24,6 +31,15 @@ namespace GiftServer
                 ResourceManager = new ResourceManager("GiftServer.HtmlTemplates", typeof(DashboardManager).Assembly);
                 NavigationManager = controller.NavigationManager;
             }
+            /// <summary>
+            /// Update the events for a given page
+            /// </summary>
+            /// <remarks>
+            /// Use this for a partially complete dashboard
+            /// </remarks>
+            /// <param name="user">The user viewing the page</param>
+            /// <param name="page">The partially formed Dashboard</param>
+            /// <returns>The HTML for the updated dashboard</returns>
             public string UpdateEvents(User user, string page)
             {
                 HtmlDocument dash = new HtmlDocument();
@@ -101,26 +117,43 @@ namespace GiftServer
                 }
                 return dash.DocumentNode.OuterHtml;
             }
+            /// <summary>
+            /// Creates a new dashboard for the given user
+            /// </summary>
+            /// <param name="user">The viewer</param>
+            /// <returns>A New HTML dashboard</returns>
             public string UpdateEvents(User user)
             {
                 return UpdateEvents(user, NavigationManager.NavigationBar(user) + ResourceManager.GetString("dashboard"));
             }
-
+            /// <summary>
+            /// Updates the Feed for this user
+            /// </summary>
+            /// <param name="user">The viewer</param>
+            /// <param name="page">The current dashboard page</param>
+            /// <returns>Updated Feed HTML</returns>
             public string UpdateFeed(User user, string page)
             {
                 // TODO
                 return page;
             }
+            /// <summary>
+            /// Creates a new dashboard and updates the feed
+            /// </summary>
+            /// <param name="user"></param>
+            /// <returns>Dashboard HTML with feed</returns>
             public string UpdateFeed(User user)
             {
                 return UpdateFeed(user, NavigationManager.NavigationBar(user) + ResourceManager.GetString("dashboard"));
             }
-
+            /// <summary>
+            /// Creates a new dashboard for the given user and updates feed and events
+            /// </summary>
+            /// <param name="user">The viewer</param>
+            /// <returns>Complete dashboard HTML</returns>
             public string Dashboard(User user)
             {
-                string page = UpdateEvents(user);
-                page = UpdateFeed(user, page);
-                return page;
+                return UpdateFeed(user, UpdateEvents(user));
             }
         }
     }

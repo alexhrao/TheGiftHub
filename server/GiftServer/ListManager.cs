@@ -12,7 +12,7 @@ using System.Web;
 
 namespace GiftServer
 {
-    namespace Html
+    namespace HtmlManager
     {
         public class ListManager
         {

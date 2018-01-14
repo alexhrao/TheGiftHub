@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace GiftServer
 {
-    namespace Html
+    namespace HtmlManager
     {
         public class GroupManager
         {

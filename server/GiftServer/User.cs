@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using GiftServer.Security;
 using System.Xml;
 using System.Net.Mail;
-using GiftServer.Html;
+using GiftServer.HtmlManager;
 using System.Net;
 
 namespace GiftServer

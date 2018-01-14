@@ -8,11 +8,24 @@ namespace GiftServer
 {
     namespace Server
     {
+        /// <summary>
+        /// The "Engine" of the website: The Server
+        /// </summary>
+        /// <remarks>
+        /// This implements IDisposable; whenever the Server is finished, it'll properly close all sockets before exiting.
+        /// </remarks>
         public sealed class WebServer : IDisposable
         {
             private readonly HttpListener _listener = new HttpListener();
             private readonly Func<HttpListenerContext, string> _responseGenerator;
-
+            /// <summary>
+            /// Create a new WebServer with the given prefixes and runner
+            /// </summary>
+            /// <remarks>
+            /// The runner method must accept an HttpListenerContext, and return an HTML string.
+            /// </remarks>
+            /// <param name="prefixes">Prefixes for the server to listen upon</param>
+            /// <param name="method">The runner method</param>
             public WebServer(string[] prefixes, Func<HttpListenerContext, string> method)
             {
                 // NOTE: To do this, I needed to run the following command in elevated mode:
@@ -31,7 +44,9 @@ namespace GiftServer
                 _responseGenerator = method;
                 _listener.Start();
             }
-
+            /// <summary>
+            /// Run the multithreaded Server
+            /// </summary>
             public void Run()
             {
                 try
@@ -82,6 +97,9 @@ namespace GiftServer
                     // If any exception is thrown and NOT caught by Dispatch, then it's time to close down the server! So, don't do anything
                 }
             }
+            /// <summary>
+            /// Properly dispose of the _listener
+            /// </summary>
             public void Dispose()
             {
                 _listener.Stop();

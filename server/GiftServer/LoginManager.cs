@@ -9,7 +9,7 @@ using GiftServer.Exceptions;
 
 namespace GiftServer
 {
-    namespace Html
+    namespace HtmlManager
     {
         public class LoginManager
         {

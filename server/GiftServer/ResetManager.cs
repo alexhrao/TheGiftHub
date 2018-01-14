@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace GiftServer
 {
-    namespace Html
+    namespace HtmlManager
     {
         public class ResetManager
         {
@@ -33,11 +33,7 @@ namespace GiftServer
                 alert.AddClass("in");
                 alert.RemoveClass("hidden");
                 HtmlNode message = HtmlNode.CreateNode(StringManager.GetString("recoveryEmailSent"));
-                HtmlNodeCollection children = new HtmlNodeCollection(alert)
-                {
-                    message
-                };
-                alert.AppendChildren(children);
+                alert.AppendChild(message);
                 return login.DocumentNode.OuterHtml;
             }
             public string SuccessResetPassword()
@@ -49,11 +45,7 @@ namespace GiftServer
                 alert.AddClass("in");
                 alert.RemoveClass("hidden");
                 HtmlNode message = HtmlNode.CreateNode(StringManager.GetString("newLogin"));
-                HtmlNodeCollection children = new HtmlNodeCollection(alert)
-                {
-                    message
-                };
-                alert.AppendChildren(children);
+                alert.AppendChild(message);
                 return login.DocumentNode.OuterHtml;
             }
             public string ResetFailed()
@@ -64,9 +56,7 @@ namespace GiftServer
                 alert.AddClass("alert-danger in");
                 alert.RemoveClass("hidden");
                 HtmlNode message = HtmlNode.CreateNode(StringManager.GetString("codeExpired"));
-                HtmlNodeCollection children = new HtmlNodeCollection(alert);
-                children.Add(message);
-                alert.AppendChildren(children);
+                alert.AppendChild(message);
                 return login.DocumentNode.OuterHtml;
             }
             public string CreateReset(User user)

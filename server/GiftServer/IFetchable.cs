@@ -12,6 +12,10 @@ namespace GiftServer
         /// </remarks>
         public interface IFetchable
         {
+            /// <summary>
+            /// Fetch all information for this object
+            /// </summary>
+            /// <returns>An XML Document with information "serialized" for this object</returns>
             XmlDocument Fetch();
         }
     }

@@ -8,17 +8,29 @@ using System.Web;
 
 namespace GiftServer
 {
-    namespace Html
+    namespace HtmlManager
     {
+        /// <summary>
+        /// Manages the Navigation Bar (at the top of almost every screen)
+        /// </summary>
         public class NavigationManager
         {
             ResourceManager ResourceManager;
+            /// <summary>
+            /// Creates a new NavigationManager with the given controller
+            /// </summary>
+            /// <param name="controller">The settings for this thread</param>
             public NavigationManager(Controller controller)
             {
                 Thread.CurrentThread.CurrentUICulture = controller.Culture;
                 Thread.CurrentThread.CurrentCulture = controller.Culture;
                 ResourceManager = new ResourceManager("GiftServer.HtmlTemplates", typeof(NavigationManager).Assembly);
             }
+            /// <summary>
+            /// Create a complete navigation bar for this User.
+            /// </summary>
+            /// <param name="user">The viewer</param>
+            /// <returns>Navigation Bar HTML</returns>
             public string NavigationBar(User user)
             {
                 HtmlDocument bar = new HtmlDocument();
