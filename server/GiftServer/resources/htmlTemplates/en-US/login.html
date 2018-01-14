@@ -93,6 +93,11 @@
             }
         </script>
         <style>
+            body {
+                background: linear-gradient(141deg, #0fb8ad 0%, #1fc8db 51%, #2cb5e8 75%);
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+            }
             .input-group,
             .form-group,
             .spaced {
@@ -104,6 +109,36 @@
             }
             a {
                 color: lightgreen;
+            }
+            #userTab {
+                border: 3px solid white;
+                border-radius: 20px;
+                min-height: 350px;
+                padding: 5px;
+                margin-left: 60px;
+            }
+            #location {
+                float: right;
+            }
+            #loginTop {
+                margin-right: -1px;
+                margin-bottom: 10px;
+                padding: 10px;
+            }
+            #logo {
+                width: 45%;
+                float: left;
+                padding-left: 15px;
+            }
+            .desc {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+            p.desc {
+                font-size: xx-large;
+                font-weight: 300;
+            }
+            h1.desc {
+                font-size: xx-large;
             }
             .alert a {
                 color: #172556;
@@ -167,56 +202,75 @@
                     </div>
                 </div>
             </div>
-            <h1 id="welcomeHeader">Welcome to The Gift Hub!</h1>
-            <ul class="text-center nav nav-tabs">
-                <li id="loginTab" class="active"><a data-toggle="tab" href="#login">Login</a></li>
-                <li id="signupTab"><a data-toggle="tab" href="#signup">Sign Up</a></li>
-            </ul>
-            <div class="tab-content">
-                <div id="login" class="tab-pane fade in active">
-                    <form id="loginForm" method="post">
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input id="loginEmail" name="email" type="email" class="form-control login-control" placeholder="Email"/>
-                        </div>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input id="password" name="password" type="password" class="form-control login-control" placeholder="Password"/>
-                        </div>
-                        <div class="form-group">
-                            <button id="passwordReset" type="button" class="btn btn-danger" data-toggle="modal" href="#resetPassword" name="reset">
-                                <p>Reset Password</p>
-                            </button>
-                            <button id="loginSubmit" type="submit" name="submit" form="loginForm" value="Login" class="btn btn-success">
-                                <p>Log In</p>
-                            </button>
-                        </div>
-                    </form>
+            <div id="loginTop" class="row container-fluid">
+                <div class="row">
+                    <p id="location">United States (Change Country)</p>
                 </div>
-                <div id="signup" class="tab-pane fade">
-                    <form id="signupForm" method="post">
-                        <div class="form-group">
-                            <div class="col-sm-12">
-                                <input id="userName" name="userName" type="text" class="form-control signup-control" placeholder="Your Name" />
-                            </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <img id="logo" src="resources/images/branding/wideLogo.png" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div id="userTab" class="col-md-3">
+                    <ul class="text-center nav nav-tabs">
+                        <li id="loginTab" class="active"><a data-toggle="tab" href="#login">Login</a></li>
+                        <li id="signupTab"><a data-toggle="tab" href="#signup">Sign Up</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="login" class="tab-pane fade in active">
+                            <form id="loginForm" method="post">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                    <input id="loginEmail" name="email" type="email" class="form-control login-control" placeholder="Email" />
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                    <input id="password" name="password" type="password" class="form-control login-control" placeholder="Password" />
+                                </div>
+                                <div class="form-group">
+                                    <button id="passwordReset" type="button" class="btn btn-danger" data-toggle="modal" href="#resetPassword" name="reset">
+                                        <p>Reset Password</p>
+                                    </button>
+                                    <button id="loginSubmit" type="submit" name="submit" form="loginForm" value="Login" class="btn btn-success">
+                                        <p>Log In</p>
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                            <input id="signupEmail" name="email" type="email" class="form-control signup-control" placeholder="Email Address" />
+                        <div id="signup" class="tab-pane fade">
+                            <form id="signupForm" method="post">
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <input id="userName" name="userName" type="text" class="form-control signup-control" placeholder="Your Name" />
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                    <input id="signupEmail" name="email" type="email" class="form-control signup-control" placeholder="Email Address" />
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                    <input id="firstPass" name="password" type="password" class="form-control signup-control" placeholder="Password" />
+                                </div>
+                                <div class="input-group has-feedback">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                    <input id="secondPass" type="password" class="form-control signup-control" placeholder="Confirm Password" />
+                                </div>
+                                <input type="hidden" name="type" value="User" />
+                                <button id="signupSubmit" type="submit" name="submit" form="signupForm" value="Create" class="btn btn-success">
+                                    <p>Sign Up</p>
+                                </button>
+                            </form>
                         </div>
-                        <div class="input-group">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input id="firstPass" name="password" type="password" class="form-control signup-control" placeholder="Password" />
-                        </div>
-                        <div class="input-group has-feedback">
-                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                            <input id="secondPass" type="password" class="form-control signup-control" placeholder="Confirm Password" />
-                        </div>
-                        <input type="hidden" name="type" value="User" />
-                        <button id="signupSubmit" type="submit" name="submit" form="signupForm" value="Create" class="btn btn-success">
-                            <p>Sign Up</p>
-                        </button>
-                    </form>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <h1 class="desc text-left">Why use The Gift Hub?</h1>
+                    <p class="desc text-left">
+                        Because The Gift Hub is your one-stop shop for all gift and holiday related tasks!
+                    </p>
                 </div>
             </div>
         </div>

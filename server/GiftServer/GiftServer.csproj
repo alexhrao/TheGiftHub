@@ -179,6 +179,8 @@
     <Content Include="docs\MySqlParameterCollection.xml" />
     <Content Include="docs\MySqlTransaction.xml" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="resources\images\branding\squareLogo.png" />
+    <Content Include="resources\images\branding\wideLogo.png" />
     <Content Include="Scripts\jquery-3.2.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.2.1.js" />
     <Content Include="Scripts\jquery-3.2.1.min.js" />
