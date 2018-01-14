@@ -8,6 +8,12 @@ namespace GiftServer
 {
     namespace Server
     {
+        /// <summary>
+        /// MultipartParser parses a post *not* encoded by the browser
+        /// </summary>
+        /// <remarks>
+        /// Only really use this when dealing with forms that have images...
+        /// </remarks>
         public class MultipartParser
         {
             public IDictionary<string, string> Parameters = new Dictionary<string, string>();
