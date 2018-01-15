@@ -9,15 +9,38 @@ namespace GiftServer
 {
     namespace Data
     {
+        /// <summary>
+        /// A Group of users
+        /// </summary>
+        /// <remarks>
+        /// Groups are the primary means by which users can interact with each other. Often, two users can _only_ interact if they have at least one common group.
+        /// 
+        /// The only person allowed to make changes to a groups structure (name, description, etc.) is the Admin, who is also the only one that can delete a group.
+        /// </remarks>
         public class Group : ISynchronizable, IFetchable
         {
+            /// <summary>
+            /// This Group's ID
+            /// </summary>
+            /// <remarks>
+            /// If this is 0, the group must be Created() before anything else makes sense.
+            /// </remarks>
             public ulong GroupId
             {
                 get;
                 private set;
             } = 0;
+            /// <summary>
+            /// The name of this group
+            /// </summary>
             public string Name;
+            /// <summary>
+            /// The description for this group
+            /// </summary>
             public string Description;
+            /// <summary>
+            /// The Administrator for this group (An ordinary user in all other respects, however)
+            /// </summary>
             public User Admin
             {
                 get
@@ -26,7 +49,9 @@ namespace GiftServer
                 }
             }
             private User admin;
-
+            /// <summary>
+            /// A list of all members
+            /// </summary>
             public List<User> Users
             {
                 get
@@ -35,7 +60,10 @@ namespace GiftServer
                 }
             }
             private List<User> users = new List<User>();
-
+            /// <summary>
+            /// Fetch a group from the database
+            /// </summary>
+            /// <param name="groupID">The group's ID</param>
             public Group(ulong groupID)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -79,19 +107,33 @@ namespace GiftServer
                     }
                 }
             }
+            /// <summary>
+            /// Create a new group with no users
+            /// </summary>
+            /// <param name="Admin">The Administrator for this group</param>
+            /// <param name="Name">The name of this group</param>
             public Group(User Admin, string Name)
             {
                 this.admin = Admin;
                 this.Name = Name;
             }
             // Eventually, need to add support for children!
+            /// <summary>
+            /// Create a new group with specified members
+            /// </summary>
+            /// <param name="Admin">The administrator for this group</param>
+            /// <param name="Name">The name of this group</param>
+            /// <param name="Users">The members of this group (excluding the admin)</param>
             public Group(User Admin, string Name, List<User> Users)
             {
                 this.admin = Admin;
                 this.Name = Name;
                 this.users = Users;
             }
-
+            /// <summary>
+            /// Create this group in the database
+            /// </summary>
+            /// <returns>A status flag</returns>
             public bool Create()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -125,6 +167,10 @@ namespace GiftServer
                 }
                 return true;
             }
+            /// <summary>
+            /// Update this group in the database
+            /// </summary>
+            /// <returns>A status flag</returns>
             public bool Update()
             {
                 if (GroupId == 0)
@@ -151,6 +197,10 @@ namespace GiftServer
                     }
                 }
             }
+            /// <summary>
+            /// Delete this group from the database
+            /// </summary>
+            /// <returns>A status flag</returns>
             public bool Delete()
             {
                 if (GroupId == 0)
@@ -252,7 +302,7 @@ namespace GiftServer
             /// <summary>
             /// Allow a given event to be seen by all members of this group
             /// </summary>
-            /// <param name="evnt">The event</param>
+            /// <param name="evnt">The event that will now be viewable</param>
             public void Add(EventUser evnt)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -272,7 +322,7 @@ namespace GiftServer
             /// <summary>
             /// Don't allow a given event to be seen by all members of this group
             /// </summary>
-            /// <param name="evnt"></param>
+            /// <param name="evnt">The event no longer viewable</param>
             public void Remove(EventUser evnt)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -293,7 +343,7 @@ namespace GiftServer
             /// <summary>
             /// Allow a given gift to be seen by all members of this group
             /// </summary>
-            /// <param name="gift"></param>
+            /// <param name="gift">The gift to become viewable</param>
             public void Add(Gift gift)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -313,7 +363,7 @@ namespace GiftServer
             /// <summary>
             /// Don't allow a given gift to be seen by all members of this group
             /// </summary>
-            /// <param name="gift"></param>
+            /// <param name="gift">The gift that will no longer be viewable</param>
             public void Remove(Gift gift)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -331,6 +381,25 @@ namespace GiftServer
                 }
             }
 
+            /// <summary>
+            /// Serializes this group's information
+            /// </summary>
+            /// <remarks>
+            /// As with all other Fetch() methods, this returns an XML document.
+            /// This document has the following fields:
+            ///     - groupId: The group's ID
+            ///     - name: The group's name
+            ///     - description: The group's description
+            ///     - adminId: The group's Admin ID
+            ///     - members: All members of the group
+            ///         - Note that each element of _members_ is a _member_ which has the following fields:
+            ///             - userId: This member's ID
+            ///             - userName: This member's Name
+            ///         - Note: The name is provided as a convenience for the caller.
+            ///             
+            /// This is all wrapped in a group container.
+            /// </remarks>
+            /// <returns>Serialization of this group as an XmlDocument</returns>
             public XmlDocument Fetch()
             {
                 XmlDocument info = new XmlDocument();

@@ -238,12 +238,17 @@ namespace GiftServer
                     }
                 }
             }
-
+            /// <summary>
+            /// Instantiate a new, empty Event
+            /// </summary>
             public EventUser()
             {
 
             }
-
+            /// <summary>
+            /// Create this event in the database
+            /// </summary>
+            /// <returns>A Status flag</returns>
             public bool Create()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -276,6 +281,10 @@ namespace GiftServer
                 }
                 return false;
             }
+            /// <summary>
+            /// Update this event in the database
+            /// </summary>
+            /// <returns>A status flag</returns>
             public bool Update()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -355,6 +364,10 @@ namespace GiftServer
                 // If isdefault, remove this and make it it's own event?
                 return !IsDefault;
             }
+            /// <summary>
+            /// Delete the gift from the database
+            /// </summary>
+            /// <returns>A status flag</returns>
             public bool Delete()
             {
                 // if ID == -1, don't do anything

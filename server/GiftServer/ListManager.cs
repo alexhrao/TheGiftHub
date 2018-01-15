@@ -13,11 +13,18 @@ namespace GiftServer
 {
     namespace HtmlManager
     {
+        /// <summary>
+        /// A Manager for List HTML
+        /// </summary>
         public class ListManager
         {
             private ResourceManager HtmlManager;
             private ResourceManager StringManager;
             private NavigationManager NavigationManager;
+            /// <summary>
+            /// Create a new ListManager
+            /// </summary>
+            /// <param name="controller">The controller for this thread</param>
             public ListManager(Controller controller)
             {
                 Thread.CurrentThread.CurrentUICulture = controller.Culture;
@@ -26,6 +33,12 @@ namespace GiftServer
                 StringManager = new ResourceManager("GiftServer.Strings", typeof(ListManager).Assembly);
                 NavigationManager = controller.NavigationManager;
             }
+            /// <summary>
+            /// Generate a gift list for this user to be viewed by another user
+            /// </summary>
+            /// <param name="viewer">The viewer of this list</param>
+            /// <param name="target">The owner of this list</param>
+            /// <returns>Complete HTML markup for this public list</returns>
             public string GiftList(User viewer, User target)
             {
                 HtmlDocument list = new HtmlDocument();
@@ -72,10 +85,15 @@ namespace GiftServer
                 }
                 return list.DocumentNode.OuterHtml;
             }
-            public string GiftList(User thisUser)
+            /// <summary>
+            /// Return a private gift list for this user.
+            /// </summary>
+            /// <param name="target">The owner of this list</param>
+            /// <returns>Complete HTML markup for this private list</returns>
+            public string GiftList(User target)
             {
                 HtmlDocument myList = new HtmlDocument();
-                myList.LoadHtml(NavigationManager.NavigationBar(thisUser) + HtmlManager.GetString("list"));
+                myList.LoadHtml(NavigationManager.NavigationBar(target) + HtmlManager.GetString("list"));
                 // Add category options to new and edit:
                 HtmlNode categoryEdit = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" editGiftCategory \")]");
                 HtmlNode categoryNew = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" newGiftCategory \")]");
@@ -105,7 +123,7 @@ namespace GiftServer
                 }
                 // Add group options to new and edit:
                 HtmlNode groupsEdit = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" editSharedGroups \")]");
-                foreach (Group group in thisUser.Groups)
+                foreach (Group group in target.Groups)
                 {
                     HtmlNode entry = HtmlNode.CreateNode("<label class=\"checkbox-inline col-xs-5\" data-group-id=\"" + HttpUtility.HtmlEncode(group.GroupId) + "\"></label>");
                     entry.AppendChild(HtmlNode.CreateNode("<input type=\"checkbox\" value=\"\" data-group-id=\"" + HttpUtility.HtmlEncode(group.GroupId) + "\" />"));
@@ -116,10 +134,10 @@ namespace GiftServer
                     groupsEdit.AppendChild(HtmlNode.CreateNode("<div class=\"col-xs-1\"></div>"));
                 }
                 HtmlNode userName = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
-                userName.InnerHtml = thisUser.UserName + "'s " + StringManager.GetString("giftList");
+                userName.InnerHtml = target.UserName + "'s " + StringManager.GetString("giftList");
                 HtmlNode giftTable = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" giftHolder \")]");
                 HtmlNode giftTableMicro = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" xsGiftHolder \")]");
-                List<Gift> gifts = thisUser.Gifts;
+                List<Gift> gifts = target.Gifts;
 
                 //int i = 0;
                 foreach (Gift gift in gifts)
