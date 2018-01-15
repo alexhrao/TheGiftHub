@@ -67,6 +67,17 @@ namespace GiftServer
             public CookieNotInvalidWarning(string hash) : base("Invalid User detected", "User with hash " + hash + " is not signed in, but given request assuming otherwise") { }
         }
         /// <summary>
+        /// Indicates that there was an invalid culture given
+        /// </summary>
+        public class InvalidCultureWarning : Warning
+        {
+            /// <summary>
+            /// The constructor: Notes the invalid culture
+            /// </summary>
+            /// <param name="culture">The culture as reported by the browser</param>
+            public InvalidCultureWarning(string culture) : base("Invalid Culture", "User's Browser responded with culture " + culture) { }
+        }
+        /// <summary>
         /// An error has occured
         /// </summary>
         /// <remarks>

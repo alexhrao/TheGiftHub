@@ -178,6 +178,10 @@ namespace GiftServer
                                 // Dispatch to correct logic:
                                 switch (_dict["submit"])
                                 {
+                                    case "Language":
+                                        // TODO: Add this to login page
+                                        GetCulture(_dict["culture"]);
+                                        return LoginManager.Login();
                                     case "Logout":
                                         Logout();
                                         return LoginManager.Login();
@@ -572,6 +576,18 @@ namespace GiftServer
                 }
                 GetCulture();
             }
+            private void GetCulture(string culture)
+            {
+                _response.AppendCookie(new Cookie
+                {
+                    Expires = DateTime.Now.AddYears(1),
+                    Name = "culture",
+                    Value = culture
+                });
+                this.culture = new CultureInfo(culture);
+                Thread.CurrentThread.CurrentUICulture = this.culture;
+                Thread.CurrentThread.CurrentCulture = this.culture;
+            }
             private void GetCulture()
             {
                 // First, if logged in, use that.
@@ -594,8 +610,25 @@ namespace GiftServer
                 // If location in request:
                 else if (_request.UserLanguages.Length != 0)
                 {
-                    culture = new CultureInfo(_request.UserLanguages[0]);
-                    _response.AppendCookie(new Cookie("culture", _request.UserLanguages[0]));
+                    bool isSupported = false;
+                    int ind = 0;
+                    String lang = "";
+                    while (!isSupported)
+                    {
+                        lang = ParseCulture(_request.UserLanguages[ind], out isSupported);
+                        ind++;
+                        if (ind == _request.UserLanguages.Length)
+                        {
+                            break;
+                        }
+                    }
+                    culture = new CultureInfo(lang);
+                    _response.AppendCookie(new Cookie
+                    {
+                        Expires = DateTime.Now.AddYears(1),
+                        Name = "culture",
+                        Value = lang
+                    });
                 }
                 // otherwise, en-US
                 else
@@ -605,6 +638,39 @@ namespace GiftServer
                 }
                 Thread.CurrentThread.CurrentUICulture = culture;
                 Thread.CurrentThread.CurrentCulture = culture;
+            }
+            /// <summary>
+            /// Loops through all the cultures, and returns the culture language AND if it was supported
+            /// </summary>
+            /// <param name="lang">The language / Culture</param>
+            /// <param name="isSupported">Whether or not the language was supported</param>
+            /// <returns>The corrected culture and its supported status</returns>
+            private string ParseCulture(string lang, out bool isSupported)
+            {
+                // TODO: Wrap in Try-Catch and log warning if error / not supported
+                try
+                {
+                    isSupported = true;
+                    if (lang.ToLower().Contains("fr"))
+                    {
+                        return "fr-FR";
+                    }
+                    else if (lang.ToLower().Contains("en") && lang.ToLower() != "en-gb")
+                    {
+                        return "en-US";
+                    }
+                    else
+                    {
+                        // Language not currently supported
+                        throw new Exception();
+                    }
+                }
+                catch (Exception)
+                {
+                    Warnings.Add(new InvalidCultureWarning(lang));
+                    isSupported = false;
+                    return "en-US";
+                }
             }
 
             private string ParsePath()
