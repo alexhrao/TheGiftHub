@@ -1,10 +1,8 @@
 ﻿using System;
 using MySql.Data.MySqlClient;
 using System.Configuration;
-using GiftServer.Exceptions;
 using System.Collections.Generic;
 using System.Xml;
-using System.Web;
 
 namespace GiftServer
 {

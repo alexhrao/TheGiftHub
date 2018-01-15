@@ -1,38 +1,128 @@
 ﻿using GiftServer.Properties;
-using GiftServer.Server;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
-using System.Web;
 using System.Xml;
 
 namespace GiftServer
 {
     namespace Data
     {
+        /// <summary>
+        /// A single gift
+        /// </summary>
+        /// <remarks>
+        /// A gift is owned by a specific user, and has a great deal of properties (color, quantity, etc.).
+        /// </remarks>
         public class Gift : ISynchronizable, IShowable, IFetchable
         {
+            /// <summary>
+            /// The GiftID
+            /// </summary>
+            /// <remarks>
+            /// A GiftID means a deleted gift (or one never created).
+            /// </remarks>
             public ulong GiftId
             {
                 get;
                 private set;
             } = 0;
+            /// <summary>
+            /// The owner of this gift
+            /// </summary>
             public User User;
+            /// <summary>
+            /// The name of this gift
+            /// </summary>
             public string Name;
+            /// <summary>
+            /// This gift's description
+            /// </summary>
             public string Description = "";
+            /// <summary>
+            /// The URL associated with this gift
+            /// </summary>
             public string Url = "";
+            /// <summary>
+            /// The Cost of this gift, as a double.
+            /// </summary>
             public double Cost = 0.00;
+            /// <summary>
+            /// Stores this gift is sold at
+            /// </summary>
             public string Stores = "";
-            public uint Quantity = 1;
+            /// <summary>
+            /// The number of gifts desired
+            /// </summary>
+            /// <remarks>
+            /// If no number (or a number less than 1) is given, 1 is assumed.
+            /// </remarks>
+            public uint Quantity
+            {
+                get
+                {
+                    return quantity;
+                }
+                set
+                {
+                    if (value < 1)
+                    {
+                        quantity = 1;
+                    }
+                }
+            }
+            private uint quantity = 1;
+            /// <summary>
+            /// The color, as HEX (without the #)
+            /// </summary>
             public string Color = "000000";
+            /// <summary>
+            /// A description text for this color
+            /// </summary>
             public string ColorText = "";
+            /// <summary>
+            /// The size of this gift
+            /// </summary>
             public string Size = "";
+            /// <summary>
+            /// The category this gift fits under
+            /// </summary>
             public Category Category;
-            public double Rating = 0.00;
-            public DateTime TimeStamp;
+            /// <summary>
+            /// This gift's rating, between 0 and 5 only.
+            /// </summary>
+            public double Rating
+            {
+                get
+                {
+                    return rating;
+                }
+                set
+                {
+                    if (value > 5)
+                    {
+                        rating = 5.0;
+                    }
+                    else if (value < 0)
+                    {
+                        rating = 0.0;
+                    }
+                }
+            }
+            private double rating = 0.00;
+            /// <summary>
+            /// The time this gift was created
+            /// </summary>
+            public DateTime TimeStamp = DateTime.MinValue;
+            /// <summary>
+            /// The time this gift was received
+            /// </summary>
             public DateTime DateReceived = DateTime.MinValue;
+            /// <summary>
+            /// A List of reservations for this gift
+            /// </summary>
             public List<Reservation> Reservations
             {
                 get
@@ -59,6 +149,9 @@ namespace GiftServer
                     return _reservations;
                 }
             }
+            /// <summary>
+            /// All the groups this gift is viewable to
+            /// </summary>
             public List<Group> Groups
             {
                 get
@@ -86,6 +179,10 @@ namespace GiftServer
                 }
             }
 
+            /// <summary>
+            /// Fetch an existing gift
+            /// </summary>
+            /// <param name="id">The existing gift</param>
             public Gift(ulong id)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -128,11 +225,18 @@ namespace GiftServer
                     }
                 }
             }
+            /// <summary>
+            /// Create a new gift with the given name
+            /// </summary>
+            /// <param name="Name">The new gifts name</param>
             public Gift(string Name)
             {
                 this.Name = Name;
             }
-
+            /// <summary>
+            /// Create the gift within the database
+            /// </summary>
+            /// <returns>A status for this operation</returns>
             public bool Create()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -184,6 +288,10 @@ namespace GiftServer
                     }
                 }
             }
+            /// <summary>
+            /// Update this gift in the database
+            /// </summary>
+            /// <returns>A status flag</returns>
             public bool Update()
             {
                 if (GiftId == 0)
@@ -236,6 +344,10 @@ namespace GiftServer
                     }
                 }
             }
+            /// <summary>
+            /// Delete this gift from the database
+            /// </summary>
+            /// <returns>A status flag</returns>
             public bool Delete()
             {
                 if (GiftId == 0)
@@ -290,20 +402,38 @@ namespace GiftServer
                     }
                 }
             }
-
-            public void SaveImage(MultipartParser parser)
+            /// <summary>
+            /// Save the specified image as the image for this gift.
+            /// </summary>
+            /// <param name="contents">The image as a byte array</param>
+            public void SaveImage(byte[] contents)
             {
-                ImageProcessor processor = new ImageProcessor(parser);
-                File.WriteAllBytes(System.IO.Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + this.GiftId + Constants.ImageFormat, processor.Data);
+                ImageProcessor processor = new ImageProcessor(contents);
+                File.WriteAllBytes(Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + this.GiftId + Constants.ImageFormat, processor.Data);
             }
+            /// <summary>
+            /// Remove the associated image
+            /// </summary>
             public void RemoveImage()
             {
-                File.Delete(System.IO.Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + this.GiftId + Constants.ImageFormat);
+                File.Delete(Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + this.GiftId + Constants.ImageFormat);
             }
+            /// <summary>
+            /// Get the image associated with this gift
+            /// </summary>
+            /// <returns>A qualified path for this gift's image</returns>
+            /// <remarks>
+            /// Note that qualified means with respect to the server's root, *not* necessarily '/' or 'C:\'
+            /// </remarks>
             public string GetImage()
             {
                 return GetImage(this.GiftId);
             }
+            /// <summary>
+            /// Get the image for a specified giftID
+            /// </summary>
+            /// <param name="id">The specified GiftID</param>
+            /// <returns>The qualified path (See GetImage() for more information)</returns>
             public static string GetImage(ulong id)
             {
                 string path = System.IO.Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + id + Constants.ImageFormat;
@@ -318,7 +448,10 @@ namespace GiftServer
                     return "resources/images/gifts/default" + Constants.ImageFormat;
                 }
             }
-
+            /// <summary>
+            /// Add this gift to a group
+            /// </summary>
+            /// <param name="group">The group that can now view this gift</param>
             public void Add(Group group)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -335,7 +468,10 @@ namespace GiftServer
                     }
                 }
             }
-
+            /// <summary>
+            /// Remove this gift from a group
+            /// </summary>
+            /// <param name="group">The group that will no longer be able to view this gift</param>
             public void Remove(Group group)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -352,7 +488,34 @@ namespace GiftServer
                     }
                 }
             }
-
+            /// <summary>
+            /// Serialize this gift as an XML Document
+            /// </summary>
+            /// <remarks>
+            /// This is a serialization for a gift. Note that the User element is _not_ expanded.
+            /// This XML Document contains the following fields:
+            ///     - giftId: This gift's ID
+            ///     - user: The UserID associated with this gift
+            ///     - name: This gift's name
+            ///     - description: This gift's description
+            ///     - url: This gift's URL
+            ///     - cost: This gift's cost, encoded WITHOUT the currency. Note that currency isn't currently supported, but will be soon.
+            ///     - stores: The stores where this gift is sold, as a string
+            ///     - quantity: The quantity desired for this gift
+            ///     - color: The hex code for this gift's color, with the leading # included
+            ///     - colorText: The color description for this gift's color
+            ///     - size: The size of this gift
+            ///     - category: The name of the gift category
+            ///     - rating: The rating for this gift
+            ///     - image: The qualified path for this gift's image
+            ///     - groups: The groups that can view this gift
+            ///         - Note that each child element of _groups_ is a _group_ element
+            ///     - reservations: The reservations currently held for this gift
+            ///         - Note that each child element of _reservations_ is a _reservation_ element
+            ///         
+            /// All this is wrapped in a _gift_ container (I know, pun)
+            /// </remarks>
+            /// <returns>An XML document with all gift information</returns>
             public XmlDocument Fetch()
             {
                 XmlDocument info = new XmlDocument();

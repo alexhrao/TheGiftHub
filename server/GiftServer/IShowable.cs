@@ -12,7 +12,7 @@ namespace GiftServer
         /// </remarks>
         interface IShowable
         {
-            void SaveImage(MultipartParser parser);
+            void SaveImage(byte[] contents);
             void RemoveImage();
             string GetImage();
         }

@@ -146,13 +146,13 @@ namespace GiftServer
                                     case "profile":
                                         {
                                             // Save user image:
-                                            _user.SaveImage(parser);
+                                            _user.SaveImage(parser.FileContents);
                                             break;
                                         }
                                     case "myList":
                                         {
                                             Gift gift = new Gift(Convert.ToUInt64(parser.Parameters["itemid"]));
-                                            gift.SaveImage(parser);
+                                            gift.SaveImage(parser.FileContents);
                                             break;
                                         }
                                 }

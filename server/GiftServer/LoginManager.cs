@@ -1,7 +1,5 @@
 ﻿using System;
 using HtmlAgilityPack;
-using GiftServer.Properties;
-using System.Globalization;
 using System.Resources;
 using System.Threading;
 using GiftServer.Server;
@@ -11,20 +9,39 @@ namespace GiftServer
 {
     namespace HtmlManager
     {
+        /// <summary>
+        /// Generates all HTML for loggin in
+        /// </summary>
+        /// <remarks>
+        /// Arguably, this is the only class that doesn't necessarily require a user to operate
+        /// </remarks>
         public class LoginManager
         {
-            ResourceManager HtmlManager;
-            ResourceManager StringManager;
+            private ResourceManager HtmlManager;
+            private ResourceManager StringManager;
+            /// <summary>
+            /// Create a new LoginManager
+            /// </summary>
+            /// <param name="controller">The controller for this thread</param>
             public LoginManager(Controller controller)
             {
                 HtmlManager = new ResourceManager("GiftServer.HtmlTemplates", typeof(LoginManager).Assembly);
                 StringManager = new ResourceManager("GiftServer.Strings", typeof(LoginManager).Assembly);
                 Thread.CurrentThread.CurrentUICulture = controller.Culture;
             }
+            /// <summary>
+            /// Return the standard login page
+            /// </summary>
+            /// <returns>The HTML for standard login</returns>
             public string Login()
             {
                 return HtmlManager.GetString("header") + HtmlManager.GetString("login");
             }
+            /// <summary>
+            /// The login page, with the specified failure reason
+            /// </summary>
+            /// <param name="e">The Exception thrown</param>
+            /// <returns>HTML markup for a failed login attempt</returns>
             public string FailLogin(Exception e)
             {
                 HtmlDocument login = new HtmlDocument();
@@ -48,6 +65,10 @@ namespace GiftServer
                 alert.AppendChild(message);
                 return login.DocumentNode.OuterHtml;
             }
+            /// <summary>
+            /// The login page, with a successful creation notification
+            /// </summary>
+            /// <returns>HTML Markup for a successful user account creation</returns>
             public string SuccessSignup()
             {
                 HtmlDocument login = new HtmlDocument();

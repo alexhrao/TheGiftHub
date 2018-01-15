@@ -16,26 +16,103 @@ namespace GiftServer
 {
     namespace Data
     {
+        /// <summary>
+        /// A single user of The GiftHub
+        /// </summary>
+        /// <remarks>
+        /// A User is the _center_ of all operations within The GiftHub. Except for very limited circumstances, a User is required to do anything.
+        /// As it's the center of any operation, the User class is quite complex, though not a "God Object" - it does not keep track of state.
+        /// Note that certain methods are "lazy" - they won't populate until requested. This is done to save on unnecessary execution, and to ensure
+        /// that the most recent changes are reflected.
+        /// 
+        /// The User class implements the ISynchronizable, IShowable, and IFetchable interfaces, which means:
+        ///     - It can be changed, created, or deleted from the database
+        ///     - It has an associated image
+        ///     - It can be "serialized" as an XML Document
+        /// </remarks>
         public class User : ISynchronizable, IShowable, IFetchable
         {
+            /// <summary>
+            /// The UserID for this user
+            /// </summary>
+            /// <remarks>
+            /// If this is 0, this is a "dead" user - an invalid user. No operations should be made on such a user,
+            /// though an operation will NOT throw an exception if the ID is 0.
+            /// </remarks>
             public ulong UserId
             {
                 get;
                 private set;
             } = 0;
+            /// <summary>
+            /// The User's Name
+            /// </summary>
+            /// <remarks>
+            /// Can contain any character, including emojis. There is no "First, Last" fields, to aid localization
+            /// </remarks>
             public string UserName = "";
+            /// <summary>
+            /// The Email Address for this user
+            /// </summary>
+            /// <remarks>
+            /// This address MUST be unique, since it's used as the Unique identifier (aside from the UserID, of course)
+            /// </remarks>
             public MailAddress Email;
+            /// <summary>
+            /// The Password for this user.
+            /// </summary>
+            /// <remarks>
+            /// This does NOT expose the user's actual password - this password is unavailable,
+            /// since salting and hashing is done to prevent possible password leaks. However, one 
+            /// CAN access the Salt, Hash, and number of iterations used via the Password, and can 
+            /// validate a given password against this property.
+            /// </remarks>
             public Password Password;
+            /// <summary>
+            /// The birth month - we don't store their year of birth.
+            /// </summary>
             public int BirthMonth = 0;
+            /// <summary>
+            /// The birth day - we don't store their year of birth.
+            /// </summary>
             public int BirthDay = 0;
+            /// <summary>
+            /// The user's "bio"
+            /// </summary>
+            /// <remarks>
+            /// This field accepts any non-null value.
+            /// </remarks>
             public string Bio = "";
+            /// <summary>
+            /// The user's preferences
+            /// </summary>
             public Preferences Preferences;
+            /// <summary>
+            /// The UserURL
+            /// </summary>
+            /// <remarks>
+            /// The URL is a Unique Identifier that, without access to the database, cannot be "reinterpreted" into anything about the user.
+            /// In fact, this URL is generated at User Creation time without using _any_ user information. Indeed, not only is this locator 
+            /// randomly generated, it is also cryptographically strong, though at this time that is certainly not necessary.
+            /// 
+            /// By definition, any character within this URL does not need to be escaped in any known HTML protocol. Furthermore, it 
+            /// is gauranteed to be unique among all users.
+            /// </remarks>
             public string UserUrl = "";
+            /// <summary>
+            /// The date this user created his or her account.
+            /// </summary>
             public DateTime DateJoined
             {
                 get;
                 private set;
             }
+            /// <summary>
+            /// The user's gifts
+            /// </summary>
+            /// <remarks>
+            /// This is a lazy operator; it will only populate when called upon. This ensures the latest data is fetched.
+            /// </remarks>
             public List<Gift> Gifts
             {
                 get
@@ -66,6 +143,12 @@ namespace GiftServer
                     return _gifts;
                 }
             }
+            /// <summary>
+            /// The user's groups
+            /// </summary>
+            /// <remarks>
+            /// This is a lazy operator; it will only populate when called upon. This ensures the latest data is fetched.
+            /// </remarks>
             public List<Group> Groups
             {
                 get
@@ -96,6 +179,12 @@ namespace GiftServer
                     return _groups;
                 }
             }
+            /// <summary>
+            /// The user's events
+            /// </summary>
+            /// <remarks>
+            /// This is a lazy operator; it will only populate when called upon. This ensures the latest data is fetched.
+            /// </remarks>
             public List<EventUser> Events
             {
                 get
@@ -125,10 +214,24 @@ namespace GiftServer
                     return _events;
                 }
             }
+            /// <summary>
+            /// Initializes a new User
+            /// </summary>
+            /// <param name="id">The UserID</param>
+            /// <remarks>
+            /// This assumes that the ID exists; if it doesn't, a UserNotFoundException is thrown.
+            /// </remarks>
             public User(ulong id)
             {
                 FetchInformation(id);
             }
+            /// <summary>
+            /// Initializes a new User
+            /// </summary>
+            /// <param name="email">The User's Email</param>
+            /// <remarks>
+            /// This assumes a user with this email already exists; failure to find one results in a UserNotFoundException
+            /// </remarks>
             public User(MailAddress email)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -146,10 +249,21 @@ namespace GiftServer
                             {
                                 FetchInformation(Convert.ToUInt64(Reader["UserID"]));
                             }
+                            else
+                            {
+                                throw new UserNotFoundException(email);
+                            }
                         }
                     }
                 }
             }
+            /// <summary>
+            /// Initializes a new User
+            /// </summary>
+            /// <param name="hash">The UserURL</param>
+            /// <remarks>
+            /// The URL for this user, if this URL isn't found, a UserNotFoundException is thrown
+            /// </remarks>
             public User(string hash)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -167,10 +281,23 @@ namespace GiftServer
                             {
                                 FetchInformation(Convert.ToUInt64(Reader["UserID"]));
                             }
+                            else
+                            {
+                                throw new UserNotFoundException(hash);
+                            }
                         }
                     }
                 }
             }
+            /// <summary>
+            /// Fetches a user with the specified email and password
+            /// </summary>
+            /// <param name="email">The user's email</param>
+            /// <param name="password">The plaintext form of the user's password</param>
+            /// <remarks>
+            /// Even if the email is found, if the veracity of the password cannot be found,
+            /// this will throw an InvalidPasswordException
+            /// </remarks>
             public User(MailAddress email, string password)
             {
                 // If this is called, the user already exists in DB; fetch. If it can't find it, throw UserNotFoundException. 
@@ -219,13 +346,22 @@ namespace GiftServer
                     }
                 }
             }
-
+            /// <summary>
+            /// Creates a *new* user with email and password
+            /// </summary>
+            /// <param name="Email">The user's email</param>
+            /// <param name="Password">The user's password, *_hashed_*</param>
             public User(MailAddress Email, Password Password)
             {
                 this.Email = Email;
                 this.Password = Password;
             }
-
+            /// <summary>
+            /// Resets their password
+            /// </summary>
+            /// <param name="password">The new password</param>
+            /// <param name="ResetManager">A ResetManager that will generate the notification for this user.</param>
+            /// <returns>A status of whether or not it successfully reset the user's password</returns>
             public bool UpdatePassword(string password, ResetManager ResetManager)
             {
                 if (this.UserId == 0)
@@ -305,6 +441,13 @@ namespace GiftServer
                     }
                 }
             }
+            /// <summary>
+            /// Creates the user in the database.
+            /// </summary>
+            /// <remarks>
+            /// If the email is already taken, this will throw a DuplicatUserException
+            /// </remarks>
+            /// <returns>A status of success or failure</returns>
             public bool Create()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -397,7 +540,13 @@ namespace GiftServer
                 }
                 return true;
             }
-
+            /// <summary>
+            /// Updates the user
+            /// </summary>
+            /// <remarks>
+            /// If the ID is 0, this will instead _create_ a new user
+            /// </remarks>
+            /// <returns>A status of the update process</returns>
             public bool Update()
             {
                 if (this.UserId == 0)
@@ -449,7 +598,15 @@ namespace GiftServer
                     // Only way to update password is through password reset, so no need here
                 }
             }
-
+            /// <summary>
+            /// Deletes a user from the database
+            /// </summary>
+            /// <remarks>
+            /// This is a permanent change, and will delete all memberships, gifts, and preferences.
+            /// 
+            /// Additionally, this is a _transactional_ operation; either all information is deleted or retained.
+            /// </remarks>
+            /// <returns>A status flag</returns>
             public bool Delete()
             {
                 // TODO: Gauruntee not admin of any group
@@ -588,19 +745,41 @@ namespace GiftServer
                     }
                 }
             }
-            public void SaveImage(MultipartParser parser)
+            /// <summary>
+            /// Saves an image for this user.
+            /// </summary>
+            /// <param name="contents">The new image, regardless of original format</param>
+            public void SaveImage(byte[] contents)
             {
-                ImageProcessor processor = new ImageProcessor(parser);
+                ImageProcessor processor = new ImageProcessor(contents);
                 File.WriteAllBytes(Directory.GetCurrentDirectory() + "/resources/images/users/User" + this.UserId + Constants.ImageFormat, processor.Data);
             }
+            /// <summary>
+            /// Removes an associated image
+            /// </summary>
+            /// <remarks>
+            /// The user's image will be replaced with default.png.
+            /// </remarks>
             public void RemoveImage()
             {
                 File.Delete(Directory.GetCurrentDirectory() + "/resources/images/users/User" + this.UserId + Constants.ImageFormat);
             }
+            /// <summary>
+            /// Returns the path for this user's image
+            /// </summary>
+            /// <returns>A qualified path for this user's image</returns>
+            /// <remarks>
+            /// The qualified path is with respect to the _server's_ root directory, which is *not necessarily 'C:\' or '/'*
+            /// </remarks>
             public string GetImage()
             {
                 return GetImage(this.UserId);
             }
+            /// <summary>
+            /// Gets the image for any user
+            /// </summary>
+            /// <param name="userID">The user ID for this given user</param>
+            /// <returns>A qualified path for this user's image. See GetImage() for more information</returns>
             public static string GetImage(ulong userID)
             {
                 // Build path:
@@ -620,7 +799,7 @@ namespace GiftServer
             /// <summary>
             /// Reserve ONE of a given gift;
             /// </summary>
-            /// <param name="gift"></param>
+            /// <param name="gift">The gift to reserve</param>
             public void Reserve(Gift gift)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -663,7 +842,7 @@ namespace GiftServer
             /// Release ONE of the gifts (if multiple are reserved)
             /// Does NOT release purchased gifts.
             /// </summary>
-            /// <param name="gift"></param>
+            /// <param name="gift">The gift to release</param>
             public void Release(Gift gift)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -689,7 +868,7 @@ namespace GiftServer
             /// <summary>
             /// Mark a gift as purchased
             /// </summary>
-            /// <param name="gift"></param>
+            /// <param name="gift">The gift to purchase</param>
             public void Purchase(Gift gift)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -731,7 +910,7 @@ namespace GiftServer
             /// <summary>
             /// Unmark as purchased, but it is still reserved!
             /// </summary>
-            /// <param name="gift"></param>
+            /// <param name="gift">The gift to be returned</param>
             public void Return(Gift gift)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -757,6 +936,18 @@ namespace GiftServer
             }
             // NOTE: In all Get*, this is viewer!
             // In other words, Get* will get all * owned by target and viewable by this
+            /// <summary>
+            /// Get all gifts viewable by this user
+            /// </summary>
+            /// <param name="target">The owner</param>
+            /// <returns>The list of viewable gifts</returns>
+            /// <remarks>
+            /// Like other Get* operations, _this_ is considered the viewer, and _target_ is the owner.
+            /// 
+            /// In other words, GetGifts will get all gifts owned by the target &amp; viewable by this user. The target
+            /// will have at least one group in common with this user, *and* have marked one gift viewable by said group
+            /// for this to happen.
+            /// </remarks>
             public List<Gift> GetGifts(User target)
             {
                 List<Gift> gifts = new List<Gift>();
@@ -789,6 +980,17 @@ namespace GiftServer
                 }
                 return gifts;
             }
+            /// <summary>
+            /// Get all groups viewable by this user
+            /// </summary>
+            /// <param name="target">The owner</param>
+            /// <returns>The list of viewable groups</returns>
+            /// <remarks>
+            /// Like other Get* operations, _this_ is considered the viewer, and _target_ is the owner.
+            /// 
+            /// In other words, GetGroups will get all groups that target and this have in common.
+            /// for this to happen.
+            /// </remarks>
             public List<Group> GetGroups(User target)
             {
                 List<Group> groups = new List<Group>();
@@ -820,6 +1022,18 @@ namespace GiftServer
                 }
                 return groups;
             }
+            /// <summary>
+            /// Get all events viewable by this user
+            /// </summary>
+            /// <param name="target">The owner</param>
+            /// <returns>The list of viewable events</returns>
+            /// <remarks>
+            /// Like other Get* operations, _this_ is considered the viewer, and _target_ is the owner.
+            /// 
+            /// In other words, GetEvents will get all Events owned by the target &amp; viewable by this user. The target
+            /// will have at least one group in common with this user, *and* have marked one Event viewable by said group
+            /// for this to happen.
+            /// </remarks>
             public List<EventUser> GetEvents(User target)
             {
                 List<EventUser> events = new List<EventUser>();
@@ -851,6 +1065,34 @@ namespace GiftServer
                 }
                 return events;
             }
+            /// <summary>
+            /// "Serializes" the User as an XML Document
+            /// </summary>
+            /// <returns>An XmlDocument with all information about this user enclosed</returns>
+            /// <remarks>
+            /// This is the "root" of all fetch operations; the User class is the only one allowed to 
+            /// traverse &amp; _expand all of its elements_. While this sounds like a lot of data, since it's just textual information\
+            /// (no images), the data sent is always quite minimal.
+            /// 
+            /// This method returns an XML Document with the following fields:
+            ///     - userId: The user's ID
+            ///     - userName: The user's name
+            ///     - email: The User's email
+            ///     - birthMonth: The User's birth month
+            ///     - birthYear: The User's birth year
+            ///     - bio: The User's biography
+            ///     - dateJoined: The date this user joined, encoded as "yyyy-MM-dd"
+            ///     - image: The qualified path for this user's image
+            ///     - groups: An expanded list of all this user's groups.
+            ///         - Note that each child of _groups_ is a _group_ element.
+            ///     - gifts: An expanded list of all this user's gifts.
+            ///         - Note that each child of _gifts_ is a _gift_ element.
+            ///     - events: An expanded list of all this user's events.
+            ///         - Note that each child of _events_ is an _event_ element.
+            ///     - preferences: This user's preferences
+            ///     
+            /// This is all contained within a _user_ container.
+            /// </remarks>
             public XmlDocument Fetch()
             {
                 XmlDocument info = new XmlDocument();
@@ -872,6 +1114,8 @@ namespace GiftServer
                 bio.InnerText = Bio;
                 XmlElement dateJoined = info.CreateElement("dateJoined");
                 dateJoined.InnerText = (DateJoined.ToString("yyyy-MM-dd"));
+                XmlElement image = info.CreateElement("image");
+                image.InnerText = GetImage();
                 XmlElement groups = info.CreateElement("groups");
                 foreach (Group group in Groups)
                 {
@@ -887,8 +1131,6 @@ namespace GiftServer
                 {
                     gifts.AppendChild(info.ImportNode(gift.Fetch().DocumentElement, true));
                 }
-                XmlElement preferences = info.CreateElement("preferences");
-                preferences.AppendChild(info.ImportNode(Preferences.Fetch().DocumentElement, true));
 
                 container.AppendChild(id);
                 container.AppendChild(userName);
@@ -897,10 +1139,11 @@ namespace GiftServer
                 container.AppendChild(birthDay);
                 container.AppendChild(bio);
                 container.AppendChild(dateJoined);
+                container.AppendChild(image);
                 container.AppendChild(groups);
                 container.AppendChild(gifts);
                 container.AppendChild(events);
-                container.AppendChild(preferences);
+                container.AppendChild(info.ImportNode(Preferences.Fetch().DocumentElement, true));
 
                 return info;
             }

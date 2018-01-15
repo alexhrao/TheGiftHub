@@ -14,7 +14,7 @@ namespace GiftServer
         /// <remarks>
         /// Only really use this when dealing with forms that have images...
         /// </remarks>
-        public class MultipartParser
+        class MultipartParser
         {
             public IDictionary<string, string> Parameters = new Dictionary<string, string>();
 

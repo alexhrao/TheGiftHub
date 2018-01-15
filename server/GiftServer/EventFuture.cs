@@ -1,6 +1,4 @@
-﻿using System;
-using System.Web;
-using System.Xml;
+﻿using System.Xml;
 
 namespace GiftServer
 {

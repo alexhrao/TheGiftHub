@@ -1,5 +1,4 @@
 ﻿using GiftServer.Data;
-using GiftServer.Properties;
 using GiftServer.Server;
 using HtmlAgilityPack;
 using MySql.Data.MySqlClient;

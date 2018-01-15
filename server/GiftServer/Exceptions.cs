@@ -21,6 +21,7 @@ namespace GiftServer
         /// <summary>
         /// Use if the User wasn't found...
         /// </summary>
+        [Serializable]
         public class UserNotFoundException : UserException
         {
             /// <summary>
@@ -39,10 +40,16 @@ namespace GiftServer
             /// </summary>
             /// <param name="pHash">The UserHash</param>
             public UserNotFoundException(byte[] pHash) : base(Convert.ToBase64String(pHash)) { }
+            /// <summary>
+            /// If this URL was DNE
+            /// </summary>
+            /// <param name="url">The User's URL</param>
+            public UserNotFoundException(string url) : base("User with hash " + url + " was not found") { }
         }
         /// <summary>
         /// If this email / ID already exists
         /// </summary>
+        [Serializable]
         public class DuplicateUserException : UserException
         {
             /// <summary>
@@ -71,6 +78,7 @@ namespace GiftServer
         /// <summary>
         /// An invalid (incorrect) password was supplied
         /// </summary>
+        [Serializable]
         public class InvalidPasswordException : PasswordException
         {
             /// <summary>
@@ -81,6 +89,7 @@ namespace GiftServer
         /// <summary>
         /// The Reset Time has passed (defined as time since the reset token was generated)
         /// </summary>
+        [Serializable]
         public class PasswordResetTimeoutException : PasswordException
         {
             /// <summary>
@@ -103,6 +112,7 @@ namespace GiftServer
         /// <summary>
         /// If the event was not found
         /// </summary>
+        [Serializable]
         public class EventNotFoundException : EventException
         {
             /// <summary>
@@ -120,6 +130,7 @@ namespace GiftServer
         /// <summary>
         /// An invalid event was given
         /// </summary>
+        [Serializable]
         public class InvalidEventException : EventException
         {
             /// <summary>
@@ -132,6 +143,7 @@ namespace GiftServer
         /// <summary>
         /// An attempt to modify a default event was made
         /// </summary>
+        [Serializable]
         public class DefaultEventException : EventException
         {
             /// <summary>
@@ -172,6 +184,7 @@ namespace GiftServer
         /// <summary>
         /// If the group wasn't found
         /// </summary>
+        [Serializable]
         public class GroupNotFoundException : GroupException
         {
             /// <summary>

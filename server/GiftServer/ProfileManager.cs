@@ -13,10 +13,17 @@ namespace GiftServer
 {
     namespace HtmlManager
     {
+        /// <summary>
+        /// Manages all HTML related to a user's Profile
+        /// </summary>
         public class ProfileManager
         {
             private ResourceManager ResourceManager;
             private NavigationManager NavigationManager;
+            /// <summary>
+            /// Instantiate a new ProfileManager
+            /// </summary>
+            /// <param name="controller">The controller for this thread</param>
             public ProfileManager(Controller controller)
             {
                 Thread.CurrentThread.CurrentUICulture = controller.Culture;
@@ -24,6 +31,15 @@ namespace GiftServer
                 ResourceManager = new ResourceManager("GiftServer.HtmlTemplates", typeof(ProfileManager).Assembly);
                 NavigationManager = controller.NavigationManager;
             }
+            /// <summary>
+            /// Create a profile page for a user to be viewable by another
+            /// </summary>
+            /// <remarks>
+            /// As with other methods, viewer is viewing the target's page
+            /// </remarks>
+            /// <param name="viewer">The viewer (usually, but not always, this)</param>
+            /// <param name="target">The target</param>
+            /// <returns>HTML for the viewable page</returns>
             public string ProfilePage(User viewer, User target)
             {
                 HtmlDocument profile = new HtmlDocument();
@@ -75,6 +91,11 @@ namespace GiftServer
                 groups.AppendChild(addGroup);
                 return profile.DocumentNode.OuterHtml;
             }
+            /// <summary>
+            /// Generate a private profile page for the specified user
+            /// </summary>
+            /// <param name="user">The viewer (and target)</param>
+            /// <returns>HTML markup for a privately viewable profile page</returns>
             public string ProfilePage(User user)
             {
                 // Add Side Navigation Bar (From Dashboard)

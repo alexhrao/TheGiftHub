@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Configuration;
-using System.Web;
 using System.Xml;
 using MySql.Data.MySqlClient;
 namespace GiftServer
