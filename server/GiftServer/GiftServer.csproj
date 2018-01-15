@@ -181,6 +181,9 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="resources\images\branding\squareLogo.png" />
     <Content Include="resources\images\branding\wideLogo.png" />
+    <Content Include="resources\images\flags\FR.ico" />
+    <Content Include="resources\images\flags\GB.ico" />
+    <Content Include="resources\images\flags\US.ico" />
     <Content Include="resources\images\gifts\default.png" />
     <Content Include="Scripts\jquery-3.2.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.2.1.js" />

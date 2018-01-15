@@ -80,6 +80,26 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon FR {
+            get {
+                object obj = ResourceManager.GetObject("FR", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon GB {
+            get {
+                object obj = ResourceManager.GetObject("GB", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .png.
         /// </summary>
         internal static string ImageFormat {
@@ -94,6 +114,16 @@ namespace GiftServer.Properties {
         internal static string URL {
             get {
                 return ResourceManager.GetString("URL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon US {
+            get {
+                object obj = ResourceManager.GetObject("US", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
     }

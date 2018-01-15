@@ -27,6 +27,17 @@
                 $('.loginControl').keyup(validateLogin);
                 $('.signupControl').keyup(validateSignup);
             });
+            $(document).ready(function () {
+                $('#cultureSelector').change(function () {
+                    $.post(".", {
+                        submit: "Culture",
+                        culture: $(this).val()
+                    },
+                        function () {
+                            location.reload(true);
+                        });
+                });
+            });
             function validateLogin() {
                 // Check email and password
                 var valid = true;
@@ -207,8 +218,17 @@
                 </div>
             </div>
             <div id="loginTop" class="row container-fluid">
-                <div class="row">
-                    <a id="location">United States (Change Country)</a>
+                <div id="location" class="row">
+                    <div class="col-xs-1">
+                        <img src="US.ico" />
+                    </div>
+                    <div class="col-xs-10">
+                        <select id="cultureSelector" class="form-control">
+                            <option class="culture-selector" value="en-US">English (US)</option>
+                            <option class="culture-selector" value="en-GB">English (GB)</option>
+                            <option class="culture-selector" value="fr-FR">French (FR)</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-4">

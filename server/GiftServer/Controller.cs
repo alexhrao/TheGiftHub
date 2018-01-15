@@ -178,7 +178,7 @@ namespace GiftServer
                                 // Dispatch to correct logic:
                                 switch (_dict["submit"])
                                 {
-                                    case "Language":
+                                    case "Culture":
                                         // TODO: Add this to login page
                                         GetCulture(_dict["culture"]);
                                         return LoginManager.Login();
@@ -497,9 +497,23 @@ namespace GiftServer
                         Warnings.Add(new PublicResourceWarning(path));
                     }
                 }
-                else if (Path.GetFileNameWithoutExtension(path).Equals("favicon"))
+                else if (Path.GetExtension(path).Equals(".ico"))
                 {
-                    Write(Constants.favicon);
+                    switch (Path.GetFileNameWithoutExtension(path))
+                    {
+                        case "favicon":
+                            Write(Constants.favicon);
+                            break;
+                        case "FR":
+                            Write(Constants.FR);
+                            break;
+                        case "GB":
+                            Write(Constants.GB);
+                            break;
+                        case "US":
+                            Write(Constants.US);
+                            break;
+                    }
                 }
                 else
                 {

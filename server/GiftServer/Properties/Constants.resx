@@ -130,4 +130,13 @@
   <data name="favicon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\images\branding\favicon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="FR" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\images\flags\FR.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="GB" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\images\flags\GB.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="US" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\images\flags\US.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
