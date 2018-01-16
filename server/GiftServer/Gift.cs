@@ -354,6 +354,7 @@ namespace GiftServer
                 {
                     return false;
                 }
+                RemoveImage();
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
