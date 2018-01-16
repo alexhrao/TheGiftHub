@@ -13,9 +13,15 @@ namespace GiftServer
 {
     namespace Security
     {
-        public class PasswordReset
+        /// <summary>
+        /// Manages the reset of a password, from a security standpoint
+        /// </summary>
+        public static class PasswordReset
         {
-            private const int TokenSize = 24;
+            /// <summary>
+            /// How big a token should be
+            /// </summary>
+            public const int TokenSize = 24;
             /// <summary>
             /// Generate a token suitable to be in the URL.
             /// </summary>
@@ -29,6 +35,11 @@ namespace GiftServer
                 }
                 return Convert.ToBase64String(token).Replace('+', '_');
             }
+            /// <summary>
+            /// Computes the hash from a token
+            /// </summary>
+            /// <param name="token">The token to hash</param>
+            /// <returns>A hashed token</returns>
             public static string ComputeHash(string token)
             {
                 byte[] hashed = new byte[64];
@@ -40,14 +51,23 @@ namespace GiftServer
             }
             private static bool VerifyToken(string token, string hashed)
             {
-                return hashed.Equals(PasswordReset.ComputeHash(token));
+                return hashed.Equals(ComputeHash(token));
             }
+            /// <summary>
+            /// Gets a user from a Reset Hash
+            /// </summary>
+            /// <remarks>
+            /// This method will extract the user from a token. If the user isn't found, a UserNotFoundException is thrown; 
+            /// if it has been more than 30 minutes since the token was generated, a PasswordResetTimeoutException will be thrown instead.
+            /// </remarks>
+            /// <param name="token">The User's Token</param>
+            /// <returns>Associated User</returns>
             public static User GetUser(string token)
             {
                 User ret;
                 DateTime timestamp;
                 // Hash and query DB for hash; if not found, throw error. Otherwise, get the user
-                string hashed = PasswordReset.ComputeHash(token);
+                string hashed = ComputeHash(token);
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -90,7 +110,12 @@ namespace GiftServer
                     return ret;
                 }
             }
-            public static void SendRecoveryEmail(string emailAddress, ResetManager ResetManager)
+            /// <summary>
+            /// Sends a reset email notification
+            /// </summary>
+            /// <param name="emailAddress">The MailAddress to send this to</param>
+            /// <param name="ResetManager">The associated ResetManager for this email to send</param>
+            public static void SendRecoveryEmail(MailAddress emailAddress, ResetManager ResetManager)
             {
                 long id = -1;
                 string token = "";
@@ -102,7 +127,7 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT users.UserID FROM users WHERE users.UserEmail = @email;";
-                        cmd.Parameters.AddWithValue("@email", emailAddress);
+                        cmd.Parameters.AddWithValue("@email", emailAddress.Address);
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
@@ -133,7 +158,7 @@ namespace GiftServer
                         }
                     }
                 }
-                MailMessage email = new MailMessage(new MailAddress("The Gift Hub<support@TheGiftHub.org>"), new MailAddress(emailAddress))
+                MailMessage email = new MailMessage(new MailAddress("The Gift Hub<support@TheGiftHub.org>"), emailAddress)
                 {
                     Body = body,
                     Subject = "Password Reset",

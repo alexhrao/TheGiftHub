@@ -8,13 +8,22 @@ namespace GiftServer
 {
     namespace Data
     {
+        /// <summary>
+        /// An event, as defined by the user
+        /// </summary>
         public class EventUser : ISynchronizable, IFetchable
         {
+            /// <summary>
+            /// The ID for this EventUser
+            /// </summary>
             public ulong EventUserId
             {
                 get;
                 private set;
             } = 0;
+            /// <summary>
+            /// The user that owns this event
+            /// </summary>
             public User User;
             private string _name;
             private string _description;
@@ -23,6 +32,9 @@ namespace GiftServer
             private int _year;
             private bool _isRecurring;
             private List<EventFuture> _futures = new List<EventFuture>();
+            /// <summary>
+            /// The name of this event
+            /// </summary>
             public string Name
             {
                 get
@@ -42,6 +54,9 @@ namespace GiftServer
                     this._name = value;
                 }
             }
+            /// <summary>
+            /// The description for this event
+            /// </summary>
             public string Description
             {
                 get
@@ -61,6 +76,9 @@ namespace GiftServer
                     this._description = value;
                 }
             }
+            /// <summary>
+            /// The day this event occurs on
+            /// </summary>
             public int Day
             {
                 get
@@ -80,6 +98,9 @@ namespace GiftServer
                     this._day = value;
                 }
             }
+            /// <summary>
+            /// The month this event occurs on
+            /// </summary>
             public int Month
             {
                 get
@@ -99,6 +120,9 @@ namespace GiftServer
                     this._month = value;
                 }
             }
+            /// <summary>
+            /// The year this event occurs on
+            /// </summary>
             public int Year
             {
                 get
@@ -118,6 +142,9 @@ namespace GiftServer
                     this._year = value;
                 }
             }
+            /// <summary>
+            /// Whether or not this event recurs
+            /// </summary>
             public bool IsRecurring
             {
                 get
@@ -137,6 +164,9 @@ namespace GiftServer
                     this._isRecurring = value;
                 }
             }
+            /// <summary>
+            /// Future event occurences
+            /// </summary>
             public List<EventFuture> Futures
             {
                 get
@@ -156,25 +186,28 @@ namespace GiftServer
                     this._futures = value;
                 }
             }
+            /// <summary>
+            /// Whether or not this event is a default event
+            /// </summary>
             public bool IsDefault
             {
                 get;
                 private set;
             }
             private DefaultEvent _defaultEvent;
-
+            /// <summary>
+            /// Create a new Event from a default event
+            /// </summary>
+            /// <param name="defaultEvent">The default event to emulate</param>
             public EventUser(DefaultEvent defaultEvent)
             {
                 this._defaultEvent = defaultEvent;
-                this.Name = _defaultEvent.Name;
-                this.Description = _defaultEvent.Description;
-                this.Day = _defaultEvent.Day;
-                this.Month = _defaultEvent.Month;
-                this.Year = _defaultEvent.Year;
-                this.IsRecurring = _defaultEvent.IsRecurring;
-                this.Futures = _defaultEvent.Futures;
                 this.IsDefault = true;
             }
+            /// <summary>
+            /// Fetch an event from the database
+            /// </summary>
+            /// <param name="EventUserID">The ID to fetch</param>
             public EventUser(ulong EventUserID)
             {
                 // Get information; if from Default Events, create a new default event and then copy over information
@@ -415,6 +448,27 @@ namespace GiftServer
                     }
                 }
             }
+
+            /// <summary>
+            /// Serialize this event as an XML Document
+            /// </summary>
+            /// <remarks>
+            /// As with all fetch methods, this is serialized as an XML Document.
+            /// 
+            /// It has the following fields:
+            ///     - eventId: The Event ID
+            ///     - name: The name of this event
+            ///     - description: The description of this event
+            ///     - day: The day this event occurs on
+            ///     - month: The month this event occurs on
+            ///     - year: The year this event occurs on
+            ///     - isRecurring: Whether or not this event recurs
+            ///     - eventFutures: A collection of futures
+            ///         - Note that each element of _eventFutures_ is an _eventFuture_ element
+            ///         
+            /// This is wrapped in an event container
+            /// </remarks>
+            /// <returns>Serialized XML Representation</returns>
             public XmlDocument Fetch()
             {
                 XmlDocument info = new XmlDocument();
@@ -433,7 +487,7 @@ namespace GiftServer
                 XmlElement year = info.CreateElement("year");
                 year.InnerText = Year.ToString();
                 XmlElement isRecurring = info.CreateElement("isRecurring");
-                isRecurring.InnerText = IsRecurring.ToString();
+                isRecurring.InnerText = IsRecurring.ToString().ToLower();
 
                 container.AppendChild(id);
                 container.AppendChild(name);

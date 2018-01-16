@@ -3,17 +3,39 @@
     <meta charset="utf-8" />
     <title>My Gift List</title>
     <script>
+        var imgData;
         function readURL(input) {
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
                 reader.onload = function (e) {
-                    $('#previewImage').attr('src', e.target.result);
-                    $('#previewImage').removeClass("hidden");
-                    $('#submitImg').removeClass("hidden");
+                    var loadTimer;
+                    var imgObject = new Image();
+                    imgObject.src = reader.result;
+                    imgObject.onLoad = onImgLoaded();
+                    function onImgLoaded() {
+                        if (!loadTimer != null) clearTimeout(loadTimer);
+                        if (!imgObject.complete) {
+                            loadTimer = setTimeout(function () {
+                                onImgLoaded();
+                            }, 3);
+                        } else {
+                            onPreloadComplete();
+                        }
+                    }
+                    function onPreloadComplete() {
+                        var newImg = getImagePortion(imgObject);
+                        $('#previewNewImage').attr('src', newImg);
+                        $('#previewNewImage').removeClass("hidden");
+                        $('#acceptNewImg').removeClass("hidden");
+                        $('#previewImage').attr('src', newImg);
+                        $('#previewImage').removeClass("hidden");
+                        $('#submitImg').removeClass("hidden");
+                        imgData = newImg;
+                    }
                 }
                 reader.readAsDataURL(input.files[0]);
             }
-        };
+        }
 
         function rgb2hex(rgb) {
             rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
@@ -174,7 +196,14 @@
                 }, function (data, status) {
                     if (data !== "0" && $('#newImageAdded').val() == 1) {
                         $('#newImageId').val(data);
-                        $('#addNewImageSubmit').click();
+                        $.post(".", {
+                            submit: "Image",
+                            type: "gift",
+                            itemId: data,
+                            image: imgData.split(",")[1]
+                        }, function () {
+                            location.reload(true);
+                        });
                     } else {
                         location.reload(true);
                     }
@@ -182,14 +211,11 @@
             });
 
             $('#newImage').change(function () {
+                readURL(this);
+
                 if (this.files && this.files[0]) {
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                        $('#previewNewImage').attr('src', e.target.result);
-                        $('#previewNewImage').removeClass("hidden");
-                        $('#acceptNewImg').removeClass("hidden");
-                    }
-                    reader.readAsDataURL(this.files[0]);
+                    $('#previewImage').addClass("hidden");
+                    $('#submitImg').addClass("hidden");
                 }
             });
             $('#acceptNewImg').click(function () {
@@ -197,7 +223,27 @@
                 $('#newImageAdded').val("1");
                 $('#uploadNewImg').modal('hide');
             });
+            $('#submitImg').click(function () {
+                $.post(".", {
+                    submit: "Image",
+                    type: "gift",
+                    itemId: $('#uploadImageId').val(),
+                    image: imgData.split(",")[1]
+                }, function () {
+                    location.reload(true);
+                })
+            })
         });
+        function getImagePortion(imgObj) {
+
+            /* use the sourceCanvas to duplicate the entire image. This step was crucial for iOS4 and under devices. Follow the link at the end of this post to see what happens when you don’t do this */
+            var bufferCanvas = document.createElement('canvas');
+            var bufferContext = bufferCanvas.getContext('2d');
+            bufferCanvas.width = imgObj.width;
+            bufferCanvas.height = imgObj.height;
+            bufferContext.drawImage(imgObj, 0, 0);
+            return bufferCanvas.toDataURL();
+        }
     </script>
     <style>
         table {
@@ -260,8 +306,6 @@
             cursor: pointer;
         }
         #previewImage {
-            height: 256px;
-            width: 256px;
             display: inline;
         }
         #ratingHeader {
@@ -549,8 +593,8 @@
                             <div class="row">
                                 <div class="form-group text-center">
                                     <input id="uploadImageId" type="hidden" name="itemId" value="" />
-                                    <button id="submitImg" form="imgUploadForm" type="submit" class="btn btn-primary hidden" name="submit" value="gift">
-                                        <p id="uploadTitle">Upload Picture</p>
+                                    <button id="submitImg" type="button" class="btn btn-primary hidden">
+                                        <p>Upload Picture</p>
                                     </button>
                                 </div>
                             </div>
@@ -589,7 +633,7 @@
                                     <button id="acceptNewImg" type="button" class="btn btn-primary hidden" value="gift">
                                         <p>Add new Picture</p>
                                     </button>
-                                    <button id="addNewImageSubmit" type="submit" class="hidden" value="gift"></button>
+                                    <button id="addNewImageSubmit" type="button" class="hidden" value="gift"></button>
                                 </div>
                             </div>
                         </form>

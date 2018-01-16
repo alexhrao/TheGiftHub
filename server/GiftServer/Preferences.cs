@@ -6,15 +6,27 @@ namespace GiftServer
 {
     namespace Data
     {
+        /// <summary>
+        /// User Preferences
+        /// </summary>
         public class Preferences : ISynchronizable, IFetchable
         {
+            /// <summary>
+            /// The ID for this set of preferences
+            /// </summary>
             public ulong PreferenceId
             {
                 get;
                 private set;
             } = 0;
+            /// <summary>
+            /// The user these preferences apply to
+            /// </summary>
             public User User;
             private int theme = 0;
+            /// <summary>
+            /// The theme for this user
+            /// </summary>
             public int Theme
             {
                 get
@@ -34,6 +46,12 @@ namespace GiftServer
                 }
             }
             private string culture = "en-US";
+            /// <summary>
+            /// The culture for this user
+            /// </summary>
+            /// <remarks>
+            /// To set this, you must submit non-null, 5 letters, and formatted as &lt;lang&gt;-&lt;COUNTRY&gt;
+            /// </remarks>
             public string Culture
             {
                 get
@@ -52,7 +70,10 @@ namespace GiftServer
                     }
                 }
             }
-
+            /// <summary>
+            /// Fetch preferences tied to a specific user
+            /// </summary>
+            /// <param name="user">The User to fetch</param>
             public Preferences(User user)
             {
                 // Try and get preferences
@@ -79,6 +100,10 @@ namespace GiftServer
                     }
                 }
             }
+            /// <summary>
+            /// Fetch preferences from the database
+            /// </summary>
+            /// <param name="preferenceId">The ID to fetch</param>
             public Preferences(ulong preferenceId)
             {
                 // Try and get preferences
@@ -105,7 +130,10 @@ namespace GiftServer
                     }
                 }
             }
-
+            /// <summary>
+            /// Create a record for this set of preferences in the database
+            /// </summary>
+            /// <returns>A status flag</returns>
             public bool Create()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -132,6 +160,10 @@ namespace GiftServer
                     }
                 }
             }
+            /// <summary>
+            /// Update existing preferences
+            /// </summary>
+            /// <returns>A status flag</returns>
             public bool Update()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -152,6 +184,10 @@ namespace GiftServer
                     }
                 }
             }
+            /// <summary>
+            /// Delete these preferences
+            /// </summary>
+            /// <returns>A status flag</returns>
             public bool Delete()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -175,6 +211,18 @@ namespace GiftServer
                     }
                 }
             }
+            /// <summary>
+            /// Serializes the Preferences as an XML Document
+            /// </summary>
+            /// <remarks>
+            /// This XML Document has the following fields:
+            ///     - preferenceId: The PreferenceID for this set of User Preferences
+            ///     - theme: The theme for this user (Deprecated)
+            ///     - culture: The preferred culture for this user
+            ///     
+            /// This is all wrapped in a preferences container
+            /// </remarks>
+            /// <returns></returns>
             public XmlDocument Fetch()
             {
                 XmlDocument info = new XmlDocument();

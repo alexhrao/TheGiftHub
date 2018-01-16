@@ -51,7 +51,7 @@
         $(document).ready(function () {
             $('#userBirthdayMonthChange').change(populateDays);
             $('#submitPref').click(function () {
-                    (Promise.resolve())
+                (Promise.resolve())
                     .then(function () {
                         if ($('#userNameChange').val() == "") {
                             return Promise.resolve();
@@ -368,17 +368,54 @@
                 }
             });
         });
+        $(document).ready(function () {
+            $('#uploadNewImg').click(function () {
+                $.post(".", {
+                    submit: "Image",
+                    type: "user",
+                    image: imgData.split(",")[1]
+                });
+            });
+        });
+        var imgData;
         function readURL(input) {
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
                 reader.onload = function (e) {
-                    $('#previewImage').attr('src', e.target.result);
-                    $('#previewImage').removeClass("hidden");
-                    $('#submitImg').removeClass("hidden");
+                    var loadTimer;
+                    var imgObject = new Image();
+                    imgObject.src = reader.result;
+                    imgObject.onLoad = onImgLoaded();
+                    function onImgLoaded() {
+                        if (!loadTimer != null) clearTimeout(loadTimer);
+                        if (!imgObject.complete) {
+                            loadTimer = setTimeout(function () {
+                                onImgLoaded();
+                            }, 3);
+                        } else {
+                            onPreloadComplete();
+                        }
+                    }
+                    function onPreloadComplete() {
+                        var newImg;
+                        var h = imgObject.naturalHeight;
+                        var w = imgObject.naturalWidth;
+                        if (w > h) {
+                            newImg = getImagePortion(imgObject, h, h, (w / 2) - (h / 2), 0, 1);
+                        } else {
+                            newImg = getImagePortion(imgObject, w, w, 0, (h / 2) - (w / 2), 1);
+                        }
+                        // var newImg = getImagePortion(imgObject, imgObject.width, imgObject.height, 0, 0, 1);
+                        $('#previewImage').attr('src', newImg);
+                        $('#previewImage').removeClass("hidden");
+                        $('#uploadNewImg').removeClass("hidden");
+                        imgData = newImg;
+                    }
                 }
                 reader.readAsDataURL(input.files[0]);
             }
         }
+
         function populateDays() {
             $('.days').remove();
             $("<option class=\"days\" selected value=\"0\">Select a Day</option>").appendTo($('#days'));
@@ -394,6 +431,24 @@
             }
             return new Date(2004, month, 0).getDate();
         }
+        function getImagePortion(imgObj, newWidth, newHeight, startX, startY, ratio) {
+            /* the parameters: - the image element - the new width - the new height - the x point we start taking pixels - the y point we start taking pixels - the ratio */
+            //set up canvas for thumbnail
+            var tnCanvas = document.createElement('canvas');
+            var tnCanvasContext = tnCanvas.getContext('2d');
+            tnCanvas.width = newWidth; tnCanvas.height = newHeight;
+
+            /* use the sourceCanvas to duplicate the entire image. This step was crucial for iOS4 and under devices. Follow the link at the end of this post to see what happens when you don’t do this */
+            var bufferCanvas = document.createElement('canvas');
+            var bufferContext = bufferCanvas.getContext('2d');
+            bufferCanvas.width = imgObj.width;
+            bufferCanvas.height = imgObj.height;
+            bufferContext.drawImage(imgObj, 0, 0);
+
+            /* now we use the drawImage method to take the pixels from our bufferCanvas and draw them into our thumbnail canvas */
+            tnCanvasContext.drawImage(bufferCanvas, startX, startY, newWidth * ratio, newHeight * ratio, 0, 0, newWidth, newHeight);
+            return tnCanvas.toDataURL();
+        }
     </script>
     <style>
         .input-group,
@@ -402,45 +457,55 @@
         .input {
             margin: 10px;
         }
+
         body {
             background-color: #CECECE;
             color: black;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+
         h2 {
             font-style: italic;
         }
+
         #userImage {
             height: 256px;
             width: 256px;
             display: inline;
             cursor: pointer;
         }
+
         #previewImage {
             height: 256px;
             width: 256px;
             display: inline;
         }
+
         .circle {
             width: 25px;
             height: 25px;
             border-radius: 50%;
             display: inline-flex;
         }
+
         p {
             font-weight: 400;
             text-indent: each-line 20px;
             font-size: 22px;
         }
+
         .glyphicon {
             font-size: 75%;
         }
+
         table {
             width: 75%;
         }
+
         .btn {
             width: 100%;
         }
+
         .event-closer,
         .group-closer,
         .event-name,
@@ -476,7 +541,7 @@
                             </div>
                             <div class="row">
                                 <div class="form-group text-center">
-                                    <button id="submitImg" form="imgUploadForm" type="submit" class="btn btn-primary hidden" name="submit" value="Profile">
+                                    <button id="uploadNewImg" type="button" class="btn btn-primary hidden">
                                         Upload Picture
                                     </button>
                                 </div>

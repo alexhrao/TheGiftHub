@@ -132,7 +132,9 @@ namespace GiftServer
                         return null;
                     }
                     string path = ParsePath();
-                    if (_request.ContentType != null && _request.ContentType.Contains("multipart/form-data"))
+                    // Following was used before using the toDataURL() was found; utilized MultipartParser
+                    /*
+                     if (_request.ContentType != null && _request.ContentType.Contains("multipart/form-data"))
                     {
                         MultipartParser parser = new MultipartParser(_request.InputStream, "image");
                         if (parser.Success)
@@ -164,7 +166,8 @@ namespace GiftServer
                                 return DashboardManager.Dashboard(_user);
                             }
                         }
-                    }
+                    } 
+                     */
                     if (_request.HasEntityBody)
                     {
                         string input;
@@ -179,9 +182,20 @@ namespace GiftServer
                                 switch (_dict["submit"])
                                 {
                                     case "Culture":
-                                        // TODO: Add this to login page
                                         GetCulture(_dict["culture"]);
                                         return LoginManager.Login();
+                                    case "Image":
+                                        switch (_dict["type"])
+                                        {
+                                            case "user":
+                                                _user.SaveImage(Convert.FromBase64String(_dict["image"]));
+                                                return "200";
+                                            case "gift":
+                                                (new Gift(Convert.ToUInt64(_dict["itemId"]))).SaveImage(Convert.FromBase64String(_dict["image"]));
+                                                return "200";
+                                            default:
+                                                return "404";
+                                        }
                                     case "Logout":
                                         Logout();
                                         return LoginManager.Login();
@@ -189,7 +203,7 @@ namespace GiftServer
                                         return Login(_dict["email"], _dict["password"]);
                                     case "PasswordResetRequest":
                                         // POST data will have user email. Send recovery email.
-                                        PasswordReset.SendRecoveryEmail(_dict["email"], ResetManager);
+                                        PasswordReset.SendRecoveryEmail(new MailAddress(_dict["email"]), ResetManager);
                                         return ResetManager.ResetPasswordSent();
                                     case "PasswordReset":
                                         // Reset password and direct to login page
@@ -235,9 +249,9 @@ namespace GiftServer
                                                     Gift gift = new Gift(_dict["name"])
                                                     {
                                                         Description = _dict["description"],
-                                                        Cost = Convert.ToDouble(_dict["cost"] ?? (_dict["cost"].Length == 0 ? "0" : _dict["cost"])),
-                                                        Quantity = Convert.ToUInt32(_dict["quantity"] ?? (_dict["quantity"].Length == 0 ? "1" : _dict["quantity"])),
-                                                        Rating = Convert.ToDouble(_dict["rating"] ?? (_dict["rating"].Length == 0 ? "0" : _dict["rating"])),
+                                                        Cost = Convert.ToDouble(_dict["cost"].Length == 0 ? "0" : _dict["cost"]),
+                                                        Quantity = Convert.ToUInt32(_dict["quantity"].Length == 0 ? "1" : _dict["quantity"]),
+                                                        Rating = Convert.ToDouble(_dict["rating"].Length == 0 ? "0" : _dict["rating"]),
                                                         Size = _dict["size"],
                                                         Url = _dict["url"],
                                                         Stores = _dict["stores"],

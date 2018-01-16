@@ -11,11 +11,18 @@ namespace GiftServer
 {
     namespace HtmlManager
     {
+        /// <summary>
+        /// Manages interaction with user (HTML and email) for resetting passwords
+        /// </summary>
         public class ResetManager
         {
             private ResourceManager HtmlManager;
             private ResourceManager StringManager;
             private LoginManager LoginManager;
+            /// <summary>
+            /// Initiate a new ResetManager
+            /// </summary>
+            /// <param name="controller">The controller for this thread</param>
             public ResetManager(Controller controller)
             {
                 Thread.CurrentThread.CurrentUICulture = controller.Culture;
@@ -24,6 +31,10 @@ namespace GiftServer
                 StringManager = new ResourceManager("GiftServer.Strings", typeof(ResetManager).Assembly);
                 LoginManager = controller.LoginManager;
             }
+            /// <summary>
+            /// Notify the user of a sent email
+            /// </summary>
+            /// <returns>HTML markup with alert for a reset email</returns>
             public string ResetPasswordSent()
             {
                 HtmlDocument login = new HtmlDocument();
@@ -36,6 +47,10 @@ namespace GiftServer
                 alert.AppendChild(message);
                 return login.DocumentNode.OuterHtml;
             }
+            /// <summary>
+            /// Successfully changed password
+            /// </summary>
+            /// <returns>Complete HTML Markup for a successful reset</returns>
             public string SuccessResetPassword()
             {
                 HtmlDocument login = new HtmlDocument();
@@ -48,6 +63,10 @@ namespace GiftServer
                 alert.AppendChild(message);
                 return login.DocumentNode.OuterHtml;
             }
+            /// <summary>
+            /// Failed to reset password
+            /// </summary>
+            /// <returns>Complete HTML markup for an expired response</returns>
             public string ResetFailed()
             {
                 HtmlDocument login = new HtmlDocument();
@@ -59,6 +78,11 @@ namespace GiftServer
                 alert.AppendChild(message);
                 return login.DocumentNode.OuterHtml;
             }
+            /// <summary>
+            /// Create an email to reset the user's password
+            /// </summary>
+            /// <param name="user">The user to reset</param>
+            /// <returns>HTML Markup for the reset email</returns>
             public string CreateReset(User user)
             {
                 HtmlDocument pg = new HtmlDocument();
@@ -67,6 +91,11 @@ namespace GiftServer
                 hidden.Attributes["value"].Value = Convert.ToString(user.UserId);
                 return pg.DocumentNode.OuterHtml;
             }
+            /// <summary>
+            /// Create an email with a reset token
+            /// </summary>
+            /// <param name="token">The reset token</param>
+            /// <returns>HTML Markup allowing the receiver to reset a password</returns>
             public string GenerateEmail(string token)
             {
                 HtmlDocument email = new HtmlDocument();
@@ -81,6 +110,10 @@ namespace GiftServer
                 email.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userNotFound \")]").Remove();
                 return email.DocumentNode.OuterHtml;
             }
+            /// <summary>
+            /// Generate an email for an unknown user
+            /// </summary>
+            /// <returns>HTML Markup telling the receiver to check their email</returns>
             public string GenerateEmail()
             {
                 HtmlDocument email = new HtmlDocument();
@@ -90,6 +123,11 @@ namespace GiftServer
                 HtmlNode notfound = email.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userNotFound \")]");
                 return email.DocumentNode.OuterHtml;
             }
+            /// <summary>
+            /// Notify the user of reset
+            /// </summary>
+            /// <param name="user">The user to notify</param>
+            /// <returns>Complete HTML Markup for this notification</returns>
             public string GenerateNotification(User user)
             {
                 HtmlDocument email = new HtmlDocument();
