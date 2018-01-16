@@ -1,6 +1,6 @@
 {
   "homepages": [],
-  "source_base_path": "C:/Users/alexhrao/Documents/TheGiftHub/server/GiftServer",
+  "source_base_path": "//GAXGPFS01/AHRAO$/TheGiftHub/server/GiftServer",
   "xrefmap": "xrefmap.yml",
   "files": [
     {
@@ -9,7 +9,19 @@
       "output": {
         ".html": {
           "relative_path": "api/index.html",
-          "hash": "zvO323Jkn664erAU4jVFxQ=="
+          "hash": "ZF1gkwLIGka5SyAPqXyUnw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/guide.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/guide.html",
+          "hash": "Rx3Aw559HvvmdUGU8zR+pQ=="
         }
       },
       "is_incremental": false,
@@ -21,7 +33,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/intro.html",
-          "hash": "aHzrq5Ujve8v9/czPDkeBg=="
+          "hash": "XYh8DDALYWZj/XXlXI5F9Q=="
         }
       },
       "is_incremental": false,
@@ -33,19 +45,55 @@
       "output": {
         ".html": {
           "relative_path": "articles/toc.html",
-          "hash": "xVlQaX7Tk85omoiWv3O+Ag=="
+          "hash": "yzNkWRO74lSskLA3byiHUw=="
         }
       },
       "is_incremental": false,
       "version": ""
     },
     {
+      "type": "Resource",
+      "source_relative_path": "images/favicon.ico",
+      "output": {
+        "resource": {
+          "relative_path": "images/favicon.ico"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/logo.png",
+      "output": {
+        "resource": {
+          "relative_path": "images/logo.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/wideLogo.png",
+      "output": {
+        "resource": {
+          "relative_path": "images/wideLogo.png"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "log_codes": [
+        "InvalidYamlHeader"
+      ],
       "type": "Conceptual",
       "source_relative_path": "index.md",
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "ct6so5h9r7AvGTMMRpxTug=="
+          "hash": "tfyX0oHgZaRdD4sxgq+p0Q=="
         }
       },
       "is_incremental": false,
@@ -57,7 +105,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Data.Category.html",
-          "hash": "zYDCA36QhePuus4GX8Xjtw=="
+          "hash": "X4Xvt0pqnU3DiFkmH1dhQQ=="
         }
       },
       "is_incremental": false,
@@ -69,7 +117,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Data.DefaultEvent.html",
-          "hash": "pUBF3NCxTfh8ukIl99GhcQ=="
+          "hash": "YoptBGbHhlQImUWETYBKGA=="
         }
       },
       "is_incremental": false,
@@ -81,7 +129,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Data.EventFuture.html",
-          "hash": "/Cg20HQ4F5kr3LLxxpsGKA=="
+          "hash": "oL+2W/pqZBJ56+iGuqJrnA=="
         }
       },
       "is_incremental": false,
@@ -93,7 +141,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Data.EventUser.html",
-          "hash": "2ocu9IZt2b/cBQmJgxRsFg=="
+          "hash": "fkrMKyzMJ5K4ZIRPV2UAlA=="
         }
       },
       "is_incremental": false,
@@ -105,7 +153,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Data.Gift.html",
-          "hash": "v1FoKVY/YkXKMHJF2Kp99A=="
+          "hash": "WwckTfIXNzkCpbZcPv8S4A=="
         }
       },
       "is_incremental": false,
@@ -117,7 +165,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Data.Group.html",
-          "hash": "OcDfJPIhlXNpoHYjCr11aw=="
+          "hash": "YrTVIyzWXqCClnKIbZ9gbQ=="
         }
       },
       "is_incremental": false,
@@ -129,7 +177,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Data.IFetchable.html",
-          "hash": "7R3n0V8oyGjrlOmblIDjjA=="
+          "hash": "4kRVafOE8getN+wD4v36Dw=="
         }
       },
       "is_incremental": false,
@@ -141,7 +189,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Data.Preferences.html",
-          "hash": "eke9j45HfT0+KqnZ6L8GJw=="
+          "hash": "7F64a6gmLdsBFOFIMN6Jmw=="
         }
       },
       "is_incremental": false,
@@ -153,7 +201,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Data.Reservation.html",
-          "hash": "2rSeRHfcMJoDisrn8CD15Q=="
+          "hash": "I96Mp9S5BcMQ7sMlrEgM6A=="
         }
       },
       "is_incremental": false,
@@ -165,7 +213,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Data.User.html",
-          "hash": "Kt+ORJOnevba11UcAOcfPw=="
+          "hash": "HpgTfq3sjkaaIIW3awN8+Q=="
         }
       },
       "is_incremental": false,
@@ -177,7 +225,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Data.html",
-          "hash": "3tSPH0QBGrCJwnL01oxNuw=="
+          "hash": "epw8JCr7PIwL34OMCtcqOg=="
         }
       },
       "is_incremental": false,
@@ -189,7 +237,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Exceptions.CategoryNotFoundException.html",
-          "hash": "ZgXShSMUV7sK5TWUYO9Dqg=="
+          "hash": "vjhF2rmr81igZtwe6i7v7w=="
         }
       },
       "is_incremental": false,
@@ -201,7 +249,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Exceptions.CookieNotInvalidWarning.html",
-          "hash": "qQHep0/oF4L4HBPMFz8nxg=="
+          "hash": "2vL62oVkH+fgChzU2kcZ/w=="
         }
       },
       "is_incremental": false,
@@ -213,7 +261,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Exceptions.DefaultEventException.html",
-          "hash": "RrFbqh35O8aEyMLOHRAcPg=="
+          "hash": "8/iuiIvxVISmCNvuPNoSdw=="
         }
       },
       "is_incremental": false,
@@ -225,7 +273,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Exceptions.DuplicateUserException.html",
-          "hash": "YaTxnvixbnshIU1V39t93A=="
+          "hash": "n8jxAF9HNARJ1OiGl0Dheg=="
         }
       },
       "is_incremental": false,
@@ -237,7 +285,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Exceptions.EventException.html",
-          "hash": "2Hd/hZ24fYqPe2X5wqCmKQ=="
+          "hash": "eNKkpUtMS1gU2lnhwT0iYw=="
         }
       },
       "is_incremental": false,
@@ -249,7 +297,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Exceptions.EventNotFoundException.html",
-          "hash": "PZlJDPal3mjb/Dk9LV9sjQ=="
+          "hash": "l2agvKPCcWb5cctjEoadiQ=="
         }
       },
       "is_incremental": false,
@@ -261,7 +309,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Exceptions.ExecutionErrorWarning.html",
-          "hash": "EXIgRV9t1opt/JUHbMyZzQ=="
+          "hash": "hU5vVDYw1LDkBhhy72B3uw=="
         }
       },
       "is_incremental": false,
@@ -273,7 +321,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Exceptions.GroupException.html",
-          "hash": "NNCjWY4PAgOafAUEG+OmmA=="
+          "hash": "Od0id+WPlWDkrkz24vbAVw=="
         }
       },
       "is_incremental": false,
@@ -285,7 +333,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Exceptions.GroupNotFoundException.html",
-          "hash": "kLTVDpVkFQ5OiKpkQWEt0w=="
+          "hash": "4ocm0iCEybToQW1Wg3esWw=="
         }
       },
       "is_incremental": false,
@@ -297,7 +345,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Exceptions.InvalidCultureWarning.html",
-          "hash": "HOMsIpKM6H80F8WG2H7A+Q=="
+          "hash": "p+WDoIEc8JTH49/+15hbIQ=="
         }
       },
       "is_incremental": false,
@@ -309,7 +357,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Exceptions.InvalidEventException.html",
-          "hash": "+7IBn8vopEGo+l8EatEM2A=="
+          "hash": "9yAfL3PsTx2eZyKaHnv/xA=="
         }
       },
       "is_incremental": false,
@@ -321,7 +369,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Exceptions.InvalidPasswordException.html",
-          "hash": "QxYiMwfUXWso7TcE66iAzQ=="
+          "hash": "/v75pJJsLQpNV5JzquC0Mw=="
         }
       },
       "is_incremental": false,
@@ -333,7 +381,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Exceptions.PasswordException.html",
-          "hash": "QBrnjJFSX1+lZHMnUgCE6g=="
+          "hash": "irjwrGY6QjWJivL0YuA/7w=="
         }
       },
       "is_incremental": false,
@@ -345,7 +393,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Exceptions.PasswordResetTimeoutException.html",
-          "hash": "Qi6sHfi/FM8qMFe1LNk05w=="
+          "hash": "W0OfjeVwyRtCdxYaQFPRxQ=="
         }
       },
       "is_incremental": false,
@@ -357,7 +405,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Exceptions.PublicResourceWarning.html",
-          "hash": "eRFUv2hI3HEY+Tr2w7HlbA=="
+          "hash": "AclwD04OJk5F4Y0ifr+gSQ=="
         }
       },
       "is_incremental": false,
@@ -369,7 +417,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Exceptions.UserException.html",
-          "hash": "1r9CZYO2iEJb4BstctoMwQ=="
+          "hash": "XwSdhWVSK51qV1f1IX460g=="
         }
       },
       "is_incremental": false,
@@ -381,7 +429,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Exceptions.UserNotFoundException.html",
-          "hash": "Gy0GZAUlJSdTq4P4JbFywQ=="
+          "hash": "nAYag1XrkWIvnElTIIkK2A=="
         }
       },
       "is_incremental": false,
@@ -393,7 +441,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Exceptions.Warning.html",
-          "hash": "qdXzLS2Fz/tHJ77wZ+dccQ=="
+          "hash": "3ynmm9NDSYQ6h0QsdgyR/g=="
         }
       },
       "is_incremental": false,
@@ -405,7 +453,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Exceptions.html",
-          "hash": "ssJa5KVuGIEzFSiGZn0NVQ=="
+          "hash": "gODQtu9RM0yR7t7ks3anaw=="
         }
       },
       "is_incremental": false,
@@ -417,7 +465,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.HtmlManager.DashboardManager.html",
-          "hash": "d6HvWkmvVhLVmTJ3Z8b4VA=="
+          "hash": "Z/XGZeaThQRG+Qlq1gcaBQ=="
         }
       },
       "is_incremental": false,
@@ -429,7 +477,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.HtmlManager.GroupManager.html",
-          "hash": "1OIacbQIvSGxD1vtcp/PVQ=="
+          "hash": "J76MLDyrc6bZRlHhQ/s18A=="
         }
       },
       "is_incremental": false,
@@ -441,7 +489,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.HtmlManager.ListManager.html",
-          "hash": "bdcUet+7r2+uBk1uaB0Ifg=="
+          "hash": "hdxeugk+s6xL7mUWtTZ/Lg=="
         }
       },
       "is_incremental": false,
@@ -453,7 +501,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.HtmlManager.LoginManager.html",
-          "hash": "BbYcAa4ChPzJAM4qTYAHzA=="
+          "hash": "9Lt1E3O7sREC/g0fAvx/HA=="
         }
       },
       "is_incremental": false,
@@ -465,7 +513,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.HtmlManager.NavigationManager.html",
-          "hash": "PkSoKJdHd9YIgXFYArWV+A=="
+          "hash": "pMLDgcRZ23SlDJoNU5StlQ=="
         }
       },
       "is_incremental": false,
@@ -477,7 +525,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.HtmlManager.ProfileManager.html",
-          "hash": "iIvosQQSH1SLzi07fqRWRg=="
+          "hash": "kBzKzLc6F4OakCVLayRaOA=="
         }
       },
       "is_incremental": false,
@@ -489,7 +537,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.HtmlManager.ResetManager.html",
-          "hash": "a2sViZ9FT5sHZismPnLYkg=="
+          "hash": "MxDykWac0oO0v2rhZ7DkcQ=="
         }
       },
       "is_incremental": false,
@@ -501,7 +549,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.HtmlManager.html",
-          "hash": "a+GcO7/o5dbAUf7eGs+C5A=="
+          "hash": "giCfIUrwTNJheWjSi0EOfg=="
         }
       },
       "is_incremental": false,
@@ -513,7 +561,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Security.Password.html",
-          "hash": "lBuf91TqG+nm7fZ5EYiDhg=="
+          "hash": "uWzKwXAaY9lmVV+2fx8Ixw=="
         }
       },
       "is_incremental": false,
@@ -525,7 +573,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Security.PasswordReset.html",
-          "hash": "M6WmJaUv95RhgBnfPfSmJQ=="
+          "hash": "EVKc7iN8lG0soggAGcJlZg=="
         }
       },
       "is_incremental": false,
@@ -537,7 +585,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Security.html",
-          "hash": "mk+tlD5Vk43vnKHfzW6X+A=="
+          "hash": "nMhM5l1t/NjdNxSm9eERAQ=="
         }
       },
       "is_incremental": false,
@@ -549,7 +597,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Server.Connection.UserInformation.html",
-          "hash": "NoS/Jb74l/zezt5m9t7BeA=="
+          "hash": "7Jm+ybihOxzQwpvBjsXlsQ=="
         }
       },
       "is_incremental": false,
@@ -561,7 +609,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Server.Connection.html",
-          "hash": "YA7bfzABunaqFjeJeCge1w=="
+          "hash": "OJxBCD6i56+yAe7nLZsdhg=="
         }
       },
       "is_incremental": false,
@@ -573,7 +621,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Server.Controller.html",
-          "hash": "vkENfMIK8vVbIsS5ypof3w=="
+          "hash": "99KbAaOMo7XqyjoPbwCzCQ=="
         }
       },
       "is_incremental": false,
@@ -585,7 +633,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Server.GiftServer.html",
-          "hash": "dwDOf7b97f1oXNJ31iy/KQ=="
+          "hash": "DUs6oY+WPCc8Q3FcpfrMqA=="
         }
       },
       "is_incremental": false,
@@ -597,7 +645,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Server.WebServer.html",
-          "hash": "TMc9nfLiwm78suACsxjd1Q=="
+          "hash": "qY91mkiZh1Q9iU0qPEo15w=="
         }
       },
       "is_incremental": false,
@@ -609,7 +657,7 @@
       "output": {
         ".html": {
           "relative_path": "api/GiftServer.Server.html",
-          "hash": "FAClTabUTH8/ZvjnAEztgg=="
+          "hash": "nrT8yBwS0t4QdErBSAyizg=="
         }
       },
       "is_incremental": false,
@@ -644,7 +692,7 @@
     {
       "status": {
         "can_incremental": false,
-        "details": "Disable incremental build by force rebuild option.",
+        "details": "Cannot build incrementally because config changed.",
         "incrementalPhase": "build"
       },
       "processors": {
@@ -653,11 +701,16 @@
           "details": "Processor TocDocumentProcessor cannot suppport incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
           "incrementalPhase": "build"
         },
-        "ConceptualDocumentProcessor": {
+        "ResourceDocumentProcessor": {
           "can_incremental": false,
+          "details": "Processor ResourceDocumentProcessor cannot suppport incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
           "incrementalPhase": "build"
         },
         "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build"
+        },
+        "ConceptualDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build"
         }
@@ -665,8 +718,8 @@
     },
     {
       "status": {
-        "can_incremental": false,
-        "details": "Cannot support incremental post processing, the reason is: it's disabled.",
+        "can_incremental": true,
+        "details": "Can support incremental post processing.",
         "incrementalPhase": "postProcessing"
       },
       "processors": {}
