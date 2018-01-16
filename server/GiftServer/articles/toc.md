@@ -1,1 +1,2 @@
-#[Introduction](intro.md)
+#[Welcome!](intro.md)
+#[Developer's Guide](guide.md)

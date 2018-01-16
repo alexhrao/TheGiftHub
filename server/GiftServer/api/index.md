@@ -1,3 +1,2 @@
-
-# PLACEHOLDER
-TODO: Add .NET projects to *src* folder and run `docfx` to generate a **REAL** *API Documentation*!
+# The API Specification
+*This is the official specification for all public-facing functions that make up The Gift Hub. Click on a sidebar item to get started!*

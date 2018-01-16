@@ -137,6 +137,7 @@
   <ItemGroup>
     <None Include="api\index.md" />
     <None Include="App.config" />
+    <None Include="articles\guide.md" />
     <None Include="articles\intro.md" />
     <None Include="articles\toc.md" />
     <None Include="Content\bootstrap-theme.css.map" />
