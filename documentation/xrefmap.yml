@@ -556,13 +556,25 @@ references:
 - uid: GiftServer.Data.Gift.Quantity
   name: Quantity
   href: api/GiftServer.Data.Gift.html#GiftServer_Data_Gift_Quantity
-  commentId: F:GiftServer.Data.Gift.Quantity
+  commentId: P:GiftServer.Data.Gift.Quantity
+  fullName: GiftServer.Data.Gift.Quantity
+  nameWithType: Gift.Quantity
+- uid: GiftServer.Data.Gift.Quantity*
+  name: Quantity
+  href: api/GiftServer.Data.Gift.html#GiftServer_Data_Gift_Quantity_
+  commentId: Overload:GiftServer.Data.Gift.Quantity
   fullName: GiftServer.Data.Gift.Quantity
   nameWithType: Gift.Quantity
 - uid: GiftServer.Data.Gift.Rating
   name: Rating
   href: api/GiftServer.Data.Gift.html#GiftServer_Data_Gift_Rating
-  commentId: F:GiftServer.Data.Gift.Rating
+  commentId: P:GiftServer.Data.Gift.Rating
+  fullName: GiftServer.Data.Gift.Rating
+  nameWithType: Gift.Rating
+- uid: GiftServer.Data.Gift.Rating*
+  name: Rating
+  href: api/GiftServer.Data.Gift.html#GiftServer_Data_Gift_Rating_
+  commentId: Overload:GiftServer.Data.Gift.Rating
   fullName: GiftServer.Data.Gift.Rating
   nameWithType: Gift.Rating
 - uid: GiftServer.Data.Gift.Remove(GiftServer.Data.Group)
@@ -601,12 +613,15 @@ references:
   commentId: Overload:GiftServer.Data.Gift.Reservations
   fullName: GiftServer.Data.Gift.Reservations
   nameWithType: Gift.Reservations
-- uid: GiftServer.Data.Gift.SaveImage(GiftServer.Server.MultipartParser)
-  name: SaveImage(MultipartParser)
-  href: api/GiftServer.Data.Gift.html#GiftServer_Data_Gift_SaveImage_GiftServer_Server_MultipartParser_
-  commentId: M:GiftServer.Data.Gift.SaveImage(GiftServer.Server.MultipartParser)
-  fullName: GiftServer.Data.Gift.SaveImage(GiftServer.Server.MultipartParser)
-  nameWithType: Gift.SaveImage(MultipartParser)
+- uid: GiftServer.Data.Gift.SaveImage(System.Byte[])
+  name: SaveImage(Byte[])
+  href: api/GiftServer.Data.Gift.html#GiftServer_Data_Gift_SaveImage_System_Byte___
+  commentId: M:GiftServer.Data.Gift.SaveImage(System.Byte[])
+  name.vb: SaveImage(Byte())
+  fullName: GiftServer.Data.Gift.SaveImage(System.Byte[])
+  fullName.vb: GiftServer.Data.Gift.SaveImage(System.Byte())
+  nameWithType: Gift.SaveImage(Byte[])
+  nameWithType.vb: Gift.SaveImage(Byte())
 - uid: GiftServer.Data.Gift.SaveImage*
   name: SaveImage
   href: api/GiftServer.Data.Gift.html#GiftServer_Data_Gift_SaveImage_
@@ -850,30 +865,6 @@ references:
   commentId: Overload:GiftServer.Data.IFetchable.Fetch
   fullName: GiftServer.Data.IFetchable.Fetch
   nameWithType: IFetchable.Fetch
-- uid: GiftServer.Data.ImageProcessor
-  name: ImageProcessor
-  href: api/GiftServer.Data.ImageProcessor.html
-  commentId: T:GiftServer.Data.ImageProcessor
-  fullName: GiftServer.Data.ImageProcessor
-  nameWithType: ImageProcessor
-- uid: GiftServer.Data.ImageProcessor.#ctor(GiftServer.Server.MultipartParser)
-  name: ImageProcessor(MultipartParser)
-  href: api/GiftServer.Data.ImageProcessor.html#GiftServer_Data_ImageProcessor__ctor_GiftServer_Server_MultipartParser_
-  commentId: M:GiftServer.Data.ImageProcessor.#ctor(GiftServer.Server.MultipartParser)
-  fullName: GiftServer.Data.ImageProcessor.ImageProcessor(GiftServer.Server.MultipartParser)
-  nameWithType: ImageProcessor.ImageProcessor(MultipartParser)
-- uid: GiftServer.Data.ImageProcessor.#ctor*
-  name: ImageProcessor
-  href: api/GiftServer.Data.ImageProcessor.html#GiftServer_Data_ImageProcessor__ctor_
-  commentId: Overload:GiftServer.Data.ImageProcessor.#ctor
-  fullName: GiftServer.Data.ImageProcessor.ImageProcessor
-  nameWithType: ImageProcessor.ImageProcessor
-- uid: GiftServer.Data.ImageProcessor.Data
-  name: Data
-  href: api/GiftServer.Data.ImageProcessor.html#GiftServer_Data_ImageProcessor_Data
-  commentId: F:GiftServer.Data.ImageProcessor.Data
-  fullName: GiftServer.Data.ImageProcessor.Data
-  nameWithType: ImageProcessor.Data
 - uid: GiftServer.Data.Preferences
   name: Preferences
   href: api/GiftServer.Data.Preferences.html
@@ -1318,12 +1309,15 @@ references:
   commentId: Overload:GiftServer.Data.User.Return
   fullName: GiftServer.Data.User.Return
   nameWithType: User.Return
-- uid: GiftServer.Data.User.SaveImage(GiftServer.Server.MultipartParser)
-  name: SaveImage(MultipartParser)
-  href: api/GiftServer.Data.User.html#GiftServer_Data_User_SaveImage_GiftServer_Server_MultipartParser_
-  commentId: M:GiftServer.Data.User.SaveImage(GiftServer.Server.MultipartParser)
-  fullName: GiftServer.Data.User.SaveImage(GiftServer.Server.MultipartParser)
-  nameWithType: User.SaveImage(MultipartParser)
+- uid: GiftServer.Data.User.SaveImage(System.Byte[])
+  name: SaveImage(Byte[])
+  href: api/GiftServer.Data.User.html#GiftServer_Data_User_SaveImage_System_Byte___
+  commentId: M:GiftServer.Data.User.SaveImage(System.Byte[])
+  name.vb: SaveImage(Byte())
+  fullName: GiftServer.Data.User.SaveImage(System.Byte[])
+  fullName.vb: GiftServer.Data.User.SaveImage(System.Byte())
+  nameWithType: User.SaveImage(Byte[])
+  nameWithType.vb: User.SaveImage(Byte())
 - uid: GiftServer.Data.User.SaveImage*
   name: SaveImage
   href: api/GiftServer.Data.User.html#GiftServer_Data_User_SaveImage_
@@ -1564,6 +1558,24 @@ references:
   commentId: Overload:GiftServer.Exceptions.GroupNotFoundException.#ctor
   fullName: GiftServer.Exceptions.GroupNotFoundException.GroupNotFoundException
   nameWithType: GroupNotFoundException.GroupNotFoundException
+- uid: GiftServer.Exceptions.InvalidCultureWarning
+  name: InvalidCultureWarning
+  href: api/GiftServer.Exceptions.InvalidCultureWarning.html
+  commentId: T:GiftServer.Exceptions.InvalidCultureWarning
+  fullName: GiftServer.Exceptions.InvalidCultureWarning
+  nameWithType: InvalidCultureWarning
+- uid: GiftServer.Exceptions.InvalidCultureWarning.#ctor(System.String)
+  name: InvalidCultureWarning(String)
+  href: api/GiftServer.Exceptions.InvalidCultureWarning.html#GiftServer_Exceptions_InvalidCultureWarning__ctor_System_String_
+  commentId: M:GiftServer.Exceptions.InvalidCultureWarning.#ctor(System.String)
+  fullName: GiftServer.Exceptions.InvalidCultureWarning.InvalidCultureWarning(System.String)
+  nameWithType: InvalidCultureWarning.InvalidCultureWarning(String)
+- uid: GiftServer.Exceptions.InvalidCultureWarning.#ctor*
+  name: InvalidCultureWarning
+  href: api/GiftServer.Exceptions.InvalidCultureWarning.html#GiftServer_Exceptions_InvalidCultureWarning__ctor_
+  commentId: Overload:GiftServer.Exceptions.InvalidCultureWarning.#ctor
+  fullName: GiftServer.Exceptions.InvalidCultureWarning.InvalidCultureWarning
+  nameWithType: InvalidCultureWarning.InvalidCultureWarning
 - uid: GiftServer.Exceptions.InvalidEventException
   name: InvalidEventException
   href: api/GiftServer.Exceptions.InvalidEventException.html
@@ -1693,6 +1705,12 @@ references:
   commentId: M:GiftServer.Exceptions.UserNotFoundException.#ctor(System.Net.Mail.MailAddress)
   fullName: GiftServer.Exceptions.UserNotFoundException.UserNotFoundException(System.Net.Mail.MailAddress)
   nameWithType: UserNotFoundException.UserNotFoundException(MailAddress)
+- uid: GiftServer.Exceptions.UserNotFoundException.#ctor(System.String)
+  name: UserNotFoundException(String)
+  href: api/GiftServer.Exceptions.UserNotFoundException.html#GiftServer_Exceptions_UserNotFoundException__ctor_System_String_
+  commentId: M:GiftServer.Exceptions.UserNotFoundException.#ctor(System.String)
+  fullName: GiftServer.Exceptions.UserNotFoundException.UserNotFoundException(System.String)
+  nameWithType: UserNotFoundException.UserNotFoundException(String)
 - uid: GiftServer.Exceptions.UserNotFoundException.#ctor(System.UInt64)
   name: UserNotFoundException(UInt64)
   href: api/GiftServer.Exceptions.UserNotFoundException.html#GiftServer_Exceptions_UserNotFoundException__ctor_System_UInt64_
@@ -2155,6 +2173,12 @@ references:
   commentId: Overload:GiftServer.Security.Password.Hash
   fullName: GiftServer.Security.Password.Hash
   nameWithType: Password.Hash
+- uid: GiftServer.Security.Password.HashSize
+  name: HashSize
+  href: api/GiftServer.Security.Password.html#GiftServer_Security_Password_HashSize
+  commentId: F:GiftServer.Security.Password.HashSize
+  fullName: GiftServer.Security.Password.HashSize
+  nameWithType: Password.HashSize
 - uid: GiftServer.Security.Password.Iterations
   name: Iterations
   href: api/GiftServer.Security.Password.html#GiftServer_Security_Password_Iterations
@@ -2173,6 +2197,12 @@ references:
   commentId: Overload:GiftServer.Security.Password.Salt
   fullName: GiftServer.Security.Password.Salt
   nameWithType: Password.Salt
+- uid: GiftServer.Security.Password.SaltSize
+  name: SaltSize
+  href: api/GiftServer.Security.Password.html#GiftServer_Security_Password_SaltSize
+  commentId: F:GiftServer.Security.Password.SaltSize
+  fullName: GiftServer.Security.Password.SaltSize
+  nameWithType: Password.SaltSize
 - uid: GiftServer.Security.Password.Verify(System.String)
   name: Verify(String)
   href: api/GiftServer.Security.Password.html#GiftServer_Security_Password_Verify_System_String_
@@ -2227,18 +2257,24 @@ references:
   commentId: Overload:GiftServer.Security.PasswordReset.GetUser
   fullName: GiftServer.Security.PasswordReset.GetUser
   nameWithType: PasswordReset.GetUser
-- uid: GiftServer.Security.PasswordReset.SendRecoveryEmail(System.String,GiftServer.HtmlManager.ResetManager)
-  name: SendRecoveryEmail(String, ResetManager)
-  href: api/GiftServer.Security.PasswordReset.html#GiftServer_Security_PasswordReset_SendRecoveryEmail_System_String_GiftServer_HtmlManager_ResetManager_
-  commentId: M:GiftServer.Security.PasswordReset.SendRecoveryEmail(System.String,GiftServer.HtmlManager.ResetManager)
-  fullName: GiftServer.Security.PasswordReset.SendRecoveryEmail(System.String, GiftServer.HtmlManager.ResetManager)
-  nameWithType: PasswordReset.SendRecoveryEmail(String, ResetManager)
+- uid: GiftServer.Security.PasswordReset.SendRecoveryEmail(System.Net.Mail.MailAddress,GiftServer.HtmlManager.ResetManager)
+  name: SendRecoveryEmail(MailAddress, ResetManager)
+  href: api/GiftServer.Security.PasswordReset.html#GiftServer_Security_PasswordReset_SendRecoveryEmail_System_Net_Mail_MailAddress_GiftServer_HtmlManager_ResetManager_
+  commentId: M:GiftServer.Security.PasswordReset.SendRecoveryEmail(System.Net.Mail.MailAddress,GiftServer.HtmlManager.ResetManager)
+  fullName: GiftServer.Security.PasswordReset.SendRecoveryEmail(System.Net.Mail.MailAddress, GiftServer.HtmlManager.ResetManager)
+  nameWithType: PasswordReset.SendRecoveryEmail(MailAddress, ResetManager)
 - uid: GiftServer.Security.PasswordReset.SendRecoveryEmail*
   name: SendRecoveryEmail
   href: api/GiftServer.Security.PasswordReset.html#GiftServer_Security_PasswordReset_SendRecoveryEmail_
   commentId: Overload:GiftServer.Security.PasswordReset.SendRecoveryEmail
   fullName: GiftServer.Security.PasswordReset.SendRecoveryEmail
   nameWithType: PasswordReset.SendRecoveryEmail
+- uid: GiftServer.Security.PasswordReset.TokenSize
+  name: TokenSize
+  href: api/GiftServer.Security.PasswordReset.html#GiftServer_Security_PasswordReset_TokenSize
+  commentId: F:GiftServer.Security.PasswordReset.TokenSize
+  fullName: GiftServer.Security.PasswordReset.TokenSize
+  nameWithType: PasswordReset.TokenSize
 - uid: GiftServer.Server
   name: GiftServer.Server
   href: api/GiftServer.Server.html
@@ -2467,120 +2503,6 @@ references:
   commentId: Overload:GiftServer.Server.GiftServer.Start
   fullName: GiftServer.Server.GiftServer.Start
   nameWithType: GiftServer.Start
-- uid: GiftServer.Server.MultipartParser
-  name: MultipartParser
-  href: api/GiftServer.Server.MultipartParser.html
-  commentId: T:GiftServer.Server.MultipartParser
-  fullName: GiftServer.Server.MultipartParser
-  nameWithType: MultipartParser
-- uid: GiftServer.Server.MultipartParser.#ctor(System.IO.Stream,System.String)
-  name: MultipartParser(Stream, String)
-  href: api/GiftServer.Server.MultipartParser.html#GiftServer_Server_MultipartParser__ctor_System_IO_Stream_System_String_
-  commentId: M:GiftServer.Server.MultipartParser.#ctor(System.IO.Stream,System.String)
-  fullName: GiftServer.Server.MultipartParser.MultipartParser(System.IO.Stream, System.String)
-  nameWithType: MultipartParser.MultipartParser(Stream, String)
-- uid: GiftServer.Server.MultipartParser.#ctor(System.IO.Stream,System.Text.Encoding,System.String)
-  name: MultipartParser(Stream, Encoding, String)
-  href: api/GiftServer.Server.MultipartParser.html#GiftServer_Server_MultipartParser__ctor_System_IO_Stream_System_Text_Encoding_System_String_
-  commentId: M:GiftServer.Server.MultipartParser.#ctor(System.IO.Stream,System.Text.Encoding,System.String)
-  fullName: GiftServer.Server.MultipartParser.MultipartParser(System.IO.Stream, System.Text.Encoding, System.String)
-  nameWithType: MultipartParser.MultipartParser(Stream, Encoding, String)
-- uid: GiftServer.Server.MultipartParser.#ctor*
-  name: MultipartParser
-  href: api/GiftServer.Server.MultipartParser.html#GiftServer_Server_MultipartParser__ctor_
-  commentId: Overload:GiftServer.Server.MultipartParser.#ctor
-  fullName: GiftServer.Server.MultipartParser.MultipartParser
-  nameWithType: MultipartParser.MultipartParser
-- uid: GiftServer.Server.MultipartParser.ContentType
-  name: ContentType
-  href: api/GiftServer.Server.MultipartParser.html#GiftServer_Server_MultipartParser_ContentType
-  commentId: P:GiftServer.Server.MultipartParser.ContentType
-  fullName: GiftServer.Server.MultipartParser.ContentType
-  nameWithType: MultipartParser.ContentType
-- uid: GiftServer.Server.MultipartParser.ContentType*
-  name: ContentType
-  href: api/GiftServer.Server.MultipartParser.html#GiftServer_Server_MultipartParser_ContentType_
-  commentId: Overload:GiftServer.Server.MultipartParser.ContentType
-  fullName: GiftServer.Server.MultipartParser.ContentType
-  nameWithType: MultipartParser.ContentType
-- uid: GiftServer.Server.MultipartParser.FileContents
-  name: FileContents
-  href: api/GiftServer.Server.MultipartParser.html#GiftServer_Server_MultipartParser_FileContents
-  commentId: P:GiftServer.Server.MultipartParser.FileContents
-  fullName: GiftServer.Server.MultipartParser.FileContents
-  nameWithType: MultipartParser.FileContents
-- uid: GiftServer.Server.MultipartParser.FileContents*
-  name: FileContents
-  href: api/GiftServer.Server.MultipartParser.html#GiftServer_Server_MultipartParser_FileContents_
-  commentId: Overload:GiftServer.Server.MultipartParser.FileContents
-  fullName: GiftServer.Server.MultipartParser.FileContents
-  nameWithType: MultipartParser.FileContents
-- uid: GiftServer.Server.MultipartParser.Filename
-  name: Filename
-  href: api/GiftServer.Server.MultipartParser.html#GiftServer_Server_MultipartParser_Filename
-  commentId: P:GiftServer.Server.MultipartParser.Filename
-  fullName: GiftServer.Server.MultipartParser.Filename
-  nameWithType: MultipartParser.Filename
-- uid: GiftServer.Server.MultipartParser.Filename*
-  name: Filename
-  href: api/GiftServer.Server.MultipartParser.html#GiftServer_Server_MultipartParser_Filename_
-  commentId: Overload:GiftServer.Server.MultipartParser.Filename
-  fullName: GiftServer.Server.MultipartParser.Filename
-  nameWithType: MultipartParser.Filename
-- uid: GiftServer.Server.MultipartParser.FilePartName
-  name: FilePartName
-  href: api/GiftServer.Server.MultipartParser.html#GiftServer_Server_MultipartParser_FilePartName
-  commentId: P:GiftServer.Server.MultipartParser.FilePartName
-  fullName: GiftServer.Server.MultipartParser.FilePartName
-  nameWithType: MultipartParser.FilePartName
-- uid: GiftServer.Server.MultipartParser.FilePartName*
-  name: FilePartName
-  href: api/GiftServer.Server.MultipartParser.html#GiftServer_Server_MultipartParser_FilePartName_
-  commentId: Overload:GiftServer.Server.MultipartParser.FilePartName
-  fullName: GiftServer.Server.MultipartParser.FilePartName
-  nameWithType: MultipartParser.FilePartName
-- uid: GiftServer.Server.MultipartParser.Parameters
-  name: Parameters
-  href: api/GiftServer.Server.MultipartParser.html#GiftServer_Server_MultipartParser_Parameters
-  commentId: F:GiftServer.Server.MultipartParser.Parameters
-  fullName: GiftServer.Server.MultipartParser.Parameters
-  nameWithType: MultipartParser.Parameters
-- uid: GiftServer.Server.MultipartParser.Success
-  name: Success
-  href: api/GiftServer.Server.MultipartParser.html#GiftServer_Server_MultipartParser_Success
-  commentId: P:GiftServer.Server.MultipartParser.Success
-  fullName: GiftServer.Server.MultipartParser.Success
-  nameWithType: MultipartParser.Success
-- uid: GiftServer.Server.MultipartParser.Success*
-  name: Success
-  href: api/GiftServer.Server.MultipartParser.html#GiftServer_Server_MultipartParser_Success_
-  commentId: Overload:GiftServer.Server.MultipartParser.Success
-  fullName: GiftServer.Server.MultipartParser.Success
-  nameWithType: MultipartParser.Success
-- uid: GiftServer.Server.MultipartParser.Title
-  name: Title
-  href: api/GiftServer.Server.MultipartParser.html#GiftServer_Server_MultipartParser_Title
-  commentId: P:GiftServer.Server.MultipartParser.Title
-  fullName: GiftServer.Server.MultipartParser.Title
-  nameWithType: MultipartParser.Title
-- uid: GiftServer.Server.MultipartParser.Title*
-  name: Title
-  href: api/GiftServer.Server.MultipartParser.html#GiftServer_Server_MultipartParser_Title_
-  commentId: Overload:GiftServer.Server.MultipartParser.Title
-  fullName: GiftServer.Server.MultipartParser.Title
-  nameWithType: MultipartParser.Title
-- uid: GiftServer.Server.MultipartParser.UserId
-  name: UserId
-  href: api/GiftServer.Server.MultipartParser.html#GiftServer_Server_MultipartParser_UserId
-  commentId: P:GiftServer.Server.MultipartParser.UserId
-  fullName: GiftServer.Server.MultipartParser.UserId
-  nameWithType: MultipartParser.UserId
-- uid: GiftServer.Server.MultipartParser.UserId*
-  name: UserId
-  href: api/GiftServer.Server.MultipartParser.html#GiftServer_Server_MultipartParser_UserId_
-  commentId: Overload:GiftServer.Server.MultipartParser.UserId
-  fullName: GiftServer.Server.MultipartParser.UserId
-  nameWithType: MultipartParser.UserId
 - uid: GiftServer.Server.WebServer
   name: WebServer
   href: api/GiftServer.Server.WebServer.html

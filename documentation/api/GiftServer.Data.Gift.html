@@ -73,7 +73,8 @@
   
   <h1 id="GiftServer_Data_Gift" data-uid="GiftServer.Data.Gift" class="text-break">Class Gift
   </h1>
-  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 summary"><p>A single gift</p>
+</div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
@@ -114,6 +115,9 @@
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public class Gift : ISynchronizable, IShowable, IFetchable</code></pre>
   </div>
+  <h5 id="GiftServer_Data_Gift_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>A gift is owned by a specific user, and has a great deal of properties (color, quantity, etc.).</p>
+</div>
   <h3 id="constructors">Constructors
   </h3>
   <span class="small pull-right mobile-hide">
@@ -121,11 +125,12 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift__ctor_System_String_.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.%23ctor(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L131">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L232">View Source</a>
   </span>
   <a id="GiftServer_Data_Gift__ctor_" data-uid="GiftServer.Data.Gift.#ctor*"></a>
   <h4 id="GiftServer_Data_Gift__ctor_System_String_" data-uid="GiftServer.Data.Gift.#ctor(System.String)">Gift(String)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Create a new gift with the given name</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -144,7 +149,8 @@
       <tr>
         <td><span class="xref">System.String</span></td>
         <td><span class="parametername">Name</span></td>
-        <td></td>
+        <td><p>The new gifts name</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -153,11 +159,12 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift__ctor_System_UInt64_.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.%23ctor(System.UInt64)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L89">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L186">View Source</a>
   </span>
   <a id="GiftServer_Data_Gift__ctor_" data-uid="GiftServer.Data.Gift.#ctor*"></a>
   <h4 id="GiftServer_Data_Gift__ctor_System_UInt64_" data-uid="GiftServer.Data.Gift.#ctor(System.UInt64)">Gift(UInt64)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Fetch an existing gift</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -176,7 +183,8 @@
       <tr>
         <td><span class="xref">System.UInt64</span></td>
         <td><span class="parametername">id</span></td>
-        <td></td>
+        <td><p>The existing gift</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -187,10 +195,11 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_Category.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.Category%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L32">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L92">View Source</a>
   </span>
   <h4 id="GiftServer_Data_Gift_Category" data-uid="GiftServer.Data.Gift.Category">Category</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The category this gift fits under</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -216,10 +225,11 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_Color.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.Color%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L29">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L80">View Source</a>
   </span>
   <h4 id="GiftServer_Data_Gift_Color" data-uid="GiftServer.Data.Gift.Color">Color</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The color, as HEX (without the #)</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -245,10 +255,11 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_ColorText.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.ColorText%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L30">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L84">View Source</a>
   </span>
   <h4 id="GiftServer_Data_Gift_ColorText" data-uid="GiftServer.Data.Gift.ColorText">ColorText</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>A description text for this color</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -274,10 +285,11 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_Cost.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.Cost%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L26">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L51">View Source</a>
   </span>
   <h4 id="GiftServer_Data_Gift_Cost" data-uid="GiftServer.Data.Gift.Cost">Cost</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The Cost of this gift, as a double.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -303,10 +315,11 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_DateReceived.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.DateReceived%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L35">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L122">View Source</a>
   </span>
   <h4 id="GiftServer_Data_Gift_DateReceived" data-uid="GiftServer.Data.Gift.DateReceived">DateReceived</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The time this gift was received</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -332,10 +345,11 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_Description.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.Description%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L24">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L43">View Source</a>
   </span>
   <h4 id="GiftServer_Data_Gift_Description" data-uid="GiftServer.Data.Gift.Description">Description</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>This gift&apos;s description</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -361,10 +375,11 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_Name.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L23">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L39">View Source</a>
   </span>
   <h4 id="GiftServer_Data_Gift_Name" data-uid="GiftServer.Data.Gift.Name">Name</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The name of this gift</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -387,71 +402,14 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_Quantity.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.Quantity%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L28">View Source</a>
-  </span>
-  <h4 id="GiftServer_Data_Gift_Quantity" data-uid="GiftServer.Data.Gift.Quantity">Quantity</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public uint Quantity</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.UInt32</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
-    <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_Rating.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.Rating%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
-  </span>
-  <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L33">View Source</a>
-  </span>
-  <h4 id="GiftServer_Data_Gift_Rating" data-uid="GiftServer.Data.Gift.Rating">Rating</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public double Rating</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Double</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  <span class="small pull-right mobile-hide">
-    <span class="divider">|</span>
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_Size.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.Size%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L31">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L88">View Source</a>
   </span>
   <h4 id="GiftServer_Data_Gift_Size" data-uid="GiftServer.Data.Gift.Size">Size</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The size of this gift</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -477,10 +435,11 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_Stores.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.Stores%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L27">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L55">View Source</a>
   </span>
   <h4 id="GiftServer_Data_Gift_Stores" data-uid="GiftServer.Data.Gift.Stores">Stores</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Stores this gift is sold at</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -506,10 +465,11 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_TimeStamp.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.TimeStamp%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L34">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L118">View Source</a>
   </span>
   <h4 id="GiftServer_Data_Gift_TimeStamp" data-uid="GiftServer.Data.Gift.TimeStamp">TimeStamp</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The time this gift was created</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -535,10 +495,11 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_Url.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.Url%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L25">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L47">View Source</a>
   </span>
   <h4 id="GiftServer_Data_Gift_Url" data-uid="GiftServer.Data.Gift.Url">Url</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The URL associated with this gift</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -564,10 +525,11 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_User.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.User%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L22">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L35">View Source</a>
   </span>
   <h4 id="GiftServer_Data_Gift_User" data-uid="GiftServer.Data.Gift.User">User</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The owner of this gift</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -595,11 +557,12 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_GiftId.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.GiftId%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L17">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L27">View Source</a>
   </span>
   <a id="GiftServer_Data_Gift_GiftId_" data-uid="GiftServer.Data.Gift.GiftId*"></a>
   <h4 id="GiftServer_Data_Gift_GiftId" data-uid="GiftServer.Data.Gift.GiftId">GiftId</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The GiftID</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -620,16 +583,20 @@
       </tr>
     </tbody>
   </table>
+  <h5 id="GiftServer_Data_Gift_GiftId_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>A GiftID means a deleted gift (or one never created).</p>
+</div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_Groups.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.Groups%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L62">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L155">View Source</a>
   </span>
   <a id="GiftServer_Data_Gift_Groups_" data-uid="GiftServer.Data.Gift.Groups*"></a>
   <h4 id="GiftServer_Data_Gift_Groups" data-uid="GiftServer.Data.Gift.Groups">Groups</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>All the groups this gift is viewable to</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -652,14 +619,80 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_Quantity.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.Quantity%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L62">View Source</a>
+  </span>
+  <a id="GiftServer_Data_Gift_Quantity_" data-uid="GiftServer.Data.Gift.Quantity*"></a>
+  <h4 id="GiftServer_Data_Gift_Quantity" data-uid="GiftServer.Data.Gift.Quantity">Quantity</h4>
+  <div class="markdown level1 summary"><p>The number of gifts desired</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public uint Quantity { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.UInt32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="GiftServer_Data_Gift_Quantity_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>If no number (or a number less than 1) is given, 1 is assumed.</p>
+</div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_Rating.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.Rating%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L96">View Source</a>
+  </span>
+  <a id="GiftServer_Data_Gift_Rating_" data-uid="GiftServer.Data.Gift.Rating*"></a>
+  <h4 id="GiftServer_Data_Gift_Rating" data-uid="GiftServer.Data.Gift.Rating">Rating</h4>
+  <div class="markdown level1 summary"><p>This gift&apos;s rating, between 0 and 5 only.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public double Rating { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Double</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_Reservations.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.Reservations%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L36">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L126">View Source</a>
   </span>
   <a id="GiftServer_Data_Gift_Reservations_" data-uid="GiftServer.Data.Gift.Reservations*"></a>
   <h4 id="GiftServer_Data_Gift_Reservations" data-uid="GiftServer.Data.Gift.Reservations">Reservations</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>A List of reservations for this gift</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -687,11 +720,12 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_Add_GiftServer_Data_Group_.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.Add(GiftServer.Data.Group)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L322">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L456">View Source</a>
   </span>
   <a id="GiftServer_Data_Gift_Add_" data-uid="GiftServer.Data.Gift.Add*"></a>
   <h4 id="GiftServer_Data_Gift_Add_GiftServer_Data_Group_" data-uid="GiftServer.Data.Gift.Add(GiftServer.Data.Group)">Add(Group)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Add this gift to a group</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -710,7 +744,8 @@
       <tr>
         <td><a class="xref" href="GiftServer.Data.Group.html">Group</a></td>
         <td><span class="parametername">group</span></td>
-        <td></td>
+        <td><p>The group that can now view this gift</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -719,11 +754,12 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_Create.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.Create%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L136">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L240">View Source</a>
   </span>
   <a id="GiftServer_Data_Gift_Create_" data-uid="GiftServer.Data.Gift.Create*"></a>
   <h4 id="GiftServer_Data_Gift_Create" data-uid="GiftServer.Data.Gift.Create">Create()</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Create the gift within the database</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -740,7 +776,8 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Boolean</span></td>
-        <td></td>
+        <td><p>A status for this operation</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -749,11 +786,12 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_Delete.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.Delete%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L239">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L351">View Source</a>
   </span>
   <a id="GiftServer_Data_Gift_Delete_" data-uid="GiftServer.Data.Gift.Delete*"></a>
   <h4 id="GiftServer_Data_Gift_Delete" data-uid="GiftServer.Data.Gift.Delete">Delete()</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Delete this gift from the database</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -770,7 +808,8 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Boolean</span></td>
-        <td></td>
+        <td><p>A status flag</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -779,11 +818,12 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_Fetch.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.Fetch%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L356">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L520">View Source</a>
   </span>
   <a id="GiftServer_Data_Gift_Fetch_" data-uid="GiftServer.Data.Gift.Fetch*"></a>
   <h4 id="GiftServer_Data_Gift_Fetch" data-uid="GiftServer.Data.Gift.Fetch">Fetch()</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Serialize this gift as an XML Document</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -800,20 +840,51 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Xml.XmlDocument</span></td>
-        <td></td>
+        <td><p>An XML document with all gift information</p>
+</td>
       </tr>
     </tbody>
   </table>
+  <h5 id="GiftServer_Data_Gift_Fetch_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>This is a serialization for a gift. Note that the User element is <em>not</em> expanded.
+This XML Document contains the following fields:</p>
+<ul>
+<li>giftId: This gift&apos;s ID</li>
+<li>user: The UserID associated with this gift</li>
+<li>name: This gift&apos;s name</li>
+<li>description: This gift&apos;s description</li>
+<li>url: This gift&apos;s URL</li>
+<li>cost: This gift&apos;s cost, encoded WITHOUT the currency. Note that currency isn&apos;t currently supported, but will be soon.</li>
+<li>stores: The stores where this gift is sold, as a string</li>
+<li>quantity: The quantity desired for this gift</li>
+<li>color: The hex code for this gift&apos;s color, with the leading # included</li>
+<li>colorText: The color description for this gift&apos;s color</li>
+<li>size: The size of this gift</li>
+<li>category: The name of the gift category</li>
+<li>rating: The rating for this gift</li>
+<li>image: The qualified path for this gift&apos;s image</li>
+<li>groups: The groups that can view this gift<ul>
+<li>Note that each child element of <em>groups</em> is a <em>group</em> element</li>
+</ul>
+</li>
+<li>reservations: The reservations currently held for this gift<ul>
+<li>Note that each child element of <em>reservations</em> is a <em>reservation</em> element</li>
+</ul>
+</li>
+</ul>
+<p>All this is wrapped in a <em>gift</em> container (I know, pun)</p>
+</div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_GetImage.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.GetImage%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L303">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L429">View Source</a>
   </span>
   <a id="GiftServer_Data_Gift_GetImage_" data-uid="GiftServer.Data.Gift.GetImage*"></a>
   <h4 id="GiftServer_Data_Gift_GetImage" data-uid="GiftServer.Data.Gift.GetImage">GetImage()</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Get the image associated with this gift</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -830,20 +901,25 @@
     <tbody>
       <tr>
         <td><span class="xref">System.String</span></td>
-        <td></td>
+        <td><p>A qualified path for this gift&apos;s image</p>
+</td>
       </tr>
     </tbody>
   </table>
+  <h5 id="GiftServer_Data_Gift_GetImage_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Note that qualified means with respect to the server&apos;s root, <em>not</em> necessarily &apos;/&apos; or &apos;C:&amp;apos;</p>
+</div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_GetImage_System_UInt64_.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.GetImage(System.UInt64)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L307">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L438">View Source</a>
   </span>
   <a id="GiftServer_Data_Gift_GetImage_" data-uid="GiftServer.Data.Gift.GetImage*"></a>
   <h4 id="GiftServer_Data_Gift_GetImage_System_UInt64_" data-uid="GiftServer.Data.Gift.GetImage(System.UInt64)">GetImage(UInt64)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Get the image for a specified giftID</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -862,7 +938,8 @@
       <tr>
         <td><span class="xref">System.UInt64</span></td>
         <td><span class="parametername">id</span></td>
-        <td></td>
+        <td><p>The specified GiftID</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -877,7 +954,8 @@
     <tbody>
       <tr>
         <td><span class="xref">System.String</span></td>
-        <td></td>
+        <td><p>The qualified path (See GetImage() for more information)</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -886,11 +964,12 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_Remove_GiftServer_Data_Group_.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.Remove(GiftServer.Data.Group)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L339">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L476">View Source</a>
   </span>
   <a id="GiftServer_Data_Gift_Remove_" data-uid="GiftServer.Data.Gift.Remove*"></a>
   <h4 id="GiftServer_Data_Gift_Remove_GiftServer_Data_Group_" data-uid="GiftServer.Data.Gift.Remove(GiftServer.Data.Group)">Remove(Group)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Remove this gift from a group</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -909,7 +988,8 @@
       <tr>
         <td><a class="xref" href="GiftServer.Data.Group.html">Group</a></td>
         <td><span class="parametername">group</span></td>
-        <td></td>
+        <td><p>The group that will no longer be able to view this gift</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -918,11 +998,12 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_RemoveImage.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.RemoveImage%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L299">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L418">View Source</a>
   </span>
   <a id="GiftServer_Data_Gift_RemoveImage_" data-uid="GiftServer.Data.Gift.RemoveImage*"></a>
   <h4 id="GiftServer_Data_Gift_RemoveImage" data-uid="GiftServer.Data.Gift.RemoveImage">RemoveImage()</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Remove the associated image</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -930,18 +1011,19 @@
   </div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
-    <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_SaveImage_GiftServer_Server_MultipartParser_.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.SaveImage(GiftServer.Server.MultipartParser)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_SaveImage_System_Byte___.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.SaveImage(System.Byte%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L294">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L410">View Source</a>
   </span>
   <a id="GiftServer_Data_Gift_SaveImage_" data-uid="GiftServer.Data.Gift.SaveImage*"></a>
-  <h4 id="GiftServer_Data_Gift_SaveImage_GiftServer_Server_MultipartParser_" data-uid="GiftServer.Data.Gift.SaveImage(GiftServer.Server.MultipartParser)">SaveImage(MultipartParser)</h4>
-  <div class="markdown level1 summary"></div>
+  <h4 id="GiftServer_Data_Gift_SaveImage_System_Byte___" data-uid="GiftServer.Data.Gift.SaveImage(System.Byte[])">SaveImage(Byte[])</h4>
+  <div class="markdown level1 summary"><p>Save the specified image as the image for this gift.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void SaveImage(MultipartParser parser)</code></pre>
+    <pre><code class="lang-csharp hljs">public void SaveImage(byte[] contents)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -954,9 +1036,10 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="GiftServer.Server.MultipartParser.html">MultipartParser</a></td>
-        <td><span class="parametername">parser</span></td>
-        <td></td>
+        <td><span class="xref">System.Byte</span>[]</td>
+        <td><span class="parametername">contents</span></td>
+        <td><p>The image as a byte array</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -965,11 +1048,12 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift_Update.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift.Update%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L187">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L295">View Source</a>
   </span>
   <a id="GiftServer_Data_Gift_Update_" data-uid="GiftServer.Data.Gift.Update*"></a>
   <h4 id="GiftServer_Data_Gift_Update" data-uid="GiftServer.Data.Gift.Update">Update()</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Update this gift in the database</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -986,7 +1070,8 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Boolean</span></td>
-        <td></td>
+        <td><p>A status flag</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -1005,7 +1090,7 @@
                     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Gift.md&amp;value=---%0Auid%3A%20GiftServer.Data.Gift%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L15" class="contribution-link">View Source</a>
+                    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Gift.cs/#L19" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>

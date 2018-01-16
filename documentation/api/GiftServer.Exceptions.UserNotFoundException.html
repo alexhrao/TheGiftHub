@@ -149,7 +149,8 @@
   <h6><strong>Assembly</strong>: GiftServer.dll</h6>
   <h5 id="GiftServer_Exceptions_UserNotFoundException_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public class UserNotFoundException : UserException, ISerializable, _Exception</code></pre>
+    <pre><code class="lang-csharp hljs">[Serializable]
+public class UserNotFoundException : UserException, ISerializable, _Exception</code></pre>
   </div>
   <h3 id="constructors">Constructors
   </h3>
@@ -158,7 +159,7 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Exceptions_UserNotFoundException__ctor_System_Byte___.md&amp;value=---%0Auid%3A%20GiftServer.Exceptions.UserNotFoundException.%23ctor(System.Byte%5B%5D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Exceptions.cs/#L41">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Exceptions.cs/#L42">View Source</a>
   </span>
   <a id="GiftServer_Exceptions_UserNotFoundException__ctor_" data-uid="GiftServer.Exceptions.UserNotFoundException.#ctor*"></a>
   <h4 id="GiftServer_Exceptions_UserNotFoundException__ctor_System_Byte___" data-uid="GiftServer.Exceptions.UserNotFoundException.#ctor(System.Byte[])">UserNotFoundException(Byte[])</h4>
@@ -192,7 +193,7 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Exceptions_UserNotFoundException__ctor_System_Net_Mail_MailAddress_.md&amp;value=---%0Auid%3A%20GiftServer.Exceptions.UserNotFoundException.%23ctor(System.Net.Mail.MailAddress)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Exceptions.cs/#L31">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Exceptions.cs/#L32">View Source</a>
   </span>
   <a id="GiftServer_Exceptions_UserNotFoundException__ctor_" data-uid="GiftServer.Exceptions.UserNotFoundException.#ctor*"></a>
   <h4 id="GiftServer_Exceptions_UserNotFoundException__ctor_System_Net_Mail_MailAddress_" data-uid="GiftServer.Exceptions.UserNotFoundException.#ctor(System.Net.Mail.MailAddress)">UserNotFoundException(MailAddress)</h4>
@@ -223,10 +224,44 @@
   </table>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
+    <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Exceptions_UserNotFoundException__ctor_System_String_.md&amp;value=---%0Auid%3A%20GiftServer.Exceptions.UserNotFoundException.%23ctor(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Exceptions.cs/#L47">View Source</a>
+  </span>
+  <a id="GiftServer_Exceptions_UserNotFoundException__ctor_" data-uid="GiftServer.Exceptions.UserNotFoundException.#ctor*"></a>
+  <h4 id="GiftServer_Exceptions_UserNotFoundException__ctor_System_String_" data-uid="GiftServer.Exceptions.UserNotFoundException.#ctor(System.String)">UserNotFoundException(String)</h4>
+  <div class="markdown level1 summary"><p>If this URL was DNE</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public UserNotFoundException(string url)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">url</span></td>
+        <td><p>The User&apos;s URL</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Exceptions_UserNotFoundException__ctor_System_UInt64_.md&amp;value=---%0Auid%3A%20GiftServer.Exceptions.UserNotFoundException.%23ctor(System.UInt64)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Exceptions.cs/#L36">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Exceptions.cs/#L37">View Source</a>
   </span>
   <a id="GiftServer_Exceptions_UserNotFoundException__ctor_" data-uid="GiftServer.Exceptions.UserNotFoundException.#ctor*"></a>
   <h4 id="GiftServer_Exceptions_UserNotFoundException__ctor_System_UInt64_" data-uid="GiftServer.Exceptions.UserNotFoundException.#ctor(System.UInt64)">UserNotFoundException(UInt64)</h4>

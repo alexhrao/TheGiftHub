@@ -73,7 +73,8 @@
   
   <h1 id="GiftServer_Data_Group" data-uid="GiftServer.Data.Group" class="text-break">Class Group
   </h1>
-  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 summary"><p>A Group of users</p>
+</div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
@@ -114,6 +115,10 @@
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public class Group : ISynchronizable, IFetchable</code></pre>
   </div>
+  <h5 id="GiftServer_Data_Group_remarks"><strong>Remarks</strong></h5>
+  <div class="markdown level0 remarks"><p>Groups are the primary means by which users can interact with each other. Often, two users can <em>only</em> interact if they have at least one common group.</p>
+<p>The only person allowed to make changes to a groups structure (name, description, etc.) is the Admin, who is also the only one that can delete a group.</p>
+</div>
   <h3 id="constructors">Constructors
   </h3>
   <span class="small pull-right mobile-hide">
@@ -121,11 +126,12 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Group__ctor_GiftServer_Data_User_System_String_.md&amp;value=---%0Auid%3A%20GiftServer.Data.Group.%23ctor(GiftServer.Data.User%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L83">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L115">View Source</a>
   </span>
   <a id="GiftServer_Data_Group__ctor_" data-uid="GiftServer.Data.Group.#ctor*"></a>
   <h4 id="GiftServer_Data_Group__ctor_GiftServer_Data_User_System_String_" data-uid="GiftServer.Data.Group.#ctor(GiftServer.Data.User,System.String)">Group(User, String)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Create a new group with no users</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -144,12 +150,14 @@
       <tr>
         <td><a class="xref" href="GiftServer.Data.User.html">User</a></td>
         <td><span class="parametername">Admin</span></td>
-        <td></td>
+        <td><p>The Administrator for this group</p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">System.String</span></td>
         <td><span class="parametername">Name</span></td>
-        <td></td>
+        <td><p>The name of this group</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -158,11 +166,12 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Group__ctor_GiftServer_Data_User_System_String_System_Collections_Generic_List_GiftServer_Data_User__.md&amp;value=---%0Auid%3A%20GiftServer.Data.Group.%23ctor(GiftServer.Data.User%2CSystem.String%2CSystem.Collections.Generic.List%7BGiftServer.Data.User%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L89">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L127">View Source</a>
   </span>
   <a id="GiftServer_Data_Group__ctor_" data-uid="GiftServer.Data.Group.#ctor*"></a>
   <h4 id="GiftServer_Data_Group__ctor_GiftServer_Data_User_System_String_System_Collections_Generic_List_GiftServer_Data_User__" data-uid="GiftServer.Data.Group.#ctor(GiftServer.Data.User,System.String,System.Collections.Generic.List{GiftServer.Data.User})">Group(User, String, List&lt;User&gt;)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Create a new group with specified members</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -181,17 +190,20 @@
       <tr>
         <td><a class="xref" href="GiftServer.Data.User.html">User</a></td>
         <td><span class="parametername">Admin</span></td>
-        <td></td>
+        <td><p>The administrator for this group</p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">System.String</span></td>
         <td><span class="parametername">Name</span></td>
-        <td></td>
+        <td><p>The name of this group</p>
+</td>
       </tr>
       <tr>
         <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="GiftServer.Data.User.html">User</a>&gt;</td>
         <td><span class="parametername">Users</span></td>
-        <td></td>
+        <td><p>The members of this group (excluding the admin)</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -200,11 +212,12 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Group__ctor_System_UInt64_.md&amp;value=---%0Auid%3A%20GiftServer.Data.Group.%23ctor(System.UInt64)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L40">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L67">View Source</a>
   </span>
   <a id="GiftServer_Data_Group__ctor_" data-uid="GiftServer.Data.Group.#ctor*"></a>
   <h4 id="GiftServer_Data_Group__ctor_System_UInt64_" data-uid="GiftServer.Data.Group.#ctor(System.UInt64)">Group(UInt64)</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Fetch a group from the database</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -223,7 +236,8 @@
       <tr>
         <td><span class="xref">System.UInt64</span></td>
         <td><span class="parametername">groupID</span></td>
-        <td></td>
+        <td><p>The group&apos;s ID</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -234,10 +248,11 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Group_Description.md&amp;value=---%0Auid%3A%20GiftServer.Data.Group.Description%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L21">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L40">View Source</a>
   </span>
   <h4 id="GiftServer_Data_Group_Description" data-uid="GiftServer.Data.Group.Description">Description</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The description for this group</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -263,10 +278,11 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Group_Name.md&amp;value=---%0Auid%3A%20GiftServer.Data.Group.Name%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L20">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L36">View Source</a>
   </span>
   <h4 id="GiftServer_Data_Group_Name" data-uid="GiftServer.Data.Group.Name">Name</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The name of this group</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -294,11 +310,12 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Group_Admin.md&amp;value=---%0Auid%3A%20GiftServer.Data.Group.Admin%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L22">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L44">View Source</a>
   </span>
   <a id="GiftServer_Data_Group_Admin_" data-uid="GiftServer.Data.Group.Admin*"></a>
   <h4 id="GiftServer_Data_Group_Admin" data-uid="GiftServer.Data.Group.Admin">Admin</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The Administrator for this group (An ordinary user in all other respects, however)</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -324,11 +341,12 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Group_GroupId.md&amp;value=---%0Auid%3A%20GiftServer.Data.Group.GroupId%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L15">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L28">View Source</a>
   </span>
   <a id="GiftServer_Data_Group_GroupId_" data-uid="GiftServer.Data.Group.GroupId*"></a>
   <h4 id="GiftServer_Data_Group_GroupId" data-uid="GiftServer.Data.Group.GroupId">GroupId</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>This Group&apos;s ID</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -349,16 +367,20 @@
       </tr>
     </tbody>
   </table>
+  <h5 id="GiftServer_Data_Group_GroupId_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>If this is 0, the group must be Created() before anything else makes sense.</p>
+</div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Group_Users.md&amp;value=---%0Auid%3A%20GiftServer.Data.Group.Users%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L31">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L55">View Source</a>
   </span>
   <a id="GiftServer_Data_Group_Users_" data-uid="GiftServer.Data.Group.Users*"></a>
   <h4 id="GiftServer_Data_Group_Users" data-uid="GiftServer.Data.Group.Users">Users</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>A list of all members</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -386,7 +408,7 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Group_Add_GiftServer_Data_EventUser_.md&amp;value=---%0Auid%3A%20GiftServer.Data.Group.Add(GiftServer.Data.EventUser)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L257">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L306">View Source</a>
   </span>
   <a id="GiftServer_Data_Group_Add_" data-uid="GiftServer.Data.Group.Add*"></a>
   <h4 id="GiftServer_Data_Group_Add_GiftServer_Data_EventUser_" data-uid="GiftServer.Data.Group.Add(GiftServer.Data.EventUser)">Add(EventUser)</h4>
@@ -410,7 +432,7 @@
       <tr>
         <td><a class="xref" href="GiftServer.Data.EventUser.html">EventUser</a></td>
         <td><span class="parametername">evnt</span></td>
-        <td><p>The event</p>
+        <td><p>The event that will now be viewable</p>
 </td>
       </tr>
     </tbody>
@@ -420,7 +442,7 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Group_Add_GiftServer_Data_Gift_.md&amp;value=---%0Auid%3A%20GiftServer.Data.Group.Add(GiftServer.Data.Gift)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L298">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L347">View Source</a>
   </span>
   <a id="GiftServer_Data_Group_Add_" data-uid="GiftServer.Data.Group.Add*"></a>
   <h4 id="GiftServer_Data_Group_Add_GiftServer_Data_Gift_" data-uid="GiftServer.Data.Group.Add(GiftServer.Data.Gift)">Add(Gift)</h4>
@@ -444,7 +466,8 @@
       <tr>
         <td><a class="xref" href="GiftServer.Data.Gift.html">Gift</a></td>
         <td><span class="parametername">gift</span></td>
-        <td></td>
+        <td><p>The gift to become viewable</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -453,7 +476,7 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Group_Add_GiftServer_Data_User_.md&amp;value=---%0Auid%3A%20GiftServer.Data.Group.Add(GiftServer.Data.User)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L215">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L264">View Source</a>
   </span>
   <a id="GiftServer_Data_Group_Add_" data-uid="GiftServer.Data.Group.Add*"></a>
   <h4 id="GiftServer_Data_Group_Add_GiftServer_Data_User_" data-uid="GiftServer.Data.Group.Add(GiftServer.Data.User)">Add(User)</h4>
@@ -487,11 +510,12 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Group_Create.md&amp;value=---%0Auid%3A%20GiftServer.Data.Group.Create%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L96">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L137">View Source</a>
   </span>
   <a id="GiftServer_Data_Group_Create_" data-uid="GiftServer.Data.Group.Create*"></a>
   <h4 id="GiftServer_Data_Group_Create" data-uid="GiftServer.Data.Group.Create">Create()</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Create this group in the database</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -508,7 +532,8 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Boolean</span></td>
-        <td></td>
+        <td><p>A status flag</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -517,11 +542,12 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Group_Delete.md&amp;value=---%0Auid%3A%20GiftServer.Data.Group.Delete%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L155">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L204">View Source</a>
   </span>
   <a id="GiftServer_Data_Group_Delete_" data-uid="GiftServer.Data.Group.Delete*"></a>
   <h4 id="GiftServer_Data_Group_Delete" data-uid="GiftServer.Data.Group.Delete">Delete()</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Delete this group from the database</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -538,7 +564,8 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Boolean</span></td>
-        <td></td>
+        <td><p>A status flag</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -547,11 +574,12 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Group_Fetch.md&amp;value=---%0Auid%3A%20GiftServer.Data.Group.Fetch%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L335">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L403">View Source</a>
   </span>
   <a id="GiftServer_Data_Group_Fetch_" data-uid="GiftServer.Data.Group.Fetch*"></a>
   <h4 id="GiftServer_Data_Group_Fetch" data-uid="GiftServer.Data.Group.Fetch">Fetch()</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Serializes this group&apos;s information</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -568,16 +596,37 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Xml.XmlDocument</span></td>
-        <td></td>
+        <td><p>Serialization of this group as an XmlDocument</p>
+</td>
       </tr>
     </tbody>
   </table>
+  <h5 id="GiftServer_Data_Group_Fetch_remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>As with all other Fetch() methods, this returns an XML document.
+This document has the following fields:</p>
+<ul>
+<li>groupId: The group&apos;s ID</li>
+<li>name: The group&apos;s name</li>
+<li>description: The group&apos;s description</li>
+<li>adminId: The group&apos;s Admin ID</li>
+<li>members: All members of the group<ul>
+<li>Note that each element of <em>members</em> is a <em>member</em> which has the following fields:<ul>
+<li>userId: This member&apos;s ID</li>
+<li>userName: This member&apos;s Name</li>
+</ul>
+</li>
+<li>Note: The name is provided as a convenience for the caller.</li>
+</ul>
+</li>
+</ul>
+<p>This is all wrapped in a group container.</p>
+</div>
   <span class="small pull-right mobile-hide">
     <span class="divider">|</span>
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Group_Remove_GiftServer_Data_EventUser_.md&amp;value=---%0Auid%3A%20GiftServer.Data.Group.Remove(GiftServer.Data.EventUser)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L277">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L326">View Source</a>
   </span>
   <a id="GiftServer_Data_Group_Remove_" data-uid="GiftServer.Data.Group.Remove*"></a>
   <h4 id="GiftServer_Data_Group_Remove_GiftServer_Data_EventUser_" data-uid="GiftServer.Data.Group.Remove(GiftServer.Data.EventUser)">Remove(EventUser)</h4>
@@ -601,7 +650,8 @@
       <tr>
         <td><a class="xref" href="GiftServer.Data.EventUser.html">EventUser</a></td>
         <td><span class="parametername">evnt</span></td>
-        <td></td>
+        <td><p>The event no longer viewable</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -610,7 +660,7 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Group_Remove_GiftServer_Data_Gift_.md&amp;value=---%0Auid%3A%20GiftServer.Data.Group.Remove(GiftServer.Data.Gift)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L318">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L367">View Source</a>
   </span>
   <a id="GiftServer_Data_Group_Remove_" data-uid="GiftServer.Data.Group.Remove*"></a>
   <h4 id="GiftServer_Data_Group_Remove_GiftServer_Data_Gift_" data-uid="GiftServer.Data.Group.Remove(GiftServer.Data.Gift)">Remove(Gift)</h4>
@@ -634,7 +684,8 @@
       <tr>
         <td><a class="xref" href="GiftServer.Data.Gift.html">Gift</a></td>
         <td><span class="parametername">gift</span></td>
-        <td></td>
+        <td><p>The gift that will no longer be viewable</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -643,7 +694,7 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Group_Remove_GiftServer_Data_User_.md&amp;value=---%0Auid%3A%20GiftServer.Data.Group.Remove(GiftServer.Data.User)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L236">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L285">View Source</a>
   </span>
   <a id="GiftServer_Data_Group_Remove_" data-uid="GiftServer.Data.Group.Remove*"></a>
   <h4 id="GiftServer_Data_Group_Remove_GiftServer_Data_User_" data-uid="GiftServer.Data.Group.Remove(GiftServer.Data.User)">Remove(User)</h4>
@@ -677,11 +728,12 @@
     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Group_Update.md&amp;value=---%0Auid%3A%20GiftServer.Data.Group.Update%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
   </span>
   <span class="small pull-right mobile-hide">
-    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L129">View Source</a>
+    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L174">View Source</a>
   </span>
   <a id="GiftServer_Data_Group_Update_" data-uid="GiftServer.Data.Group.Update*"></a>
   <h4 id="GiftServer_Data_Group_Update" data-uid="GiftServer.Data.Group.Update">Update()</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Update this group in the database</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
@@ -698,7 +750,8 @@
     <tbody>
       <tr>
         <td><span class="xref">System.Boolean</span></td>
-        <td></td>
+        <td><p>A status flag</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -717,7 +770,7 @@
                     <a href="https://github.com/alexhrao/TheGiftHub/new/Development/apiSpec/new?filename=GiftServer_Data_Group.md&amp;value=---%0Auid%3A%20GiftServer.Data.Group%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
                   </li>
                   <li>
-                    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L13" class="contribution-link">View Source</a>
+                    <a href="https://github.com/alexhrao/TheGiftHub/blob/Development/server/GiftServer/Group.cs/#L20" class="contribution-link">View Source</a>
                   </li>
                 </ul>
               </div>
