@@ -1,302 +1,341 @@
 ﻿<html lang="en" xmlns="https://www.w3.org/1999/xhtml">
-    <head>
-        <title>The Gift Hub: Login or Signup Today!</title>
-        <meta name="description" content="The Gift Hub is a place where you can list your gifts and reserve the gifts of others. Sign up today to start gifting!" />
-        <script>
-            $(document).ready(function () {
-                $('#loginForm').submit(function (event) {
-                    if (!validateLogin()) {
-                        event.preventDefault();
-                        return false;
-                    }
-                });
-                $('#signupForm').submit(function (event) {
-                    if (!validateSignup()) {
-                        event.preventDefault();
-                        return false;
-                    }
-                });
-                $('#resetForm').submit(function (event) {
-                    if (!validateReset()) {
-                        event.preventDefault();
-                        return false;
-                    }
-                });
+<head>
+    <title>The Gift Hub: Login or Signup Today!</title>
+    <meta name="description" content="The Gift Hub is a place where you can list your gifts and reserve the gifts of others. Sign up today to start gifting!" />
+    <script>
+        $(document).ready(function () {
+            $('#loginForm').submit(function (event) {
+                if (!validateLogin()) {
+                    event.preventDefault();
+                    return false;
+                }
             });
-            $(document).ready(function () {
-                $('.loginControl').keyup(validateLogin);
-                $('.signupControl').keyup(validateSignup);
+            $('#signupForm').submit(function (event) {
+                if (!validateSignup()) {
+                    event.preventDefault();
+                    return false;
+                }
             });
-            $(document).ready(function () {
-                $('#cultureSelector').change(function () {
-                    $.post(".", {
-                        submit: "Culture",
-                        culture: $(this).val()
-                    },
-                        function () {
-                            location.reload(true);
-                        });
-                });
+            $('#resetForm').submit(function (event) {
+                if (!validateReset()) {
+                    event.preventDefault();
+                    return false;
+                }
             });
-            function validateLogin() {
-                // Check email and password
-                var valid = true;
-                if ($('#loginEmail').val()) {
-                    // green email
-                    $('#loginEmail').parent().removeClass('has-error');
-                    $('#loginEmail').parent().addClass('has-success');
-                } else {
-                    $('#loginEmail').parent().removeClass('has-success');
-                    $('#loginEmail').parent().addClass('has-error');
-                    valid = false;
-                }
-                if ($('#password').val()) {
-                    $('#password').parent().removeClass('has-error');
-                    $('#password').parent().addClass('has-success');
-                } else {
-                    $('#password').parent().removeClass('has-success');
-                    $('#password').parent().addClass('has-error');
-                    valid = false;
-                }
-                return valid;
+        });
+        $(document).ready(function () {
+            $('.loginControl').keyup(validateLogin);
+            $('.signupControl').keyup(validateSignup);
+        });
+        $(document).ready(function () {
+            $('#cultureSelector').change(function () {
+                $.post(".", {
+                    submit: "Culture",
+                    culture: $(this).val()
+                },
+                    function () {
+                        location.reload(true);
+                    });
+            });
+        });
+        function validateLogin() {
+            // Check email and password
+            var valid = true;
+            if ($('#loginEmail').val()) {
+                // green email
+                $('#loginEmail').parent().removeClass('has-error');
+                $('#loginEmail').parent().addClass('has-success');
+            } else {
+                $('#loginEmail').parent().removeClass('has-success');
+                $('#loginEmail').parent().addClass('has-error');
+                valid = false;
             }
-            function validateSignup() {
-                // Check Name, Email, Passwords
-                var valid = true;
-                if ($('#userName').val()) {
-                    // We are good to go!
-                    $('#userName').parent().removeClass('has-error');
-                    $('#userName').parent().addClass('has-success');
-                } else {
-                    // Passwords don't match; disable submit and warn
-                    $('#userName').parent().removeClass('has-success');
-                    $('#userName').parent().addClass('has-error');
-                    valid = false;
-                }
-                if ($('#signupEmail').val()) {
-                    // We are good to go!
-                    $('#signupEmail').parent().removeClass('has-error');
-                    $('#signupEmail').parent().addClass('has-success');
-                } else {
-                    // Passwords don't match; disable submit and warn
-                    $('#signupEmail').parent().removeClass('has-success');
-                    $('#signupEmail').parent().addClass('has-error');
-                    valid = false;
-                }
-                if ($('#secondPass').val() === $('#firstPass').val() && $('#firstPass').val()) {
-                    // We are good to go!
-                    $('#firstPass').parent().removeClass('has-error');
-                    $('#firstPass').parent().addClass('has-success');
-                    $('#secondPass').parent().removeClass('has-error');
-                    $('#secondPass').parent().addClass('has-success');
-                } else {
-                    // Passwords don't match; disable submit and warn
-                    $('#firstPass').parent().removeClass('has-success');
-                    $('#firstPass').parent().addClass('has-error');
-                    $('#secondPass').parent().removeClass('has-success');
-                    $('#secondPass').parent().addClass('has-error');
-                    valid = false;
-                }
-                return valid;
+            if ($('#password').val()) {
+                $('#password').parent().removeClass('has-error');
+                $('#password').parent().addClass('has-success');
+            } else {
+                $('#password').parent().removeClass('has-success');
+                $('#password').parent().addClass('has-error');
+                valid = false;
             }
-            function validateReset() {
-                return $('#resetEmail').val() !== "";
+            return valid;
+        }
+        function validateSignup() {
+            // Check Name, Email, Passwords
+            var valid = true;
+            if ($('#userName').val()) {
+                // We are good to go!
+                $('#userName').parent().removeClass('has-error');
+                $('#userName').parent().addClass('has-success');
+            } else {
+                // Passwords don't match; disable submit and warn
+                $('#userName').parent().removeClass('has-success');
+                $('#userName').parent().addClass('has-error');
+                valid = false;
             }
-            function getLocation() {
+            if ($('#signupEmail').val()) {
+                // We are good to go!
+                $('#signupEmail').parent().removeClass('has-error');
+                $('#signupEmail').parent().addClass('has-success');
+            } else {
+                // Passwords don't match; disable submit and warn
+                $('#signupEmail').parent().removeClass('has-success');
+                $('#signupEmail').parent().addClass('has-error');
+                valid = false;
+            }
+            if ($('#secondPass').val() === $('#firstPass').val() && $('#firstPass').val()) {
+                // We are good to go!
+                $('#firstPass').parent().removeClass('has-error');
+                $('#firstPass').parent().addClass('has-success');
+                $('#secondPass').parent().removeClass('has-error');
+                $('#secondPass').parent().addClass('has-success');
+            } else {
+                // Passwords don't match; disable submit and warn
+                $('#firstPass').parent().removeClass('has-success');
+                $('#firstPass').parent().addClass('has-error');
+                $('#secondPass').parent().removeClass('has-success');
+                $('#secondPass').parent().addClass('has-error');
+                valid = false;
+            }
+            return valid;
+        }
+        function validateReset() {
+            return $('#resetEmail').val() !== "";
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(141deg, #0fb8ad 0%, #1fc8db 51%, #2cb5e8 75%);
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
 
-            }
-        </script>
-        <style>
-            body {
-                background: linear-gradient(141deg, #0fb8ad 0%, #1fc8db 51%, #2cb5e8 75%);
-                background-repeat: no-repeat;
-                background-attachment: fixed;
-            }
-            .input-group,
-            .form-group,
-            .spaced {
-                margin: 10px;
-            }
-            #userName {
-                margin-top: 10px;
-                margin-bottom: 10px;
-            }
-            a {
-                color: lightgreen;
-            }
-            #userTab {
-                border: 3px solid white;
-                border-radius: 20px;
-                min-height: 350px;
-                padding: 5px;
-                float: right;
-                margin: 10px;
-            }
-            #location {
-                float: right;
-            }
-            #loginTop {
-                margin-right: -1px;
-                margin-bottom: 10px;
-                padding: 10px;
-            }
-            #logo {
-                width: 45%;
-                float: left;
-                padding-left: 15px;
-            }
-            .desc {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            }
-            p.desc {
-                font-size: 200%;
-                font-weight: 100;
-            }
-            h1.desc {
-                font-size: 400%;
-            }
-            .alert a {
-                color: #172556;
-            }
-            .nav-pills > li,
-            .nav-tabs > li {
-                float: none;
-                display: inline-block;
-            }
-            form {
-                max-width: 400px;
-                display: inline-block;
-            }
-            .nav-tabs,
-            .nav-pills {
-                display: inline-block;
-                text-align: center;
-                position: center;
-                max-width: 400px;
-            }
-            .no-click {
-                cursor: not-allowed;
-            }
-            .panel-heading {
-                border-top-left-radius: inherit;
-                border-top-right-radius: inherit;
-            }
-            .form-inline > .form-group {
-                vertical-align: middle;
-            }
+        .input-group,
+        .form-group,
+        .spaced {
+            margin: 10px;
+        }
 
-        </style>
-    </head>
-    <body class="text-center">
-        <div class="container-fluid">
-            <div class="alert alert-dismissable fade hidden">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            </div>
-            <div id="resetPassword" class="modal fade panel-warning" role="dialog">
-                <div class="modal-dialog">
-                    <div class="modal-content panel-warning">
-                        <div class="modal-header panel-heading">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Reset Your Password</h4>
-                        </div>
-                        <div class="modal-body">
-                            <form class="form-inline" id="resetForm" method="post">
-                                <div class="form-group">
-                                    <input class="form-control" id="resetEmail" type="email" name="email" placeholder="Email Address" />
-                                </div>
-                                <div class="form-group">
-                                    <button id="resetSubmit" form="resetForm" class="btn btn-success" type="submit" name="submit" value="PasswordResetRequest">
-                                        <p>Submit</p>
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button id="closeLabel" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
+        #userName {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        a {
+            color: lightgreen;
+        }
+
+        #userTab {
+            border: 3px solid white;
+            border-radius: 20px;
+            min-height: 350px;
+            padding: 5px;
+            float: right;
+            margin: 10px;
+            z-index: 999;
+        }
+
+        #location {
+            float: right;
+        }
+
+        #loginTop {
+            margin-right: -1px;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+
+        #logo {
+            width: 45%;
+            float: left;
+            padding-left: 15px;
+        }
+
+        .desc {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            z-index: 0;
+        }
+
+        p.desc {
+            font-size: 200%;
+            font-weight: 100;
+        }
+
+        h1.desc {
+            font-size: 400%;
+        }
+
+        .alert a {
+            color: #172556;
+        }
+
+        .nav-pills > li,
+        .nav-tabs > li {
+            float: none;
+            display: inline-block;
+        }
+
+        form {
+            max-width: 400px;
+            display: inline-block;
+        }
+
+        .nav-tabs,
+        .nav-pills {
+            display: inline-block;
+            text-align: center;
+            position: center;
+            max-width: 400px;
+        }
+
+        .no-click {
+            cursor: not-allowed;
+        }
+
+        .panel-heading {
+            border-top-left-radius: inherit;
+            border-top-right-radius: inherit;
+        }
+
+        .form-inline > .form-group {
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="text-center">
+    <div class="container-fluid">
+        <div class="alert alert-dismissable fade hidden">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        </div>
+        <div id="resetPassword" class="modal fade panel-warning" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content panel-warning">
+                    <div class="modal-header panel-heading">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Reset Your Password</h4>
                     </div>
-                </div>
-            </div>
-            <div id="loginTop" class="row container-fluid">
-                <div id="location" class="row">
-                    <div class="col-xs-1">
-                        <img src="FR.ico" />
-                    </div>
-                    <div class="col-xs-10">
-                        <select id="cultureSelector" class="form-control">
-                            <option class="culture-selector" value="fr-FR">French (FR)</option>
-                            <option class="culture-selector" value="en-US">English (US)</option>
-                            <option class="culture-selector" value="en-GB">English (GB)</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <img id="logo" src="resources/images/branding/wideLogo.png" />
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div id="userTab" class="col-md-3">
-                    <ul class="text-center nav nav-tabs">
-                        <li id="loginTab" class="active"><a data-toggle="tab" href="#login">Login</a></li>
-                        <li id="signupTab"><a data-toggle="tab" href="#signup">Sign Up</a></li>
-                    </ul>
-                    <div class="tab-content">
-                        <div id="login" class="tab-pane fade in active">
-                            <form id="loginForm" method="post">
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                    <input id="loginEmail" name="email" type="email" class="form-control login-control" placeholder="Email" />
-                                </div>
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                    <input id="password" name="password" type="password" class="form-control login-control" placeholder="Password" />
-                                </div>
-                                <div class="form-group">
-                                    <button id="passwordReset" type="button" class="btn btn-danger" data-toggle="modal" href="#resetPassword" name="reset">
-                                        <p>Reset Password</p>
-                                    </button>
-                                    <button id="loginSubmit" type="submit" name="submit" form="loginForm" value="Login" class="btn btn-success">
-                                        <p>Log In</p>
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                        <div id="signup" class="tab-pane fade">
-                            <form id="signupForm" method="post">
-                                <div class="form-group">
-                                    <div class="col-sm-12">
-                                        <input id="userName" name="userName" type="text" class="form-control signup-control" placeholder="Your Name" />
-                                    </div>
-                                </div>
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                    <input id="signupEmail" name="email" type="email" class="form-control signup-control" placeholder="Email Address" />
-                                </div>
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                    <input id="firstPass" name="password" type="password" class="form-control signup-control" placeholder="Password" />
-                                </div>
-                                <div class="input-group has-feedback">
-                                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                    <input id="secondPass" type="password" class="form-control signup-control" placeholder="Confirm Password" />
-                                </div>
-                                <input type="hidden" name="type" value="User" />
-                                <button id="signupSubmit" type="submit" name="submit" form="signupForm" value="Create" class="btn btn-success">
-                                    <p>Sign Up</p>
+                    <div class="modal-body">
+                        <form class="form-inline" id="resetForm" method="post">
+                            <div class="form-group">
+                                <input class="form-control" id="resetEmail" type="email" name="email" placeholder="Email Address" />
+                            </div>
+                            <div class="form-group">
+                                <button id="resetSubmit" form="resetForm" class="btn btn-success" type="submit" name="submit" value="PasswordResetRequest">
+                                    <p>Submit</p>
                                 </button>
-                            </form>
-                        </div>
+                            </div>
+                        </form>
                     </div>
-                </div>
-                <div class="col-md-8">
-                    <h1 class="desc text-left">Why use The Gift Hub?</h1>
-                    <p class="desc text-left">
-                        Because The Gift Hub is your one-stop shop for all gift and holiday related tasks!
-                    </p>
+                    <div class="modal-footer">
+                        <button id="closeLabel" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </body>
+        <div id="loginTop" class="row container-fluid">
+            <div id="location" class="row">
+                <div class="col-xs-1">
+                    <img src="FR.ico" />
+                </div>
+                <div class="col-xs-10">
+                    <select id="cultureSelector" class="form-control">
+                        <option class="culture-selector" value="fr-FR">French (FR)</option>
+                        <option class="culture-selector" value="en-GB">English (GB)</option>
+                        <option class="culture-selector" value="en-US">English (US)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <img id="logo" src="resources/images/branding/wideLogo.png" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div id="userTab" class="col-md-3">
+                <ul class="text-center nav nav-tabs">
+                    <li id="loginTab" class="active"><a data-toggle="tab" href="#login">Login</a></li>
+                    <li id="signupTab"><a data-toggle="tab" href="#signup">Sign Up</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div id="login" class="tab-pane fade in active">
+                        <form id="loginForm" method="post">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                <input id="loginEmail" name="email" type="email" class="form-control login-control" placeholder="Email" />
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                <input id="password" name="password" type="password" class="form-control login-control" placeholder="Password" />
+                            </div>
+                            <div class="form-group">
+                                <button id="passwordReset" type="button" class="btn btn-danger" data-toggle="modal" href="#resetPassword" name="reset">
+                                    <p>Reset Password</p>
+                                </button>
+                                <button id="loginSubmit" type="submit" name="submit" form="loginForm" value="Login" class="btn btn-success">
+                                    <p>Log In</p>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div id="signup" class="tab-pane fade">
+                        <form id="signupForm" method="post">
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <input id="userName" name="userName" type="text" class="form-control signup-control" placeholder="Your Name" />
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                <input id="signupEmail" name="email" type="email" class="form-control signup-control" placeholder="Email Address" />
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                <input id="firstPass" name="password" type="password" class="form-control signup-control" placeholder="Password" />
+                            </div>
+                            <div class="input-group has-feedback">
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                <input id="secondPass" type="password" class="form-control signup-control" placeholder="Confirm Password" />
+                            </div>
+                            <input type="hidden" name="type" value="User" />
+                            <button id="signupSubmit" type="submit" name="submit" form="signupForm" value="Create" class="btn btn-success">
+                                <p>Sign Up</p>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="text-left desc">
+                    <h1>Why Choose The Gift Hub?</h1>
+                    <hr />
+                    <p><em>The Gift Hub is an online portal where you, your friends, and your family can all organize any gift-giving occasion.</em></p>
+                    <h2>Features</h2>
+                    <p>The Gift Hub allows you to do a variety of things, including:</p>
+                    <ul>
+                        <li>Create your own gifts and choose who can see them</li>
+                        <li>Reserve gifts for others</li>
+                        <li>Inform others of which events you participate in</li>
+                    </ul>
+                    <p>Below are detailed descriptions on each facet of The Gift Hub</p>
+                    <h3>Groups</h3>
+                    <p>Giving is better in groups. Define as many groups as you want, and you have ultimate control over what is shown to whom. Make a group for your family, your friends - all you need is their email to add them!</p>
+                    <h3>Gifts</h3>
+                    <p>
+                        The Gift Hub is all about gifts! We allow every user to keep a personal collection of gifts that he or she might want, and we give the user utmost control over who can view this gift. In fact, a gift can be viewable to everyone - or no one - and anywhere in between.
+                        <br />
+                        Additionally, reserve gifts on other’s lists, without that user knowing! This makes planning a gift a breeze!
+                    </p>
+                    <h3>Events</h3>
+                    <p>
+                        At the end of the day, giving is about getting together and celebrating a common cause. Here at The Gift Hub, we want to celebrate that, which is why The Gift Hub allows every user to define events they celebrate, with some default events provided right out of the box. Better yet, harness the same privacy controls utilized for gifts and pick exactly who can see what you celebrate.
+                    </p>
+                    <h2>Acknowledgements</h2>
+                    <hr />
+                    <p>This would not have been possible without the help of my father and my girlfriend, both of whom have worked, and continue to work, immensely hard to make this a reality. This could not have become a reality without them!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
 </html>
