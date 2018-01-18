@@ -15,7 +15,39 @@ namespace GiftServer
             /// <summary>
             /// A list of all addresses contacted
             /// </summary>
-            public List<IPEndPoint> Addresses = new List<IPEndPoint>();
+            public List<Contact> Addresses = new List<Contact>();
+            /// <summary>
+            /// A single contact to the server
+            /// </summary>
+            public class Contact
+            {
+                /// <summary>
+                /// The IP Endpoint of the contact
+                /// </summary>
+                public readonly IPEndPoint Address;
+                /// <summary>
+                /// The Time this connection was made
+                /// </summary>
+                public readonly DateTime TimeStamp;
+                /// <summary>
+                /// The only constructor
+                /// </summary>
+                /// <param name="address"></param>
+                public Contact(IPEndPoint address)
+                {
+                    Address = address;
+                    TimeStamp = DateTime.Now;
+                }
+                /// <summary>
+                /// Overrides base ToString method
+                /// </summary>
+                /// <returns>A string with the endpoint and timestamp</returns>
+                public override string ToString()
+                {
+                    return TimeStamp.ToString("yyyy-MM-dd HH:mm:ss") + " -> " + Address.ToString();
+                }
+
+            }
             private Object key = new Object();
             /// <summary>
             /// Main method and entry point - starts the web server on the specified host/port.
@@ -71,7 +103,7 @@ namespace GiftServer
                                 else
                                 {
                                     Console.WriteLine("The Server has been contacted " + Addresses.Count + " times by the following locations:");
-                                    foreach (IPEndPoint end in Addresses)
+                                    foreach (Contact end in Addresses)
                                     {
                                         Console.WriteLine("\t" + end.ToString());
                                     }
@@ -130,7 +162,7 @@ namespace GiftServer
             {
                 lock(key)
                 {
-                    Addresses.Add(ctx.Request.RemoteEndPoint);
+                    Addresses.Add(new Contact(ctx.Request.RemoteEndPoint));
                 }
                 Controller control = new Controller(ctx);
                 return control.Dispatch();

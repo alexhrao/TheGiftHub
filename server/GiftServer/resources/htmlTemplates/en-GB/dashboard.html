@@ -4,17 +4,20 @@
     <title>My Dashboard</title>
     <style>
         body {
-            background-color: #CECECE;
-            color: black;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(141deg, #0fb8ad 0%, #1fc8db 51%, #2cb5e8 75%);
+            background-repeat: no-repeat;
+            background-attachment: fixed;
         }
         #eventHolder > li {
             cursor: pointer;
         }
+        .event-header {
+            color: black;
+        }
     </style>
     <script>
         $(document).ready(function () {
-            $('#menu-dropdown').click(function () {
+            $('.event-header').click(function () {
                 $(this).find('span').toggleClass('glyphicon-chevron-right').toggleClass('glyphicon-chevron-down');
             });
         });

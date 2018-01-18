@@ -88,7 +88,7 @@ namespace GiftServer
                                 string eName = Convert.ToString(Reader["EventName"]);
                                 // Create HtmlNode for this event:
                                 // <li><h5>(ENAME) - (MM/DD) (CHEVRON_RIGHT)</h5><ul></ul></li>
-                                HtmlNode eNode = HtmlNode.CreateNode(@"<li><h5 id=""menu-dropdown"" data-toggle=""collapse"" data-target=""#EventNumber" + eventNum + @""">"
+                                HtmlNode eNode = HtmlNode.CreateNode(@"<li><h5 class=""event-header menu-dropdown"" data-toggle=""collapse"" data-target=""#EventNumber" + eventNum + @""">"
                                                                     + HttpUtility.HtmlEncode(Convert.ToString(Reader["EventName"]))
                                                                     + " - ("
                                                                     + Convert.ToInt32(Reader["EventMonth"]) + "/"
