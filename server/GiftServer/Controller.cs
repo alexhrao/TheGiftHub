@@ -4,7 +4,6 @@ using GiftServer.Exceptions;
 using GiftServer.HtmlManager;
 using GiftServer.Properties;
 using GiftServer.Security;
-using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
@@ -409,45 +408,22 @@ namespace GiftServer
                             // If GiftID and UserID match, we will be able to read; otherwise, no
                             // Get GID:
                             ulong gid = Convert.ToUInt64(Path.GetFileNameWithoutExtension(path).Substring(4));
-                            if (_user.Gifts.Exists(new Predicate<Gift>((Gift g) => g.GiftId == gid)))
+                            if (_user.Gifts.Exists(new Predicate<Gift>(g => g.GiftId == gid)))
                             {
                                 // Found in our own gifts; write
                                 Write(path);
                             }
                             else
                             {
-                                // See if tied to gift through groups_gifts
-                                // Subquery selects groups tied to user:
-                                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                                Gift gift = new Gift(Convert.ToUInt64(Path.GetFileNameWithoutExtension(path).Substring(4)));
+                                if (gift.Groups.FindAll(g => g.Users.Exists(u => u.UserId == _user.UserId)).Count == 0)
                                 {
-                                    con.Open();
-                                    using (MySqlCommand cmd = new MySqlCommand())
-                                    {
-                                        cmd.Connection = con;
-                                        cmd.CommandText = "SELECT GiftID "
-                                                        + "FROM groups_gifts "
-                                                        + "WHERE groups_gifts.GiftID = @gid "
-                                                        + "AND groups_gifts.GroupID IN "
-                                                        + "( "
-                                                            + "SELECT GroupID FROM groups_users WHERE groups_users.UserID = @uid "
-                                                        + ");";
-                                        cmd.Parameters.AddWithValue("@gid", gid);
-                                        cmd.Parameters.AddWithValue("@uid", _user.UserId);
-                                        cmd.Prepare();
-                                        using (MySqlDataReader reader = cmd.ExecuteReader())
-                                        {
-                                            if (reader.Read())
-                                            {
-                                                // Tied; write
-                                                Write(path);
-                                            }
-                                            else
-                                            {
-                                                _response.StatusCode = 403;
-                                                message = "Forbidden - this gift is not currently shared with you.";
-                                            }
-                                        }
-                                    }
+                                    _response.StatusCode = 403;
+                                    message = "Forbidden - You are not in any common groups with this gift.";
+                                }
+                                else
+                                {
+                                    Write(path);
                                 }
                             }
                         }
@@ -819,37 +795,6 @@ namespace GiftServer
                         return "200";
                     default:
                         return "0";
-                }
-            }
-            private string Fetch(string email)
-            {
-                if (email.Equals(_user.Email))
-                {
-                    _response.StatusCode = 200;
-                    return "";
-                }
-                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
-                {
-                    con.Open();
-                    using (MySqlCommand cmd = new MySqlCommand())
-                    {
-                        cmd.Connection = con;
-                        cmd.CommandText = "SELECT users.UserID FROM users WHERE UserEmail = @email;";
-                        cmd.Parameters.AddWithValue("@email", email);
-                        cmd.Prepare();
-                        using (MySqlDataReader Reader = cmd.ExecuteReader())
-                        {
-                            // Return true if any results
-                            if (Reader.Read())
-                            {
-                                return (new User(Convert.ToUInt64(Reader["UserID"]))).UserName;
-                            }
-                            else
-                            {
-                                return "";
-                            }
-                        }
-                    }
                 }
             }
 
