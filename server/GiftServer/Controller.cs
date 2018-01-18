@@ -203,15 +203,22 @@ namespace GiftServer
                                         return Login(_dict["email"], _dict["password"]);
                                     case "PasswordResetRequest":
                                         // POST data will have user email. Send recovery email.
-                                        PasswordReset.SendRecoveryEmail(new MailAddress(_dict["email"]), ResetManager);
-                                        return ResetManager.ResetPasswordSent();
+                                        try
+                                        {
+                                            PasswordReset.SendRecoveryEmail(new MailAddress(_dict["email"]), ResetManager);
+                                            return ResetManager.ResetPasswordSent();
+                                        }
+                                        catch (SmtpException)
+                                        {
+                                            return ResetManager.ResetPasswordFailure();
+                                        }
                                     case "PasswordReset":
                                         // Reset password and direct to login page
                                         // POST data will have userID in userID input. Reset the password and let the user know.
                                         _user = new User(Convert.ToUInt64(_dict["userID"]));
                                         string password = _dict["password"];
                                         _user.UpdatePassword(password, ResetManager);
-                                        return ResetManager.SuccessResetPassword();
+                                        return ResetManager.ResetPasswordSuccess();
                                     case "Create":
                                         switch (_dict["type"])
                                         {
@@ -338,7 +345,7 @@ namespace GiftServer
                             }
                             catch (PasswordResetTimeoutException)
                             {
-                                return ResetManager.ResetFailed();
+                                return ResetManager.ResetPasswordExpired();
                             }
 
                         }

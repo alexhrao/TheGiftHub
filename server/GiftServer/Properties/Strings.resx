@@ -123,6 +123,9 @@
   <data name="duplicateUser" xml:space="preserve">
     <value>&lt;p&gt;&lt;strong&gt;Uh-Oh...&lt;/strong&gt; Looks like you already made an account! Sign in instead&lt;/p&gt;</value>
   </data>
+  <data name="emailFailure" xml:space="preserve">
+    <value>&lt;p&gt;&lt;strong&gt;Oops...&lt;/strong&gt; We were unable to send an email at the moment; Perhaps try again in a few minutes?&lt;/p&gt;</value>
+  </data>
   <data name="giftList" xml:space="preserve">
     <value>Gift List</value>
   </data>

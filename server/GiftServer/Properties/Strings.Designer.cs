@@ -79,6 +79,15 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;p&gt;&lt;strong&gt;Oops...&lt;/strong&gt; We were unable to send an email at the moment; Perhaps try again in a few minutes?&lt;/p&gt;.
+        /// </summary>
+        internal static string emailFailure {
+            get {
+                return ResourceManager.GetString("emailFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Gift List.
         /// </summary>
         internal static string giftList {

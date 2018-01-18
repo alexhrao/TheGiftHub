@@ -66,6 +66,7 @@ namespace GiftServer
             {
                 User ret;
                 DateTime timestamp;
+                DateTime curr;
                 // Hash and query DB for hash; if not found, throw error. Otherwise, get the user
                 string hashed = ComputeHash(token);
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -89,25 +90,40 @@ namespace GiftServer
                                 reader.Read();
                                 ret = new User(Convert.ToUInt64(reader["UserID"]));
                                 timestamp = (DateTime)(reader["TimeCreated"]);
-                                DateTime curr = (DateTime)(reader["CurrTime"]);
-                                if (timestamp.AddMinutes(30) < curr)
-                                {
-                                    // More than 30 minutes have passed; throw error:
-                                    throw new PasswordResetTimeoutException();
-                                }
+                                curr = (DateTime)(reader["CurrTime"]);
                             }
                         }
                     }
+                }
+                DeleteResetToken(token);
+                if (timestamp.AddMinutes(30) < curr)
+                {
+                    // More than 30 minutes have passed; throw error:
+                    throw new PasswordResetTimeoutException();
+                }
+                else
+                {
+                    return ret;
+                }
+            }
+            /// <summary>
+            /// Delete a reset token
+            /// </summary>
+            /// <param name="token">The issued reset token (*not* the hash)</param>
+            public static void DeleteResetToken(string token)
+            {
+                string hashed = ComputeHash(token);
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "DELETE FROM passwordResets WHERE passwordResets.ResetHash = @hash;";
                         cmd.Parameters.AddWithValue("@hash", hashed);
                         cmd.Prepare();
-                        // Finish with reader, then do this
                         cmd.ExecuteNonQuery();
                     }
-                    return ret;
                 }
             }
             /// <summary>
@@ -117,9 +133,9 @@ namespace GiftServer
             /// <param name="ResetManager">The associated ResetManager for this email to send</param>
             public static void SendRecoveryEmail(MailAddress emailAddress, ResetManager ResetManager)
             {
-                long id = -1;
+                ulong id = 0;
                 string token = "";
-                string body;
+                string body = "";
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -134,7 +150,7 @@ namespace GiftServer
                             if (reader.Read())
                             {
                                 // Get data:
-                                id = Convert.ToInt64(reader["UserID"]);
+                                id = Convert.ToUInt64(reader["UserID"]);
                                 token = GenerateToken();
                                 body = ResetManager.GenerateEmail(token);
                             }
@@ -145,7 +161,7 @@ namespace GiftServer
                             }
                         }
                     }
-                    if (id != -1)
+                    if (id != 0)
                     {
                         using (MySqlCommand cmd = new MySqlCommand())
                         {
@@ -158,19 +174,27 @@ namespace GiftServer
                         }
                     }
                 }
-                MailMessage email = new MailMessage(new MailAddress("The Gift Hub<support@TheGiftHub.org>"), emailAddress)
+                try
                 {
-                    Body = body,
-                    Subject = "Password Reset",
-                    IsBodyHtml = true
-                };
-                using (SmtpClient sender = new SmtpClient("smtp.gmail.com", 587))
+                    MailMessage email = new MailMessage(new MailAddress("The Gift Hub<support@TheGiftHub.org>"), emailAddress)
+                    {
+                        Body = body,
+                        Subject = "Password Reset",
+                        IsBodyHtml = true
+                    };
+                    using (SmtpClient sender = new SmtpClient("smtp.gmail.com", 587))
+                    {
+                        sender.EnableSsl = true;
+                        sender.DeliveryMethod = SmtpDeliveryMethod.Network;
+                        sender.UseDefaultCredentials = false;
+                        sender.Credentials = new NetworkCredential("support@thegifthub.org", Constants.emailPassword);
+                        sender.Send(email);
+                    }
+                }
+                catch (SmtpException e)
                 {
-                    sender.EnableSsl = true;
-                    sender.DeliveryMethod = SmtpDeliveryMethod.Network;
-                    sender.UseDefaultCredentials = false;
-                    sender.Credentials = new NetworkCredential("support@thegifthub.org", Constants.emailPassword);
-                    sender.Send(email);
+                    DeleteResetToken(token);
+                    throw e;
                 }
             }
         }

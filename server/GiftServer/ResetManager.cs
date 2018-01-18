@@ -51,7 +51,7 @@ namespace GiftServer
             /// Successfully changed password
             /// </summary>
             /// <returns>Complete HTML Markup for a successful reset</returns>
-            public string SuccessResetPassword()
+            public string ResetPasswordSuccess()
             {
                 HtmlDocument login = new HtmlDocument();
                 login.LoadHtml(LoginManager.Login());
@@ -67,7 +67,7 @@ namespace GiftServer
             /// Failed to reset password
             /// </summary>
             /// <returns>Complete HTML markup for an expired response</returns>
-            public string ResetFailed()
+            public string ResetPasswordExpired()
             {
                 HtmlDocument login = new HtmlDocument();
                 login.LoadHtml(LoginManager.Login());
@@ -75,6 +75,21 @@ namespace GiftServer
                 alert.AddClass("alert-danger in");
                 alert.RemoveClass("hidden");
                 HtmlNode message = HtmlNode.CreateNode(StringManager.GetString("codeExpired"));
+                alert.AppendChild(message);
+                return login.DocumentNode.OuterHtml;
+            }
+            /// <summary>
+            /// Failed so send the reset email
+            /// </summary>
+            /// <returns>Complete HTML Markup for a failure to send email</returns>
+            public string ResetPasswordFailure()
+            {
+                HtmlDocument login = new HtmlDocument();
+                login.LoadHtml(LoginManager.Login());
+                HtmlNode alert = login.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@class), \" \"), \" alert \")]");
+                alert.AddClass("alert-danger in");
+                alert.RemoveClass("hidden");
+                HtmlNode message = HtmlNode.CreateNode(StringManager.GetString("emailFailure"));
                 alert.AppendChild(message);
                 return login.DocumentNode.OuterHtml;
             }
