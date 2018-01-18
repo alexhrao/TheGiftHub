@@ -22,6 +22,15 @@ namespace GiftServer
             /// How big a token should be
             /// </summary>
             public const int TokenSize = 24;
+
+            private static string Sanitize(string token)
+            {
+                return token.Replace('+', '-').Replace('/', '_').Replace('=', '$');
+            }
+            private static string Desanitize(string hash)
+            {
+                return hash.Replace('-', '+').Replace('_', '/').Replace('$', '=');
+            }
             /// <summary>
             /// Generate a token suitable to be in the URL.
             /// </summary>
@@ -33,7 +42,7 @@ namespace GiftServer
                 {
                     crypt.GetBytes(token = new byte[TokenSize]);
                 }
-                return Convert.ToBase64String(token).Replace('+', '_').Replace('/', '-');
+                return Sanitize(Convert.ToBase64String(token));
             }
             /// <summary>
             /// Computes the hash from a token
@@ -45,7 +54,7 @@ namespace GiftServer
                 byte[] hashed = new byte[64];
                 using (SHA512Managed hasher = new SHA512Managed())
                 {
-                    hashed = hasher.ComputeHash(Convert.FromBase64String(token.Replace('_', '+').Replace('-', '/')));
+                    hashed = hasher.ComputeHash(Convert.FromBase64String(Desanitize(token)));
                 }
                 return Convert.ToBase64String(hashed);
             }
