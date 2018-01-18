@@ -105,6 +105,24 @@ namespace GiftServer
                 _listener.Stop();
                 _listener.Close();
             }
+            /// <summary>
+            /// Sanitize a Base64 String to be used in a URL
+            /// </summary>
+            /// <param name="token">The string to be sanitized</param>
+            /// <returns>A URL-Safe string</returns>
+            public static string SanitizeBase64(string token)
+            {
+                return token.Replace('+', '-').Replace('/', '_').Replace('=', '$');
+            }
+            /// <summary>
+            /// Convert a sanitized string Back to Base64
+            /// </summary>
+            /// <param name="token">The sanitized string</param>
+            /// <returns>A Base64 String</returns>
+            public static string DesanitizeBase64(string token)
+            {
+                return token.Replace('-', '+').Replace('_', '/').Replace('$', '=');
+            }
         }
     }
 }

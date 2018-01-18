@@ -8,6 +8,7 @@ using GiftServer.Properties;
 using System.Net.Mail;
 using System.Net;
 using GiftServer.HtmlManager;
+using GiftServer.Server;
 
 namespace GiftServer
 {
@@ -22,15 +23,6 @@ namespace GiftServer
             /// How big a token should be
             /// </summary>
             public const int TokenSize = 24;
-
-            private static string Sanitize(string token)
-            {
-                return token.Replace('+', '-').Replace('/', '_').Replace('=', '$');
-            }
-            private static string Desanitize(string hash)
-            {
-                return hash.Replace('-', '+').Replace('_', '/').Replace('$', '=');
-            }
             /// <summary>
             /// Generate a token suitable to be in the URL.
             /// </summary>
@@ -42,7 +34,7 @@ namespace GiftServer
                 {
                     crypt.GetBytes(token = new byte[TokenSize]);
                 }
-                return Sanitize(Convert.ToBase64String(token));
+                return WebServer.SanitizeBase64(Convert.ToBase64String(token));
             }
             /// <summary>
             /// Computes the hash from a token
@@ -54,7 +46,7 @@ namespace GiftServer
                 byte[] hashed = new byte[64];
                 using (SHA512Managed hasher = new SHA512Managed())
                 {
-                    hashed = hasher.ComputeHash(Convert.FromBase64String(Desanitize(token)));
+                    hashed = hasher.ComputeHash(Convert.FromBase64String(WebServer.DesanitizeBase64(token)));
                 }
                 return Convert.ToBase64String(hashed);
             }
