@@ -33,7 +33,7 @@ namespace GiftServer
                 {
                     crypt.GetBytes(token = new byte[TokenSize]);
                 }
-                return Convert.ToBase64String(token).Replace('+', '_');
+                return Convert.ToBase64String(token).Replace('+', '_').Replace('/', '-');
             }
             /// <summary>
             /// Computes the hash from a token
@@ -45,7 +45,7 @@ namespace GiftServer
                 byte[] hashed = new byte[64];
                 using (SHA512Managed hasher = new SHA512Managed())
                 {
-                    hashed = hasher.ComputeHash(Convert.FromBase64String(token.Replace('_', '+')));
+                    hashed = hasher.ComputeHash(Convert.FromBase64String(token.Replace('_', '+').Replace('-', '/')));
                 }
                 return Convert.ToBase64String(hashed);
             }
