@@ -996,7 +996,6 @@ namespace GiftServer
             /// Like other Get* operations, _this_ is considered the viewer, and _target_ is the owner.
             /// 
             /// In other words, GetGroups will get all groups that target and this have in common.
-            /// for this to happen.
             /// </remarks>
             public List<Group> GetGroups(User target)
             {

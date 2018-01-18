@@ -383,39 +383,15 @@ namespace GiftServer
                             }
                             else
                             {
-                                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+
+                                if (_user.GetGroups(new User(Convert.ToUInt64(Path.GetFileNameWithoutExtension(path).Substring(4)))).Count == 0)
                                 {
-                                    con.Open();
-                                    using (MySqlCommand cmd = new MySqlCommand())
-                                    {
-                                        // See if our user (_user) and requested user (from string) have common groups
-                                        // Subquery selects Groups tied to _user; 
-                                        cmd.Connection = con;
-                                        cmd.CommandText = "SELECT users.UserID "
-                                                        + "FROM users "
-                                                        + "INNER JOIN groups_users ON groups_users.UserID = users.UserID "
-                                                        + "WHERE groups_users.UserID = @otherID "
-                                                        + "AND groups_users.GroupID IN "
-                                                        + "( "
-                                                            + "SELECT GroupID FROM groups_users WHERE groups_users.UserID = @meID "
-                                                        + ");";
-                                        cmd.Parameters.AddWithValue("@meID", _user.UserId);
-                                        cmd.Parameters.AddWithValue("@otherID", Path.GetFileNameWithoutExtension(path).Substring(4));
-                                        cmd.Prepare();
-                                        using (MySqlDataReader reader = cmd.ExecuteReader())
-                                        {
-                                            if (reader.Read())
-                                            {
-                                                // connected
-                                                Write(path);
-                                            }
-                                            else
-                                            {
-                                                _response.StatusCode = 403;
-                                                message = "Forbidden - You are not in any common groups with this user.";
-                                            }
-                                        }
-                                    }
+                                    _response.StatusCode = 403;
+                                    message = "Forbidden - You are not in any common groups with this user.";
+                                }
+                                else
+                                {
+                                    Write(path);
                                 }
                             }
                         }
