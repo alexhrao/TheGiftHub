@@ -192,10 +192,10 @@ namespace GiftServer
                         sender.Send(email);
                     }
                 }
-                catch (SmtpException e)
+                catch (SmtpException)
                 {
                     DeleteResetToken(token);
-                    throw e;
+                    throw;
                 }
             }
         }
