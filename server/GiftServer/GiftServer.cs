@@ -123,6 +123,8 @@ namespace GiftServer
                                     Console.WriteLine("The Server has been contacted " + Addresses.Count + " times.");
                                 }
                                 Console.WriteLine(Controller.Connections.Count + " user(s) are currently logged in");
+                                Console.WriteLine(Controller.Warnings.Count + " warning(s) have been issued");
+                                Console.WriteLine(Controller.Warnings.FindAll(x => x is ExecutionErrorWarning).Count + " execution error(s) have been raised");
                                 break;
                             case "logged":
                                 Console.WriteLine("Users logged in:");
@@ -137,9 +139,15 @@ namespace GiftServer
                                 break;
                             case "warnings":
                                 Console.WriteLine("Warnings Issued:");
-                                foreach (Warning warn in Controller.Warnings)
+                                Console.WriteLine("\tExecution Errors:");
+                                foreach (ExecutionErrorWarning warn in Controller.Warnings.FindAll(x => x is ExecutionErrorWarning))
                                 {
-                                    Console.WriteLine("\t" + warn.ToString());
+                                    Console.WriteLine("\t\t" + warn.ToString());
+                                }
+                                Console.WriteLine("\tPublic Resources:");
+                                foreach (PublicResourceWarning warn in Controller.Warnings.FindAll(x => x is PublicResourceWarning))
+                                {
+                                    Console.WriteLine("\t\t" + warn.ToString());
                                 }
                                 break;
                             default:

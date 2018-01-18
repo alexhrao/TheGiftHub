@@ -1,10 +1,10 @@
-﻿using GiftServer.Data;
+﻿using System;
+using GiftServer.Data;
 using GiftServer.Exceptions;
 using GiftServer.HtmlManager;
 using GiftServer.Properties;
 using GiftServer.Security;
 using MySql.Data.MySqlClient;
-using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
@@ -132,42 +132,6 @@ namespace GiftServer
                         return null;
                     }
                     string path = ParsePath();
-                    // Following was used before using the toDataURL() was found; utilized MultipartParser
-                    /*
-                     if (_request.ContentType != null && _request.ContentType.Contains("multipart/form-data"))
-                    {
-                        MultipartParser parser = new MultipartParser(_request.InputStream, "image");
-                        if (parser.Success)
-                        {
-                            // Image file will be saved in resources/images/users/User[UID].jpg
-                            // Figure out which page user was on, engage.
-                            if (_request.QueryString["dest"] != null)
-                            {
-                                switch (_request.QueryString["dest"])
-                                {
-                                    case "profile":
-                                        {
-                                            // Save user image:
-                                            _user.SaveImage(parser.FileContents);
-                                            break;
-                                        }
-                                    case "myList":
-                                        {
-                                            Gift gift = new Gift(Convert.ToUInt64(parser.Parameters["itemid"]));
-                                            gift.SaveImage(parser.FileContents);
-                                            break;
-                                        }
-                                }
-                                return ParseQuery();
-                            }
-                            else
-                            {
-                                // Just return dashboard
-                                return DashboardManager.Dashboard(_user);
-                            }
-                        }
-                    } 
-                     */
                     if (_request.HasEntityBody)
                     {
                         string input;
@@ -210,6 +174,7 @@ namespace GiftServer
                                         }
                                         catch (SmtpException)
                                         {
+                                            // DB Cleanup already taken care of
                                             return ResetManager.ResetPasswordFailure();
                                         }
                                     case "PasswordReset":
@@ -363,7 +328,7 @@ namespace GiftServer
                         // If logged in (but no request), just send back home page:
                         return DashboardManager.Dashboard(_user);
                     }
-                // catch exceptions and return something meaningful
+                // catch exceptions and return something meaningful...
                 }
                 catch (Exception e)
                 {

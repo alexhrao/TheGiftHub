@@ -385,20 +385,26 @@ namespace GiftServer
                     }
                 }
                 // Send email
-                
-                MailMessage email = new MailMessage(new MailAddress("The Gift Hub<support@TheGiftHub.org>"), this.Email)
+                try
                 {
-                    Body = ResetManager.GenerateNotification(this),
-                    Subject = "Password Reset Notification",
-                    IsBodyHtml = true
-                };
-                using (SmtpClient sender = new SmtpClient("smtp.gmail.com", 587))
+                    MailMessage email = new MailMessage(new MailAddress("The Gift Hub<support@TheGiftHub.org>"), this.Email)
+                    {
+                        Body = ResetManager.GenerateNotification(this),
+                        Subject = "Password Reset Notification",
+                        IsBodyHtml = true
+                    };
+                    using (SmtpClient sender = new SmtpClient("smtp.gmail.com", 587))
+                    {
+                        sender.EnableSsl = true;
+                        sender.DeliveryMethod = SmtpDeliveryMethod.Network;
+                        sender.UseDefaultCredentials = false;
+                        sender.Credentials = new NetworkCredential("support@thegifthub.org", Constants.emailPassword);
+                        sender.Send(email);
+                    }
+                }
+                catch (SmtpException)
                 {
-                    sender.EnableSsl = true;
-                    sender.DeliveryMethod = SmtpDeliveryMethod.Network;
-                    sender.UseDefaultCredentials = false;
-                    sender.Credentials = new NetworkCredential("support@thegifthub.org", Constants.emailPassword);
-                    sender.Send(email);
+                    // Silenced - nothing we can do here and, frankly, nothing to tell the user...
                 }
                 return true;
             }
