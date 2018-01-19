@@ -84,7 +84,7 @@ namespace GiftServer
                             if (!reader.HasRows)
                             {
                                 // Throw UserNotFound
-                                throw new UserNotFoundException(Convert.FromBase64String(token));
+                                throw new UserNotFoundException(Convert.FromBase64String(WebServer.DesanitizeBase64(token)));
                             }
                             else
                             {
