@@ -211,11 +211,11 @@
     <None Include="resources\htmlTemplates\en-US\passwordResetNotification.html" />
     <None Include="resources\htmlTemplates\fr-FR\passwordResetNotification.html" />
     <Content Include="resources\htmlTemplates\en-GB\dashboard.html" />
-    <Content Include="resources\htmlTemplates\en-GB\header.html" />
-    <Content Include="resources\htmlTemplates\en-GB\list.html" />
+    <None Include="resources\htmlTemplates\en-GB\header.html" />
+    <None Include="resources\htmlTemplates\en-GB\list.html" />
     <Content Include="resources\htmlTemplates\en-GB\login.html" />
     <Content Include="resources\htmlTemplates\en-GB\navigationBar.html" />
-    <Content Include="resources\htmlTemplates\en-GB\passwordReset.html" />
+    <None Include="resources\htmlTemplates\en-GB\passwordReset.html" />
     <Content Include="resources\htmlTemplates\en-GB\passwordResetEmail.html" />
     <Content Include="resources\htmlTemplates\en-GB\passwordResetNotification.html" />
     <Content Include="resources\htmlTemplates\en-GB\profile.html" />
