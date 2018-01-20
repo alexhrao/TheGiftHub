@@ -1,191 +1,256 @@
 ﻿<html lang="en" xmlns="https://www.w3.org/1999/xhtml">
-    <head>
-        <title>The Gift Hub: Login or Signup Today!</title>
-        <meta name="description" content="The Gift Hub is a place where you can list your gifts and reserve the gifts of others. Sign up today to start gifting!" />
-        <script>
-            $(document).ready(function () {
-                $('#loginForm').submit(function (event) {
-                    if (!validateLogin()) {
-                        event.preventDefault();
-                        return false;
-                    }
-                });
-                $('#signupForm').submit(function (event) {
-                    if (!validateSignup()) {
-                        event.preventDefault();
-                        return false;
-                    }
-                });
-                $('#resetForm').submit(function (event) {
-                    if (!validateReset()) {
-                        event.preventDefault();
-                        return false;
-                    }
-                });
+<head>
+    <meta name="google-signin-client_id" content="173734539372-487ifitqact1a1qcrk06ta3fv46nfrbs.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js?onload=renderGoogleLogin" async defer></script>
+    <title>The Gift Hub: Login or Signup Today!</title>
+    <meta name="description" content="The Gift Hub is a place where you can list your gifts and reserve the gifts of others. Sign up today to start gifting!" />
+    <script>
+        $(document).ready(function () {
+            $('#loginForm').submit(function (event) {
+                if (!validateLogin()) {
+                    event.preventDefault();
+                    return false;
+                }
             });
-            $(document).ready(function () {
-                $('.loginControl').keyup(validateLogin);
-                $('.signupControl').keyup(validateSignup);
+            $('#signupForm').submit(function (event) {
+                if (!validateSignup()) {
+                    event.preventDefault();
+                    return false;
+                }
             });
-            $(document).ready(function () {
-                $('#cultureSelector').change(function () {
-                    $.post(".", {
-                        submit: "Culture",
-                        culture: $(this).val()
-                    },
-                        function () {
-                            location.reload(true);
-                        });
-                });
+            $('#resetForm').submit(function (event) {
+                if (!validateReset()) {
+                    event.preventDefault();
+                    return false;
+                }
             });
-            function validateLogin() {
-                // Check email and password
-                var valid = true;
-                if ($('#loginEmail').val()) {
-                    // green email
-                    $('#loginEmail').parent().removeClass('has-error');
-                    $('#loginEmail').parent().addClass('has-success');
-                } else {
-                    $('#loginEmail').parent().removeClass('has-success');
-                    $('#loginEmail').parent().addClass('has-error');
-                    valid = false;
-                }
-                if ($('#password').val()) {
-                    $('#password').parent().removeClass('has-error');
-                    $('#password').parent().addClass('has-success');
-                } else {
-                    $('#password').parent().removeClass('has-success');
-                    $('#password').parent().addClass('has-error');
-                    valid = false;
-                }
-                return valid;
+        });
+        $(document).ready(function () {
+            $('.loginControl').keyup(validateLogin);
+            $('.signupControl').keyup(validateSignup);
+        });
+        $(document).ready(function () {
+            $('#cultureSelector').change(function () {
+                $.post(".", {
+                    submit: "Culture",
+                    culture: $(this).val()
+                },
+                    function () {
+                        location.reload(true);
+                    });
+            });
+        });
+        function validateLogin() {
+            // Check email and password
+            var valid = true;
+            if ($('#loginEmail').val()) {
+                // green email
+                $('#loginEmail').parent().removeClass('has-error');
+                $('#loginEmail').parent().addClass('has-success');
+            } else {
+                $('#loginEmail').parent().removeClass('has-success');
+                $('#loginEmail').parent().addClass('has-error');
+                valid = false;
             }
-            function validateSignup() {
-                // Check Name, Email, Passwords
-                var valid = true;
-                if ($('#userName').val()) {
-                    // We are good to go!
-                    $('#userName').parent().removeClass('has-error');
-                    $('#userName').parent().addClass('has-success');
-                } else {
-                    // Passwords don't match; disable submit and warn
-                    $('#userName').parent().removeClass('has-success');
-                    $('#userName').parent().addClass('has-error');
-                    valid = false;
-                }
-                if ($('#signupEmail').val()) {
-                    // We are good to go!
-                    $('#signupEmail').parent().removeClass('has-error');
-                    $('#signupEmail').parent().addClass('has-success');
-                } else {
-                    // Passwords don't match; disable submit and warn
-                    $('#signupEmail').parent().removeClass('has-success');
-                    $('#signupEmail').parent().addClass('has-error');
-                    valid = false;
-                }
-                if ($('#secondPass').val() === $('#firstPass').val() && $('#firstPass').val()) {
-                    // We are good to go!
-                    $('#firstPass').parent().removeClass('has-error');
-                    $('#firstPass').parent().addClass('has-success');
-                    $('#secondPass').parent().removeClass('has-error');
-                    $('#secondPass').parent().addClass('has-success');
-                } else {
-                    // Passwords don't match; disable submit and warn
-                    $('#firstPass').parent().removeClass('has-success');
-                    $('#firstPass').parent().addClass('has-error');
-                    $('#secondPass').parent().removeClass('has-success');
-                    $('#secondPass').parent().addClass('has-error');
-                    valid = false;
-                }
-                return valid;
+            if ($('#password').val()) {
+                $('#password').parent().removeClass('has-error');
+                $('#password').parent().addClass('has-success');
+            } else {
+                $('#password').parent().removeClass('has-success');
+                $('#password').parent().addClass('has-error');
+                valid = false;
             }
-            function validateReset() {
-                return $('#resetEmail').val() !== "";
+            return valid;
+        }
+        function validateSignup() {
+            // Check Name, Email, Passwords
+            var valid = true;
+            if ($('#userName').val()) {
+                // We are good to go!
+                $('#userName').parent().removeClass('has-error');
+                $('#userName').parent().addClass('has-success');
+            } else {
+                // Passwords don't match; disable submit and warn
+                $('#userName').parent().removeClass('has-success');
+                $('#userName').parent().addClass('has-error');
+                valid = false;
             }
-        </script>
-        <style>
-            body {
-                background: linear-gradient(141deg, #0fb8ad 0%, #1fc8db 51%, #2cb5e8 75%);
-                background-repeat: no-repeat;
-                background-attachment: fixed;
+            if ($('#signupEmail').val()) {
+                // We are good to go!
+                $('#signupEmail').parent().removeClass('has-error');
+                $('#signupEmail').parent().addClass('has-success');
+            } else {
+                // Passwords don't match; disable submit and warn
+                $('#signupEmail').parent().removeClass('has-success');
+                $('#signupEmail').parent().addClass('has-error');
+                valid = false;
             }
-            .input-group,
-            .form-group,
-            .spaced {
-                margin: 10px;
+            if ($('#secondPass').val() === $('#firstPass').val() && $('#firstPass').val()) {
+                // We are good to go!
+                $('#firstPass').parent().removeClass('has-error');
+                $('#firstPass').parent().addClass('has-success');
+                $('#secondPass').parent().removeClass('has-error');
+                $('#secondPass').parent().addClass('has-success');
+            } else {
+                // Passwords don't match; disable submit and warn
+                $('#firstPass').parent().removeClass('has-success');
+                $('#firstPass').parent().addClass('has-error');
+                $('#secondPass').parent().removeClass('has-success');
+                $('#secondPass').parent().addClass('has-error');
+                valid = false;
             }
-            #userName {
-                margin-top: 10px;
-                margin-bottom: 10px;
-            }
-            a {
-                color: lightgreen;
-            }
-            #userTab {
-                border: 3px solid white;
-                border-radius: 20px;
-                min-height: 350px;
-                padding: 5px;
-                float: right;
-                margin: 10px;
-                z-index: 999;
-            }
-            #location {
-                float: right;
-            }
-            #loginTop {
-                margin-right: -1px;
-                margin-bottom: 10px;
-                padding: 10px;
-            }
-            #logo {
-                width: 45%;
-                float: left;
-                padding-left: 15px;
-            }
-            .desc {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                z-index: 0;
-            }
-            p.desc {
-                font-size: 200%;
-                font-weight: 100;
-            }
-            h1.desc {
-                font-size: 400%;
-            }
-            .alert a {
-                color: #172556;
-            }
-            .nav-pills > li,
-            .nav-tabs > li {
-                float: none;
-                display: inline-block;
-            }
-            form {
-                max-width: 400px;
-                display: inline-block;
-            }
-            .nav-tabs,
-            .nav-pills {
-                display: inline-block;
-                text-align: center;
-                position: center;
-                max-width: 400px;
-            }
-            .no-click {
-                cursor: not-allowed;
-            }
-            .panel-heading {
-                border-top-left-radius: inherit;
-                border-top-right-radius: inherit;
-            }
-            .form-inline > .form-group {
-                vertical-align: middle;
-            }
+            return valid;
+        }
+        function validateReset() {
+            return $('#resetEmail').val() !== "";
+        }
+        function onSuccess(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+            console.log('Name: ' + profile.getName());
+            console.log('Image URL: ' + profile.getImageUrl());
+            console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+        }
+        function onFailure(error) {
+            console.log(error);
+        }
+        function renderGoogleLogin() {
+            gapi.signin2.render('googleLogin', {
+                'scope': 'profile email',
+                'width': 240,
+                'height': 50,
+                'longtitle': true,
+                'theme': 'dark',
+                'onsuccess': onSuccess,
+                'onfailure': onFailure
+            });
+        }
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '{your-app-id}',
+                cookie: true,
+                xfbml: true,
+                version: '{latest-api-version}'
+            });
 
-        </style>
-    </head>
+            FB.AppEvents.logPageView();
+
+        };
+
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) { return; }
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.11&appId=553216418365065";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
+    <style>
+        body {
+            background: linear-gradient(141deg, #0fb8ad 0%, #1fc8db 51%, #2cb5e8 75%);
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        .input-group,
+        .form-group,
+        .spaced {
+            margin: 10px;
+        }
+
+        #userName {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        a {
+            color: lightgreen;
+        }
+
+        #userTab {
+            border: 3px solid white;
+            border-radius: 20px;
+            min-height: 350px;
+            padding: 5px;
+            float: right;
+            margin: 10px;
+            z-index: 999;
+        }
+
+        #location {
+            float: right;
+        }
+
+        #loginTop {
+            margin-right: -1px;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+
+        #logo {
+            width: 45%;
+            float: left;
+            padding-left: 15px;
+        }
+
+        .desc {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            z-index: 0;
+        }
+
+        p.desc {
+            font-size: 200%;
+            font-weight: 100;
+        }
+
+        h1.desc {
+            font-size: 400%;
+        }
+
+        .alert a {
+            color: #172556;
+        }
+
+        .nav-pills > li,
+        .nav-tabs > li {
+            float: none;
+            display: inline-block;
+        }
+
+        form {
+            max-width: 400px;
+            display: inline-block;
+        }
+
+        .nav-tabs,
+        .nav-pills {
+            display: inline-block;
+            text-align: center;
+            position: center;
+            max-width: 400px;
+        }
+
+        .no-click {
+            cursor: not-allowed;
+        }
+
+        .panel-heading {
+            border-top-left-radius: inherit;
+            border-top-right-radius: inherit;
+        }
+
+        .form-inline > .form-group {
+            vertical-align: middle;
+        }
+
+        .google-login,
+        .facebook-login {
+            display: inline-block;
+            text-align: center;
+            position: center;
+        }
+    </style>
+</head>
     <body class="text-center">
         <div class="container-fluid">
             <div class="alert alert-dismissable fade hidden">
@@ -243,24 +308,35 @@
                     </ul>
                     <div class="tab-content">
                         <div id="login" class="tab-pane fade in active">
-                            <form id="loginForm" method="post">
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                    <input id="loginEmail" name="email" type="email" class="form-control login-control" placeholder="Email" />
-                                </div>
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                    <input id="password" name="password" type="password" class="form-control login-control" placeholder="Password" />
-                                </div>
-                                <div class="form-group">
-                                    <button id="passwordReset" type="button" class="btn btn-danger" data-toggle="modal" href="#resetPassword" name="reset">
-                                        <p>Reset Password</p>
-                                    </button>
-                                    <button id="loginSubmit" type="submit" name="submit" form="loginForm" value="Login" class="btn btn-success">
-                                        <p>Log In</p>
-                                    </button>
-                                </div>
-                            </form>
+                            <div class="row">
+                                <form id="loginForm" method="post">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                        <input id="loginEmail" name="email" type="email" class="form-control login-control" placeholder="Email" />
+                                    </div>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                        <input id="password" name="password" type="password" class="form-control login-control" placeholder="Password" />
+                                    </div>
+                                    <div class="form-group">
+                                        <button id="passwordReset" type="button" class="btn btn-danger" data-toggle="modal" href="#resetPassword" name="reset">
+                                            <p>Reset Password</p>
+                                        </button>
+                                        <button id="loginSubmit" type="submit" name="submit" form="loginForm" value="Login" class="btn btn-success">
+                                            <p>Log In</p>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="row">
+                                <p class="text-center">Or</p>
+                            </div>
+                            <div class="row text-center">
+                                <div class="google-login" id="googleLogin"></div>
+                            </div>
+                            <div class="row text-center">
+                                <div class="fb-login-button facebook-login" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false"></div>
+                            </div>
                         </div>
                         <div id="signup" class="tab-pane fade">
                             <form id="signupForm" method="post">

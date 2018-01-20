@@ -1,5 +1,7 @@
 ﻿<html lang="en" xmlns="https://www.w3.org/1999/xhtml">
 <head>
+    <meta name="google-signin-client_id" content="173734539372-487ifitqact1a1qcrk06ta3fv46nfrbs.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js?onload=renderGoogleLogin" async defer></script>
     <title>The Gift Hub: Login or Signup Today!</title>
     <meta name="description" content="The Gift Hub is a place where you can list your gifts and reserve the gifts of others. Sign up today to start gifting!" />
     <script>
@@ -102,6 +104,46 @@
         function validateReset() {
             return $('#resetEmail').val() !== "";
         }
+        function onSuccess(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+            console.log('Name: ' + profile.getName());
+            console.log('Image URL: ' + profile.getImageUrl());
+            console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+        }
+        function onFailure(error) {
+            console.log(error);
+        }
+        function renderGoogleLogin() {
+            gapi.signin2.render('googleLogin', {
+                'scope': 'profile email',
+                'width': 240,
+                'height': 50,
+                'longtitle': true,
+                'theme': 'dark',
+                'onsuccess': onSuccess,
+                'onfailure': onFailure
+            });
+        }
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '{your-app-id}',
+                cookie: true,
+                xfbml: true,
+                version: '{latest-api-version}'
+            });
+
+            FB.AppEvents.logPageView();
+
+        };
+
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) { return; }
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.11&appId=553216418365065";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
     </script>
     <style>
         body {
@@ -200,6 +242,13 @@
         .form-inline > .form-group {
             vertical-align: middle;
         }
+
+        .google-login,
+        .facebook-login {
+            display: inline-block;
+            text-align: center;
+            position: center;
+        }
     </style>
 </head>
 <body class="text-center">
@@ -240,8 +289,8 @@
                 <div class="col-xs-10">
                     <select id="cultureSelector" class="form-control">
                         <option class="culture-selector" value="en-GB">English (GB)</option>
-                        <option class="culture-selector" value="fr-FR">French (FR)</option>
                         <option class="culture-selector" value="en-US">English (US)</option>
+                        <option class="culture-selector" value="fr-FR">French (FR)</option>
                     </select>
                 </div>
             </div>
@@ -259,24 +308,35 @@
                 </ul>
                 <div class="tab-content">
                     <div id="login" class="tab-pane fade in active">
-                        <form id="loginForm" method="post">
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                <input id="loginEmail" name="email" type="email" class="form-control login-control" placeholder="Email" />
-                            </div>
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                <input id="password" name="password" type="password" class="form-control login-control" placeholder="Password" />
-                            </div>
-                            <div class="form-group">
-                                <button id="passwordReset" type="button" class="btn btn-danger" data-toggle="modal" href="#resetPassword" name="reset">
-                                    <p>Reset Password</p>
-                                </button>
-                                <button id="loginSubmit" type="submit" name="submit" form="loginForm" value="Login" class="btn btn-success">
-                                    <p>Log In</p>
-                                </button>
-                            </div>
-                        </form>
+                        <div class="row">
+                            <form id="loginForm" method="post">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                    <input id="loginEmail" name="email" type="email" class="form-control login-control" placeholder="Email" />
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                    <input id="password" name="password" type="password" class="form-control login-control" placeholder="Password" />
+                                </div>
+                                <div class="form-group">
+                                    <button id="passwordReset" type="button" class="btn btn-danger" data-toggle="modal" href="#resetPassword" name="reset">
+                                        <p>Reset Password</p>
+                                    </button>
+                                    <button id="loginSubmit" type="submit" name="submit" form="loginForm" value="Login" class="btn btn-success">
+                                        <p>Log In</p>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="row">
+                            <p class="text-center">Or</p>
+                        </div>
+                        <div class="row text-center">
+                            <div class="google-login" id="googleLogin"></div>
+                        </div>
+                        <div class="row text-center">
+                            <div class="fb-login-button facebook-login" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false"></div>
+                        </div>
                     </div>
                     <div id="signup" class="tab-pane fade">
                         <form id="signupForm" method="post">

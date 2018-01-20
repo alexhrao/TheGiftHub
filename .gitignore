@@ -268,3 +268,4 @@ __pycache__/
 /server/GiftServer/log.txt
 /server/giftServer/_site/*
 *.db
+/server/GiftServer/resources/googleOAuth.txt
