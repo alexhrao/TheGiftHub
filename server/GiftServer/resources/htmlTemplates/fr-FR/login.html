@@ -124,13 +124,22 @@
                 'onsuccess': onSuccess,
                 'onfailure': onFailure
             });
+            gapi.signin2.render('googleSignup', {
+                'scope': 'profile email',
+                'width': 240,
+                'height': 50,
+                'longtitle': true,
+                'theme': 'dark',
+                'onsuccess': onSuccess,
+                'onfailure': onFailure
+            });
         }
         window.fbAsyncInit = function () {
             FB.init({
-                appId: '{your-app-id}',
+                appId: '553216418365065',
                 cookie: true,
                 xfbml: true,
-                version: '{latest-api-version}'
+                version: 'v2.11'
             });
 
             FB.AppEvents.logPageView();
@@ -243,11 +252,16 @@
             vertical-align: middle;
         }
 
-        .google-login,
-        .facebook-login {
+        .oauth {
             display: inline-block;
             text-align: center;
             position: center;
+        }
+        .auth-option {
+            font-size: 300%;
+            margin: 5px;
+            color: white;
+            font-style: italic;
         }
     </style>
 </head>
@@ -329,39 +343,50 @@
                             </form>
                         </div>
                         <div class="row">
-                            <p class="text-center">Or</p>
+                            <p class="text-center auth-option">Or</p>
                         </div>
                         <div class="row text-center">
-                            <div class="google-login" id="googleLogin"></div>
+                            <div class="oauth" id="googleLogin"></div>
                         </div>
                         <div class="row text-center">
-                            <div class="fb-login-button facebook-login" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false"></div>
+                            <div class="fb-login-button oauth" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false"></div>
                         </div>
                     </div>
                     <div id="signup" class="tab-pane fade">
-                        <form id="signupForm" method="post">
-                            <div class="form-group">
-                                <div class="col-sm-12">
-                                    <input id="userName" name="userName" type="text" class="form-control signup-control" placeholder="Your Name" />
+                        <div class="row">
+                            <form id="signupForm" method="post">
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <input id="userName" name="userName" type="text" class="form-control signup-control" placeholder="Your Name" />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                <input id="signupEmail" name="email" type="email" class="form-control signup-control" placeholder="Email Address" />
-                            </div>
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                <input id="firstPass" name="password" type="password" class="form-control signup-control" placeholder="Password" />
-                            </div>
-                            <div class="input-group has-feedback">
-                                <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                                <input id="secondPass" type="password" class="form-control signup-control" placeholder="Confirm Password" />
-                            </div>
-                            <input type="hidden" name="type" value="User" />
-                            <button id="signupSubmit" type="submit" name="submit" form="signupForm" value="Create" class="btn btn-success">
-                                <p>Sign Up</p>
-                            </button>
-                        </form>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                                    <input id="signupEmail" name="email" type="email" class="form-control signup-control" placeholder="Email Address" />
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                    <input id="firstPass" name="password" type="password" class="form-control signup-control" placeholder="Password" />
+                                </div>
+                                <div class="input-group has-feedback">
+                                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                                    <input id="secondPass" type="password" class="form-control signup-control" placeholder="Confirm Password" />
+                                </div>
+                                <input type="hidden" name="type" value="User" />
+                                <button id="signupSubmit" type="submit" name="submit" form="signupForm" value="Create" class="btn btn-success">
+                                    <p>Sign Up</p>
+                                </button>
+                            </form>
+                        </div>
+                        <div class="row">
+                            <p class="text-center auth-option">Or</p>
+                        </div>
+                        <div class="row text-center">
+                            <div class="oauth" id="googleSignup"></div>
+                        </div>
+                        <div class="row text-center">
+                            <div class="fb-login-button oauth" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false"></div>
+                        </div>
                     </div>
                 </div>
             </div>
