@@ -44,7 +44,8 @@ namespace GiftServer
                 HtmlDocument list = new HtmlDocument();
                 list.LoadHtml(NavigationManager.NavigationBar(target) + HtmlManager.GetString("publicList"));
                 // Get all gifts that are visible to THIS USER
-
+                HtmlNode userId = list.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" thisUserId \")]");
+                userId.SetAttributeValue("data-user-id", viewer.UserId.ToString());
                 List<Gift> gifts = viewer.GetGifts(target);
                 HtmlNode userName = list.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
                 userName.InnerHtml = target.UserName + "'s " + StringManager.GetString("giftList");
@@ -95,6 +96,8 @@ namespace GiftServer
                 HtmlDocument myList = new HtmlDocument();
                 myList.LoadHtml(NavigationManager.NavigationBar(target) + HtmlManager.GetString("list"));
                 // Add category options to new and edit:
+                HtmlNode userId = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" thisUserId \")]");
+                userId.SetAttributeValue("data-user-id", target.UserId.ToString());
                 HtmlNode categoryEdit = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" editGiftCategory \")]");
                 HtmlNode categoryNew = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" newGiftCategory \")]");
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))

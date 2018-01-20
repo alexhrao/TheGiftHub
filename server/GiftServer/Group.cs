@@ -47,16 +47,23 @@ namespace GiftServer
                 {
                     return admin;
                 }
+                set
+                {
+                    this.admin = value;
+                }
             }
             private User admin;
             /// <summary>
-            /// A list of all members
+            /// A list of all members including the administrator
             /// </summary>
             public List<User> Users
             {
                 get
                 {
-                    return users;
+                    return new List<User>(users)
+                    {
+                        this.Admin
+                    };
                 }
             }
             private List<User> users = new List<User>();

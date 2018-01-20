@@ -3,6 +3,8 @@
     <meta charset="utf-8" />
     <title id="title"></title>
     <script>
+        var numReserved;
+        var totalGifts;
         jQuery(document).ready(function ($) {
             $(".clickable-row").click(function () {
                 window.location = $(this).data("href");
@@ -28,29 +30,74 @@
                     type: "Gift",
                     itemId: id
                 },
-                function (data, status, xhr) {
-                    if (status == "success") {
-                        var data = xhr.responseText;
-                        var dom = $.parseXML(data);
-                        $('#viewGiftImage').attr("src", dom.getElementsByTagName("image")[0].innerHTML);
-                        $('#viewGiftRating').rating("update", parseFloat(dom.getElementsByTagName("rating")[0].innerHTML));
-                        $('#viewGiftId').val(dom.getElementsByTagName("giftId")[0].innerHTML);
-                        $("#viewGiftName").text(dom.getElementsByTagName("name")[0].innerHTML);
-                        $('#viewGiftDescription').text(dom.getElementsByTagName("description")[0].innerHTML);
-                        $('#viewGiftUrl').text(dom.getElementsByTagName("url")[0].innerHTML);
-                        $('#viewGiftUrl').attr('href', (dom.getElementsByTagName("url")[0].innerHTML));
-                        $('#viewGiftStores').text(dom.getElementsByTagName("stores")[0].innerHTML);
-                        $('#viewGiftCost').text(dom.getElementsByTagName("cost")[0].innerHTML);
-                        $('#viewGiftQuantity').text(dom.getElementsByTagName("quantity")[0].innerHTML);
-                        $('#viewGiftColor').css("background-color", dom.getElementsByTagName("color")[0].innerHTML);
-                        $('#viewGiftColorText').text(dom.getElementsByTagName("colorText")[0].innerHTML);
-                        $('#viewGiftSize').text(dom.getElementsByTagName("size")[0].innerHTML);
-                        $('#viewGiftCategory').text(dom.getElementsByTagName("category")[0].innerHTML);
-                        $('#viewGiftItem').modal();
+                    function (data, status, xhr) {
+                        if (status == "success") {
+                            var data = xhr.responseText;
+                            var dom = $.parseXML(data);
+                            $('#viewGiftImage').attr("src", dom.getElementsByTagName("image")[0].innerHTML);
+                            $('#viewGiftRating').rating("update", parseFloat(dom.getElementsByTagName("rating")[0].innerHTML));
+                            $('#viewGiftId').val(dom.getElementsByTagName("giftId")[0].innerHTML);
+                            $("#viewGiftName").text(dom.getElementsByTagName("name")[0].innerHTML);
+                            $('#viewGiftDescription').text(dom.getElementsByTagName("description")[0].innerHTML);
+                            $('#viewGiftUrl').text(dom.getElementsByTagName("url")[0].innerHTML);
+                            $('#viewGiftUrl').attr('href', (dom.getElementsByTagName("url")[0].innerHTML));
+                            $('#viewGiftStores').text(dom.getElementsByTagName("stores")[0].innerHTML);
+                            $('#viewGiftCost').text(dom.getElementsByTagName("cost")[0].innerHTML);
+                            numReserved = dom.getElementsByTagName("reservations")[0].children.length;
+                            var reservedByMe = 0;
+                            for (var i = 0; i < dom.getElementsByTagName("reservations")[0].children.length; i++) {
+                                if (dom.getElementsByTagName("reservations")[0].children[i].getElementsByTagName("userId")[0].innerHTML == $('#thisUserId').attr('data-user-id')) {
+                                    reservedByMe++;
+                                }
+                            }
+                            totalGifts = parseInt(dom.getElementsByTagName("quantity")[0].innerHTML)
+                            if (totalGifts == numReserved) {
+                                $('#viewGiftReserve').addClass("hidden");
+                            } else {
+                                $('#viewGiftReserve').removeClass("hidden");
+                            }
+                            $('#viewGiftQuantity').text((totalGifts - numReserved) + " / " + dom.getElementsByTagName("quantity")[0].innerHTML + " available (" + reservedByMe + " reserved by me)");
+                            $('#reserveGiftAmount').attr('placeholder', (totalGifts - numReserved) + ' available');
+                            $('#viewGiftColor').css("background-color", dom.getElementsByTagName("color")[0].innerHTML);
+                            $('#viewGiftColorText').text(dom.getElementsByTagName("colorText")[0].innerHTML);
+                            $('#viewGiftSize').text(dom.getElementsByTagName("size")[0].innerHTML);
+                            $('#viewGiftCategory').text(dom.getElementsByTagName("category")[0].innerHTML);
+                            $('#viewGiftItem').modal();
+                        }
+                    });
+            });
+            $(document).ready(function () {
+                $('#viewGiftReserve').click(function () {
+                    $('#viewGiftItem').modal('hide');
+                    $('#reserveGift').modal();
+                });
+                $('#reserveGiftAmount').keyup(function () {
+                    if (!$(this).val() || $(this).val() <= 0 || $(this).val() > (totalGifts - numReserved)) {
+                        $('#reserveGiftSubmit').addClass("hidden");
+                    } else {
+                        $('#reserveGiftSubmit').removeClass("hidden");
                     }
                 });
+                $('#reserveGiftSubmit').click(function () {
+                    $.post(".", {
+                        submit: "Change",
+                        type: "Gift",
+                        item: "reserve",
+                        itemId: $('#viewGiftId').val(),
+                        numReserve: $('#reserveGiftAmount').val()
+                    }, function (data, status) {
+                        if (data == "0") {
+                            // Do the right thing
+                        }
+                        location.reload(true);
+                    });
+                });
+                $('#reserveGiftCancel').click(function () {
+                    $('#reserveGiftAmount').val("");
+                    $('#reserveGift').modal("hide");
+                    $('#viewGiftItem').modal();
+                });
             });
-
             function rgb2hex(rgb) {
                 rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
                 return (rgb && rgb.length === 4) ? "#" +
@@ -61,35 +108,47 @@
         });
     </script>
     <style>
+        #userName {
+            text-indent: 10px;
+        }
+
         table {
             max-width: 75%;
         }
+
         tr {
             cursor: pointer;
             background-color: white;
         }
+
         th {
             text-align: center;
         }
+
         body {
             background-color: #CECECE;
             color: black;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+
         img {
             max-height: 128px;
             max-width: 128px;
         }
+
         #addNew {
             margin: 10px;
         }
+
         .parent {
             display: flex;
             flex-flow: row;
         }
+
         .child {
             margin: auto;
         }
+
         .circle {
             width: 25px;
             height: 25px;
@@ -99,13 +158,16 @@
             border-color: black;
             display: inline-flex;
         }
+
         .description {
             font-size: 12px;
             font-weight: 100 !important;
         }
+
         .star-rating {
             font-size: 10px;
         }
+
         .gift-row p {
             font-size: 20px;
             font-weight: bold;
@@ -113,36 +175,76 @@
             height: 6em;
             overflow: hidden;
         }
+
         .minimized {
             font-size: 75%;
             text-align: left;
         }
+
         #editGiftImage {
             cursor: pointer;
         }
+
         #previewImage {
             height: 256px;
             width: 256px;
             display: inline;
         }
+
         #ratingHeader {
             width: 8%
         }
+
         #quantHeader {
             width: 8%;
         }
+
         #costHeader {
             width: 8%;
         }
+
         #descHeader {
             width: 32%;
         }
-        
+        #reserveGift input,
+        #reserveGift button {
+            padding-bottom: 5px;
+            padding-top: 5px;
+            margin-bottom: 5px;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
     <!-- Format: id, name, class, type, placeholder, tooltip-->
+    <div class="hidden" id="thisUserId" data-user-id=""></div>
     <div class="container-fluid">
+        <div id="reserveGift" class="modal fade panel-success" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content panel-success">
+                    <div class="modal-header panel-heading">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Reservations</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <label for="reserveAmount">Number to Reserve:</label>
+                            </div>
+                            <div class="row">
+                                <input name="reserveAmount" id="reserveGiftAmount" class="form-control" type="number" placeholder="" />
+                            </div>
+                            <div class="row">
+                                <button id="reserveGiftSubmit" class="btn btn-success btn-block hidden" type="button">Add Reservations</button>
+                            </div>
+                            <div class="row">
+                                <button id="reserveGiftCancel" class="btn btn-danger btn-block" type="button">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div id="viewGiftItem" class="modal fade panel-primary" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content panel-primary">
@@ -246,15 +348,12 @@
                     </div>
                     <div class="modal-footer panel-footer panel-primary">
                         <div class="form-group">
-                            <button id="editGiftCancel" name="cancel" class="btn btn-danger" type="button" data-dismiss="modal">
-                                <p id="cancelLabel">Cancel</p>
-                            </button>
-                            <button id="editGiftSubmit" name="submit" class="btn btn-success" type="button" value="Change">
-                                <p id="applyLabel">Apply Changes</p>
+                            <button id="viewGiftReserve" class="btn btn-success" type="button">
+                                Reserve
                             </button>
                         </div>
                     </div>
-                </div> 
+                </div>
             </div>
         </div>
         <div class="row text-left">
@@ -283,9 +382,7 @@
                     </th>
                 </tr>
             </thead>
-            <tbody id="giftHolder">
-
-            </tbody>
+            <tbody id="giftHolder"></tbody>
         </table>
         <table id="minList" class="table visible-xs table-hover table-responsive">
             <thead>
@@ -298,8 +395,7 @@
                     </th>
                 </tr>
             </thead>
-            <tbody id="xsGiftHolder">
-            </tbody>
+            <tbody id="xsGiftHolder"></tbody>
         </table>
     </div>
 </body>

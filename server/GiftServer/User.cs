@@ -840,9 +840,31 @@ namespace GiftServer
                     }
                     else
                     {
-                        // Throw new exception?
+                        throw new ReservationOverflowException(gift);
                     }
                 }
+            }
+
+            /// <summary>
+            /// Reserve |amount| of gift.
+            /// </summary>
+            /// <param name="gift">The gift to reserve</param>
+            /// <param name="amount">The number of reservations to make</param>
+            /// <returns>Number of successfully reserved gifts</returns>
+            public int Reserve(Gift gift, int amount)
+            {
+                for (int c = 0; c < amount; c++)
+                {
+                    try
+                    {
+                        Reserve(gift);
+                    }
+                    catch (ReservationOverflowException)
+                    {
+                        return c;
+                    }
+                }
+                return amount;
             }
 
             /// <summary>
@@ -870,6 +892,20 @@ namespace GiftServer
                         cmd.ExecuteNonQuery();
                     }
                 }
+            }
+            /// <summary>
+            /// Release a specified amount of gifts.
+            /// </summary>
+            /// <param name="gift">The gift to release</param>
+            /// <param name="amount">The number of releases to perform</param>
+            /// <returns>The actual number of releases successfully performed</returns>
+            public int Release(Gift gift, int amount)
+            {
+                for (int c = 0; c < amount; c++)
+                {
+                    Release(gift);
+                }
+                return amount;
             }
 
             /// <summary>

@@ -415,7 +415,7 @@ namespace GiftServer
                             }
                             else
                             {
-                                Gift gift = new Gift(Convert.ToUInt64(Path.GetFileNameWithoutExtension(path).Substring(4)));
+                                Gift gift = new Gift(gid);
                                 if (gift.Groups.FindAll(g => g.Users.Exists(u => u.UserId == _user.UserId)).Count == 0)
                                 {
                                     _response.StatusCode = 403;
@@ -599,7 +599,6 @@ namespace GiftServer
             /// <returns>The corrected culture and its supported status</returns>
             private string ParseCulture(string lang, out bool isSupported)
             {
-                // TODO: Wrap in Try-Catch and log warning if error / not supported
                 try
                 {
                     isSupported = true;
@@ -777,6 +776,18 @@ namespace GiftServer
                 {
                     case "delete":
                         gift.Delete();
+                        return "200";
+                    case "reserve":
+                        int release = gift.Reservations.FindAll(g => g.User.UserId == _user.UserId).Count;
+                        _user.Release(gift, release);
+                        int reserve = Convert.ToInt32(_dict["numReserve"]);
+                        int reserved = _user.Reserve(gift, reserve);
+                        if (reserved < reserve)
+                        {
+                            _user.Release(gift, reserved);
+                            return "0";
+                            // Unreserve and report back
+                        }
                         return "200";
                     case "update":
                         gift.Name = _dict["name"];

@@ -193,5 +193,17 @@ namespace GiftServer
             /// <param name="id">The GroupID</param>
             public GroupNotFoundException(ulong id) : base("Group with ID " + id + " Not Found") { }
         }
+        /// <summary>
+        /// Exception thrown if no more reservations exist
+        /// </summary>
+        [Serializable]
+        public class ReservationOverflowException : Exception
+        {
+            /// <summary>
+            /// Exception thrown if no more reservations exist
+            /// </summary>
+            /// <param name="gift">The gift</param>
+            public ReservationOverflowException(Gift gift) : base("Gift with ID " + gift.GiftId + " Has no more available reservations") { }
+        }
     }
 }
