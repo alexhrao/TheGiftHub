@@ -1,16 +1,19 @@
 ﻿using System;
-using MySql.Data.MySqlClient;
-using System.Configuration;
-using GiftServer.Exceptions;
 using System.IO;
-using GiftServer.Properties;
-using GiftServer.Server;
-using System.Collections.Generic;
-using GiftServer.Security;
 using System.Xml;
 using System.Net.Mail;
-using GiftServer.HtmlManager;
 using System.Net;
+using System.Collections.Generic;
+using System.Configuration;
+using GiftServer.Properties;
+using GiftServer.Security;
+using GiftServer.Exceptions;
+using GiftServer.HtmlManager;
+using MySql.Data.MySqlClient;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth.OAuth2.Responses;
+using Google.Apis.Plus.v1;
+using Google.Apis.Auth.OAuth2.Flows;
 
 namespace GiftServer
 {
@@ -288,6 +291,37 @@ namespace GiftServer
                         }
                     }
                 }
+            }
+            private User()
+            {
+
+            }
+            // TESTING ONLY
+            private static GoogleClientSecrets GetClientConfiguration()
+            {
+                using (var stream = new FileStream("client_secrets.json", FileMode.Open, FileAccess.Read))
+                {
+                    return GoogleClientSecrets.Load(stream);
+                }
+            }
+            private static PlusService GetPlusService(TokenResponse credentials)
+            {
+                IAuthorizationCodeFlow flow =
+                new GoogleAuthorizationCodeFlow(
+                    new GoogleAuthorizationCodeFlow.Initializer
+                    {
+                        ClientSecrets = GetClientConfiguration().Secrets,
+                        Scopes = new string[] { PlusService.Scope.PlusLogin }
+                    });
+
+                UserCredential credential = new UserCredential(flow, "me", credentials);
+
+                return new PlusService(
+                    new Google.Apis.Services.BaseClientService.Initializer()
+                    {
+                        ApplicationName = "Haikunamatata",
+                        HttpClientInitializer = credential
+                    });
             }
             /// <summary>
             /// Fetches a user with the specified email and password

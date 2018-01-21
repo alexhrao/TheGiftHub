@@ -163,7 +163,18 @@ namespace GiftServer
                                         Logout();
                                         return LoginManager.Login();
                                     case "Login":
-                                        return Login(_dict["email"], _dict["password"]);
+                                        switch (_dict["type"])
+                                        {
+                                            case "Google":
+                                                Console.WriteLine(_dict["token"]);
+                                                return LoginManager.FailLogin(new InvalidPasswordException());
+                                            case "Facebook":
+                                                Console.WriteLine(_dict["token"]);
+                                                return LoginManager.FailLogin(new InvalidPasswordException());
+                                            case "Email":
+                                            default:
+                                                return Login(_dict["email"], _dict["password"]);
+                                        }
                                     case "PasswordResetRequest":
                                         // POST data will have user email. Send recovery email.
                                         try

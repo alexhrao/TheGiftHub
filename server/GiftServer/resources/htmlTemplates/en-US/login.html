@@ -1,6 +1,6 @@
 ﻿<html lang="en" xmlns="https://www.w3.org/1999/xhtml">
 <head>
-    <meta name="google-signin-client_id" content="173734539372-487ifitqact1a1qcrk06ta3fv46nfrbs.apps.googleusercontent.com">
+    <meta name="google-signin-client_id" content="173734539372-5sgc5qa2gdt8f51e9o0c9a7463s3a9g4.apps.googleusercontent.com">
     <script src="https://apis.google.com/js/platform.js?onload=renderGoogleLogin" async defer></script>
     <title>The Gift Hub: Login or Signup Today!</title>
     <meta name="description" content="The Gift Hub is a place where you can list your gifts and reserve the gifts of others. Sign up today to start gifting!" />
@@ -110,6 +110,12 @@
             console.log('Name: ' + profile.getName());
             console.log('Image URL: ' + profile.getImageUrl());
             console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+            var id_token = googleUser.getAuthResponse().id_token;
+            $.post(".", {
+                submit: "Login",
+                type: "Google",
+                token: id_token
+            });
         }
         function onFailure(error) {
             console.log(error);
