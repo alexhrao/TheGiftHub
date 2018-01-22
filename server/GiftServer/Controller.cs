@@ -167,6 +167,7 @@ namespace GiftServer
                                         {
                                             case "Google":
                                                 Console.WriteLine(_dict["token"]);
+                                                User test = new User(User.Verify(_dict["token"]).Result);
                                                 return LoginManager.FailLogin(new InvalidPasswordException());
                                             case "Facebook":
                                                 Console.WriteLine(_dict["token"]);
@@ -451,7 +452,7 @@ namespace GiftServer
                     switch (Path.GetFileNameWithoutExtension(path))
                     {
                         case "favicon":
-                            Write(Constants.favicon);
+                            Write(Constants.Favicon);
                             break;
                         case "FR":
                             Write(Constants.FR);

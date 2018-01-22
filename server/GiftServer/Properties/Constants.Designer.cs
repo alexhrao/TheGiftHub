@@ -63,18 +63,18 @@ namespace GiftServer.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Notpmah678.
         /// </summary>
-        internal static string emailPassword {
+        internal static string EmailPassword {
             get {
-                return ResourceManager.GetString("emailPassword", resourceCulture);
+                return ResourceManager.GetString("EmailPassword", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon favicon {
+        internal static System.Drawing.Icon Favicon {
             get {
-                object obj = ResourceManager.GetObject("favicon", resourceCulture);
+                object obj = ResourceManager.GetObject("Favicon", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
@@ -96,6 +96,24 @@ namespace GiftServer.Properties {
             get {
                 object obj = ResourceManager.GetObject("GB", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notpmah678.
+        /// </summary>
+        internal static string GoogleClientID {
+            get {
+                return ResourceManager.GetString("GoogleClientID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Notpmah678.
+        /// </summary>
+        internal static string GoogleClientSecret {
+            get {
+                return ResourceManager.GetString("GoogleClientSecret", resourceCulture);
             }
         }
         

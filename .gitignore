@@ -262,6 +262,8 @@ __pycache__/
 
 # Personal
 /server/GiftServer/resources/emailPassword.txt
+/server/GiftServer/resources/googleClientID.txt
+/server/GiftServer/resources/googleClientSecret.txt
 /server/GiftServer/resources/AWS/*
 /server/GiftServer/resources/images/gifts/*
 /server/GiftServer/resources/images/users/*

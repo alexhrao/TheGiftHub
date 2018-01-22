@@ -188,7 +188,7 @@ namespace GiftServer
                         sender.EnableSsl = true;
                         sender.DeliveryMethod = SmtpDeliveryMethod.Network;
                         sender.UseDefaultCredentials = false;
-                        sender.Credentials = new NetworkCredential("support@thegifthub.org", Constants.emailPassword);
+                        sender.Credentials = new NetworkCredential("support@thegifthub.org", Constants.EmailPassword);
                         sender.Send(email);
                     }
                 }

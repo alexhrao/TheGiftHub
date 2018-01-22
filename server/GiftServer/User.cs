@@ -14,6 +14,12 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Plus.v1;
 using Google.Apis.Auth.OAuth2.Flows;
+using System.Threading;
+using System.Threading.Tasks;
+using Google.Apis.Services;
+using Google.Apis.Books.v1;
+using Google.Apis.Plus.v1.Data;
+using System.Reflection;
 
 namespace GiftServer
 {
@@ -292,11 +298,46 @@ namespace GiftServer
                     }
                 }
             }
-            private User()
+            public User(UserCredential user)
             {
 
+                var service = new PlusService(new BaseClientService.Initializer()
+                {
+                    HttpClientInitializer = user,
+                    ApplicationName = "The Gift Hub"
+                });
+                Person me = GetStuff(service);
+
+                Type myType = me.GetType();
+                IList<PropertyInfo> props = new List<PropertyInfo>(myType.GetProperties());
+
+                foreach (PropertyInfo info in props)
+                {
+                    Console.WriteLine("Property " + info.Name + " -> " + info.GetValue(me));
+                }
             }
-            // TESTING ONLY
+
+            private static Person GetStuff(PlusService service)
+            {
+                return service.People.Get("me").Execute();
+            }
+
+            public static async Task<UserCredential> Verify(string token)
+            {
+                return await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                    new ClientSecrets
+                    {
+                        ClientId = Constants.GoogleClientID,
+                        ClientSecret = Constants.GoogleClientSecret
+                    },
+                    new string[] { PlusService.Scope.UserinfoEmail, PlusService.Scope.UserinfoProfile },
+                    token,
+                    CancellationToken.None);
+            }
+
+
+
+
             private static GoogleClientSecrets GetClientConfiguration()
             {
                 using (var stream = new FileStream("client_secrets.json", FileMode.Open, FileAccess.Read))
@@ -432,7 +473,7 @@ namespace GiftServer
                         sender.EnableSsl = true;
                         sender.DeliveryMethod = SmtpDeliveryMethod.Network;
                         sender.UseDefaultCredentials = false;
-                        sender.Credentials = new NetworkCredential("support@thegifthub.org", Constants.emailPassword);
+                        sender.Credentials = new NetworkCredential("support@thegifthub.org", Constants.EmailPassword);
                         sender.Send(email);
                     }
                 }
