@@ -15,9 +15,7 @@ using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Plus.v1;
 using Google.Apis.Auth.OAuth2.Flows;
 using System.Threading;
-using System.Threading.Tasks;
 using Google.Apis.Services;
-using Google.Apis.Books.v1;
 using Google.Apis.Plus.v1.Data;
 using System.Reflection;
 
@@ -306,7 +304,7 @@ namespace GiftServer
                     HttpClientInitializer = user,
                     ApplicationName = "The Gift Hub"
                 });
-                Person me = GetStuff(service);
+                Person me = service.People.Get("me").Execute();
 
                 Type myType = me.GetType();
                 IList<PropertyInfo> props = new List<PropertyInfo>(myType.GetProperties());
@@ -322,9 +320,9 @@ namespace GiftServer
                 return service.People.Get("me").Execute();
             }
 
-            public static async Task<UserCredential> Verify(string token)
+            public static UserCredential Verify(string token)
             {
-                return await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                return (GoogleWebAuthorizationBroker.AuthorizeAsync(
                     new ClientSecrets
                     {
                         ClientId = Constants.GoogleClientID,
@@ -332,7 +330,7 @@ namespace GiftServer
                     },
                     new string[] { PlusService.Scope.UserinfoEmail, PlusService.Scope.UserinfoProfile },
                     token,
-                    CancellationToken.None);
+                    CancellationToken.None)).Result;
             }
 
 

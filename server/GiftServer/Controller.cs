@@ -167,7 +167,7 @@ namespace GiftServer
                                         {
                                             case "Google":
                                                 Console.WriteLine(_dict["token"]);
-                                                User test = new User(User.Verify(_dict["token"]).Result);
+                                                User test = new User(User.Verify(_dict["token"]));
                                                 return LoginManager.FailLogin(new InvalidPasswordException());
                                             case "Facebook":
                                                 Console.WriteLine(_dict["token"]);
