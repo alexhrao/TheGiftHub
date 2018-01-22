@@ -210,8 +210,8 @@
     <None Include="resources\AWS\AWS.rdp" />
     <None Include="resources\AWS\PrimaryServer.pem" />
     <None Include="resources\AWS\PrimaryServer.ppk" />
-    <None Include="Scripts\jquery-3.2.1.min.map" />
-    <None Include="Scripts\jquery-3.2.1.slim.min.map" />
+    <None Include="Scripts\jquery-3.3.1.min.map" />
+    <None Include="Scripts\jquery-3.3.1.slim.min.map" />
     <None Include="toc.yml" />
   </ItemGroup>
   <ItemGroup>
@@ -231,6 +231,11 @@
     <Content Include="docs\MySqlParameterCollection.xml" />
     <Content Include="docs\MySqlTransaction.xml" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Scripts\jquery-3.3.1.intellisense.js" />
+    <Content Include="Scripts\jquery-3.3.1.js" />
+    <Content Include="Scripts\jquery-3.3.1.min.js" />
+    <Content Include="Scripts\jquery-3.3.1.slim.js" />
+    <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
     <None Include="resources\GoogleClientID.txt" />
     <None Include="resources\googleClientSecret.txt" />
     <Content Include="resources\images\branding\squareLogo.png" />
@@ -239,11 +244,6 @@
     <Content Include="resources\images\flags\GB.ico" />
     <Content Include="resources\images\flags\US.ico" />
     <Content Include="resources\images\gifts\default.png" />
-    <Content Include="Scripts\jquery-3.2.1.intellisense.js" />
-    <Content Include="Scripts\jquery-3.2.1.js" />
-    <Content Include="Scripts\jquery-3.2.1.min.js" />
-    <Content Include="Scripts\jquery-3.2.1.slim.js" />
-    <Content Include="Scripts\jquery-3.2.1.slim.min.js" />
     <None Include="resources\emailPassword.txt" />
     <None Include="resources\htmlTemplates\fr-FR\dashboard.html" />
     <None Include="resources\htmlTemplates\fr-FR\header.html" />
