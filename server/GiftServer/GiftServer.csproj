@@ -231,7 +231,6 @@
     <Content Include="docs\MySqlParameterCollection.xml" />
     <Content Include="docs\MySqlTransaction.xml" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
-<<<<<<< HEAD
     <Content Include="resources\CSS\dashboard.css" />
     <Content Include="resources\CSS\list.css" />
     <Content Include="resources\CSS\login.css" />
@@ -244,10 +243,8 @@
     <Content Include="resources\scripts\profile.js" />
     <Content Include="resources\scripts\publicList.js" />
     <Content Include="resources\scripts\publicProfile.js" />
-=======
     <Content Include="images\favicon.ico" />
     <Content Include="images\logo.png" />
->>>>>>> Development
     <Content Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
