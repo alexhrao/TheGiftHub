@@ -242,6 +242,7 @@
     <Content Include="resources\scripts\login.js" />
     <Content Include="resources\scripts\profile.js" />
     <Content Include="resources\scripts\publicList.js" />
+    <Content Include="resources\scripts\publicProfile.js" />
     <Content Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
