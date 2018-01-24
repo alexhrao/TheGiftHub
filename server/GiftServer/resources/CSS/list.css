@@ -1,0 +1,93 @@
+﻿table {
+    max-width: 75%;
+}
+
+tr {
+    cursor: pointer;
+    background-color: white;
+}
+
+th {
+    text-align: center;
+}
+
+body,
+html {
+    background-color: #CECECE !important;
+    color: black;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+img {
+    max-height: 128px;
+    max-width: 128px;
+}
+
+#addNew {
+    margin: 10px;
+}
+
+.parent {
+    display: flex;
+    flex-flow: row;
+}
+
+.child {
+    margin: auto;
+}
+
+.circle {
+    width: 25px;
+    height: 25px;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 50%;
+    border-color: black;
+    display: inline-flex;
+}
+
+.description {
+    font-size: 12px;
+    font-weight: 100 !important;
+}
+
+.star-rating {
+    font-size: 10px;
+}
+
+.gift-row p {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 1.5em;
+    height: 6em;
+    overflow: hidden;
+}
+
+.minimized {
+    font-size: 75%;
+    text-align: left;
+}
+
+#editGiftImage {
+    cursor: pointer;
+}
+
+#previewImage {
+    display: inline;
+}
+
+#ratingHeader {
+    width: 8%
+}
+
+#quantHeader {
+    width: 8%;
+}
+
+#costHeader {
+    width: 8%;
+}
+
+#descHeader {
+    width: 32%;
+}

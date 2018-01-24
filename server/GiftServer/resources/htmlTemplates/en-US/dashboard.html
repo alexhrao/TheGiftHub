@@ -2,26 +2,8 @@
 <head>
     <meta charset="utf-8" />
     <title>My Dashboard</title>
-    <style>
-        body {
-            background: linear-gradient(141deg, #0fb8ad 0%, #1fc8db 51%, #2cb5e8 75%);
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-        }
-        #eventHolder > li {
-            cursor: pointer;
-        }
-        .event-header {
-            color: black;
-        }
-    </style>
-    <script>
-        $(document).ready(function () {
-            $('.event-header').click(function () {
-                $(this).find('span').toggleClass('glyphicon-chevron-right').toggleClass('glyphicon-chevron-down');
-            });
-        });
-    </script>
+    <link rel="stylesheet" type="text/css" href="./resources/CSS/dashboard.css" />
+    <script type="text/javascript" src="./resources/scripts/dashboard.js"></script>
 </head>
 <body>
     <div class="container-fluid">

@@ -1,0 +1,106 @@
+﻿#userName {
+    text-indent: 10px;
+}
+
+table {
+    max-width: 75%;
+}
+
+tr {
+    cursor: pointer;
+    background-color: white;
+}
+
+th {
+    text-align: center;
+}
+
+body {
+    background-color: #CECECE;
+    color: black;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+img {
+    max-height: 128px;
+    max-width: 128px;
+}
+
+#addNew {
+    margin: 10px;
+}
+
+.parent {
+    display: flex;
+    flex-flow: row;
+}
+
+.child {
+    margin: auto;
+}
+
+.circle {
+    width: 25px;
+    height: 25px;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 50%;
+    border-color: black;
+    display: inline-flex;
+}
+
+.description {
+    font-size: 12px;
+    font-weight: 100 !important;
+}
+
+.star-rating {
+    font-size: 10px;
+}
+
+.gift-row p {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 1.5em;
+    height: 6em;
+    overflow: hidden;
+}
+
+.minimized {
+    font-size: 75%;
+    text-align: left;
+}
+
+#editGiftImage {
+    cursor: pointer;
+}
+
+#previewImage {
+    height: 256px;
+    width: 256px;
+    display: inline;
+}
+
+#ratingHeader {
+    width: 8%
+}
+
+#quantHeader {
+    width: 8%;
+}
+
+#costHeader {
+    width: 8%;
+}
+
+#descHeader {
+    width: 32%;
+}
+
+#reserveGift input,
+#reserveGift button {
+    padding-bottom: 5px;
+    padding-top: 5px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
