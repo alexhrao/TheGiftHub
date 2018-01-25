@@ -98,16 +98,19 @@ function validateReset() {
     return $('#resetEmail').val() !== "";
 }
 function onSuccess(googleUser) {
-    var profile = googleUser.getBasicProfile();
-    console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-    console.log('Name: ' + profile.getName());
-    console.log('Image URL: ' + profile.getImageUrl());
-    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-    var id_token = googleUser.getAuthResponse().id_token;
+    
     $.post(".", {
         submit: "Login",
         type: "Google",
-        token: id_token
+        token: googleUser.getAuthResponse().id_token
+    }, function (data, status, xhr) {
+        // Parse data - if error message, populate red alert; otherwise, reload to dashboard:
+        var isError = false;
+        if (isError) {
+            // populate red alert with incoming data (will have message) and DON'T RELOAD
+        } else {
+            location.reload(".?dest=dashboard");
+        }
     });
 }
 function onFailure(error) {
