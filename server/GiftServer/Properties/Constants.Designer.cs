@@ -118,6 +118,15 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to https://www.googleapis.com/oauth2/v3/tokeninfo.
+        /// </summary>
+        internal static string GoogleOAuthUrl {
+            get {
+                return ResourceManager.GetString("GoogleOAuthUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .png.
         /// </summary>
         internal static string ImageFormat {

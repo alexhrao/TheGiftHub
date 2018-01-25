@@ -6,7 +6,6 @@ using GiftServer.Properties;
 using GiftServer.Security;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Net;
@@ -166,15 +165,40 @@ namespace GiftServer
                                         switch (_dict["type"])
                                         {
                                             case "Google":
-                                                Console.WriteLine(_dict["token"]);
-                                                User test = new User(User.Verify(_dict["token"]));
-                                                return LoginManager.FailLogin(new InvalidPasswordException());
+                                                
+                                                try
+                                                {
+                                                    _user = new User(new GoogleUser(_dict["token"]));
+                                                    string hash = AddConnection(_user.UserId, _request.RemoteEndPoint);
+                                                    Cookie logger = new Cookie("UserHash", hash);
+                                                    _response.Cookies.Add(logger);
+                                                    _response.AppendHeader("dest", "dashboard");
+                                                    return ParseQuery();
+                                                }
+                                                catch (Exception e)
+                                                {
+                                                    return LoginManager.FailLogin(e);
+                                                }
                                             case "Facebook":
                                                 Console.WriteLine(_dict["token"]);
                                                 return LoginManager.FailLogin(new InvalidPasswordException());
                                             case "Email":
                                             default:
-                                                return Login(_dict["email"], _dict["password"]);
+                                                try
+                                                {
+                                                    _user = new User(new MailAddress(_dict["email"]), _dict["password"]);
+                                                    // Get hash
+                                                    string hash = AddConnection(_user.UserId, _request.RemoteEndPoint);
+                                                    Cookie logger = new Cookie("UserHash", hash);
+                                                    _response.Cookies.Add(logger);
+                                                    _response.AppendHeader("dest", "dashboard");
+                                                    // If already logged in, just add remote end point:
+                                                    return ParseQuery();
+                                                }
+                                                catch (Exception e)
+                                                {
+                                                    return LoginManager.FailLogin(e);
+                                                }
                                         }
                                     case "PasswordResetRequest":
                                         // POST data will have user email. Send recovery email.
@@ -645,25 +669,6 @@ namespace GiftServer
                     path = "";
                 }
                 return path;
-            }
-
-            private string Login(string email, string password)
-            {
-                try
-                {
-                    _user = new User(new MailAddress(email), password);
-                    // Get hash
-                    string hash = AddConnection(_user.UserId, _request.RemoteEndPoint);
-                    Cookie logger = new Cookie("UserHash", hash);
-                    _response.Cookies.Add(logger);
-                    _response.AppendHeader("dest", "dashboard");
-                    // If already logged in, just add remote end point:
-                    return ParseQuery();
-                }
-                catch (Exception e)
-                {
-                    return LoginManager.FailLogin(e);
-                }
             }
             private string Update()
             {

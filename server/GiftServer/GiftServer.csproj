@@ -142,6 +142,7 @@
     <Compile Include="EventFuture.cs" />
     <Compile Include="Gift.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="GoogleUser.cs" />
     <Compile Include="Group.cs" />
     <Compile Include="IFetchable.cs" />
     <Compile Include="ImageProcessor.cs" />
