@@ -100,7 +100,7 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Notpmah678.
+        ///   Looks up a localized string similar to 173734539372-5sgc5qa2gdt8f51e9o0c9a7463s3a9g4.apps.googleusercontent.com.
         /// </summary>
         internal static string GoogleClientID {
             get {
@@ -109,11 +109,20 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Notpmah678.
+        ///   Looks up a localized string similar to veMyo40VEWhi6xYpfoFBhj3_.
         /// </summary>
         internal static string GoogleClientSecret {
             get {
                 return ResourceManager.GetString("GoogleClientSecret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to https://www.googleapis.com/oauth2/v3/tokeninfo.
+        /// </summary>
+        internal static string GoogleOAuthUrl {
+            get {
+                return ResourceManager.GetString("GoogleOAuthUrl", resourceCulture);
             }
         }
         

@@ -142,6 +142,7 @@
     <Compile Include="EventFuture.cs" />
     <Compile Include="Gift.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="GoogleUser.cs" />
     <Compile Include="Group.cs" />
     <Compile Include="IFetchable.cs" />
     <Compile Include="ImageProcessor.cs" />
@@ -250,7 +251,7 @@
     <Content Include="Scripts\jquery-3.3.1.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
-    <None Include="resources\GoogleClientID.txt" />
+    <None Include="resources\googleClientID.txt" />
     <None Include="resources\googleClientSecret.txt" />
     <Content Include="resources\images\branding\squareLogo.png" />
     <Content Include="resources\images\branding\wideLogo.png" />

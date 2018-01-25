@@ -18,6 +18,8 @@ using System.Threading;
 using Google.Apis.Services;
 using Google.Apis.Plus.v1.Data;
 using System.Reflection;
+using Google.Apis.Util.Store;
+using System.Net.Http;
 
 namespace GiftServer
 {
@@ -296,71 +298,36 @@ namespace GiftServer
                     }
                 }
             }
-            public User(UserCredential user)
+            /// <summary>
+            /// Initialize a user from a Google Sign In
+            /// </summary>
+            /// <param name="user">The GoogleUser (created from the id_token)</param>
+            public User(GoogleUser user)
             {
-
-                var service = new PlusService(new BaseClientService.Initializer()
+                // Check db to see if email exists; if so, then fetch and move
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
-                    HttpClientInitializer = user,
-                    ApplicationName = "The Gift Hub"
-                });
-                Person me = service.People.Get("me").Execute();
-
-                Type myType = me.GetType();
-                IList<PropertyInfo> props = new List<PropertyInfo>(myType.GetProperties());
-
-                foreach (PropertyInfo info in props)
-                {
-                    Console.WriteLine("Property " + info.Name + " -> " + info.GetValue(me));
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT users.UserID FROM users WHERE users.UserEmail = @eml;";
+                        cmd.Parameters.AddWithValue("@eml", user.Email.Address);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                FetchInformation(Convert.ToUInt64(reader["UserID"]));
+                            }
+                            else
+                            {
+                                throw new UserNotFoundException(user.GoogleId);
+                            }
+                        }
+                    }
                 }
-            }
-
-            private static Person GetStuff(PlusService service)
-            {
-                return service.People.Get("me").Execute();
-            }
-
-            public static UserCredential Verify(string token)
-            {
-                return (GoogleWebAuthorizationBroker.AuthorizeAsync(
-                    new ClientSecrets
-                    {
-                        ClientId = Constants.GoogleClientID,
-                        ClientSecret = Constants.GoogleClientSecret
-                    },
-                    new string[] { PlusService.Scope.UserinfoEmail, PlusService.Scope.UserinfoProfile },
-                    token,
-                    CancellationToken.None)).Result;
-            }
-
-
-
-
-            private static GoogleClientSecrets GetClientConfiguration()
-            {
-                using (var stream = new FileStream("client_secrets.json", FileMode.Open, FileAccess.Read))
-                {
-                    return GoogleClientSecrets.Load(stream);
-                }
-            }
-            private static PlusService GetPlusService(TokenResponse credentials)
-            {
-                IAuthorizationCodeFlow flow =
-                new GoogleAuthorizationCodeFlow(
-                    new GoogleAuthorizationCodeFlow.Initializer
-                    {
-                        ClientSecrets = GetClientConfiguration().Secrets,
-                        Scopes = new string[] { PlusService.Scope.PlusLogin }
-                    });
-
-                UserCredential credential = new UserCredential(flow, "me", credentials);
-
-                return new PlusService(
-                    new Google.Apis.Services.BaseClientService.Initializer()
-                    {
-                        ApplicationName = "Haikunamatata",
-                        HttpClientInitializer = credential
-                    });
+                // Do stuff
             }
             /// <summary>
             /// Fetches a user with the specified email and password
