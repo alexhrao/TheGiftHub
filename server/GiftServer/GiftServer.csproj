@@ -341,4 +341,15 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\docfx.console.2.30.0\build\docfx.console.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\docfx.console.2.30.0\build\docfx.console.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>RMDIR "C:\Users\alexhrao\Documents\TheGiftHub\server\GiftServer\bin\Debug\resources\scripts\" /S /Q
+RMDIR "C:\Users\alexhrao\Documents\TheGiftHub\server\GiftServer\bin\Debug\resources\CSS\" /S /Q
+ROBOCOPY "C:\Users\alexhrao\Documents\TheGiftHub\server\GiftServer\resources\scripts" "C:\Users\alexhrao\Documents\TheGiftHub\server\GiftServer\bin\Debug\resources\scripts" *.* /E /IT /IS
+ROBOCOPY "C:\Users\alexhrao\Documents\TheGiftHub\server\GiftServer\resources\CSS" "C:\Users\alexhrao\Documents\TheGiftHub\server\GiftServer\bin\Debug\resources\CSS" *.* /E /IT /IS
+if %25errorlevel%25 leq 1 exit 0 else exit %25errorlevel%25</PreBuildEvent>
+  </PropertyGroup>
 </Project>

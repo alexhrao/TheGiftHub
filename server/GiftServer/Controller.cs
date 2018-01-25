@@ -165,7 +165,6 @@ namespace GiftServer
                                         switch (_dict["type"])
                                         {
                                             case "Google":
-                                                
                                                 try
                                                 {
                                                     _user = new User(new GoogleUser(_dict["token"]));

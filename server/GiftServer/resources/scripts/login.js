@@ -109,7 +109,7 @@ function onSuccess(googleUser) {
         if (isError) {
             // populate red alert with incoming data (will have message) and DON'T RELOAD
         } else {
-            location.reload(".?dest=dashboard");
+           // *FIX* location.replace(".?dest=dashboard");
         }
     });
 }
