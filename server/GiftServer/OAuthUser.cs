@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.Mail;
+﻿using System.Net.Mail;
 
 namespace GiftServer
 {
@@ -41,6 +40,13 @@ namespace GiftServer
             /// The picture of this user, as a byte array
             /// </summary>
             public abstract byte[] Picture
+            {
+                get;
+            }
+            /// <summary>
+            /// The OAuthentication ID for this user
+            /// </summary>
+            public abstract string OAuthId
             {
                 get;
             }

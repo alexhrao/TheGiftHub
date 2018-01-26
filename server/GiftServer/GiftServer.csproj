@@ -140,6 +140,7 @@
     <Compile Include="Controller.cs" />
     <Compile Include="DefaultEvent.cs" />
     <Compile Include="EventFuture.cs" />
+    <Compile Include="FacebookUser.cs" />
     <Compile Include="Gift.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="GoogleUser.cs" />
@@ -148,6 +149,7 @@
     <Compile Include="ImageProcessor.cs" />
     <Compile Include="IShowable.cs" />
     <Compile Include="ListManager.cs" />
+    <Compile Include="OAuthUser.cs" />
     <Compile Include="Preferences.cs" />
     <Compile Include="ProfileManager.cs" />
     <Compile Include="DashboardManager.cs" />

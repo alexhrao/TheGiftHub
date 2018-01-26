@@ -167,7 +167,7 @@ namespace GiftServer
                                             case "Google":
                                                 try
                                                 {
-                                                    _user = new User(new GoogleUser(_dict["token"]));
+                                                    _user = new User(new GoogleUser(_dict["token"]), new Action<MailAddress>((MailAddress email) => PasswordReset.SendRecoveryEmail(email, ResetManager)));
                                                     string hash = AddConnection(_user.UserId, _request.RemoteEndPoint);
                                                     Cookie logger = new Cookie("UserHash", hash);
                                                     _response.Cookies.Add(logger);
@@ -610,18 +610,27 @@ namespace GiftServer
                         }
                     }
                     culture = new CultureInfo(lang);
-                    _response.AppendCookie(new Cookie
+                    Cookie cultureCookie = new Cookie
                     {
-                        Expires = DateTime.Now.AddYears(1),
                         Name = "culture",
                         Value = lang
-                    });
+                    };
+                    if (isSupported)
+                    {
+                        cultureCookie.Expires = DateTime.Now.AddYears(1);
+                    }
+                    _response.AppendCookie(cultureCookie);
                 }
                 // otherwise, en-US
                 else
                 {
+                    // Only for this session
                     culture = new CultureInfo("en-US");
-                    // do NOT store this in cookie!
+                    _response.AppendCookie(new Cookie
+                    {
+                        Name = "culture",
+                        Value = "en-US"
+                    });
                 }
                 Thread.CurrentThread.CurrentUICulture = culture;
                 Thread.CurrentThread.CurrentCulture = culture;
@@ -632,31 +641,45 @@ namespace GiftServer
             /// <param name="lang">The language / Culture</param>
             /// <param name="isSupported">Whether or not the language was supported</param>
             /// <returns>The corrected culture and its supported status</returns>
-            private string ParseCulture(string lang, out bool isSupported)
+            public static string ParseCulture(string lang, out bool isSupported)
             {
-                try
+                isSupported = true;
+                switch (lang.ToLower())
                 {
-                    isSupported = true;
-                    if (lang.ToLower().Contains("fr"))
-                    {
+                    case "fr-fr":
                         return "fr-FR";
-                    }
-                    else if (lang.ToLower().Contains("en") && lang.ToLower() != "en-gb")
-                    {
+                    case "en-us":
                         return "en-US";
-                    }
-                    else
-                    {
-                        // Language not currently supported
-                        throw new Exception();
-                    }
+                    case "en-gb":
+                        return "en-GB";
+                    default:
+                        break;
                 }
-                catch (Exception)
+                if (lang.ToLower().Contains("fr"))
                 {
+                    return "fr-FR";
+                }
+                else if (lang.ToLower().Contains("en"))
+                {
+                    return "en-US";
+                }
+                else
+                {
+                    // Language not currently supported
                     Warnings.Add(new InvalidCultureWarning(lang));
                     isSupported = false;
                     return "en-US";
                 }
+
+            }
+            /// <summary>
+            /// Convenience method if no support is desired
+            /// </summary>
+            /// <param name="lang">The language to parse</param>
+            /// <returns>The closest-matching culture</returns>
+            public static string ParseCulture(string lang)
+            {
+                return ParseCulture(lang);
             }
 
             private string ParsePath()

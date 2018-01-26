@@ -56,11 +56,18 @@ namespace GiftServer
                     return email;
                 }
             }
+            private string oAuthId;
             /// <summary>
             /// The unique GoogleID of this user
             /// </summary>
-            public readonly string GoogleId;
-            private byte[] picture;
+            public override string OAuthId
+            {
+                get
+                {
+                    return oAuthId;
+                }
+            }
+            private string picture;
             /// <summary>
             /// The picture of this user, as a byte array
             /// </summary>
@@ -68,7 +75,10 @@ namespace GiftServer
             {
                 get
                 {
-                    return picture;
+                    using (WebClient pictureClient = new WebClient())
+                    {
+                        return pictureClient.DownloadData(picture);
+                    }
                 }
             }
 
@@ -90,11 +100,8 @@ namespace GiftServer
                 name = parsed["name"].Value<string>();
                 locale = parsed["locale"].Value<string>();
                 email = new MailAddress(parsed["email"].Value<string>());
-                GoogleId = parsed["sub"].Value<string>();
-                using (WebClient pictureClient = new WebClient())
-                {
-                    picture = pictureClient.DownloadData(parsed["picture"].Value<string>());
-                }
+                oAuthId = parsed["sub"].Value<string>();
+                picture = parsed["picture"].Value<string>();
 
             }
         }

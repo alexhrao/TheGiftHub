@@ -10,6 +10,7 @@ using GiftServer.Security;
 using GiftServer.Exceptions;
 using GiftServer.HtmlManager;
 using MySql.Data.MySqlClient;
+using GiftServer.Server;
 
 namespace GiftServer
 {
@@ -307,27 +308,36 @@ namespace GiftServer
                 }
             }
             /// <summary>
-            /// Initialize a user from a Google Sign In
+            /// Initialize a user from an OAuth Sign In
             /// </summary>
-            /// <param name="user">The GoogleUser (created from the id_token)</param>
-            public User(GoogleUser user)
+            /// <param name="user">The OAuthUser (created from the id_token)</param>
+            /// <param name="sender">A function that will send the reset email to a specified MailAddress</param>
+            public User(OAuthUser user, Action<MailAddress> sender)
             {
-                // Check db to see if email exists; if so, then fetch and move
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT users.UserID FROM users WHERE users.UserGoogleID = @gid;";
-                        cmd.Parameters.AddWithValue("@gid", user.GoogleId);
-                        // cmd.CommandText = "SELECT users.UserID FROM users WHERE users.UserEmail = @eml;";
-                        // cmd.Parameters.AddWithValue("@eml", user.Email.Address);
+                        switch (user)
+                        {
+                            case GoogleUser g:
+                                cmd.CommandText = "SELECT users.UserID FROM users WHERE users.UserGoogleID = @oid;";
+                                break;
+                            case FacebookUser f:
+                                cmd.CommandText = "SELECT users.UserID FROM users WHERE users.UserFacebookID = @oid;";
+                                break;
+                            default:
+                                throw new ArgumentException("Unkown OAuth type: " + nameof(user));
+                        }
+                        cmd.Parameters.AddWithValue("@oid", user.OAuthId);
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
                             if (reader.Read())
                             {
+                                // User exists; fetch normally and move on
                                 FetchInformation(Convert.ToUInt64(reader["UserID"]));
                                 Update(user);
                             }
@@ -337,21 +347,18 @@ namespace GiftServer
                                 if (!Search(user))
                                 {
                                     // We have a new user; copy over information and CREATE()
-                                    this.Email = user.Email;
-                                    this.UserName = user.Name;
-                                    this.GoogleId = user.GoogleId;
-                                    this.Password = new Password(user.GoogleId);
+                                    Create(user);
+                                    // Send password reset email
+                                    sender(Email);
                                 }
-                                throw new UserNotFoundException(user.GoogleId);
                             }
                         }
                     }
                 }
-                // Do stuff
             }
-            private bool Search(GoogleUser user)
+            private bool Search(OAuthUser user)
             {
-                // Search for user via email - if found, add GoogleID and return true; otherwise, false
+                // Search for user via email - if found, add OAuthID and return true; otherwise, false
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -368,8 +375,18 @@ namespace GiftServer
                             {
                                 ulong uid = Convert.ToUInt64(reader["UserID"]);
                                 FetchInformation(uid);
-                                this.GoogleId = user.GoogleId;
-                                return this.Update();
+                                switch (user)
+                                {
+                                    case GoogleUser g:
+                                        GoogleId = g.OAuthId;
+                                        break;
+                                    case FacebookUser f:
+                                        FacebookId = f.OAuthId;
+                                        break;
+                                    default:
+                                        throw new ArgumentException("Unkown OAuth type: " + nameof(user));
+                                }
+                                return Update();
                             }
                             else
                             {
@@ -379,10 +396,6 @@ namespace GiftServer
                         }
                     }
                 }
-            }
-            private bool Search(FacebookUser user)
-            {
-                return false;
             }
             /// <summary>
             /// Fetches a user with the specified email and password
@@ -419,7 +432,7 @@ namespace GiftServer
                             }
                             else
                             {
-                                this.Password = new Password(Convert.ToString(Reader["PasswordHash"]),
+                                Password = new Password(Convert.ToString(Reader["PasswordHash"]),
                                                              Convert.ToString(Reader["PasswordSalt"]),
                                                              Convert.ToInt32(Reader["PasswordIter"]));
                                 // Check password
@@ -428,14 +441,14 @@ namespace GiftServer
                                     throw new InvalidPasswordException();
                                 }
                                 UserId = Convert.ToUInt64(Reader["UserID"]);
-                                this.UserName = Convert.ToString(Reader["UserName"]);
-                                this.Email = email;
-                                this.BirthDay = Convert.ToInt32(Reader["UserBirthDay"]);
-                                this.BirthMonth = Convert.ToInt32(Reader["UserBirthMonth"]);
-                                this.DateJoined = (DateTime)(Reader["TimeCreated"]);
-                                this.Bio = Convert.ToString(Reader["UserBio"]);
-                                this.UserUrl = Convert.ToString(Reader["UserURL"]);
-                                this.Preferences = new Preferences(this);
+                                UserName = Convert.ToString(Reader["UserName"]);
+                                Email = email;
+                                BirthDay = Convert.ToInt32(Reader["UserBirthDay"]);
+                                BirthMonth = Convert.ToInt32(Reader["UserBirthMonth"]);
+                                DateJoined = (DateTime)(Reader["TimeCreated"]);
+                                Bio = Convert.ToString(Reader["UserBio"]);
+                                UserUrl = Convert.ToString(Reader["UserURL"]);
+                                Preferences = new Preferences(this);
                             }
                         }
                     }
@@ -444,12 +457,12 @@ namespace GiftServer
             /// <summary>
             /// Creates a *new* user with email and password
             /// </summary>
-            /// <param name="Email">The user's email</param>
-            /// <param name="Password">The user's password, *_hashed_*</param>
-            public User(MailAddress Email, Password Password)
+            /// <param name="email">The user's email</param>
+            /// <param name="password">The user's password, *_hashed_*</param>
+            public User(MailAddress email, Password password)
             {
-                this.Email = Email;
-                this.Password = Password;
+                this.Email = email;
+                this.Password = password;
             }
             /// <summary>
             /// Resets their password
@@ -459,7 +472,7 @@ namespace GiftServer
             /// <returns>A status of whether or not it successfully reset the user's password</returns>
             public bool UpdatePassword(string password, ResetManager ResetManager)
             {
-                if (this.UserId == 0)
+                if (UserId == 0)
                 {
                     return false;
                 }
@@ -470,11 +483,11 @@ namespace GiftServer
                     {
                         Password = new Password(password);
                         cmd.Connection = con;
-                        cmd.CommandText = "UPDATE passwords SET PasswordHash = @hsh, PasswordSalt = @slt, PasswordIter = @itr WHERE UserID = @id;";
+                        cmd.CommandText = "UPDATE passwords SET PasswordHash = @hsh, PasswordSalt = @slt, PasswordIter = @itr WHERE UserID = @uid;";
                         cmd.Parameters.AddWithValue("@hsh", Password.Hash);
                         cmd.Parameters.AddWithValue("@slt", Password.Salt);
                         cmd.Parameters.AddWithValue("@itr", Password.Iterations);
-                        cmd.Parameters.AddWithValue("@id", this.UserId);
+                        cmd.Parameters.AddWithValue("@uid", UserId);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                     }
@@ -482,7 +495,7 @@ namespace GiftServer
                 // Send email
                 try
                 {
-                    MailMessage email = new MailMessage(new MailAddress("The Gift Hub<support@TheGiftHub.org>"), this.Email)
+                    MailMessage email = new MailMessage(new MailAddress("The Gift Hub<support@TheGiftHub.org>"), Email)
                     {
                         Body = ResetManager.GenerateNotification(this),
                         Subject = "Password Reset Notification",
@@ -521,19 +534,19 @@ namespace GiftServer
                         {
                             if (Reader.Read())
                             {
-                                this.UserId = id;
-                                this.UserName = Convert.ToString(Reader["UserName"]);
-                                this.Email = new MailAddress(Convert.ToString(Reader["UserEmail"]));
-                                this.Password = new Password(Convert.ToString(Reader["PasswordHash"]),
-                                                             Convert.ToString(Reader["PasswordSalt"]),
-                                                             Convert.ToInt32(Reader["PasswordIter"]));
-                                this.BirthDay = Convert.ToInt32(Reader["UserBirthDay"]);
-                                this.BirthMonth = Convert.ToInt32(Reader["UserBirthMonth"]);
-                                this.DateJoined = (DateTime)(Reader["TimeCreated"]);
-                                this.Bio = Convert.ToString(Reader["UserBio"]);
-                                this.UserUrl = Convert.ToString(Reader["UserURL"]);
-                                this.GoogleId = Convert.ToString(Reader["UserGoogleID"]);
-                                this.FacebookId = Convert.ToString(Reader["UserFacebookID"]);
+                                UserId = id;
+                                UserName = Convert.ToString(Reader["UserName"]);
+                                Email = new MailAddress(Convert.ToString(Reader["UserEmail"]));
+                                Password = new Password(Convert.ToString(Reader["PasswordHash"]),
+                                                        Convert.ToString(Reader["PasswordSalt"]),
+                                                        Convert.ToInt32(Reader["PasswordIter"]));
+                                BirthDay = Convert.ToInt32(Reader["UserBirthDay"]);
+                                BirthMonth = Convert.ToInt32(Reader["UserBirthMonth"]);
+                                DateJoined = (DateTime)(Reader["TimeCreated"]);
+                                Bio = Convert.ToString(Reader["UserBio"]);
+                                UserUrl = Convert.ToString(Reader["UserURL"]);
+                                GoogleId = Convert.ToString(Reader["UserGoogleID"]);
+                                FacebookId = Convert.ToString(Reader["UserFacebookID"]);
 
                                 Preferences = new Preferences(this);
                             }
@@ -545,9 +558,6 @@ namespace GiftServer
                     }
                 }
             }
-
-
-
             /// <summary>
             /// Creates the user in the database.
             /// </summary>
@@ -565,14 +575,14 @@ namespace GiftServer
                         // Check if email present:
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT UserID FROM users WHERE UserEmail = @email;";
-                        cmd.Parameters.AddWithValue("@email", this.Email.Address);
+                        cmd.Parameters.AddWithValue("@email", Email.Address);
                         cmd.Prepare();
                         using (MySqlDataReader Reader = cmd.ExecuteReader())
                         {
                             if (Reader.Read())
                             {
                                 // User already exists; throw exception:
-                                throw new DuplicateUserException(this.Email);
+                                throw new DuplicateUserException(Email);
                             }
                         }
                     }
@@ -599,27 +609,27 @@ namespace GiftServer
                         cmd.Connection = con;
                         cmd.CommandText = "INSERT INTO users (UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL, UserGoogleID, userFacebookID) "
                             + "VALUES (@name, @email, @bmonth, @bday, @bio, @url, @gid, @fid);";
-                        cmd.Parameters.AddWithValue("@name", this.UserName);
-                        cmd.Parameters.AddWithValue("@email", this.Email);
-                        cmd.Parameters.AddWithValue("@bmonth", this.BirthMonth);
-                        cmd.Parameters.AddWithValue("@bday", this.BirthDay);
-                        cmd.Parameters.AddWithValue("@bio", this.Bio);
-                        cmd.Parameters.AddWithValue("@url", this.UserUrl);
-                        cmd.Parameters.AddWithValue("@gid", this.GoogleId);
-                        cmd.Parameters.AddWithValue("@fid", this.FacebookId);
+                        cmd.Parameters.AddWithValue("@name", UserName);
+                        cmd.Parameters.AddWithValue("@email", Email);
+                        cmd.Parameters.AddWithValue("@bmonth", BirthMonth);
+                        cmd.Parameters.AddWithValue("@bday", BirthDay);
+                        cmd.Parameters.AddWithValue("@bio", Bio);
+                        cmd.Parameters.AddWithValue("@url", UserUrl);
+                        cmd.Parameters.AddWithValue("@gid", GoogleId);
+                        cmd.Parameters.AddWithValue("@fid", FacebookId);
                         cmd.Prepare();
                         if (cmd.ExecuteNonQuery() == 0)
                         {
                             return false;
                         }
-                        this.UserId = Convert.ToUInt64(cmd.LastInsertedId);
+                        UserId = Convert.ToUInt64(cmd.LastInsertedId);
                     }
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
                         // Create new password:
                         cmd.CommandText = "INSERT INTO passwords (UserID, PasswordHash, PasswordSalt, PasswordIter) VALUES (@uid, @hsh, @slt, @itr);";
-                        cmd.Parameters.AddWithValue("@uid", this.UserId);
+                        cmd.Parameters.AddWithValue("@uid", UserId);
                         cmd.Parameters.AddWithValue("@hsh", Password.Hash);
                         cmd.Parameters.AddWithValue("@slt", Password.Salt);
                         cmd.Parameters.AddWithValue("@itr", Password.Iterations);
@@ -634,13 +644,13 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT TimeCreated FROM users WHERE UserID = @id;";
-                        cmd.Parameters.AddWithValue("@id", this.UserId);
+                        cmd.Parameters.AddWithValue("@id", UserId);
                         cmd.Prepare();
                         using (MySqlDataReader Reader = cmd.ExecuteReader())
                         {
                             while (Reader.Read())
                             {
-                                this.DateJoined = (DateTime)(Reader["TimeCreated"]);
+                                DateJoined = (DateTime)(Reader["TimeCreated"]);
                             }
                         }
                     }
@@ -648,6 +658,30 @@ namespace GiftServer
                     Preferences.Create();
                 }
                 return true;
+            }
+            private void Create(OAuthUser info)
+            {
+                Email = info.Email;
+                UserName = info.Name;
+
+                switch (info)
+                {
+                    case GoogleUser g:
+                        GoogleId = g.OAuthId;
+                        break;
+                    case FacebookUser f:
+                        FacebookId = f.OAuthId;
+                        break;
+                    default:
+                        throw new ArgumentException("Unkown OAuth type: " + nameof(info));
+                }
+                Password = new Password(info.OAuthId);
+                Create();
+                // Change locale and update:
+                // Find nearest locale, update with that:
+                Preferences.Culture = Controller.ParseCulture(info.Locale);
+                // Save image:
+                SaveImage(info.Picture);
             }
             /// <summary>
             /// Updates the user
@@ -658,7 +692,7 @@ namespace GiftServer
             /// <returns>A status of the update process</returns>
             public bool Update()
             {
-                if (this.UserId == 0)
+                if (UserId == 0)
                 {
                     // User does not exist - create new one instead.
                     return Create();
@@ -672,8 +706,8 @@ namespace GiftServer
                         // Check if email present:
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT UserID FROM users WHERE UserEmail = @email AND UserID <> @id;";
-                        cmd.Parameters.AddWithValue("@email", this.Email);
-                        cmd.Parameters.AddWithValue("@id", this.UserId);
+                        cmd.Parameters.AddWithValue("@email", Email);
+                        cmd.Parameters.AddWithValue("@id", UserId);
                         cmd.Prepare();
                         using (MySqlDataReader Reader = cmd.ExecuteReader())
                         {
@@ -697,14 +731,14 @@ namespace GiftServer
                             + "UserGoogleID = @gid, "
                             + "UserFacebookID = @fid "
                             + "WHERE UserID = @id;";
-                        cmd.Parameters.AddWithValue("@name", this.UserName);
-                        cmd.Parameters.AddWithValue("@email", this.Email);
-                        cmd.Parameters.AddWithValue("@bio", this.Bio);
-                        cmd.Parameters.AddWithValue("@bmonth", this.BirthMonth);
-                        cmd.Parameters.AddWithValue("@bday", this.BirthDay);
-                        cmd.Parameters.AddWithValue("@gid", this.GoogleId);
-                        cmd.Parameters.AddWithValue("@fid", this.FacebookId);
-                        cmd.Parameters.AddWithValue("@id", this.UserId);
+                        cmd.Parameters.AddWithValue("@name", UserName);
+                        cmd.Parameters.AddWithValue("@email", Email);
+                        cmd.Parameters.AddWithValue("@bio", Bio);
+                        cmd.Parameters.AddWithValue("@bmonth", BirthMonth);
+                        cmd.Parameters.AddWithValue("@bday", BirthDay);
+                        cmd.Parameters.AddWithValue("@gid", GoogleId);
+                        cmd.Parameters.AddWithValue("@fid", FacebookId);
+                        cmd.Parameters.AddWithValue("@id", UserId);
                         cmd.Prepare();
                         return (cmd.ExecuteNonQuery() == 1);
                     }
@@ -714,24 +748,24 @@ namespace GiftServer
             private void Update(OAuthUser user)
             {
                 bool isChanged = false;
-                if (user.Name != this.UserName)
+                if (user.Name != UserName)
                 {
-                    this.UserName = user.Name;
+                    UserName = user.Name;
                     isChanged = true;
                 }
-                if (user.Email.Address != this.Email.Address)
+                if (user.Email.Address != Email.Address)
                 {
-                    this.Email = user.Email;
+                    Email = user.Email;
                     isChanged = true;
                 }
-                if (user.Locale.ToLower() != this.Preferences.Culture.Substring(0, 2).ToLower())
+                if (Controller.ParseCulture(user.Locale) != Preferences.Culture)
                 {
-                    this.Preferences.Culture = user.Locale.ToLower() + this.Preferences.Culture.Substring(2);
+                    Preferences.Culture = Controller.ParseCulture(user.Locale);
                     isChanged = true;
                 }
                 if (isChanged)
                 {
-                    this.Update();
+                    Update();
                 }
             }
             /// <summary>
@@ -746,7 +780,7 @@ namespace GiftServer
             public bool Delete()
             {
                 // TODO: Gauruntee not admin of any group
-                if (this.UserId == 0)
+                if (UserId == 0)
                 {
                     // User doesn't exist - don't delete
                     return false;
@@ -758,7 +792,7 @@ namespace GiftServer
                     {
                         con.Open();
                         // Remove image:
-                        this.RemoveImage();
+                        RemoveImage();
                         // Remove preferences
                         Preferences.Delete();
                         // Delete from event futures, groups, and events:
@@ -767,7 +801,7 @@ namespace GiftServer
                             // Get EventUserID:
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM events_users_futures WHERE EventUserID IN (SELECT EventUserID FROM events_users WHERE UserID = @id);";
-                            cmd.Parameters.AddWithValue("@id", this.UserId);
+                            cmd.Parameters.AddWithValue("@id", UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -776,7 +810,7 @@ namespace GiftServer
                             // Get EventUserID:
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM events_users_groups WHERE EventUserID IN (SELECT EventUserID FROM events_users WHERE UserID = @id);";
-                            cmd.Parameters.AddWithValue("@id", this.UserId);
+                            cmd.Parameters.AddWithValue("@id", UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -784,7 +818,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM events_users WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.UserId);
+                            cmd.Parameters.AddWithValue("@id", UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -793,7 +827,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM purchases WHERE ReservationID IN (SELECT ReservationID FROM reservations WHERE UserID = @id);";
-                            cmd.Parameters.AddWithValue("@id", this.UserId);
+                            cmd.Parameters.AddWithValue("@id", UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -802,7 +836,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM reservations WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.UserId);
+                            cmd.Parameters.AddWithValue("@id", UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -811,7 +845,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM receptions WHERE GiftID IN (SELECT GiftID FROM gifts WHERE UserID = @id);";
-                            cmd.Parameters.AddWithValue("@id", this.UserId);
+                            cmd.Parameters.AddWithValue("@id", UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -819,7 +853,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM groups_gifts WHERE GiftID IN (SELECT GiftID FROM gifts WHERE UserID = @id);";
-                            cmd.Parameters.AddWithValue("@id", this.UserId);
+                            cmd.Parameters.AddWithValue("@id", UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -827,7 +861,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM gifts WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.UserId);
+                            cmd.Parameters.AddWithValue("@id", UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -836,7 +870,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM groups_users WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.UserId);
+                            cmd.Parameters.AddWithValue("@id", UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -846,7 +880,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM passwordresets WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.UserId);
+                            cmd.Parameters.AddWithValue("@id", UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -855,7 +889,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM users_preferences WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.UserId);
+                            cmd.Parameters.AddWithValue("@id", UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -864,7 +898,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM passwords WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.UserId);
+                            cmd.Parameters.AddWithValue("@id", UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -873,7 +907,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM users WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", this.UserId);
+                            cmd.Parameters.AddWithValue("@id", UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -889,7 +923,7 @@ namespace GiftServer
             public void SaveImage(byte[] contents)
             {
                 ImageProcessor processor = new ImageProcessor(contents);
-                File.WriteAllBytes(Directory.GetCurrentDirectory() + "/resources/images/users/User" + this.UserId + Constants.ImageFormat, processor.Data);
+                File.WriteAllBytes(Directory.GetCurrentDirectory() + "/resources/images/users/User" + UserId + Constants.ImageFormat, processor.Data);
             }
             /// <summary>
             /// Removes an associated image
@@ -899,7 +933,7 @@ namespace GiftServer
             /// </remarks>
             public void RemoveImage()
             {
-                File.Delete(Directory.GetCurrentDirectory() + "/resources/images/users/User" + this.UserId + Constants.ImageFormat);
+                File.Delete(Directory.GetCurrentDirectory() + "/resources/images/users/User" + UserId + Constants.ImageFormat);
             }
             /// <summary>
             /// Returns the path for this user's image
@@ -910,7 +944,7 @@ namespace GiftServer
             /// </remarks>
             public string GetImage()
             {
-                return GetImage(this.UserId);
+                return GetImage(UserId);
             }
             /// <summary>
             /// Gets the image for any user
@@ -1180,7 +1214,7 @@ namespace GiftServer
                                             + "FROM groups_users "
                                             + "WHERE UserID = @id1 "
                                         + ");";
-                        cmd.Parameters.AddWithValue("@id1", this.UserId);
+                        cmd.Parameters.AddWithValue("@id1", UserId);
                         cmd.Parameters.AddWithValue("@id2", target.UserId);
                         cmd.Prepare();
                         using (MySqlDataReader Reader = cmd.ExecuteReader())
