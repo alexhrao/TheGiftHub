@@ -1,5 +1,6 @@
 ﻿using GiftServer.Properties;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -15,7 +16,7 @@ namespace GiftServer
         /// <remarks>
         /// This is for users who authenticate via the "Sign in with Google" method.
         /// </remarks>
-        public class GoogleUser : OAuthUser
+        public class FacebookUser : OAuthUser
         {
             private string name;
             /// <summary>
@@ -57,9 +58,9 @@ namespace GiftServer
                 }
             }
             /// <summary>
-            /// The unique GoogleID of this user
+            /// The unique FacebookID of this user
             /// </summary>
-            public readonly string GoogleId;
+            public readonly string FacebookId;
             private byte[] picture;
             /// <summary>
             /// The picture of this user, as a byte array
@@ -79,7 +80,7 @@ namespace GiftServer
             /// When the user signs in, the Token generated can be used to fetch this user's information.
             /// </remarks>
             /// <param name="token">The user's authentication token</param>
-            public GoogleUser(string token)
+            public FacebookUser(string token)
             {
                 HttpClient sender = new HttpClient();
                 HttpContent content = new FormUrlEncodedContent(new[] { new KeyValuePair<string, string>("id_token", token) });
@@ -90,7 +91,7 @@ namespace GiftServer
                 name = parsed["name"].Value<string>();
                 locale = parsed["locale"].Value<string>();
                 email = new MailAddress(parsed["email"].Value<string>());
-                GoogleId = parsed["sub"].Value<string>();
+                FacebookId = parsed["sub"].Value<string>();
                 using (WebClient pictureClient = new WebClient())
                 {
                     picture = pictureClient.DownloadData(parsed["picture"].Value<string>());
@@ -100,75 +101,3 @@ namespace GiftServer
         }
     }
 }
-
-/*
- * Old code - tried to do it without the URL
-            public static UserCredential Verify(string token)
-            {
-
-                // testing basic API:
-                PlusService plusService = new PlusService(
-                    new BaseClientService.Initializer()
-                    {
-                        ApiKey = ""
-                    });
-                Person me = plusService.People.Get("me").Execute();
-                Type myType = me.GetType();
-                IList<PropertyInfo> props = new List<PropertyInfo>(myType.GetProperties());
-
-                foreach (PropertyInfo info in props)
-                {
-                    Console.WriteLine("Property " + info.Name + " -> " + info.GetValue(me));
-                }
-
-
-                IAuthorizationCodeFlow flow = new AuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
-                {
-                    ClientSecrets = new ClientSecrets
-                    {
-                        ClientId = Constants.GoogleClientID,
-                        ClientSecret = Constants.GoogleClientSecret
-                    },
-                    Scopes = new[] { PlusService.Scope.UserinfoProfile, PlusService.Scope.UserinfoEmail },
-                    DataStore = new FileDataStore("helloWorld")
-                });
-                flow.CreateAuthorizationCodeRequest(".");
-                TokenResponse a = flow.LoadTokenAsync(token, CancellationToken.None).Result;
-                UserCredential credential = new UserCredential(flow, token, a);
-                return credential;
-            }
-
-
-
-
-
-
-
-            private static GoogleClientSecrets GetClientConfiguration()
-            {
-                using (var stream = new FileStream("client_secrets.json", FileMode.Open, FileAccess.Read))
-                {
-                    return GoogleClientSecrets.Load(stream);
-                }
-            }
-            private static PlusService GetPlusService(TokenResponse credentials)
-            {
-                IAuthorizationCodeFlow flow =
-                new GoogleAuthorizationCodeFlow(
-                    new GoogleAuthorizationCodeFlow.Initializer
-                    {
-                        ClientSecrets = GetClientConfiguration().Secrets,
-                        Scopes = new string[] { PlusService.Scope.PlusLogin }
-                    });
-
-                UserCredential credential = new UserCredential(flow, "me", credentials);
-
-                return new PlusService(
-                    new Google.Apis.Services.BaseClientService.Initializer()
-                    {
-                        ApplicationName = "Haikunamatata",
-                        HttpClientInitializer = credential
-                    });
-            }
-
-*/

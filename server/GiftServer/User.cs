@@ -10,16 +10,6 @@ using GiftServer.Security;
 using GiftServer.Exceptions;
 using GiftServer.HtmlManager;
 using MySql.Data.MySqlClient;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Auth.OAuth2.Responses;
-using Google.Apis.Plus.v1;
-using Google.Apis.Auth.OAuth2.Flows;
-using System.Threading;
-using Google.Apis.Services;
-using Google.Apis.Plus.v1.Data;
-using System.Reflection;
-using Google.Apis.Util.Store;
-using System.Net.Http;
 
 namespace GiftServer
 {
@@ -116,6 +106,24 @@ namespace GiftServer
                 get;
                 private set;
             }
+            /// <summary>
+            /// The Unique GoogleID for this user.
+            /// </summary>
+            /// <remarks>
+            /// If the user has never signed in with Google, this will be null.
+            /// 
+            /// See GoogleUser for more information
+            /// </remarks>
+            public string GoogleId = null;
+            /// <summary>
+            /// The Unique FacebookID for this user.
+            /// </summary>
+            /// <remarks>
+            /// If the user has never signed in with Facebook, this will be null.
+            /// 
+            /// See GoogleUser for more information
+            /// </remarks>
+            public string FacebookId = null;
             /// <summary>
             /// The user's gifts
             /// </summary>
@@ -311,23 +319,70 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT users.UserID FROM users WHERE users.UserEmail = @eml;";
-                        cmd.Parameters.AddWithValue("@eml", user.Email.Address);
+                        cmd.CommandText = "SELECT users.UserID FROM users WHERE users.UserGoogleID = @gid;";
+                        cmd.Parameters.AddWithValue("@gid", user.GoogleId);
+                        // cmd.CommandText = "SELECT users.UserID FROM users WHERE users.UserEmail = @eml;";
+                        // cmd.Parameters.AddWithValue("@eml", user.Email.Address);
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
                             if (reader.Read())
                             {
                                 FetchInformation(Convert.ToUInt64(reader["UserID"]));
+                                Update(user);
                             }
                             else
                             {
+                                // We have a new user - check and see if email is already here. If so, just update that user's info!
+                                if (!Search(user))
+                                {
+                                    // We have a new user; copy over information and CREATE()
+                                    this.Email = user.Email;
+                                    this.UserName = user.Name;
+                                    this.GoogleId = user.GoogleId;
+                                    this.Password = new Password(user.GoogleId);
+                                }
                                 throw new UserNotFoundException(user.GoogleId);
                             }
                         }
                     }
                 }
                 // Do stuff
+            }
+            private bool Search(GoogleUser user)
+            {
+                // Search for user via email - if found, add GoogleID and return true; otherwise, false
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT users.UserID FROM users WHERE users.UserEmail = @eml;";
+                        cmd.Parameters.AddWithValue("@eml", user.Email);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            // If found, get id:
+                            if (reader.Read())
+                            {
+                                ulong uid = Convert.ToUInt64(reader["UserID"]);
+                                FetchInformation(uid);
+                                this.GoogleId = user.GoogleId;
+                                return this.Update();
+                            }
+                            else
+                            {
+                                // Not found - false!
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            private bool Search(FacebookUser user)
+            {
+                return false;
             }
             /// <summary>
             /// Fetches a user with the specified email and password
@@ -477,6 +532,9 @@ namespace GiftServer
                                 this.DateJoined = (DateTime)(Reader["TimeCreated"]);
                                 this.Bio = Convert.ToString(Reader["UserBio"]);
                                 this.UserUrl = Convert.ToString(Reader["UserURL"]);
+                                this.GoogleId = Convert.ToString(Reader["UserGoogleID"]);
+                                this.FacebookId = Convert.ToString(Reader["UserFacebookID"]);
+
                                 Preferences = new Preferences(this);
                             }
                             else
@@ -487,6 +545,9 @@ namespace GiftServer
                     }
                 }
             }
+
+
+
             /// <summary>
             /// Creates the user in the database.
             /// </summary>
@@ -536,14 +597,16 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "INSERT INTO users (UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL) "
-                            + "VALUES (@name, @email, @bmonth, @bday, @bio, @url);";
+                        cmd.CommandText = "INSERT INTO users (UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL, UserGoogleID, userFacebookID) "
+                            + "VALUES (@name, @email, @bmonth, @bday, @bio, @url, @gid, @fid);";
                         cmd.Parameters.AddWithValue("@name", this.UserName);
                         cmd.Parameters.AddWithValue("@email", this.Email);
                         cmd.Parameters.AddWithValue("@bmonth", this.BirthMonth);
                         cmd.Parameters.AddWithValue("@bday", this.BirthDay);
                         cmd.Parameters.AddWithValue("@bio", this.Bio);
                         cmd.Parameters.AddWithValue("@url", this.UserUrl);
+                        cmd.Parameters.AddWithValue("@gid", this.GoogleId);
+                        cmd.Parameters.AddWithValue("@fid", this.FacebookId);
                         cmd.Prepare();
                         if (cmd.ExecuteNonQuery() == 0)
                         {
@@ -630,18 +693,45 @@ namespace GiftServer
                             + "UserEmail = @email, "
                             + "UserBio = @bio, "
                             + "UserBirthMonth = @bmonth, "
-                            + "UserBirthDay = @bday "
+                            + "UserBirthDay = @bday, "
+                            + "UserGoogleID = @gid, "
+                            + "UserFacebookID = @fid "
                             + "WHERE UserID = @id;";
                         cmd.Parameters.AddWithValue("@name", this.UserName);
                         cmd.Parameters.AddWithValue("@email", this.Email);
                         cmd.Parameters.AddWithValue("@bio", this.Bio);
                         cmd.Parameters.AddWithValue("@bmonth", this.BirthMonth);
                         cmd.Parameters.AddWithValue("@bday", this.BirthDay);
+                        cmd.Parameters.AddWithValue("@gid", this.GoogleId);
+                        cmd.Parameters.AddWithValue("@fid", this.FacebookId);
                         cmd.Parameters.AddWithValue("@id", this.UserId);
                         cmd.Prepare();
                         return (cmd.ExecuteNonQuery() == 1);
                     }
                     // Only way to update password is through password reset, so no need here
+                }
+            }
+            private void Update(OAuthUser user)
+            {
+                bool isChanged = false;
+                if (user.Name != this.UserName)
+                {
+                    this.UserName = user.Name;
+                    isChanged = true;
+                }
+                if (user.Email.Address != this.Email.Address)
+                {
+                    this.Email = user.Email;
+                    isChanged = true;
+                }
+                if (user.Locale.ToLower() != this.Preferences.Culture.Substring(0, 2).ToLower())
+                {
+                    this.Preferences.Culture = user.Locale.ToLower() + this.Preferences.Culture.Substring(2);
+                    isChanged = true;
+                }
+                if (isChanged)
+                {
+                    this.Update();
                 }
             }
             /// <summary>

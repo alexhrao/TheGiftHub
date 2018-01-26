@@ -42,7 +42,8 @@ CREATE TABLE gift_registry_db.users (
     UserBirthMonth INT NOT NULL DEFAULT 0,
     UserBirthDay INT NOT NULL DEFAULT 0,
     UserURL CHAR(28) NOT NULL UNIQUE,
-    /* UserGoogleID VARCHAR(255) NULL, */ /* Do we even need to store this? Just use their email... */ /* But what if their email changes? */ /* Sucks for them... */
+    UserGoogleID VARCHAR(1024) NULL UNIQUE,
+    UserFacebookID VARCHAR(1024) NULL UNIQUE,
     TimeCreated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
         
