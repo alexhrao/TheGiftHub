@@ -37,7 +37,7 @@ namespace GiftServer
             /// The locale of this user
             /// </summary>
             /// <remarks>
-            /// This will be a two character string that represents the **language** - en, fr, etc.
+            /// This will be a 5 character string that represents the **language**-**Location** - en, fr, etc.
             /// </remarks>
             public override string Locale
             {
@@ -84,7 +84,7 @@ namespace GiftServer
             }
 
             /// <summary>
-            /// Create a Google User from the given token
+            /// Create a Facebook User from the given token
             /// </summary>
             /// <remarks>
             /// When the user signs in, the Token generated can be used to fetch this user's information.
@@ -93,16 +93,16 @@ namespace GiftServer
             public FacebookUser(string token)
             {
                 HttpClient sender = new HttpClient();
-                HttpContent content = new FormUrlEncodedContent(new[] { new KeyValuePair<string, string>("id_token", token) });
-                HttpResponseMessage resp = sender.PostAsync(Constants.GoogleOAuthUrl, content).Result;
+                string fields = "/me?fields=" + Uri.EscapeDataString("id,name,email,picture.width(1024).height(1024),locale") + "&access_token=" + Uri.EscapeDataString(token);
+                HttpResponseMessage resp = sender.GetAsync(Constants.FacebookOAuthUrl + fields).Result;
                 string result = resp.Content.ReadAsStringAsync().Result;
                 // Parse
                 JObject parsed = JObject.Parse(result);
                 name = parsed["name"].Value<string>();
                 locale = parsed["locale"].Value<string>();
                 email = new MailAddress(parsed["email"].Value<string>());
-                oAuthId = parsed["sub"].Value<string>();
-                picture = parsed["picture"].Value<string>();
+                oAuthId = parsed["id"].Value<string>();
+                picture = parsed["picture"]["data"]["url"].Value<string>();
             }
         }
     }

@@ -98,7 +98,6 @@ function validateReset() {
     return $('#resetEmail').val() !== "";
 }
 function onSuccess(googleUser) {
-    
     $.post(".", {
         submit: "Login",
         type: "Google",
@@ -161,3 +160,25 @@ window.fbAsyncInit = function () {
     js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.11&appId=553216418365065";
     fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));
+
+function fbLoginStatusChange(response) {
+    if (response.status === 'connected') {
+        // logged into app, send access token
+        $.post(".", {
+            submit: "Login",
+            type: "Facebook",
+            token: response.authResponse.accessToken
+        }, function (data, status, xhr) {
+            var resp = xhr.responseText;
+            if (resp == "success") {
+                var auth2 = gapi.auth2.getAuthInstance();
+                auth2.signOut().then(function () {
+                    location.replace(".?dest=dashboard");
+                });
+            } else {
+                // We need to die gracefully
+                $('#loginAlert').addClass('alert-danger');
+                $('#loginAlert').prepend(resp);
+            }
+        }
+}

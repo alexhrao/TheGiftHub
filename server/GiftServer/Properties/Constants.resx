@@ -148,4 +148,7 @@
   <data name="GoogleOAuthUrl" xml:space="preserve">
     <value>https://www.googleapis.com/oauth2/v3/tokeninfo</value>
   </data>
+  <data name="FacebookOAuthUrl" xml:space="preserve">
+    <value>https://graph.facebook.com/v2.11</value>
+  </data>
 </root>

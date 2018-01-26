@@ -70,6 +70,15 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to https://graph.facebook.com/v2.11.
+        /// </summary>
+        internal static string FacebookOAuthUrl {
+            get {
+                return ResourceManager.GetString("FacebookOAuthUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon Favicon {
@@ -100,7 +109,7 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 173734539372-5sgc5qa2gdt8f51e9o0c9a7463s3a9g4.apps.googleusercontent.com.
+        ///   Looks up a localized string similar to Notpmah678.
         /// </summary>
         internal static string GoogleClientID {
             get {
@@ -109,7 +118,7 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to veMyo40VEWhi6xYpfoFBhj3_.
+        ///   Looks up a localized string similar to Notpmah678.
         /// </summary>
         internal static string GoogleClientSecret {
             get {

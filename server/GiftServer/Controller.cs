@@ -174,13 +174,24 @@ namespace GiftServer
                                                     _response.AppendHeader("dest", "dashboard");
                                                     return ParseQuery();
                                                 }
-                                                catch (Exception e)
+                                                catch (Exception)
                                                 {
-                                                    return LoginManager.FailLogin(e);
+                                                    return "<p>failure!</p>";
                                                 }
                                             case "Facebook":
-                                                Console.WriteLine(_dict["token"]);
-                                                return LoginManager.FailLogin(new InvalidPasswordException());
+                                                try
+                                                {
+                                                    _user = new User(new FacebookUser(_dict["token"]), new Action<MailAddress>((MailAddress email) => PasswordReset.SendRecoveryEmail(email, ResetManager)));
+                                                    string hash = AddConnection(_user.UserId, _request.RemoteEndPoint);
+                                                    Cookie logger = new Cookie("UserHash", hash);
+                                                    _response.Cookies.Add(logger);
+                                                    _response.AppendHeader("dest", "dashboard");
+                                                    return "success";
+                                                }
+                                                catch (Exception)
+                                                {
+                                                    return "<p>failure!</p>";
+                                                }
                                             case "Email":
                                             default:
                                                 try
