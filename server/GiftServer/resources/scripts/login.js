@@ -109,6 +109,10 @@ function onSuccess(googleUser) {
         if (isError) {
             // populate red alert with incoming data (will have message) and DON'T RELOAD
         } else {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+                // location.replace(".?dest=dashboard");
+            });
            // *FIX* location.replace(".?dest=dashboard");
         }
     });

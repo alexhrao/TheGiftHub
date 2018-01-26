@@ -233,12 +233,15 @@
     <Content Include="docs\MySqlTransaction.xml" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="resources\CSS\dashboard.css" />
+    <Content Include="resources\CSS\header.css" />
     <Content Include="resources\CSS\list.css" />
     <Content Include="resources\CSS\login.css" />
     <Content Include="resources\CSS\profile.css" />
     <Content Include="resources\CSS\publicList.css" />
     <Content Include="resources\CSS\publicProfile.css" />
+    <Content Include="resources\CSS\star-rating.min.css" />
     <Content Include="resources\scripts\dashboard.js" />
+    <Content Include="resources\scripts\header.js" />
     <Content Include="resources\scripts\list.js" />
     <Content Include="resources\scripts\login.js" />
     <Content Include="resources\scripts\profile.js" />
@@ -246,6 +249,7 @@
     <Content Include="resources\scripts\publicProfile.js" />
     <Content Include="images\favicon.ico" />
     <Content Include="images\logo.png" />
+    <Content Include="resources\scripts\star-rating.min.js" />
     <Content Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
