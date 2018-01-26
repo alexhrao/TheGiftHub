@@ -105,20 +105,22 @@ function onSuccess(googleUser) {
         token: googleUser.getAuthResponse().id_token
     }, function (data, status, xhr) {
         // Parse data - if error message, populate red alert; otherwise, reload to dashboard:
-        var isError = false;
-        if (isError) {
-            // populate red alert with incoming data (will have message) and DON'T RELOAD
-        } else {
+        var resp = xhr.responseText;
+        if (resp == "success") {
             var auth2 = gapi.auth2.getAuthInstance();
             auth2.signOut().then(function () {
-                // location.replace(".?dest=dashboard");
+                location.replace(".?dest=dashboard");
             });
-           // *FIX* location.replace(".?dest=dashboard");
+        } else {
+            // We need to die gracefully
+            $('#loginAlert').addClass('alert-danger');
+            $('#loginAlert').prepend(resp);
         }
     });
 }
 function onFailure(error) {
-    console.log(error);
+    $('#loginAlert').addClass('alert-danger');
+    $('#loginAlert').prepend("<p>Uh Oh... Something went wrong...</p>");
 }
 function renderGoogleLogin() {
     gapi.signin2.render('googleLogin', {
