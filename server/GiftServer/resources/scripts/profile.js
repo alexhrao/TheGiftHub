@@ -10,7 +10,7 @@ $(document).ready(function () {
         eNumber = parseInt(eNumber.substring(11))
         $.post(".",
             {
-                submit: "Change",
+                action: "Change",
                 type: "Event",
                 item: "delete",
                 itemId: eNumber
@@ -30,7 +30,7 @@ $(document).ready(function () {
         gNumber = parseInt(gNumber.substring(11))
         $.post(".",
             {
-                submit: "Change",
+                action: "Change",
                 type: "Group",
                 item: "removeMe",
                 itemId: gNumber
@@ -54,7 +54,7 @@ $(document).ready(function () {
                 }
                 return $.post(".",
                     {
-                        submit: "Change",
+                        action: "Change",
                         type: "User",
                         item: "name",
                         name: $('#userNameChange').val()
@@ -66,7 +66,7 @@ $(document).ready(function () {
                 }
                 return $.post(".",
                     {
-                        submit: "Change",
+                        action: "Change",
                         type: "User",
                         item: "email",
                         name: $('#userEmailChange').val()
@@ -78,7 +78,7 @@ $(document).ready(function () {
                 } else {
                     $.post(".",
                         {
-                            submit: "Change",
+                            action: "Change",
                             type: "User",
                             item: "birthday",
                             month: $('#userBirthdayMonthChange').val(),
@@ -89,7 +89,7 @@ $(document).ready(function () {
             .then(function () {
                 return $.post(".",
                     {
-                        submit: "Change",
+                        action: "Change",
                         type: "User",
                         item: "bio",
                         bio: $('#userBioChange').val()
@@ -98,7 +98,7 @@ $(document).ready(function () {
             .then(function () {
                 return $.post(".",
                     {
-                        submit: "Change",
+                        action: "Change",
                         type: "Preferences",
                         culture: $('#userCulture').val()
                     });
@@ -112,7 +112,7 @@ $(document).ready(function () {
         $('#searchNewUser').click(function () {
             $.post(".",
                 {
-                    submit: "Fetch",
+                    action: "Fetch",
                     type: "Email",
                     email: $('#newGroupAddUser').val()
                 },
@@ -153,7 +153,7 @@ $('#newGroupAddUser').val("");
 $('#createNewGroupSubmit').click(function () {
     $.post(".",
         {
-            submit: "Create",
+            action: "Create",
             type: "Group",
             name: $('#newGroupName').val()
         }, function (data, status) {
@@ -162,7 +162,7 @@ $('#createNewGroupSubmit').click(function () {
                 $('#newGroupMembers li').each(function (index) {
                     // Post this group:
                     $.post(".", {
-                        submit: "Change",
+                        action: "Change",
                         type: "Group",
                         item: "addUser",
                         itemId: data,
@@ -187,7 +187,7 @@ $(document).ready(function () {
         var id = $(this).attr('data-group-id');
         id = parseInt(id);
         $.post(".", {
-            submit: "Fetch",
+            action: "Fetch",
             type: "Group",
             itemId: id
         },
@@ -217,7 +217,7 @@ $(document).ready(function () {
     $('#editSearchUser').click(function () {
         $.post(".",
             {
-                submit: "Fetch",
+                action: "Fetch",
                 type: "Email",
                 email: $('#editGroupAddUser').val()
             },
@@ -271,7 +271,7 @@ $(document).ready(function () {
                 // Remove user
                 $.post(".",
                     {
-                        submit: "Change",
+                        action: "Change",
                         type: "Group",
                         item: "removeUser",
                         itemId: $('#editGroupId').val(),
@@ -292,7 +292,7 @@ $(document).ready(function () {
             if (!isFound) {
                 $.post(".",
                     {
-                        submit: "Change",
+                        action: "Change",
                         type: "Group",
                         item: "addUser",
                         itemId: $('#editGroupId').val(),
@@ -303,7 +303,7 @@ $(document).ready(function () {
         if ($('#editGroupName').val() !== "") {
             $.post(".",
                 {
-                    submit: "Change",
+                    action: "Change",
                     type: "Group",
                     item: "name",
                     itemId: $('#editGroupId').val(),
@@ -366,7 +366,7 @@ $(document).ready(function () {
 $(document).ready(function () {
     $('#uploadNewImg').click(function () {
         $.post(".", {
-            submit: "Image",
+            action: "Image",
             type: "user",
             image: imgData.split(",")[1]
         });

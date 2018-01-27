@@ -25,7 +25,7 @@ $(document).ready(function () {
 $(document).ready(function () {
     $('#cultureSelector').change(function () {
         $.post(".", {
-            submit: "Culture",
+            action: "Culture",
             culture: $(this).val()
         },
             function () {
@@ -99,7 +99,7 @@ function validateReset() {
 }
 function onSuccess(googleUser) {
     $.post(".", {
-        submit: "Login",
+        action: "Login",
         type: "Google",
         token: googleUser.getAuthResponse().id_token
     }, function (data, status, xhr) {
@@ -167,7 +167,7 @@ function fbLoginStatusChange(response) {
     if (response.status === 'connected') {
         // logged into app, send access token
         $.post(".", {
-            submit: "Login",
+            action: "Login",
             type: "Facebook",
             token: response.authResponse.accessToken
         }, function (data, status, xhr) {

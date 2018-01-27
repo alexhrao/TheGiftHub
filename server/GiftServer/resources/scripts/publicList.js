@@ -21,7 +21,7 @@ $(document).ready(function ($) {
         var id = this.id;
         id = parseInt(id);
         $.post(".", {
-            submit: "Fetch",
+            action: "Fetch",
             type: "Gift",
             itemId: id
         },
@@ -75,7 +75,7 @@ $(document).ready(function ($) {
         });
         $('#reserveGiftSubmit').click(function () {
             $.post(".", {
-                submit: "Change",
+                action: "Change",
                 type: "Gift",
                 item: "reserve",
                 itemId: $('#viewGiftId').val(),

@@ -68,7 +68,7 @@ $(document).ready(function ($) {
         var id = this.id;
         id = parseInt(id);
         $.post(".", {
-            submit: "Fetch",
+            action: "Fetch",
             type: "Gift",
             itemId: id
         },
@@ -100,7 +100,7 @@ $(document).ready(function ($) {
 
     $('#editGiftSubmit').click(function () {
         $.post(".", {
-            submit: "Change",
+            action: "Change",
             type: "Gift",
             item: "update",
             itemId: $('#editGiftId').val(),
@@ -123,7 +123,7 @@ $(document).ready(function ($) {
                     if ($(this)[0].checked) {
                         $.post(".",
                             {
-                                submit: "Change",
+                                action: "Change",
                                 type: "Group",
                                 item: "addGift",
                                 itemId: $(this).attr('data-group-id'),
@@ -132,7 +132,7 @@ $(document).ready(function ($) {
                     } else {
                         $.post(".",
                             {
-                                submit: "Change",
+                                action: "Change",
                                 type: "Group",
                                 item: "removeGift",
                                 itemId: $(this).attr('data-group-id'),
@@ -156,7 +156,7 @@ $(document).ready(function ($) {
 $(document).ready(function () {
     $('#deleteGiftConfirm').click(function () {
         $.post(".", {
-            submit: "Change",
+            action: "Change",
             type: "Gift",
             item: "delete",
             itemId: $('#editGiftId').val(),
@@ -174,7 +174,7 @@ $(document).ready(function () {
 $(document).ready(function () {
     $('#newGiftSubmit').click(function () {
         $.post(".", {
-            submit: "Create",
+            action: "Create",
             type: "Gift",
             itemId: $('#newGiftId').val(),
             name: $('#newGiftName').val(),
@@ -192,7 +192,7 @@ $(document).ready(function () {
             if (data !== "0" && $('#newImageAdded').val() == 1) {
                 $('#newImageId').val(data);
                 $.post(".", {
-                    submit: "Image",
+                    action: "Image",
                     type: "gift",
                     itemId: data,
                     image: imgData.split(",")[1]
@@ -220,7 +220,7 @@ $(document).ready(function () {
     });
     $('#submitImg').click(function () {
         $.post(".", {
-            submit: "Image",
+            action: "Image",
             type: "gift",
             itemId: $('#uploadImageId').val(),
             image: imgData.split(",")[1]
