@@ -184,25 +184,23 @@ namespace GiftServer
                 HtmlNode facebookLoginStatus = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" facebookLoginStatus \")]");
                 if (user.FacebookId != null)
                 {
-                    // Checkmark (and Delete button) (and add "x"?)
+                    // Checkmark
                     facebookLoginStatus.RemoveAllChildren();
                     HtmlNode checkMark = HtmlNode.CreateNode("<span></span>");
-                    checkMark.AddClass("fa fa-check");
+                    checkMark.AddClass("fa fa-check oauth-confirmed");
+                    facebookLoginStatus.RemoveClass("text-center");
                     facebookLoginStatus.AppendChild(checkMark);
-                    HtmlNode xMark = HtmlNode.CreateNode("<span></span>");
-                    facebookLoginStatus.AppendChild(xMark);
                 }
 
                 HtmlNode googleLoginStatus = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" googleLoginStatus \")]");
                 if (user.GoogleId != null)
                 {
-                    // Checkmark (and Delete button)
+                    // Checkmark
                     googleLoginStatus.RemoveAllChildren();
                     HtmlNode checkMark = HtmlNode.CreateNode("<span></span>");
-                    checkMark.AddClass("fa fa-check");
+                    checkMark.AddClass("fa fa-check oauth-confirmed");
+                    googleLoginStatus.RemoveClass("text-center");
                     googleLoginStatus.AppendChild(checkMark);
-                    HtmlNode xMark = HtmlNode.CreateNode("<span></span>");
-                    googleLoginStatus.AppendChild(xMark);
                 }
 
                 HtmlNode events = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" events \")]");

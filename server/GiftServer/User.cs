@@ -438,39 +438,18 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT users.*, passwords.PasswordHash, passwords.PasswordSalt, passwords.PasswordIter "
-                                        + "FROM users "
-                                        + "INNER JOIN passwords ON passwords.UserID = users.UserID "
-                                        + "WHERE users.UserEmail = @email;";
-                        cmd.Parameters.AddWithValue("@email", email.Address);
+                        cmd.CommandText = "SELECT users.UserID FROM users WHERE UserEmail = @eml;";
+                        cmd.Parameters.AddWithValue("@eml", email.Address);
                         cmd.Prepare();
-
-                        using (MySqlDataReader Reader = cmd.ExecuteReader())
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            if (!Reader.Read())
+                            if (reader.Read())
                             {
-                                // User not found, throw correct exception
-                                throw new UserNotFoundException(email);
+                                FetchInformation(Convert.ToUInt64(reader["UserID"]), password);
                             }
                             else
                             {
-                                Password = new Password(Convert.ToString(Reader["PasswordHash"]),
-                                                             Convert.ToString(Reader["PasswordSalt"]),
-                                                             Convert.ToInt32(Reader["PasswordIter"]));
-                                // Check password
-                                if (!Password.Verify(password))
-                                {
-                                    throw new InvalidPasswordException();
-                                }
-                                UserId = Convert.ToUInt64(Reader["UserID"]);
-                                UserName = Convert.ToString(Reader["UserName"]);
-                                Email = email;
-                                BirthDay = Convert.ToInt32(Reader["UserBirthDay"]);
-                                BirthMonth = Convert.ToInt32(Reader["UserBirthMonth"]);
-                                DateJoined = (DateTime)(Reader["TimeCreated"]);
-                                Bio = Convert.ToString(Reader["UserBio"]);
-                                UserUrl = Convert.ToString(Reader["UserURL"]);
-                                Preferences = new Preferences(this);
+                                throw new UserNotFoundException(email);
                             }
                         }
                     }
@@ -537,6 +516,14 @@ namespace GiftServer
                     // Silenced - nothing we can do here and, frankly, nothing to tell the user...
                 }
                 return true;
+            }
+            private void FetchInformation(ulong id, string password)
+            {
+                FetchInformation(id);
+                if (!Password.Verify(password))
+                {
+                    throw new InvalidPasswordException();
+                }
             }
             private void FetchInformation(ulong id)
             {

@@ -373,7 +373,13 @@ $(document).ready(function () {
     });
 });
 $(document).ready(function () {
-
+    // Change checks to x on mouse over
+    $('.oauth-confirmed').mouseenter(function () {
+        $(this).removeClass('fa-check').addClass('fa-close');
+    });
+    $('.oauth-confirmed').mouseleave(function () {
+        $(this).removeClass('fa-close').addClass('fa-check');
+    });
 });
 
 var imgData;

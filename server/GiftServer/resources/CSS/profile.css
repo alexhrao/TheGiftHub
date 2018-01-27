@@ -14,7 +14,6 @@ body {
 h2 {
     font-style: italic;
 }
-
 #userImage {
     height: 256px;
     width: 256px;
@@ -62,9 +61,14 @@ table {
     cursor: pointer;
 }
 
-.oauth-status .fa-check {
-    color: lightgreen;
-    text-align: center;
+.oauth-confirmed {
+    font-size: 36px;
+}
+.oauth-confirmed.fa-check {
+    color: #28A428;
+}
+.oauth-confirmed.fa-close {
+    color: darkred;
 }
 
 .oauth {
