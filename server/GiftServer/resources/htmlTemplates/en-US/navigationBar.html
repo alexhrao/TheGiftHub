@@ -1,33 +1,7 @@
 ﻿<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8" />
-    <script>
-        $(document).ready(function () {
-            $('.dropdown-menu').on('click tap', function () {
-                $(this).toggleClass("open");
-            });
-            $('.dropdown-submenu').on('mouseenter mouseleave', function () {
-                $(this).toggleClass("open");
-            });
-        });
-    </script>
-    <style>
-        #navBar {
-            margin-bottom: 200px;
-        }
-        body > div {
-            padding-top: 70px;
-        }
-        .dropdown-submenu {
-            position: relative;
-            cursor: default;
-        }
-        .dropdown-submenu .dropdown-menu {
-            top: 0;
-            left: 100%;
-            margin-top: -1px;
-        }
-    </style>
+    <script type="text/javascript" src="resources/scripts/navigationBar.js"></script>
+    <link rel="stylesheet" type="text/css" href="resources/CSS/navigationBar.css" />
 </head>
 <body>
     <nav id="navBar" class="navbar navbar-inverse navbar-fixed-top">
