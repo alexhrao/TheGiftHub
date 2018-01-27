@@ -127,16 +127,35 @@
                                 <textarea name="userBio" class="form-control" rows="5" id="userBioChange"></textarea>
                             </div>
                             <div class="row form-group">
-                                <h2>Theme: <span id="theme" class="circle" style=""></span></h2>
-                            </div>
-                            <div class="row form-group">
                                 <label for="culture">Language</label>
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="glyphicon glyphicon-globe"></i></span>
                                     <select name="culture" id="userCulture" class="form-control"></select>
                                 </div>
                             </div>
-
+                            <div class="row form-group">
+                                <h2>Sign in with Third Party Providers</h2>
+                                <div class="row">
+                                    <div class="col-md-6 text-right">
+                                        <h3>Google: </h3>
+                                    </div>
+                                    <div class="col-md-6 text-center">
+                                        <div class="oauth-status text-center" id="googleLoginStatus">
+                                            <div class="oauth" id="googleLogin"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 text-right">
+                                        <h3>Facebook: </h3>
+                                    </div>
+                                    <div class="col-md-6 text-center">
+                                        <div class="oauth-status text-center" id="facebookLoginStatus">
+                                            <div class="fb-login-button oauth" data-scope="email,public_profile" onlogin="fbCheckLoginState" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="col-md-12">
                                     <button id="submitPref" type="button" class="btn btn-success" name="action" value="Preferences">
