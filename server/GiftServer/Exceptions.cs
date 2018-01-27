@@ -62,6 +62,11 @@ namespace GiftServer
             /// </summary>
             /// <param name="id">The ID</param>
             public DuplicateUserException(ulong id) : base(Convert.ToString(id)) { }
+            /// <summary>
+            /// The OAuthID for this duplicate
+            /// </summary>
+            /// <param name="user">The OAuth information</param>
+            public DuplicateUserException(OAuthUser user) : base(user.OAuthId) { }
         }
         /// <summary>
         /// Base class for password exceptions

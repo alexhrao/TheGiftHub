@@ -172,10 +172,11 @@ namespace GiftServer
                                                     Cookie logger = new Cookie("UserHash", hash);
                                                     _response.Cookies.Add(logger);
                                                     _response.AppendHeader("dest", "dashboard");
-                                                    return ParseQuery();
+                                                    return "success";
                                                 }
-                                                catch (Exception)
+                                                catch (Exception e)
                                                 {
+                                                    Warnings.Add(new ExecutionErrorWarning(e));
                                                     return "<p>failure!</p>";
                                                 }
                                             case "Facebook":
@@ -188,8 +189,9 @@ namespace GiftServer
                                                     _response.AppendHeader("dest", "dashboard");
                                                     return "success";
                                                 }
-                                                catch (Exception)
+                                                catch (Exception e)
                                                 {
+                                                    Warnings.Add(new ExecutionErrorWarning(e));
                                                     return "<p>failure!</p>";
                                                 }
                                             case "Email":
@@ -690,7 +692,7 @@ namespace GiftServer
             /// <returns>The closest-matching culture</returns>
             public static string ParseCulture(string lang)
             {
-                return ParseCulture(lang);
+                return ParseCulture(lang, out bool ignore);
             }
 
             private string ParsePath()

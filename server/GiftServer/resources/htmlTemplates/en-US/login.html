@@ -91,7 +91,7 @@
                                 <div class="oauth" id="googleLogin"></div>
                             </div>
                             <div class="row text-center">
-                                <div class="fb-login-button oauth" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false"></div>
+                                <div class="fb-login-button oauth" data-scope="email,public_profile" onlogin="fbCheckLoginState" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false"></div>
                             </div>
                         </div>
                         <div id="signup" class="tab-pane fade">
@@ -127,7 +127,7 @@
                                 <div class="oauth" id="googleSignup"></div>
                             </div>
                             <div class="row text-center">
-                                <div class="fb-login-button oauth" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false"></div>
+                                <div class="fb-login-button oauth" data-scope="email,public_profile" onlogin="fbCheckLoginState" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false"></div>
                             </div>
                         </div>
                     </div>

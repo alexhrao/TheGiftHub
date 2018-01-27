@@ -461,8 +461,8 @@ namespace GiftServer
             /// <param name="password">The user's password, *_hashed_*</param>
             public User(MailAddress email, Password password)
             {
-                this.Email = email;
-                this.Password = password;
+                Email = email;
+                Password = password;
             }
             /// <summary>
             /// Resets their password
@@ -730,7 +730,7 @@ namespace GiftServer
                             + "UserBirthDay = @bday, "
                             + "UserGoogleID = @gid, "
                             + "UserFacebookID = @fid "
-                            + "WHERE UserID = @id;";
+                            + "WHERE UserID = @uid;";
                         cmd.Parameters.AddWithValue("@name", UserName);
                         cmd.Parameters.AddWithValue("@email", Email);
                         cmd.Parameters.AddWithValue("@bio", Bio);
@@ -738,7 +738,7 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@bday", BirthDay);
                         cmd.Parameters.AddWithValue("@gid", GoogleId);
                         cmd.Parameters.AddWithValue("@fid", FacebookId);
-                        cmd.Parameters.AddWithValue("@id", UserId);
+                        cmd.Parameters.AddWithValue("@uid", UserId);
                         cmd.Prepare();
                         return (cmd.ExecuteNonQuery() == 1);
                     }
@@ -751,11 +751,6 @@ namespace GiftServer
                 if (user.Name != UserName)
                 {
                     UserName = user.Name;
-                    isChanged = true;
-                }
-                if (user.Email.Address != Email.Address)
-                {
-                    Email = user.Email;
                     isChanged = true;
                 }
                 if (Controller.ParseCulture(user.Locale) != Preferences.Culture)
@@ -773,8 +768,6 @@ namespace GiftServer
             /// </summary>
             /// <remarks>
             /// This is a permanent change, and will delete all memberships, gifts, and preferences.
-            /// 
-            /// Additionally, this is a _transactional_ operation; either all information is deleted or retained.
             /// </remarks>
             /// <returns>A status flag</returns>
             public bool Delete()
@@ -1270,6 +1263,77 @@ namespace GiftServer
                     }
                 }
                 return events;
+            }
+            /// <summary>
+            /// Add an OAuth token for this user
+            /// </summary>
+            /// <remarks>
+            /// This will allow the user to login with said service
+            /// </remarks>
+            /// <param name="token">The OAuth token to add</param>
+            public void AddOAuth(OAuthUser token)
+            {
+                // TODO: Ensure that login isn't already taken
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        switch (token)
+                        {
+                            case GoogleUser g:
+                                cmd.CommandText = "SELECT users.UserID FROM users WHERE UserGoogleID = @oid;";
+                                break;
+                            case FacebookUser f:
+                                cmd.CommandText = "SELECT users.UserID FROM users WHERE UserFacebookID = @oid;";
+                                break;
+                        }
+                        cmd.Parameters.AddWithValue("@oid", token.OAuthId);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (!reader.HasRows)
+                            {
+                                // We are good to go! Nobody has this ID
+                                switch (token)
+                                {
+                                    case GoogleUser g:
+                                        GoogleId = g.OAuthId;
+                                        break;
+                                    case FacebookUser f:
+                                        FacebookId = f.OAuthId;
+                                        break;
+                                }
+                                Update();
+                            }
+                            else
+                            {
+                                throw new DuplicateUserException(token);
+                            }
+                        }
+                    }
+                }
+            }
+            /// <summary>
+            /// Remove an OAuth token for this user
+            /// </summary>
+            /// <remarks>
+            /// This will bar the user from loggin in with said service
+            /// </remarks>
+            /// <param name="token">The OAuth token to remove</param>
+            public void RemoveOAuth(OAuthUser token)
+            {
+                switch (token)
+                {
+                    case GoogleUser g:
+                        GoogleId = null;
+                        break;
+                    case FacebookUser f:
+                        FacebookId = null;
+                        break;
+                }
+                Update();
             }
             /// <summary>
             /// "Serializes" the User as an XML Document

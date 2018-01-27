@@ -112,33 +112,35 @@ function onSuccess(googleUser) {
             });
         } else {
             // We need to die gracefully
-            $('#loginAlert').addClass('alert-danger');
+            $('#loginAlert').addClass('alert-danger').removeClass("hidden");
             $('#loginAlert').prepend(resp);
         }
     });
 }
 function onFailure(error) {
-    $('#loginAlert').addClass('alert-danger');
+    $('#loginAlert').addClass('alert-danger').removeClass("hidden");
     $('#loginAlert').prepend("<p>Uh Oh... Something went wrong...</p>");
 }
 function renderGoogleLogin() {
-    gapi.signin2.render('googleLogin', {
-        'scope': 'profile email',
-        'width': 240,
-        'height': 50,
-        'longtitle': true,
-        'theme': 'dark',
-        'onsuccess': onSuccess,
-        'onfailure': onFailure
-    });
-    gapi.signin2.render('googleSignup', {
-        'scope': 'profile email',
-        'width': 240,
-        'height': 50,
-        'longtitle': true,
-        'theme': 'dark',
-        'onsuccess': onSuccess,
-        'onfailure': onFailure
+    $(document).ready(function () {
+        gapi.signin2.render('googleLogin', {
+            'scope': 'profile email',
+            'width': 240,
+            'height': 50,
+            'longtitle': true,
+            'theme': 'dark',
+            'onsuccess': onSuccess,
+            'onfailure': onFailure
+        });
+        gapi.signin2.render('googleSignup', {
+            'scope': 'profile email',
+            'width': 240,
+            'height': 50,
+            'longtitle': true,
+            'theme': 'dark',
+            'onsuccess': onSuccess,
+            'onfailure': onFailure
+        });
     });
 }
 window.fbAsyncInit = function () {
@@ -171,14 +173,18 @@ function fbLoginStatusChange(response) {
         }, function (data, status, xhr) {
             var resp = xhr.responseText;
             if (resp == "success") {
-                var auth2 = gapi.auth2.getAuthInstance();
-                auth2.signOut().then(function () {
-                    location.replace(".?dest=dashboard");
-                });
+                location.replace(".?dest=dashboard");
             } else {
                 // We need to die gracefully
-                $('#loginAlert').addClass('alert-danger');
+                $('#loginAlert').addClass('alert-danger').removeClass("hidden");
                 $('#loginAlert').prepend(resp);
             }
-        }
+        });
+    }
+}
+
+function fbCheckLoginState() {
+    FB.getLoginStatus(function (response) {
+        fbLoginStatusChange(response);
+    });
 }
