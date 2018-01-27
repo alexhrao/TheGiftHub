@@ -263,7 +263,7 @@ namespace GiftServer
             /// </remarks>
             public User(ulong id)
             {
-                FetchInformation(id);
+                Synchronize(id);
             }
             /// <summary>
             /// Initializes a new User
@@ -287,7 +287,7 @@ namespace GiftServer
                         {
                             if (Reader.Read())
                             {
-                                FetchInformation(Convert.ToUInt64(Reader["UserID"]));
+                                Synchronize(Convert.ToUInt64(Reader["UserID"]));
                             }
                             else
                             {
@@ -319,7 +319,7 @@ namespace GiftServer
                         {
                             if (Reader.Read())
                             {
-                                FetchInformation(Convert.ToUInt64(Reader["UserID"]));
+                                Synchronize(Convert.ToUInt64(Reader["UserID"]));
                             }
                             else
                             {
@@ -360,7 +360,7 @@ namespace GiftServer
                             if (reader.Read())
                             {
                                 // User exists; fetch normally and move on
-                                FetchInformation(Convert.ToUInt64(reader["UserID"]));
+                                Synchronize(Convert.ToUInt64(reader["UserID"]));
                                 Update(user);
                             }
                             else
@@ -396,7 +396,7 @@ namespace GiftServer
                             if (reader.Read())
                             {
                                 ulong uid = Convert.ToUInt64(reader["UserID"]);
-                                FetchInformation(uid);
+                                Synchronize(uid);
                                 switch (user)
                                 {
                                     case GoogleUser g:
@@ -445,7 +445,7 @@ namespace GiftServer
                         {
                             if (reader.Read())
                             {
-                                FetchInformation(Convert.ToUInt64(reader["UserID"]), password);
+                                Synchronize(Convert.ToUInt64(reader["UserID"]), password);
                             }
                             else
                             {
@@ -517,15 +517,15 @@ namespace GiftServer
                 }
                 return true;
             }
-            private void FetchInformation(ulong id, string password)
+            private void Synchronize(ulong id, string password)
             {
-                FetchInformation(id);
+                Synchronize(id);
                 if (!Password.Verify(password))
                 {
                     throw new InvalidPasswordException();
                 }
             }
-            private void FetchInformation(ulong id)
+            private void Synchronize(ulong id)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
