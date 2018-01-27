@@ -138,10 +138,10 @@ namespace GiftServer
                         {
                             input = reader.ReadToEnd();
                             _dict = HttpUtility.ParseQueryString(input);
-                            if (_dict["submit"] != null)
+                            if (_dict["action"] != null)
                             {
                                 // Dispatch to correct logic:
-                                switch (_dict["submit"])
+                                switch (_dict["action"])
                                 {
                                     case "Culture":
                                         GetCulture(_dict["culture"]);

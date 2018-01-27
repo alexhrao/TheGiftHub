@@ -119,7 +119,8 @@ namespace GiftServer.Properties {
         ///            });
         ///            $(&apos;.star-rating&apos;).rating({
         ///                displayOnly: true,
-        ///                step: 0.5,        /// [rest of string was truncated]&quot;;.
+        ///                step: 0.5,
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string list {
             get {
@@ -282,7 +283,8 @@ namespace GiftServer.Properties {
         ///            });
         ///            $(&apos;.star-rating&apos;).rating({
         ///                displayOnly: true,
-        ///                step: 0.5,        /// [rest of string was truncated]&quot;;.
+        ///                step: 0.5,
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string publicList {
             get {
