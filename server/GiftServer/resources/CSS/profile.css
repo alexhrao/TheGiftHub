@@ -61,3 +61,15 @@ table {
 #groupAdder {
     cursor: pointer;
 }
+
+.oauth-status .fa-check {
+    color: lightgreen;
+    text-align: center;
+}
+
+.oauth {
+    display: inline-block;
+    text-align: center;
+    position: center;
+    padding: 10px;
+}

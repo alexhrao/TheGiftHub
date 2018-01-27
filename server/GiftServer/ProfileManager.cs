@@ -127,6 +127,8 @@ namespace GiftServer
                     HtmlNode birthday = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" birthday \")]");
                     birthday.InnerHtml = HttpUtility.HtmlEncode("Birthday: " + "Not Set");
                 }
+                /*
+                 * DEPRECATED - We will no longer be offering a theme
                 HtmlNode theme = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" theme \")]");
                 switch (user.Preferences.Theme)
                 {
@@ -140,6 +142,7 @@ namespace GiftServer
                         theme.Attributes["style"].Value = "background: red;";
                         break;
                 }
+                */
                 HtmlNode cultures = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userCulture \")]");
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -177,6 +180,30 @@ namespace GiftServer
                 bio.InnerHtml = HttpUtility.HtmlEncode(user.Bio);
                 HtmlNode bioChange = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userBioChange \")]");
                 bioChange.InnerHtml = HttpUtility.HtmlEncode(user.Bio);
+
+                HtmlNode facebookLoginStatus = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" facebookLoginStatus \")]");
+                if (user.FacebookId != null)
+                {
+                    // Checkmark (and Delete button) (and add "x"?)
+                    facebookLoginStatus.RemoveAllChildren();
+                    HtmlNode checkMark = HtmlNode.CreateNode("<span></span>");
+                    checkMark.AddClass("fa fa-check");
+                    facebookLoginStatus.AppendChild(checkMark);
+                    HtmlNode xMark = HtmlNode.CreateNode("<span></span>");
+                    facebookLoginStatus.AppendChild(xMark);
+                }
+
+                HtmlNode googleLoginStatus = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" googleLoginStatus \")]");
+                if (user.GoogleId != null)
+                {
+                    // Checkmark (and Delete button)
+                    googleLoginStatus.RemoveAllChildren();
+                    HtmlNode checkMark = HtmlNode.CreateNode("<span></span>");
+                    checkMark.AddClass("fa fa-check");
+                    googleLoginStatus.AppendChild(checkMark);
+                    HtmlNode xMark = HtmlNode.CreateNode("<span></span>");
+                    googleLoginStatus.AppendChild(xMark);
+                }
 
                 HtmlNode events = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" events \")]");
                 foreach (EventUser evnt in user.Events)

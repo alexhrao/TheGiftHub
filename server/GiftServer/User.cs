@@ -107,6 +107,7 @@ namespace GiftServer
                 get;
                 private set;
             }
+            private string googleId = null;
             /// <summary>
             /// The Unique GoogleID for this user.
             /// </summary>
@@ -115,7 +116,18 @@ namespace GiftServer
             /// 
             /// See GoogleUser for more information
             /// </remarks>
-            public string GoogleId = null;
+            public string GoogleId
+            {
+                get
+                {
+                    return googleId;
+                }
+                set
+                {
+                    googleId = String.IsNullOrEmpty(value) ? null : value;
+                }
+            }
+            private string facebookId = null;
             /// <summary>
             /// The Unique FacebookID for this user.
             /// </summary>
@@ -124,7 +136,17 @@ namespace GiftServer
             /// 
             /// See GoogleUser for more information
             /// </remarks>
-            public string FacebookId = null;
+            public string FacebookId
+            {
+                get
+                {
+                    return facebookId;
+                }
+                set
+                {
+                    facebookId = String.IsNullOrEmpty(value) ? null : value;
+                }
+            }
             /// <summary>
             /// The user's gifts
             /// </summary>
@@ -310,7 +332,7 @@ namespace GiftServer
             /// <summary>
             /// Initialize a user from an OAuth Sign In
             /// </summary>
-            /// <param name="user">The OAuthUser (created from the id_token)</param>
+            /// <param name="user">The OAuthUser (created from the authentication token)</param>
             /// <param name="sender">A function that will send the reset email to a specified MailAddress</param>
             public User(OAuthUser user, Action<MailAddress> sender)
             {

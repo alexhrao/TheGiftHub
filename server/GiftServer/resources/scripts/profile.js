@@ -372,8 +372,94 @@ $(document).ready(function () {
         });
     });
 });
+$(document).ready(function () {
+
+});
 
 var imgData;
+function validateReset() {
+    return $('#resetEmail').val() !== "";
+}
+function renderGoogleLogin() {
+    $(document).ready(function () {
+        gapi.signin2.render('googleLogin', {
+            'scope': 'profile email',
+            'width': 240,
+            'height': 50,
+            'longtitle': true,
+            'theme': 'dark',
+            'onsuccess': onSuccess,
+            'onfailure': onFailure
+        });
+    });
+}
+function onSuccess(googleUser) {
+    $.post(".", {
+        submit: "Login",
+        type: "Google",
+        token: googleUser.getAuthResponse().id_token
+    }, function (data, status, xhr) {
+        // Parse data - if error message, populate red alert; otherwise, reload to dashboard:
+        var resp = xhr.responseText;
+        if (resp == "success") {
+            // Show user we succeeded
+            $('#googleLoginStatus *').remove();
+            $('#googleLoginStatus').append('<span class=\"fa fa-check\"></span>');
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut();
+        } else {
+            // Show user not added (add alert?)
+
+        }
+    });
+}
+function onFailure(error) {
+
+}
+window.fbAsyncInit = function () {
+    FB.init({
+        appId: '553216418365065',
+        cookie: true,
+        xfbml: true,
+        version: 'v2.11'
+    });
+
+    FB.AppEvents.logPageView();
+
+};
+
+(function (d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) { return; }
+    js = d.createElement(s); js.id = id;
+    js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.11&appId=553216418365065";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+function fbLoginStatusChange(response) {
+    if (response.status === 'connected') {
+        // logged into app, send access token
+        $.post(".", {
+            submit: "Login",
+            type: "Facebook",
+            token: response.authResponse.accessToken
+        }, function (data, status, xhr) {
+            var resp = xhr.responseText;
+            if (resp == "success") {
+                $('#facebookLoginStatus *').remove();
+                $('#facebookLoginStatus').append('<span class=\"fa fa-check\"></span>');
+            } else {
+                // We need to die gracefully
+
+            }
+        });
+    }
+}
+function fbCheckLoginState() {
+    FB.getLoginStatus(function (response) {
+        fbLoginStatusChange(response);
+    });
+}
 function readURL(input) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();

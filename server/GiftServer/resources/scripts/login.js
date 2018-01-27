@@ -112,13 +112,13 @@ function onSuccess(googleUser) {
             });
         } else {
             // We need to die gracefully
-            $('#loginAlert').addClass('alert-danger').removeClass("hidden");
+            $('#loginAlert').addClass('alert-danger').removeClass("hidden").addClass("in");
             $('#loginAlert').prepend(resp);
         }
     });
 }
 function onFailure(error) {
-    $('#loginAlert').addClass('alert-danger').removeClass("hidden");
+    $('#loginAlert').addClass('alert-danger').removeClass("hidden").addClass("in");
     $('#loginAlert').prepend("<p>Uh Oh... Something went wrong...</p>");
 }
 function renderGoogleLogin() {
