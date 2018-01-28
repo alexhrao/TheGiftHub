@@ -13,9 +13,10 @@ th {
 
 body,
 html {
-    background-color: #CECECE !important;
+    background: linear-gradient(141deg, #0fb8ad 0%, #1fc8db 51%, #2cb5e8 75%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     color: black;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 img {
@@ -90,4 +91,35 @@ img {
 
 #descHeader {
     width: 32%;
+}
+
+.table-rounded,
+.table-rounded thead th,
+.table-rounded tbody td {
+    border: none;
+}
+.table-rounded thead th:first-child {
+    border-radius: 10px 0 0 0;
+}
+.table-rounded thead th:last-child {
+    border-radius: 0 10px 0 0;
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-left-color: white;
+}
+.table-rounded tbody tr:last-child td:first-child {
+    border-radius: 0 0 0 10px;
+}
+.table-rounded tbody tr:last-child td:last-child {
+    border-radius: 0 0 10px 0;
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-left-color: white;
+}
+#userName {
+    text-align: center;
+    color: white;
+}
+#userName a {
+    color: lightgreen;
 }
