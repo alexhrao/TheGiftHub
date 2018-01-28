@@ -731,6 +731,12 @@ namespace GiftServer
                     case "bio":
                         _user.Bio = _dict["bio"];
                         break;
+                    case "googleLogin":
+                        _user.GoogleId = null;
+                        break;
+                    case "facebookLogin":
+                        _user.FacebookId = null;
+                        break;
                     case "delete":
                         _user.Delete();
                         Logout();

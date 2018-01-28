@@ -187,7 +187,8 @@ namespace GiftServer
                     // Checkmark
                     facebookLoginStatus.RemoveAllChildren();
                     HtmlNode checkMark = HtmlNode.CreateNode("<span></span>");
-                    checkMark.AddClass("fa fa-check oauth-confirmed");
+                    checkMark.AddClass("fa fa-close oauth-confirmed");
+                    checkMark.Id = "facebookConfirmed";
                     facebookLoginStatus.RemoveClass("text-center");
                     facebookLoginStatus.AppendChild(checkMark);
                 }
@@ -198,7 +199,8 @@ namespace GiftServer
                     // Checkmark
                     googleLoginStatus.RemoveAllChildren();
                     HtmlNode checkMark = HtmlNode.CreateNode("<span></span>");
-                    checkMark.AddClass("fa fa-check oauth-confirmed");
+                    checkMark.AddClass("fa fa-close oauth-confirmed");
+                    checkMark.Id = "googleConfirmed";
                     googleLoginStatus.RemoveClass("text-center");
                     googleLoginStatus.AppendChild(checkMark);
                 }

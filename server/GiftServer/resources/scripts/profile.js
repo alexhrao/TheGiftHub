@@ -108,73 +108,73 @@ $(document).ready(function () {
             });
     });
 });
-        $(document).ready(function () {
-        $('#searchNewUser').click(function () {
-            $.post(".",
-                {
-                    action: "Fetch",
-                    type: "Email",
-                    email: $('#newGroupAddUser').val()
-                },
-                function (data, status, xhr) {
-                    if (status == "success") {
-                        var dom = $.parseXML(xhr.responseText);
-                        var id = parseInt(dom.getElementsByTagName("userId")[0].innerHTML);
-                        // Iterate over lis, make sure not already added
-                        var exists = false;
-                        $("#newGroupMembers li").each(function (index) {
-                            if ($(this).attr('data-user-id') == id) {
-                                // found
-                                exists = true;
-                                return false;
-                            }
-                        });
-                        if (!exists) {
-                            $('#userResult').removeClass("hidden");
-                            $('#foundUser').text(dom.getElementsByTagName("userName")[0].innerHTML);
-                            $('#foundUser').val(id);
-                        } else {
-                            $('#userResult').addClass("hidden");
+$(document).ready(function () {
+    $('#searchNewUser').click(function () {
+        $.post(".",
+            {
+                action: "Fetch",
+                type: "Email",
+                email: $('#newGroupAddUser').val()
+            },
+            function (data, status, xhr) {
+                if (status == "success") {
+                    var dom = $.parseXML(xhr.responseText);
+                    var id = parseInt(dom.getElementsByTagName("userId")[0].innerHTML);
+                    // Iterate over lis, make sure not already added
+                    var exists = false;
+                    $("#newGroupMembers li").each(function (index) {
+                        if ($(this).attr('data-user-id') == id) {
+                            // found
+                            exists = true;
+                            return false;
                         }
+                    });
+                    if (!exists) {
+                        $('#userResult').removeClass("hidden");
+                        $('#foundUser').text(dom.getElementsByTagName("userName")[0].innerHTML);
+                        $('#foundUser').val(id);
                     } else {
                         $('#userResult').addClass("hidden");
                     }
-                });
-        });
-    $('#groupAddUser').click(function () {
-                // Add to list of users (add email as value, name as text)
-                // grab name
-                var name = $('#foundUser').text();
-                var id = $('#foundUser').val();
-                $('#newGroupMembers').prepend("<li data-user-id=\"" + id + "\">" + name + " <a class=\"remove-user\"><i class=\"fa fa-times\"></i></a ></li > ");
-$('#userResult').addClass("hidden");
-$('#newGroupAddUser').val("");
+                } else {
+                    $('#userResult').addClass("hidden");
+                }
             });
-$('#createNewGroupSubmit').click(function () {
-    $.post(".",
-        {
-            action: "Create",
-            type: "Group",
-            name: $('#newGroupName').val()
-        }, function (data, status) {
-            if (data != 0) {
-                // Success! loop over elems, sending email as additions:
-                $('#newGroupMembers li').each(function (index) {
-                    // Post this group:
-                    $.post(".", {
-                        action: "Change",
-                        type: "Group",
-                        item: "addUser",
-                        itemId: data,
-                        userId: $(this).attr("data-user-id")
+    });
+    $('#groupAddUser').click(function () {
+        // Add to list of users (add email as value, name as text)
+        // grab name
+        var name = $('#foundUser').text();
+        var id = $('#foundUser').val();
+        $('#newGroupMembers').prepend("<li data-user-id=\"" + id + "\">" + name + " <a class=\"remove-user\"><i class=\"fa fa-times\"></i></a ></li > ");
+        $('#userResult').addClass("hidden");
+        $('#newGroupAddUser').val("");
+    });
+    $('#createNewGroupSubmit').click(function () {
+        $.post(".",
+            {
+                action: "Create",
+                type: "Group",
+                name: $('#newGroupName').val()
+            }, function (data, status) {
+                if (data != 0) {
+                    // Success! loop over elems, sending email as additions:
+                    $('#newGroupMembers li').each(function (index) {
+                        // Post this group:
+                        $.post(".", {
+                            action: "Change",
+                            type: "Group",
+                            item: "addUser",
+                            itemId: data,
+                            userId: $(this).attr("data-user-id")
+                        });
                     });
-                });
-                // close modal
-                $('#addGroup').modal('hide');
-            }
-        });
+                    // close modal
+                    $('#addGroup').modal('hide');
+                }
+            });
+    });
 });
-        });
 $(document).ready(function () {
     $('.group-members').on('click', '.remove-user', function () {
         $(this.parentElement).remove();
@@ -374,11 +374,23 @@ $(document).ready(function () {
 });
 $(document).ready(function () {
     // Change checks to x on mouse over
-    $('.oauth-confirmed').mouseenter(function () {
-        $(this).removeClass('fa-check').addClass('fa-close');
+    $('#facebookConfirmed').click(function () {
+        $.post(".", {
+            action: "Change",
+            type: "User",
+            item: "facebookLogin"
+        }, function (data, status, xhr) {
+            location.reload(true);
+        });
     });
-    $('.oauth-confirmed').mouseleave(function () {
-        $(this).removeClass('fa-close').addClass('fa-check');
+    $('#googleConfirmed').click(function () {
+        $.post(".", {
+            action: "Change",
+            type: "User",
+            item: "googleLogin"
+        }, function (data, status, xhr) {
+            location.reload(true);
+        });
     });
 });
 
@@ -401,7 +413,7 @@ function renderGoogleLogin() {
 }
 function onSuccess(googleUser) {
     $.post(".", {
-        submit: "Login",
+        action: "Login",
         type: "Google",
         token: googleUser.getAuthResponse().id_token
     }, function (data, status, xhr) {
@@ -410,7 +422,7 @@ function onSuccess(googleUser) {
         if (resp == "success") {
             // Show user we succeeded
             $('#googleLoginStatus *').remove();
-            $('#googleLoginStatus').append('<span class=\"fa fa-check\"></span>');
+            $('#googleLoginStatus').append('<span id=\"googleConfirmed\" class=\"fa fa-close oauth-confirmed\"></span>');
             var auth2 = gapi.auth2.getAuthInstance();
             auth2.signOut();
         } else {
@@ -446,14 +458,14 @@ function fbLoginStatusChange(response) {
     if (response.status === 'connected') {
         // logged into app, send access token
         $.post(".", {
-            submit: "Login",
+            action: "Login",
             type: "Facebook",
             token: response.authResponse.accessToken
         }, function (data, status, xhr) {
             var resp = xhr.responseText;
             if (resp == "success") {
                 $('#facebookLoginStatus *').remove();
-                $('#facebookLoginStatus').append('<span class=\"fa fa-check\"></span>');
+                $('#facebookLoginStatus').append('<span id=\"facebookConfirmed\" class=\"fa fa-close oauth-confirmed\"></span>');
             } else {
                 // We need to die gracefully
 

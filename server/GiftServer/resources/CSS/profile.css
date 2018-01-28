@@ -69,11 +69,9 @@ table {
 .oauth-confirmed {
     font-size: 36px;
 }
-.oauth-confirmed.fa-check {
-    color: #28A428;
-}
 .oauth-confirmed.fa-close {
     color: darkred;
+    cursor: pointer;
 }
 
 .oauth {
