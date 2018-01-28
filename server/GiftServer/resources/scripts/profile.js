@@ -69,7 +69,7 @@ $(document).ready(function () {
                         action: "Change",
                         type: "User",
                         item: "email",
-                        name: $('#userEmailChange').val()
+                        email: $('#userEmailChange').val()
                     });
             })
             .then(function () {

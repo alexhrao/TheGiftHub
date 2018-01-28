@@ -711,7 +711,7 @@ namespace GiftServer
                 {
                     case "name":
                         // Update this user's name, then respond back with success:
-                        _user.UserName = _dict["userName"];
+                        _user.UserName = _dict["name"];
                         break;
                     case "email":
                         _user.Email = new MailAddress(_dict["email"]);
