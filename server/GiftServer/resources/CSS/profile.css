@@ -6,9 +6,14 @@
 }
 
 body {
-    background-color: #CECECE;
-    color: black;
+    color: white;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html {
+    background: linear-gradient(141deg, #0fb8ad 0%, #1fc8db 51%, #2cb5e8 75%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 h2 {
@@ -76,4 +81,8 @@ table {
     text-align: center;
     position: center;
     padding: 10px;
+}
+
+#navigator .panel-heading {
+    color: black;
 }
