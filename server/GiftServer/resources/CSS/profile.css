@@ -83,6 +83,7 @@ table {
     padding: 10px;
 }
 
-#navigator .panel-heading {
+#navigator .panel-heading,
+.modal-body {
     color: black;
 }
