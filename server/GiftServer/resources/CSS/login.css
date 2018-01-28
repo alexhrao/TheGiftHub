@@ -111,8 +111,7 @@ form {
     font-style: italic;
 }
 
-.legal * {
+.legal p {
     color: white;
     font-style: italic;
-    font-size: 150%;
 }
