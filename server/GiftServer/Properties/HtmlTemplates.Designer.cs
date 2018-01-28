@@ -65,20 +65,16 @@ namespace GiftServer.Properties {
         ///&lt;head&gt;
         ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
         ///    &lt;title&gt;My Dashboard&lt;/title&gt;
-        ///    &lt;style&gt;
-        ///        body {
-        ///            background-color: #CECECE;
-        ///            color: black;
-        ///            font-family: &apos;Segoe UI&apos;, Tahoma, Geneva, Verdana, sans-serif;
-        ///        }
-        ///        #eventHolder &gt; li {
-        ///            cursor: pointer;
-        ///        }
-        ///    &lt;/style&gt;
-        ///    &lt;script&gt;
-        ///        $(document).ready(function () {
-        ///            $(&apos;#menu-dropdown&apos;).click(function () {
-        ///             [rest of string was truncated]&quot;;.
+        ///    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;./resources/CSS/dashboard.css&quot; /&gt;
+        ///    &lt;script type=&quot;text/javascript&quot; src=&quot;./resources/scripts/dashboard.js&quot;&gt;&lt;/script&gt;
+        ///&lt;/head&gt;
+        ///&lt;body&gt;
+        ///    &lt;div class=&quot;container-fluid&quot;&gt;
+        ///        &lt;div class=&quot;row&quot;&gt;
+        ///            &lt;div class=&quot;col-md-3&quot;&gt;
+        ///                &lt;!-- Feed --&gt;
+        ///                &lt;div id=&quot;feedPanel&quot; class=&quot;panel panel-success&quot;&gt;
+        ///      [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string dashboard {
             get {
@@ -89,14 +85,13 @@ namespace GiftServer.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
         ///
-        ///&lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+        ///&lt;html lang=&quot;en-us&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
         ///&lt;head&gt;
         ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
         ///    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
-        ///    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css&quot;&gt;
-        ///    &lt;link href=&quot;resources/plugins/starRating/star-rating.min.css&quot; media=&quot;all&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot; /&gt;
-        ///    &lt;script src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js&quot;&gt;&lt;/script&gt;
-        ///    &lt;scri [rest of string was truncated]&quot;;.
+        ///    &lt;script type=&quot;text/javascript&quot; src=&quot;https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js&quot;&gt;&lt;/script&gt;
+        ///    &lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css&quot;&gt;
+        ///    &lt;script type=&quot;text/javascript&quot; src=&quot;https://maxcdn.bootstrapcdn.com/bootstrap/ [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string header {
             get {
@@ -109,18 +104,14 @@ namespace GiftServer.Properties {
         ///&lt;head&gt;
         ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
         ///    &lt;title&gt;My Gift List&lt;/title&gt;
-        ///    &lt;script&gt;
-        ///        jQuery(document).ready(function ($) {
-        ///            $(&quot;.clickable-row&quot;).click(function () {
-        ///                window.location = $(this).data(&quot;href&quot;);
-        ///            });
-        ///            $(&quot;#image&quot;).change(function () {
-        ///                readURL(this);
-        ///            });
-        ///            $(&apos;.star-rating&apos;).rating({
-        ///                displayOnly: true,
-        ///                step: 0.5,
-        /// [rest of string was truncated]&quot;;.
+        ///    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;./resources/CSS/list.css&quot; /&gt;
+        ///    &lt;script type=&quot;text/javascript&quot; src=&quot;./resources/scripts/list.js&quot;&gt;&lt;/script&gt;
+        ///&lt;/head&gt;
+        ///&lt;body&gt;
+        ///    &lt;div class=&quot;hidden&quot; id=&quot;thisUserId&quot; data-user-id=&quot;&quot;&gt;&lt;/div&gt;
+        ///    &lt;div class=&quot;container-fluid&quot;&gt;
+        ///        &lt;div id=&quot;deleteGiftWarning&quot; class=&quot;modal fade panel-danger&quot; role=&quot;dialog&quot;&gt;
+        ///            &lt;div class=&quot;mod [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string list {
             get {
@@ -130,17 +121,11 @@ namespace GiftServer.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;https://www.w3.org/1999/xhtml&quot;&gt;
-        ///    &lt;head&gt;
-        ///        &lt;title&gt;The Gift Hub Login&lt;/title&gt;
-        ///        &lt;script&gt;
-        ///            $(document).ready(function () {
-        ///                $(&apos;#signupSubmit&apos;).hide();
-        ///                $(&apos;#loginSubmit&apos;).hide();
-        ///                $(&apos;#resetSubmit&apos;).hide();
-        ///                $(window).keydown(function (event) {
-        ///                    if (event.keyCode == 13) {
-        ///                        // If clicked first tab, validate:
-        ///                        if ($(&apos;#resetPassword&apos; [rest of string was truncated]&quot;;.
+        ///&lt;head&gt;
+        ///    &lt;meta name=&quot;description&quot; content=&quot;The Gift Hub is a place where you can list your gifts and reserve the gifts of others. Sign up today to start gifting!&quot; /&gt;
+        ///    &lt;meta name=&quot;google-signin-client_id&quot; content=&quot;173734539372-5sgc5qa2gdt8f51e9o0c9a7463s3a9g4.apps.googleusercontent.com&quot;&gt;
+        ///    &lt;script src=&quot;https://apis.google.com/js/platform.js?onload=renderGoogleLogin&quot; async defer&gt;&lt;/script&gt;
+        ///    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;./reso [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string login {
             get {
@@ -151,20 +136,14 @@ namespace GiftServer.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
         ///&lt;head&gt;
-        ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
-        ///    &lt;script&gt;
-        ///        $(document).ready(function () {
-        ///            $(&apos;.dropdown&apos;).on(&apos;mouseenter mouseleave click tap&apos;, function () {
-        ///                $(this).toggleClass(&quot;open&quot;);
-        ///            });
-        ///            $(&apos;.dropdown-submenu&apos;).on(&apos;mouseenter mouseleave click tap&apos;, function () {
-        ///                $(this).toggleClass(&quot;open&quot;);
-        ///            });
-        ///        });
-        ///    &lt;/script&gt;
-        ///    &lt;style&gt;
-        ///        body {
-        ///            f [rest of string was truncated]&quot;;.
+        ///    &lt;script type=&quot;text/javascript&quot; src=&quot;resources/scripts/navigationBar.js&quot;&gt;&lt;/script&gt;
+        ///    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;resources/CSS/navigationBar.css&quot; /&gt;
+        ///&lt;/head&gt;
+        ///&lt;body&gt;
+        ///    &lt;nav id=&quot;navBar&quot; class=&quot;navbar navbar-inverse navbar-fixed-top&quot;&gt;
+        ///        &lt;div class=&quot;container-fluid&quot;&gt;
+        ///            &lt;div class=&quot;navbar-header&quot;&gt;
+        ///                &lt;button type=&quot;button&quot; class=&quot;navbar-toggle&quot; data-toggle=&quot;collapse&quot; data-target=&quot;#globalNav&quot;&gt;        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string navigationBar {
             get {
@@ -173,18 +152,19 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+        ///   Looks up a localized string similar to &lt;html lang=&quot;en-us&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
         ///&lt;head&gt;
         ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
         ///    &lt;title&gt;Reset Password for The Gift Hub&lt;/title&gt;
-        ///    &lt;script&gt;
-        ///        $(document).ready(function () {
-        ///            $(window).keydown(function (event) {
-        ///                if (event.keyCode == 13) {
-        ///                    // Validate:
-        ///                    if ($(&apos;#secondResetPass&apos;).val() &amp;&amp; $(&apos;#secondResetPass&apos;).val() === $(&apos;#firstResetPass&apos;).val()) {
-        ///                        return true;
-        ///                    } else { [rest of string was truncated]&quot;;.
+        ///    &lt;script type=&quot;text/javascript&quot; src=&quot;resources/scripts/passwordReset.js&quot;&gt;&lt;/script&gt;
+        ///    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;resources/CSS/passwordReset.css&quot; /&gt;
+        ///&lt;/head&gt;
+        ///&lt;body&gt;
+        ///    &lt;div class=&quot;container-fluid&quot;&gt;
+        ///        &lt;div class=&quot;text-center&quot;&gt;
+        ///            &lt;div class=&quot;row&quot;&gt;
+        ///                &lt;div class=&quot;col-xs-12&quot;&gt;
+        ///                    &lt;h1&gt;Reset Yo [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string passwordReset {
             get {
@@ -229,14 +209,15 @@ namespace GiftServer.Properties {
         ///&lt;body&gt;
         ///    &lt;h1&gt;Hi There.&lt;/h1&gt;
         ///    &lt;h2&gt;Looks like you reset your password.&lt;/h2&gt;
-        ///    &lt;p&gt;Dear &lt;div id=&quot;userName&quot;&gt;&lt;/div&gt;,&lt;/p&gt;
+        ///    &lt;div id=&quot;userName&quot;&gt;&lt;/div&gt;
         ///    &lt;br /&gt;
         ///    &lt;p&gt;&amp;nbsp;Looks like you reset your password. If you initiated this, then you&apos;re good to go! Otherwise, please reply to this email and we&apos;ll work all this out.&lt;/p&gt;
         ///    &lt;p&gt;
         ///        Best Regards,
         ///    &lt;/p&gt;
         ///    &lt;p&gt;
-        ///        The G [rest of string was truncated]&quot;;.
+        ///        The GiftHub Team
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string passwordResetNotification {
             get {
@@ -248,19 +229,29 @@ namespace GiftServer.Properties {
         ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
         ///&lt;head&gt;
         ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
-        ///    &lt;title&gt;My Profile&lt;/title&gt;
-        ///    &lt;script&gt;
-        ///        $(document).ready(function () {
-        ///            $(&quot;#image&quot;).change(function () {
-        ///                readURL(this);
-        ///            });
+        ///    &lt;title&gt;The Gift Hub Privacy Policy&lt;/title&gt;
+        ///&lt;/head&gt;
+        ///&lt;body&gt;
+        ///    &lt;p&gt;This Privacy Policy governs the manner in which The Gift Hub collects, uses, maintains and discloses information collected from users (each, a &quot;User&quot;) of the https://www.thegifthub.org/ website (&quot;Site&quot;).&lt;/p&gt;
         ///
-        ///        });
-        ///        $(document).ready(function () {
-        ///            $(&apos;#events .event-closer&apos;).click(function () {
-        ///                var eNumber = this.id;
-        ///                eNumber = parseInt(eNumber.substring(11))
-        ///                $.post( [rest of string was truncated]&quot;;.
+        ///    &lt;h3&gt;Personal identification information&lt;/h3&gt;
+        ///    &lt;p&gt;We may collect personal identification information from Users in a variety of w [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string privacyPolicy {
+            get {
+                return ResourceManager.GetString("privacyPolicy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+        ///&lt;head&gt;
+        ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
+        ///    &lt;meta name=&quot;google-signin-client_id&quot; content=&quot;173734539372-5sgc5qa2gdt8f51e9o0c9a7463s3a9g4.apps.googleusercontent.com&quot;&gt;
+        ///    &lt;title&gt;My Profile&lt;/title&gt;
+        ///    &lt;script src=&quot;https://apis.google.com/js/platform.js?onload=renderGoogleLogin&quot; async defer&gt;&lt;/script&gt;
+        ///    &lt;script type=&quot;text/javascript&quot; src=&quot;./resources/scripts/profile.js&quot;&gt;&lt;/script&gt;
+        ///    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;./resources/CSS/profile.c [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string profile {
             get {
@@ -272,19 +263,15 @@ namespace GiftServer.Properties {
         ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
         ///&lt;head&gt;
         ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
-        ///    &lt;title&gt;My Gift List&lt;/title&gt;
-        ///    &lt;script&gt;
-        ///        jQuery(document).ready(function ($) {
-        ///            $(&quot;.clickable-row&quot;).click(function () {
-        ///                window.location = $(this).data(&quot;href&quot;);
-        ///            });
-        ///            $(&quot;#image&quot;).change(function () {
-        ///                readURL(this);
-        ///            });
-        ///            $(&apos;.star-rating&apos;).rating({
-        ///                displayOnly: true,
-        ///                step: 0.5,
-        /// [rest of string was truncated]&quot;;.
+        ///    &lt;title id=&quot;title&quot;&gt;&lt;/title&gt;
+        ///    &lt;script type=&quot;text/javascript&quot; src=&quot;./resources/scripts/publicList.js&quot;&gt;&lt;/script&gt;
+        ///    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;./resources/CSS/publicList.css&quot; /&gt;
+        ///&lt;/head&gt;
+        ///&lt;body&gt;
+        ///    &lt;!-- Format: id, name, class, type, placeholder, tooltip--&gt;
+        ///    &lt;div class=&quot;hidden&quot; id=&quot;thisUserId&quot; data-user-id=&quot;&quot;&gt;&lt;/div&gt;
+        ///    &lt;div class=&quot;container-fluid&quot;&gt;
+        ///        &lt;div id=&quot;reserveGift&quot; class [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string publicList {
             get {
@@ -297,28 +284,37 @@ namespace GiftServer.Properties {
         ///&lt;head&gt;
         ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
         ///    &lt;title&gt;My Profile&lt;/title&gt;
-        ///    &lt;script&gt;
-        ///    &lt;/script&gt;
-        ///    &lt;style&gt;
-        ///        .input-group,
-        ///        .form-group,
-        ///        .spaced,
-        ///        .input {
-        ///            margin: 10px;
-        ///        }
-        ///        body {
-        ///            background-color: #CECECE;
-        ///            color: black;
-        ///            font-family: &apos;Segoe UI&apos;, Tahoma, Geneva, Verdana, sans-serif;
-        ///        }
-        ///        h2 {
-        ///            font-style: italic;
-        ///        }
-        /// [rest of string was truncated]&quot;;.
+        ///    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;./resources/CSS/publicProfile.css&quot; /&gt;
+        ///    &lt;script type=&quot;text/javascript&quot; src=&quot;./resources/scripts/publicProfile.js&quot;&gt;&lt;/script&gt;
+        ///&lt;/head&gt;
+        ///&lt;body&gt;
+        ///    &lt;div class=&quot;container-fluid&quot;&gt;
+        ///        &lt;div class=&quot;row&quot;&gt;
+        ///            &lt;div class=&quot;col-sm-4 text-center&quot;&gt;
+        ///                &lt;!-- User Image --&gt;
+        ///                &lt;img id=&quot;userImage&quot; class=&quot;img- [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string publicProfile {
             get {
                 return ResourceManager.GetString("publicProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
+        ///&lt;head&gt;
+        ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
+        ///    &lt;link rel=&quot;stylesheet&quot; type=&quot;text/css&quot; href=&quot;/resources/CSS/termsOfService.css&quot; /&gt;
+        ///    &lt;title&gt;The Gift Hub Terms of Service&lt;/title&gt;
+        ///&lt;/head&gt;
+        ///&lt;body&gt;
+        ///    &lt;h2&gt;The Gift Hub Terms of Service&lt;/h2&gt;
+        ///    &lt;h3&gt;1. Terms&lt;/h3&gt;
+        ///    &lt;p&gt;By accessing the website at &lt;a href=&quot;https://www.thegifthub.org&quot;&gt;https://www.thegifthub.org&lt;/a&gt;, you are agreeing to be bound by these terms of service, all applicable laws and regulations,  [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string termsOfService {
+            get {
+                return ResourceManager.GetString("termsOfService", resourceCulture);
             }
         }
     }

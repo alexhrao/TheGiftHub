@@ -501,6 +501,14 @@ namespace GiftServer
                             break;
                     }
                 }
+                else if (Path.GetFileNameWithoutExtension(path).ToLower() == "privacypolicy")
+                {
+                    return LoginManager.PrivacyPolicy();
+                }
+                else if (Path.GetFileNameWithoutExtension(path).ToLower() == "termsofservice")
+                {
+                    return LoginManager.TermsOfService();
+                }
                 else
                 {
                     _response.StatusCode = 404;

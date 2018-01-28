@@ -84,6 +84,26 @@ namespace GiftServer
                 alert.AppendChildren(children);
                 return login.DocumentNode.OuterHtml;
             }
+            /// <summary>
+            /// The privacy policy page
+            /// </summary>
+            /// <returns>Complete HTML markup for the privacy policy</returns>
+            public string PrivacyPolicy()
+            {
+                HtmlDocument policy = new HtmlDocument();
+                policy.LoadHtml(HtmlManager.GetString("header") + HtmlManager.GetString("privacyPolicy"));
+                return policy.DocumentNode.OuterHtml;
+            }
+            /// <summary>
+            /// The Terms of Service page
+            /// </summary>
+            /// <returns>Complete HTML markup for the Terms of Service</returns>
+            public string TermsOfService()
+            {
+                HtmlDocument terms = new HtmlDocument();
+                terms.LoadHtml(HtmlManager.GetString("header") + HtmlManager.GetString("termsOfService"));
+                return terms.DocumentNode.OuterHtml;
+            }
         }
     }
 }

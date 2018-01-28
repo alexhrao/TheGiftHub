@@ -142,6 +142,9 @@
   <data name="passwordResetNotification" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\htmlTemplates\en-US\passwordResetNotification.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
+  <data name="privacyPolicy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\htmlTemplates\en-US\privacyPolicy.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
   <data name="profile" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\htmlTemplates\en-US\profile.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
@@ -150,5 +153,8 @@
   </data>
   <data name="publicProfile" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\resources\htmlTemplates\en-US\publicProfile.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="termsOfService" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\resources\htmlTemplates\en-GB\termsOfService.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>
