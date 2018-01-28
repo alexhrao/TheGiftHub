@@ -110,3 +110,9 @@ form {
     color: white;
     font-style: italic;
 }
+
+.legal * {
+    color: white;
+    font-style: italic;
+    font-size: 150%;
+}

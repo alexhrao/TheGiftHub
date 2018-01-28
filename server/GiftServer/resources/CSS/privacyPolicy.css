@@ -3,3 +3,6 @@
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
+body * {
+    color: white;
+}
