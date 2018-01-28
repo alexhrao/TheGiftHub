@@ -97,7 +97,16 @@ function validateSignup() {
 function validateReset() {
     return $('#resetEmail').val() !== "";
 }
+function loadingLogin(btn) {
+    var elem = $(btn).parent();
+    $(btn).remove();
+    elem.append('<i class="fa fa-spinner fa-spin fa-3x fa-fw signup-loader"></i>');
+}
 function onSuccess(googleUser) {
+    // Show spinner
+    // remove google login
+    loadingLogin("#googleLogin");
+    loadingLogin("#googleSignup");
     $.post(".", {
         action: "Login",
         type: "Google",
@@ -164,6 +173,7 @@ window.fbAsyncInit = function () {
 }(document, 'script', 'facebook-jssdk'));
 
 function fbLoginStatusChange(response) {
+    loadingLogin(".fb-login-button");
     if (response.status === 'connected') {
         // logged into app, send access token
         $.post(".", {

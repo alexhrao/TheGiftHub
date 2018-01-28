@@ -115,3 +115,7 @@ form {
     color: white;
     font-style: italic;
 }
+
+.signup-loader {
+    color: white;
+}
