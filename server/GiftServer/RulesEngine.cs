@@ -9,8 +9,14 @@ namespace GiftServer
         /// <summary>
         /// A set of Rules that describes recurrence
         /// </summary>
-        public abstract class RulesEngine : ISynchronizable, IFetchable
+        public abstract class RulesEngine : ISynchronizable, IFetchable, IEquatable<RulesEngine>
         {
+            /// <summary>
+            /// See if two rule sets are actually the same one
+            /// </summary>
+            /// <param name="engine">The rules engine</param>
+            /// <returns>True if they are the same type and have the same ID</returns>
+            public abstract bool Equals(RulesEngine engine);
             /// <summary>
             /// A List of Occurrences for this event
             /// </summary>

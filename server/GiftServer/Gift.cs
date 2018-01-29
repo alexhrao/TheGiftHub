@@ -16,7 +16,7 @@ namespace GiftServer
         /// <remarks>
         /// A gift is owned by a specific user, and has a great deal of properties (color, quantity, etc.).
         /// </remarks>
-        public class Gift : ISynchronizable, IShowable, IFetchable
+        public class Gift : ISynchronizable, IShowable, IFetchable, IEquatable<Gift>
         {
             /// <summary>
             /// The GiftID
@@ -177,6 +177,39 @@ namespace GiftServer
                         }
                     }
                 }
+            }
+            /// <summary>
+            /// See if this object is this gift
+            /// </summary>
+            /// <param name="obj">The object to inspect</param>
+            /// <returns>If the object is the same as this gift</returns>
+            public override bool Equals(object obj)
+            {
+                if (obj != null && obj is Gift g)
+                {
+                    return Equals(g);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            /// <summary>
+            /// See if the two gifts are equal
+            /// </summary>
+            /// <param name="gift">The gift to compare</param>
+            /// <returns>If the two gifts are equal</returns>
+            public bool Equals(Gift gift)
+            {
+                return gift != null && gift.GiftId == GiftId;
+            }
+            /// <summary>
+            /// Get the hash code for this gift
+            /// </summary>
+            /// <returns>This gift's hash code</returns>
+            public override int GetHashCode()
+            {
+                return GiftId.GetHashCode();
             }
 
             /// <summary>

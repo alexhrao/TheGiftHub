@@ -20,7 +20,7 @@ namespace GiftServer
         /// 
         /// This doesn't depend on the "week" it's in, or on a specific day of the week.
         /// </remarks>
-        public class ExactEvent : RulesEngine
+        public class ExactEvent : RulesEngine, IEquatable<ExactEvent>
         {
             /// <summary>
             /// The ID for this Exact Event
@@ -115,6 +115,57 @@ namespace GiftServer
                     // yield return DateTime.MinValue;
                 }
             }
+            /// <summary>
+            /// See if these two objects are equal
+            /// </summary>
+            /// <param name="obj">The object to compare</param>
+            /// <returns>Whether or not they are equal</returns>
+            public override bool Equals(object obj)
+            {
+                if (obj != null && obj is ExactEvent e)
+                {
+                    return Equals(e);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            /// <summary>
+            /// See if these two RulesEngines are equivalent
+            /// </summary>
+            /// <param name="engine">The engine to compare</param>
+            /// <returns>If they are the same</returns>
+            public override bool Equals(RulesEngine engine)
+            {
+                if (engine != null && engine is ExactEvent e)
+                {
+                    return Equals(e);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            /// <summary>
+            /// See if these two ExactEvent Engines are the same
+            /// </summary>
+            /// <param name="engine">the ExactEvent engine to compare</param>
+            /// <returns>If the two are equal</returns>
+            public bool Equals(ExactEvent engine)
+            {
+                return engine != null && engine.ExactEventId == ExactEventId;
+            }
+            /// <summary>
+            /// Get the hash code for this instnace
+            /// </summary>
+            /// <returns>The hash code</returns>
+            public override int GetHashCode()
+            {
+                return ExactEventId.GetHashCode();
+            }
+
+
             /// <summary>
             /// Create a record of this ruleset in the database
             /// </summary>

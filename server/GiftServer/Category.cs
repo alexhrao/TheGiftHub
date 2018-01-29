@@ -17,7 +17,7 @@ namespace GiftServer
         /// New Categories are not allowed to be added! Instead, categories are static; this is the reason
         /// that Category does not implement the IFetchable Interface, and why all its properties are readonly
         /// </remarks>
-        public class Category : IFetchable
+        public class Category : IFetchable, IEquatable<Category>
         {
             /// <summary>
             /// The ID of this category as it appears in the database
@@ -31,6 +31,68 @@ namespace GiftServer
             /// A longer description of this category
             /// </summary>
             public readonly string Description;
+            /// <summary>
+            /// See if the given object is actually this category
+            /// </summary>
+            /// <param name="obj">The object to compare</param>
+            /// <returns>Whether or not the objects are equal</returns>
+            public override bool Equals(object obj)
+            {
+                if (obj != null && obj is Category)
+                {
+                    return Equals((Category)(obj));
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            /// <summary>
+            /// Check two categories.
+            /// </summary>
+            /// <remarks>
+            /// This is identical to saying == since the value is immutable
+            /// </remarks>
+            /// <param name="category">The category to compare</param>
+            /// <returns>Whether or not they are the same</returns>
+            public bool Equals(Category category)
+            {
+                return category == this;
+            }
+            /// <summary>
+            /// Get the hash for this category
+            /// </summary>
+            /// <returns>The hash code</returns>
+            public override int GetHashCode()
+            {
+                return CategoryId.GetHashCode();
+            }
+            /// <summary>
+            /// See if two categories are equal
+            /// </summary>
+            /// <param name="a">The first category</param>
+            /// <param name="b">The second category</param>
+            /// <returns>Whether or not they are equal</returns>
+            /// <remarks>
+            /// Since the category class is immutable, this is safe
+            /// </remarks>
+            public static bool operator ==(Category a, Category b)
+            {
+                return ReferenceEquals(a, b) ? true : ((object)(a) != null) && ((object)(b) != null) && a.CategoryId == b.CategoryId;
+            }
+            /// <summary>
+            /// See if two categories are unequal
+            /// </summary>
+            /// <param name="a">The first category</param>
+            /// <param name="b">The second category</param>
+            /// <returns>Whether or not they are equal</returns>
+            /// <remarks>
+            /// Since the category class is immutable, this is safe
+            /// </remarks>
+            public static bool operator !=(Category a, Category b)
+            {
+                return !(a == b);
+            }
 
             /// <summary>
             /// Given the Category ID, this will fetch all the necessary information

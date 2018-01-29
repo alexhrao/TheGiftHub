@@ -30,7 +30,7 @@ namespace GiftServer
         ///     - It has an associated image
         ///     - It can be "serialized" as an XML Document
         /// </remarks>
-        public class User : ISynchronizable, IShowable, IFetchable
+        public class User : ISynchronizable, IShowable, IFetchable, IEquatable<User>, IEquatable<Object>
         {
             /// <summary>
             /// The UserID for this user
@@ -253,6 +253,39 @@ namespace GiftServer
                     }
                     return _events;
                 }
+            }
+            /// <summary>
+            /// Checks if this user is equal to the given object
+            /// </summary>
+            /// <param name="obj">The object to compare</param>
+            /// <returns>A boolean flag - false if null, not a user, or </returns>
+            public override bool Equals(object obj)
+            {
+                if (obj != null && obj is User u)
+                {
+                    return Equals(u);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            /// <summary>
+            /// Checks if this user is equal to the given user
+            /// </summary>
+            /// <param name="user"></param>
+            /// <returns></returns>
+            public bool Equals(User user)
+            {
+                return user != null && UserId == user.UserId;
+            }
+            /// <summary>
+            /// Overrides the hash code operator
+            /// </summary>
+            /// <returns>The hash for this user</returns>
+            public override int GetHashCode()
+            {
+                return UserId.GetHashCode();
             }
             /// <summary>
             /// Initializes a new User

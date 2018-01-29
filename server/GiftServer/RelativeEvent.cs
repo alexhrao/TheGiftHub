@@ -23,7 +23,7 @@ namespace GiftServer
         /// Note that the start date doesn't necessarily indicate the first day the event occurs - it just specifies a lower bound. Furthermore, 
         /// the end date doesn't necessarily indicate the last occurrence - only an upper bound.
         /// </remarks>
-        public class RelativeEvent : RulesEngine
+        public class RelativeEvent : RulesEngine, IEquatable<RelativeEvent>
         {
             /// <summary>
             /// The ID for this Relative Event Rule
@@ -198,6 +198,59 @@ namespace GiftServer
                     }
                 }
             }
+            /// <summary>
+            /// See if the given object is the same as this one
+            /// </summary>
+            /// <param name="obj">The object to compare</param>
+            /// <returns>Whether or not they are equal</returns>
+            public override bool Equals(object obj)
+            {
+                if (obj != null && obj is RelativeEvent r)
+                {
+                    return Equals(r);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            /// <summary>
+            /// See if the given rules engine is the same as this one
+            /// </summary>
+            /// <param name="engine">The engine to compare</param>
+            /// <returns>Whether or not they are equal</returns>
+            public override bool Equals(RulesEngine engine)
+            {
+                if (engine != null && engine is RelativeEvent r)
+                {
+                    return Equals(r);
+                }
+                else
+                {
+                    return false;
+                }
+
+            }
+            /// <summary>
+            /// Check if the given RelativeEvent Engine is equal to this one
+            /// </summary>
+            /// <param name="engine">The engine to compare</param>
+            /// <returns>If the two are the same engine</returns>
+            public bool Equals(RelativeEvent engine)
+            {
+                return engine != null && engine.RelativeEventId == RelativeEventId;
+            }
+            /// <summary>
+            /// A hash for this engine
+            /// </summary>
+            /// <returns>The hash for this engine</returns>
+            public override int GetHashCode()
+            {
+                return RelativeEventId.GetHashCode();
+            }
+
+
+
             /// <summary>
             /// All occurrences of this event
             /// </summary>

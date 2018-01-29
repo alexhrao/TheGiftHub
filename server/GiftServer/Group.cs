@@ -17,7 +17,7 @@ namespace GiftServer
         /// 
         /// The only person allowed to make changes to a groups structure (name, description, etc.) is the Admin, who is also the only one that can delete a group.
         /// </remarks>
-        public class Group : ISynchronizable, IFetchable
+        public class Group : ISynchronizable, IFetchable, IEquatable<Group>
         {
             /// <summary>
             /// This Group's ID
@@ -84,6 +84,40 @@ namespace GiftServer
                 }
             }
             private List<User> users = new List<User>();
+
+            /// <summary>
+            /// Find if this group is equal to this object
+            /// </summary>
+            /// <param name="obj">The object to compare to</param>
+            /// <returns>A boolean if the two objects are equal</returns>
+            public override bool Equals(object obj)
+            {
+                if (obj != null && obj is Group g)
+                {
+                    return Equals(g);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            /// <summary>
+            /// Find out if this group is equal to another
+            /// </summary>
+            /// <param name="group">The group to compare</param>
+            /// <returns>true if they are indeed the same group</returns>
+            public bool Equals(Group group)
+            {
+                return group != null && group.GroupId == GroupId;
+            }
+            /// <summary>
+            /// Get the hash code for this object
+            /// </summary>
+            /// <returns>The code</returns>
+            public override int GetHashCode()
+            {
+                return GroupId.GetHashCode();
+            }
             /// <summary>
             /// Fetch a group from the database
             /// </summary>

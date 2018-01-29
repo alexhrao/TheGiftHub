@@ -11,7 +11,7 @@ namespace GiftServer
         /// <summary>
         /// An event that can recur
         /// </summary>
-        public class Event : ISynchronizable, IFetchable
+        public class Event : ISynchronizable, IFetchable, IEquatable<Event>, IEquatable<Object>
         {
             /// <summary>
             /// The EventID for this Event
@@ -80,7 +80,39 @@ namespace GiftServer
                     }
                 }
             }
-
+            /// <summary>
+            /// Find out if this object is equal to this event
+            /// </summary>
+            /// <param name="obj">The object to compare</param>
+            /// <returns>A boolean of whether they are equal or not</returns>
+            public override bool Equals(object obj)
+            {
+                if (obj != null && obj is Event e)
+                {
+                    return Equals(e);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            /// <summary>
+            /// Check if this Event is equal to another event
+            /// </summary>
+            /// <param name="evnt">The event to compare</param>
+            /// <returns>False if null or not the same event</returns>
+            public bool Equals(Event evnt)
+            {
+                return evnt != null && evnt.EventId == EventId;
+            }
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <returns></returns>
+            public override int GetHashCode()
+            {
+                return EventId.GetHashCode();
+            }
             /// <summary>
             /// Fetch an existing Event from the database
             /// </summary>

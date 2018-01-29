@@ -10,7 +10,7 @@ namespace GiftServer
         /// <summary>
         /// A single reservation for a gift
         /// </summary>
-        public class Reservation : IFetchable
+        public class Reservation : IFetchable, IEquatable<Reservation>
         {
             /// <summary>
             /// The reservation ID
@@ -28,6 +28,39 @@ namespace GiftServer
             /// Whether or not this has been marked as purchased
             /// </summary>
             public readonly bool IsPurchased = false;
+            /// <summary>
+            /// See if the given object is the same as this reservation
+            /// </summary>
+            /// <param name="obj">The object to compare</param>
+            /// <returns>Whether or not the two objects are actually the same</returns>
+            public override bool Equals(object obj)
+            {
+                if (obj != null && obj is Reservation r)
+                {
+                    return Equals(r);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            /// <summary>
+            /// See if this reservation is the same as the given one
+            /// </summary>
+            /// <param name="reservation">The reservation to check</param>
+            /// <returns>Whether or not the two reservations are equal</returns>
+            public bool Equals(Reservation reservation)
+            {
+                return reservation != null && reservation.ReservationId == ReservationId;
+            }
+            /// <summary>
+            /// Get the hash code for this reservation
+            /// </summary>
+            /// <returns>The hash code for this reservation</returns>
+            public override int GetHashCode()
+            {
+                return ReservationId.GetHashCode();
+            }
             /// <summary>
             /// Fetch an existing reservation record from the database
             /// </summary>

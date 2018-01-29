@@ -9,7 +9,7 @@ namespace GiftServer
         /// <summary>
         /// User Preferences
         /// </summary>
-        public class Preferences : ISynchronizable, IFetchable
+        public class Preferences : ISynchronizable, IFetchable, IEquatable<Preferences>
         {
             /// <summary>
             /// The ID for this set of preferences
@@ -71,13 +71,46 @@ namespace GiftServer
                 }
             }
             /// <summary>
+            /// See if the given object is actually this preferences set
+            /// </summary>
+            /// <param name="obj">The object to check</param>
+            /// <returns>If the two are equivalent</returns>
+            public override bool Equals(object obj)
+            {
+                if (obj != null && obj is Preferences p)
+                {
+                    return Equals(p);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            /// <summary>
+            /// Check if a given preference is the same as this one
+            /// </summary>
+            /// <param name="prefs">The preference to compare</param>
+            /// <returns>Whether or not they are equal</returns>
+            public bool Equals(Preferences prefs)
+            {
+                return prefs != null && prefs.PreferenceId == PreferenceId;
+            }
+            /// <summary>
+            /// The hash code for these preferences
+            /// </summary>
+            /// <returns>The hash code</returns>
+            public override int GetHashCode()
+            {
+                return PreferenceId.GetHashCode();
+            }
+            /// <summary>
             /// Fetch preferences tied to a specific user
             /// </summary>
             /// <param name="user">The User to fetch</param>
             public Preferences(User user)
             {
                 // Try and get preferences
-                this.User = user;
+                User = user;
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
