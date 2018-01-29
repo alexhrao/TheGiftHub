@@ -177,7 +177,7 @@ namespace GiftServer
                                                 catch (Exception e)
                                                 {
                                                     Warnings.Add(new ExecutionErrorWarning(e));
-                                                    return "<p>failure!</p>";
+                                                    return LoginManager.FailOAuth;
                                                 }
                                             case "Facebook":
                                                 try
@@ -192,7 +192,7 @@ namespace GiftServer
                                                 catch (Exception e)
                                                 {
                                                     Warnings.Add(new ExecutionErrorWarning(e));
-                                                    return "<p>failure!</p>";
+                                                    return LoginManager.FailOAuth;
                                                 }
                                             case "Email":
                                             default:

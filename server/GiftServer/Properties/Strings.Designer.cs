@@ -115,6 +115,15 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;p&gt;&lt;strong&gt;Oops...&lt;/strong&gt; We&apos;re having some difficulties processing your login request. Try again later?&lt;/p&gt;.
+        /// </summary>
+        internal static string oAuthFailure {
+            get {
+                return ResourceManager.GetString("oAuthFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;p&gt;&lt;strong&gt;Recovery email sent&lt;/strong&gt; - check your inbox&lt;/p&gt;.
         /// </summary>
         internal static string recoveryEmailSent {

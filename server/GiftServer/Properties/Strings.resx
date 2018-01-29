@@ -135,6 +135,9 @@
   <data name="newLogin" xml:space="preserve">
     <value>&lt;p&gt;&lt;strong&gt;Password Reset&lt;/strong&gt; Please login below with your new password&lt;/p&gt;</value>
   </data>
+  <data name="oAuthFailure" xml:space="preserve">
+    <value>&lt;p&gt;&lt;strong&gt;Oops...&lt;/strong&gt; We're having some difficulties processing your login request. Try again later?&lt;/p&gt;</value>
+  </data>
   <data name="recoveryEmailSent" xml:space="preserve">
     <value>&lt;p&gt;&lt;strong&gt;Recovery email sent&lt;/strong&gt; - check your inbox&lt;/p&gt;</value>
   </data>

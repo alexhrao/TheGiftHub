@@ -20,6 +20,16 @@ namespace GiftServer
             private ResourceManager HtmlManager;
             private ResourceManager StringManager;
             /// <summary>
+            /// HTML Markup for a failed OAuth Login
+            /// </summary>
+            public string FailOAuth
+            {
+                get
+                {
+                    return StringManager.GetString("oAuthFailure");
+                }
+            }
+            /// <summary>
             /// Create a new LoginManager
             /// </summary>
             /// <param name="controller">The controller for this thread</param>
