@@ -1,67 +1,53 @@
 USE gift_registry_db;
 
--- Insert into categories:
+-- Create categories:
 INSERT INTO categories (CategoryName, CategoryDescription)
     VALUES ('Clothing', 'Clothing');
 INSERT INTO categories (CategoryName, CategoryDescription)
     VALUES ('Electronics', 'Electronic Devices');
 
--- Default Events:
-INSERT INTO default_events (EventName, EventYear, EventMonth, EventDay, EventRecurs)
-    VALUES ('Christmas', 2017, 12, 25, TRUE);
-INSERT INTO default_events (EventName, EventYear, EventMonth, EventDay, EventRecurs)
-    VALUES ('New Year''s', 2017, 1, 1, TRUE);
-INSERT INTO default_events (EventName, EventYear, EventMonth, EventDay, EventRecurs)
-    VALUES ('Mother''s Day', 2017, 5, 8, FALSE);
-
--- Insert into users:
+-- Create users:
 INSERT INTO users (UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL)
     VALUES ('Alex Rao', 'alexhrao@gmail.com', 7, 3, "I LOVE to have fun!", "UJIOl8xUU7ccIQH5Ofs0Awfdsa00");
 INSERT INTO users (UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL)
-    VALUES ('Raeedah Choudhury', 'rchoudhury@gmail.com', 11, 19, "I love my boyfriend", "UJIOl8xUU7ccIQH5Ofs0Awfdsa11");
+    VALUES ('Raeedah Choudhury', 'raeedah.choudhury@gmail.com', 11, 19, "I love my boyfriend", "UJIOl8xUU7ccIQH5Ofs0Awfdsa11");
 
--- Insert into preferences:
+-- Create preferences:
 INSERT INTO preferences (UserID, UserCulture, UserTheme)
     VALUES (1, 'en-US', 0);
 INSERT INTO preferences (UserID, UserCulture, UserTheme)
     VALUES (2, 'fr-FR', 1);
     
--- Insert into Password:
+-- Create Password:
 INSERT INTO passwords (UserID, PasswordHash, PasswordSalt, PasswordIter)
     VALUES (1, 'UJIOl8xUU7ccIQH5Ofs+Awfdsa==', 'UJIOl8xUU7ccIQH5Ofs+Aw==', 10000);
 INSERT INTO passwords (UserID, PasswordHash, PasswordSalt, PasswordIter)
     VALUES (2, '12345678901234567890', '1234567890123567', 10000);
 
--- Default Event Futures:
-INSERT INTO default_events_futures (EventID, EventYear, EventMonth, EventDay)
-    VALUES (3, 2018, 5, 13);
-INSERT INTO default_events_futures (EventID, EventYear, EventMonth, EventDay)
-    VALUES (3, 2019, 5, 12);
+-- Create Events
+INSERT INTO user_events (UserID, EventStartDate, EventEndDate, EventName)
+	VALUES (1, '2017-01-10', NULL, 'Exact Event Test');
+INSERT INTO user_events (UserID, EventStartDate, EventEndDate, EventName)
+	VALUES (1, '2017-01-7', '2020-01-01', 'Relative Event Test');
+INSERT INTO user_events (UserID, EventStartDate, EventEndDate, EventName)
+	VALUES (1, '2017-08-04', '2017-08-04', 'One Off Event Test');
+INSERT INTO user_events (UserID, EventStartDate, EventEndDate, EventName)
+	VALUES (1, '2017-01-05', NULL, 'Blackout Date Test');
+INSERT INTO user_events (UserID, EventStartDate, EventEndDate, EventName)
+	VALUES (2, '2017-01-10', NULL, 'Exact Event Test 2');
+INSERT INTO user_events (UserID, EventStartDate, EventEndDate, EventName)
+	VALUES (2, '2017-01-7', '2020-01-01', 'Relative Event Test 2');
+INSERT INTO user_events (UserID, EventStartDate, EventEndDate, EventName)
+	VALUES (2, '2017-08-04', '2017-08-04', 'One Off Event Test 2');
+INSERT INTO user_events (UserID, EventStartDate, EventEndDate, EventName)
+	VALUES (2, '2017-04-04', NULL, 'Blackout Date Test 2');
 
--- Insert into events:
-INSERT INTO events_users (EventName, UserID, EventYear, EventMonth, EventDay, EventID, EventRecurs)
-    VALUES ('Christmas', 1, 2017, 12, 25, 1, TRUE);
-INSERT INTO events_users (EventName, UserID, EventYear, EventMonth, EventDay, EventID, EventRecurs)
-    VALUES ('New Year''s', 2, 2017, 1, 1, 2, TRUE);
-INSERT INTO events_users (EventName, UserID, EventYear, EventMonth, EventDay, EventID, EventRecurs)
-    VALUES ('Christmas', 2, 2017, 12, 25, 1, TRUE);
-INSERT INTO events_users (EventName, UserID, EventYear, EventMonth, EventDay, EventID, EventRecurs)
-    VALUES ('Mother''s Day', 2, 2017, 5, 8, 3, FALSE);
-INSERT INTO events_users (EventName, UserID, EventYear, EventMonth, EventDay, EventRecurs)
-    VALUES ('Anniversary', 1, 2016, 10, 7, TRUE);
-INSERT INTO events_users (EventName, UserID, EventYear, EventMonth, EventDay, EventRecurs)
-    VALUES ('Anniversary', 2, 2016, 11, 9, FALSE);
-
--- Insert into events_futures
-INSERT INTO events_users_futures (EventUserID, EventYear, EventMonth, EventDay)
-    VALUES (6, 2017, 12, 1);
-INSERT INTO events_users_futures (EventUserID, EventYear, EventMonth, EventDay)
-    VALUES (6, 2019, 12, 1);
-
--- Create group
+-- Create groups
 INSERT INTO groups (GroupName, AdminID)
     VALUES ('The Rao''s', 1);
-
+INSERT INTO groups (GroupName, AdminID)
+	VALUES ('Test Group 2', 2);
+    
 -- Create gift
 INSERT INTO gifts (UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating)
     VALUES (1, 'Webcam', 'Logitech BRIO webcam', 'https://www.google.com', 100.00, 'Logitech, Target', 1, 'FFFFFF', 'White', 'N/A', 2, 5.0);
@@ -79,13 +65,41 @@ INSERT INTO groups_gifts (GroupID, GiftID)
     VALUES (1, 1);
 INSERT INTO groups_gifts (GroupID, GiftID)
     VALUES (1, 2);
-    
--- Make new year's visible to group
-INSERT INTO events_users_groups (EventUserID, GroupID)
-    VALUES (2, 1);
-INSERT INTO events_users_groups (EventUserID, GroupID)
-    VALUES (3, 1);
 
+-- Create the Exact Event Rule
+INSERT INTO exact_events (EventID, EventTimeInterval, EventSkipEvery)
+	VALUES (1, 'M', 1);
+INSERT INTO exact_events (EventID, EventTimeInterval, EventSkipEvery)
+	VALUES (5, 'W', 3);
+INSERT INTO exact_events (EventID, EventTimeInterval, EventSkipEvery)
+	VALUES (4, 'M', 1);
+    
+-- Create the Relative Event Rule
+INSERT INTO relative_events (EventID, EventTimeInterval, EventSkipEvery, EventDayOfWeek, EventPosn)
+	VALUES (2, 'Y', 1, 'M', 2);
+INSERT INTO relative_events (EventID, EventTimeInterval, EventSkipEvery, EventDayOfWeek, EventPosn)
+	VALUES (6, 'M', 2, 'S', 3);
+INSERT INTO relative_events (EventID, EventTimeInterval, EventSkipEvery, EventDayOfWeek, EventPosn)
+	VALUES (8, 'M', 1, 'T', 5);
+
+-- Create Blackout Dates
+INSERT INTO blackout_events (EventID, EventBlackoutDate)
+	VALUES (4, '2017-02-05');
+INSERT INTO blackout_events (EventID, EventBlackoutDate)
+	VALUES (8, '2017-06-27');
+
+-- Add events to groups
+INSERT INTO groups_events (GroupID, EventID)
+	VALUES
+		(1, 1),
+        (1, 2),
+        (1, 3),
+        (2, 4),
+        (1, 5),
+        (2, 6),
+        (2, 7),
+        (2, 8);
+    
 -- Add Cultures
 INSERT INTO cultures (CultureLanguage, CultureLocation, CultureDesc)
     VALUES
