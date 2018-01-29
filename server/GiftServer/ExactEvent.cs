@@ -1,5 +1,8 @@
-﻿using System;
+﻿using GiftServer.Exceptions;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Xml;
 
 namespace GiftServer
@@ -111,8 +114,25 @@ namespace GiftServer
             {
                 get
                 {
-                    throw new NotImplementedException();
-                    // yield return DateTime.MinValue;
+                    DateTime currVal = Event.StartDate;
+                    if (Event.EndDate.HasValue)
+                    {
+                        // We will have an end.
+                        while (currVal <= Event.EndDate)
+                        {
+                            yield return new Occurrence(currVal);
+                            currVal = Increment(currVal);
+                        }
+                    }
+                    else
+                    {
+                        // No end
+                        while (true)
+                        {
+                            yield return new Occurrence(currVal);
+                            currVal = Increment(currVal);
+                        }
+                    }
                 }
             }
             /// <summary>
@@ -164,7 +184,73 @@ namespace GiftServer
             {
                 return ExactEventId.GetHashCode();
             }
+            /// <summary>
+            /// Fetch an existing ExactEvent from the database
+            /// </summary>
+            /// <param name="id">The ID for this exact event</param>
+            public ExactEvent(ulong id)
+            {
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT ExactEventID, EventTimeInterval, EventSkipEvery FROM exact_events WHERE ExactEventID = @eid;";
+                        cmd.Parameters.AddWithValue("@eid", id);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                ExactEventId = id;
+                                TimeInterval = Convert.ToString(reader["EventTimeInterval"]);
+                                SkipEvery = Convert.ToUInt32(reader["EventSkipEvery"]);
+                            }
+                            else
+                            {
+                                throw new EventNotFoundException(id);
+                            }
+                        }
+                    }
+                }
+            }
 
+            private DateTime Increment(DateTime currVal)
+            {
+                DateTime incremented;
+                switch (timeInterval)
+                {
+                    case 'D':
+                        // Increment by a day
+                        incremented = currVal.AddDays(1);
+                        break;
+                    case 'W':
+                        incremented = currVal.AddDays(7);
+                        break;
+                    case 'M':
+                        incremented = currVal.AddMonths(1);
+                        break;
+                    case 'Y':
+                        incremented = currVal.AddYears(1);
+                        break;
+                    default:
+                        incremented = currVal;
+                        break;
+                }
+                // Ensure not in blackout days:
+                if (Event.Blackouts.Exists(x => x.BlackoutDate.Year == incremented.Year &&
+                                                x.BlackoutDate.Month == incremented.Month &&
+                                                x.BlackoutDate.Day == incremented.Day))
+                {
+                    // The current date is a blackout!
+                    return Increment(incremented);
+                }
+                else
+                {
+                    return incremented;
+                }
+            }
 
             /// <summary>
             /// Create a record of this ruleset in the database

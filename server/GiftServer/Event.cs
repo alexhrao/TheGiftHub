@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using GiftServer.Exceptions;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -119,7 +120,79 @@ namespace GiftServer
             /// <param name="id">The EventID</param>
             public Event(ulong id)
             {
-
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT EventID, EventName, EventStartDate, EventEndDate, UserID FROM user_events WHERE EventID = @eid;";
+                        cmd.Parameters.AddWithValue("@eid", id);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                EventId = id;
+                                Name = Convert.ToString(reader["EventName"]);
+                                StartDate = (DateTime)(reader["EventStartDate"]);
+                                EndDate = (DateTime?)(reader["EventEndDate"]);
+                                User = new User(Convert.ToUInt64(reader["UserID"]));
+                            }
+                            else
+                            {
+                                // Throw new exception
+                                throw new EventNotFoundException(id);
+                            }
+                        }
+                    }
+                    // Get rule engine
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT ExactEventID FROM exact_events WHERE EventID = @eid;";
+                        cmd.Parameters.AddWithValue("@eid", id);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                Rules = new ExactEvent(Convert.ToUInt64(reader["ExactEventID"]));
+                            }
+                        }
+                    }
+                    if (Rules == null)
+                    {
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "SELECT RelativeEventID FROM relative_events WHERE EventID = @eid;";
+                            cmd.Parameters.AddWithValue("@eid", id);
+                            cmd.Prepare();
+                            using (MySqlDataReader reader = cmd.ExecuteReader())
+                            {
+                                if (reader.Read())
+                                {
+                                    Rules = new RelativeEvent(Convert.ToUInt64(reader["RelativeEventID"]));
+                                }
+                            }
+                        }
+                    }
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT BlackoutEventID FROM blackout_events WHERE EventID = @eid;";
+                        cmd.Parameters.AddWithValue("@eid", id);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                Blackouts.Add(new Blackout(Convert.ToUInt64(reader["BlackoutEventID"])));
+                            }
+                        }
+                    }
+                }
             }
             /// <summary>
             /// Create a record of this event in the database

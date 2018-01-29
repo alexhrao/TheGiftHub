@@ -1,5 +1,8 @@
-﻿using System;
+﻿using GiftServer.Exceptions;
+using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Xml;
 
 namespace GiftServer
@@ -84,11 +87,11 @@ namespace GiftServer
                 }
             }
 
-            private uint skipEvery = 0;
+            private int skipEvery = 0;
             /// <summary>
             /// Skip every x occurrences. Cannot be 0.
             /// </summary>
-            public uint SkipEvery
+            public int SkipEvery
             {
                 get
                 {
@@ -248,9 +251,6 @@ namespace GiftServer
             {
                 return RelativeEventId.GetHashCode();
             }
-
-
-
             /// <summary>
             /// All occurrences of this event
             /// </summary>
@@ -263,11 +263,188 @@ namespace GiftServer
             {
                 get
                 {
-                    throw new NotImplementedException();
-                    // yield return DateTime.MinValue;
+                    DateTime currVal = Event.StartDate;
+                    if (Event.EndDate.HasValue)
+                    {
+                        // We will have an end.
+                        // TODO: Check if StartDate is occurrence
+                        while (currVal <= Event.EndDate)
+                        {
+                            yield return new Occurrence(currVal);
+                            currVal = Increment(currVal);
+                        }
+                    }
+                    else
+                    {
+                        // No end
+                        while (true)
+                        {
+                            yield return new Occurrence(currVal);
+                            currVal = Increment(currVal);
+                        }
+                    }
+                }
+            }
+            /// <summary>
+            /// Fetch an existing RelativeEvent from the database
+            /// </summary>
+            /// <param name="id">The ID for this relative event</param>
+            public RelativeEvent(ulong id)
+            {
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT RelativeEventID, EventTimeInterval, EventSkipEvery, EventDayOfWeek, "
+                                        + "EventPosn FROM relative_events WHERE RelativeEventID = @rid;";
+                        cmd.Parameters.AddWithValue("@rid", id);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                RelativeEventId = id;
+                                TimeInterval = Convert.ToString(reader["EventTimeInterval"]);
+                                SkipEvery = Convert.ToInt32(reader["EventSkipEvery"]);
+                                DayOfWeek = Convert.ToString(reader["EventDayOfWeek"]);
+                                Posn = Convert.ToUInt32(reader["EventPosn"]);
+                            }
+                            else
+                            {
+                                throw new EventNotFoundException(id);
+                            }
+                        }
+                    }
                 }
             }
 
+            private DateTime Increment(DateTime currVal)
+            {
+                DateTime incremented = currVal;
+                switch (timeInterval)
+                {
+                    case 'M':
+                        incremented = (incremented.AddMonths(SkipEvery)).AddDays((-1 * incremented.Day) + 1);
+                        break;
+                    case 'Y':
+                        incremented = (incremented.AddYears(SkipEvery)).AddDays((-1 * incremented.Day) + 1);
+                        break;
+                    default:
+                        break;
+                }
+                // loop until we reach the posn of that day. Unless it's 5
+                if (posn == 5)
+                {
+                    // just loop until day of week matches AND adding seven is new month:
+                    int currMonth = incremented.Month;
+                    while (currMonth == incremented.Month)
+                    {
+                        incremented = incremented.AddDays(1);
+                        switch (incremented.DayOfWeek)
+                        {
+                            case System.DayOfWeek.Sunday:
+                                if (dayOfWeek == 'N' && (incremented.AddDays(7)).Month != incremented.Month)
+                                {
+                                    return incremented;
+                                }
+                                break;
+                            case System.DayOfWeek.Monday:
+                                if (dayOfWeek == 'M' && (incremented.AddDays(7)).Month != incremented.Month)
+                                {
+                                    return incremented;
+                                }
+                                break;
+                            case System.DayOfWeek.Tuesday:
+                                if (dayOfWeek == 'T' && (incremented.AddDays(7)).Month != incremented.Month)
+                                {
+                                    return incremented;
+                                }
+                                break;
+                            case System.DayOfWeek.Wednesday:
+                                if (dayOfWeek == 'W' && (incremented.AddDays(7)).Month != incremented.Month)
+                                {
+                                    return incremented;
+                                }
+                                break;
+                            case System.DayOfWeek.Thursday:
+                                if (dayOfWeek == 'R' && (incremented.AddDays(7)).Month != incremented.Month)
+                                {
+                                    return incremented;
+                                }
+                                break;
+                            case System.DayOfWeek.Friday:
+                                if (dayOfWeek == 'F' && (incremented.AddDays(7)).Month != incremented.Month)
+                                {
+                                    return incremented;
+                                }
+                                break;
+                            case System.DayOfWeek.Saturday:
+                                if (dayOfWeek == 'S' && (incremented.AddDays(7)).Month != incremented.Month)
+                                {
+                                    return incremented;
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+                int numPassed = 0;
+                while (numPassed < posn)
+                {
+                    incremented.AddDays(1);
+                    switch (incremented.DayOfWeek)
+                    {
+                        case System.DayOfWeek.Sunday:
+                            if (dayOfWeek == 'N')
+                            {
+                                numPassed++;
+                            }
+                            break;
+                        case System.DayOfWeek.Monday:
+                            if (dayOfWeek == 'M')
+                            {
+                                numPassed++;
+                            }
+                            break;
+                        case System.DayOfWeek.Tuesday:
+                            if (dayOfWeek == 'T')
+                            {
+                                numPassed++;
+                            }
+                            break;
+                        case System.DayOfWeek.Wednesday:
+                            if (dayOfWeek == 'W')
+                            {
+                                numPassed++;
+                            }
+                            break;
+                        case System.DayOfWeek.Thursday:
+                            if (dayOfWeek == 'R')
+                            {
+                                numPassed++;
+                            }
+                            break;
+                        case System.DayOfWeek.Friday:
+                            if (dayOfWeek == 'F')
+                            {
+                                numPassed++;
+                            }
+                            break;
+                        case System.DayOfWeek.Saturday:
+                            if (dayOfWeek == 'S')
+                            {
+                                numPassed++;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                return incremented;
+            }
             /// <summary>
             /// Create a record of this ruleset in the database
             /// </summary>
