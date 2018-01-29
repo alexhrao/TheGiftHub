@@ -61,6 +61,15 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to admin@TheGiftHub.org.
+        /// </summary>
+        internal static string AdminEmail {
+            get {
+                return ResourceManager.GetString("AdminEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Notpmah678.
         /// </summary>
         internal static string EmailPassword {
@@ -141,6 +150,42 @@ namespace GiftServer.Properties {
         internal static string ImageFormat {
             get {
                 return ResourceManager.GetString("ImageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Gift Hub.
+        /// </summary>
+        internal static string OrgName {
+            get {
+                return ResourceManager.GetString("OrgName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to smtp.gmail.com.
+        /// </summary>
+        internal static string SmtpClient {
+            get {
+                return ResourceManager.GetString("SmtpClient", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 587.
+        /// </summary>
+        internal static string SmtpPort {
+            get {
+                return ResourceManager.GetString("SmtpPort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to support@TheGiftHub.org.
+        /// </summary>
+        internal static string SupportEmail {
+            get {
+                return ResourceManager.GetString("SupportEmail", resourceCulture);
             }
         }
         

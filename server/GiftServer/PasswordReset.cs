@@ -169,7 +169,7 @@ namespace GiftServer
                             cmd.Connection = con;
                             cmd.CommandText = "INSERT INTO passwordResets (UserID, ResetHash) VALUES (@uid, @hash);";
                             cmd.Parameters.AddWithValue("@uid", id);
-                            cmd.Parameters.AddWithValue("@hash", PasswordReset.ComputeHash(token));
+                            cmd.Parameters.AddWithValue("@hash", ComputeHash(token));
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -177,18 +177,18 @@ namespace GiftServer
                 }
                 try
                 {
-                    MailMessage email = new MailMessage(new MailAddress("The Gift Hub<support@TheGiftHub.org>"), emailAddress)
+                    MailMessage email = new MailMessage(new MailAddress(Constants.OrgName + "<" + Constants.SupportEmail + ">"), emailAddress)
                     {
                         Body = body,
-                        Subject = "Password Reset",
+                        Subject = ResetManager.ResetNotificationSubject,
                         IsBodyHtml = true
                     };
-                    using (SmtpClient sender = new SmtpClient("smtp.gmail.com", 587))
+                    using (SmtpClient sender = new SmtpClient(Constants.SmtpClient, Convert.ToInt32(Constants.SmtpPort)))
                     {
                         sender.EnableSsl = true;
                         sender.DeliveryMethod = SmtpDeliveryMethod.Network;
                         sender.UseDefaultCredentials = false;
-                        sender.Credentials = new NetworkCredential("support@thegifthub.org", Constants.EmailPassword);
+                        sender.Credentials = new NetworkCredential(Constants.SupportEmail, Constants.EmailPassword);
                         sender.Send(email);
                     }
                 }

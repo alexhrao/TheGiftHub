@@ -151,4 +151,19 @@
   <data name="FacebookOAuthUrl" xml:space="preserve">
     <value>https://graph.facebook.com/v2.11</value>
   </data>
+  <data name="AdminEmail" xml:space="preserve">
+    <value>admin@TheGiftHub.org</value>
+  </data>
+  <data name="OrgName" xml:space="preserve">
+    <value>The Gift Hub</value>
+  </data>
+  <data name="SmtpClient" xml:space="preserve">
+    <value>smtp.gmail.com</value>
+  </data>
+  <data name="SmtpPort" xml:space="preserve">
+    <value>587</value>
+  </data>
+  <data name="SupportEmail" xml:space="preserve">
+    <value>support@TheGiftHub.org</value>
+  </data>
 </root>

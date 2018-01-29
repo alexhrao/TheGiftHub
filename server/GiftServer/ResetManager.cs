@@ -20,6 +20,16 @@ namespace GiftServer
             private ResourceManager StringManager;
             private LoginManager LoginManager;
             /// <summary>
+            /// Subject line for a PasswordReset Notification
+            /// </summary>
+            public string ResetNotificationSubject
+            {
+                get
+                {
+                    return StringManager.GetString("passwordResetNotification");
+                }
+            }
+            /// <summary>
             /// Initiate a new ResetManager
             /// </summary>
             /// <param name="controller">The controller for this thread</param>

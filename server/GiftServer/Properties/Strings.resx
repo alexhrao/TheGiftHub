@@ -138,6 +138,9 @@
   <data name="oAuthFailure" xml:space="preserve">
     <value>&lt;p&gt;&lt;strong&gt;Oops...&lt;/strong&gt; We're having some difficulties processing your login request. Try again later?&lt;/p&gt;</value>
   </data>
+  <data name="passwordResetNotification" xml:space="preserve">
+    <value>Password Reset Notification</value>
+  </data>
   <data name="recoveryEmailSent" xml:space="preserve">
     <value>&lt;p&gt;&lt;strong&gt;Recovery email sent&lt;/strong&gt; - check your inbox&lt;/p&gt;</value>
   </data>

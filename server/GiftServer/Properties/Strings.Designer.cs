@@ -124,6 +124,15 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Password Reset Notification.
+        /// </summary>
+        internal static string passwordResetNotification {
+            get {
+                return ResourceManager.GetString("passwordResetNotification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;p&gt;&lt;strong&gt;Recovery email sent&lt;/strong&gt; - check your inbox&lt;/p&gt;.
         /// </summary>
         internal static string recoveryEmailSent {
