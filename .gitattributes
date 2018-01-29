@@ -61,6 +61,8 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+#*.pub   diff=astextplain
+#*.PUB   diff=astextplain
 
 ###############################################################################
 # Linguist
