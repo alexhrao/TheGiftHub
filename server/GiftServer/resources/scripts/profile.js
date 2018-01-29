@@ -393,6 +393,24 @@ $(document).ready(function () {
         });
     });
 });
+$(document).ready(function () {
+    $('#deleteAccountCancel').click(function () {
+        // clear email box
+        $('#deleteAccountEmail').val("");
+        $('#deleteAccount').modal('hide');
+    });
+    $('#accountDeleter').click(function () {
+        $('#changePreferences').modal('hide');
+        $('#deleteAccount').modal();
+    });
+    $('#deleteAccountEmail').keyup(function () {
+        if ($('#deleteAccountEmail').val() == $('#email').text().substr(7)) {
+            $('#deleteAccountConfirm').removeClass("hidden");
+        } else {
+            $('#deleteAccountConfirm').addClass("hidden");
+        }
+    });
+});
 
 var imgData;
 function validateReset() {

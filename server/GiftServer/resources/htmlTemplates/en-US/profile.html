@@ -74,6 +74,54 @@
                 </div>
             </div>
         </div>
+        <div id="deleteAccount" class="modal fade panel-danger" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content panel-danger">
+                    <div class="modal-header panel-heading">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Delete your account</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h1>Deleting your Account</h1>
+                                <hr />
+                                <p><em>Are you sure you would like to delete your account? You cannot undo this, and everything you've ever done with The Gift Hub will be erased. Permanently. Forever.</em></p>
+                                <hr />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p><em>To delete your account, type your email address into the box below.</em></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input id="deleteAccountEmail" class="form-control" type="email" name="deleteEmail" placeholder="Your Email Address" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form id="deleteAccountFinal" name="deleteAccountFinal">
+                                    <input type="hidden" name="type" value="user" />
+                                    <input type="hidden" name="item" value="delete" />
+                                    <button id="deleteAccountConfirm" class="btn btn-danger btn-block hidden" form="deleteAccountFinal" type="submit" name="action" value="Change">
+                                        <i class="fa fa-trash-o"></i> Delete my Account. Permanently...
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button id="deleteAccountCancel" class="btn btn-success btn-block" role="button" type="button">
+                                    <i class="fa fa-heart-o"></i> Return to Safety
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div id="changePreferences" class="modal fade panel-primary" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content panel-primary">
@@ -162,6 +210,13 @@
                                 <div class="col-md-12">
                                     <button id="submitPref" type="button" class="btn btn-success" name="action" value="Preferences">
                                         <span class="glyphicon glyphicon-check"></span> Confirm
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button id="accountDeleter" type="button" class="btn btn-danger btn-block">
+                                        <i class="fa fa-trash-o"></i> Delete Account
                                     </button>
                                 </div>
                             </div>

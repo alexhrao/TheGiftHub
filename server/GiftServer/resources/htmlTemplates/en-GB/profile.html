@@ -1,7 +1,9 @@
 ﻿<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
+    <meta name="google-signin-client_id" content="173734539372-5sgc5qa2gdt8f51e9o0c9a7463s3a9g4.apps.googleusercontent.com">
     <title>My Profile</title>
+    <script src="https://apis.google.com/js/platform.js?onload=renderGoogleLogin" async defer></script>
     <script type="text/javascript" src="./resources/scripts/profile.js"></script>
     <link rel="stylesheet" type="text/css" href="./resources/CSS/profile.css" />
 </head>
@@ -68,6 +70,50 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="deleteAccount" class="modal fade panel-danger" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content panel-danger">
+                    <div class="modal-header panel-heading">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Delete your account</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h1>Deleting your Account</h1>
+                                <hr />
+                                <p><em>Are you sure you would like to delete your account? You cannot undo this, and everything you've ever done with The Gift Hub will be erased. Permanently. Forever.</em></p>
+                                <hr />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p><em>To delete your account, type your email address into the box below.</em></p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input id="deleteAccountEmail" class="form-control" type="email" name="deleteEmail" placeholder="Your Email Address" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button id="deleteAccountConfirm" class="btn btn-danger btn-block hidden" role="button" type="button">
+                                    <i class="fa fa-trash-o"></i> Delete my Account. Permanently...
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button id="deleteAccountCancel" class="btn btn-success btn-block" role="button" type="button">
+                                    <i class="fa fa-heart-o"></i> Return to Safety
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -160,6 +206,13 @@
                                 <div class="col-md-12">
                                     <button id="submitPref" type="button" class="btn btn-success" name="action" value="Preferences">
                                         <span class="glyphicon glyphicon-check"></span> Confirm
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button id="accountDeleter" type="button" class="btn btn-danger btn-block">
+                                        <i class="fa fa-trash-o"></i> Delete Account
                                     </button>
                                 </div>
                             </div>

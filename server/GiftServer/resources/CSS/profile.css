@@ -85,3 +85,10 @@ table {
 .modal-body {
     color: black;
 }
+
+.row .btn {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
