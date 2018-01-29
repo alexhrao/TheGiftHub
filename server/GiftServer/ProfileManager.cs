@@ -105,14 +105,14 @@ namespace GiftServer
                 HtmlNode img = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userImage \")]");
                 img.Attributes["src"].Value = user.GetImage();
                 HtmlNode name = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
-                HtmlNode nameChange = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userNameChange \")]");
-                nameChange.SetAttributeValue("placeholder", HttpUtility.HtmlEncode(user.UserName));
+                // HtmlNode nameChange = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userNameChange \")]");
+                // nameChange.SetAttributeValue("placeholder", HttpUtility.HtmlEncode(user.UserName));
                 name.InnerHtml = HttpUtility.HtmlEncode(user.UserName);
                 HtmlNode timeMember = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" timeMember \")]");
                 timeMember.InnerHtml = HttpUtility.HtmlEncode("Member since " + user.DateJoined.ToString("m") + ", " + user.DateJoined.ToString("yyyy"));
                 HtmlNode email = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" email \")]");
-                HtmlNode emailChange = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userEmailChange \")]");
-                emailChange.SetAttributeValue("placeholder", HttpUtility.HtmlEncode(user.Email));
+                // HtmlNode emailChange = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userEmailChange \")]");
+                // emailChange.SetAttributeValue("placeholder", HttpUtility.HtmlEncode(user.Email));
                 email.InnerHtml = HttpUtility.HtmlEncode("Email: " + user.Email);
                 HtmlNode id = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@name), \" \"), \" userID \")]");
                 id.Attributes["value"].Value = user.UserId.ToString();
