@@ -225,11 +225,11 @@ namespace GiftServer
             /// <remarks>
             /// This is a lazy operator; it will only populate when called upon. This ensures the latest data is fetched.
             /// </remarks>
-            public List<EventUser> Events
+            public List<Event> Events
             {
                 get
                 {
-                    List<EventUser> _events = new List<EventUser>();
+                    List<Event> _events = new List<Event>();
                     if (UserId != 0)
                     {
                         using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -238,14 +238,14 @@ namespace GiftServer
                             using (MySqlCommand cmd = new MySqlCommand())
                             {
                                 cmd.Connection = con;
-                                cmd.CommandText = "SELECT EventUserID FROM events_users WHERE UserID = @id;";
-                                cmd.Parameters.AddWithValue("@id", UserId);
+                                cmd.CommandText = "SELECT EventID FROM user_events WHERE UserID = @uid;";
+                                cmd.Parameters.AddWithValue("@uid", UserId);
                                 cmd.Prepare();
                                 using (MySqlDataReader Reader = cmd.ExecuteReader())
                                 {
                                     while (Reader.Read())
                                     {
-                                        _events.Add(new EventUser(Convert.ToUInt64(Reader["EventUserID"])));
+                                        _events.Add(new Event(Convert.ToUInt64(Reader["EventID"])));
                                     }
                                 }
                             }
@@ -1242,9 +1242,9 @@ namespace GiftServer
             /// will have at least one group in common with this user, *and* have marked one Event viewable by said group
             /// for this to happen.
             /// </remarks>
-            public List<EventUser> GetEvents(User target)
+            public List<Event> GetEvents(User target)
             {
-                List<EventUser> events = new List<EventUser>();
+                List<Event> events = new List<Event>();
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -1253,11 +1253,11 @@ namespace GiftServer
                         using (MySqlCommand cmd = new MySqlCommand())
                         {
                             cmd.Connection = con;
-                            cmd.CommandText = "SELECT events_users_groups.EventUserID "
-                                            + "FROM events_users_groups "
-                                            + "INNER JOIN events_users ON events_users.EventUserID = events_users_groups.EventUserID "
+                            cmd.CommandText = "SELECT groups_events.EventID "
+                                            + "FROM groups_events "
+                                            + "INNER JOIN user_events ON user_events.EventID = groups_events.EventID "
                                             + "WHERE GroupID = @gid "
-                                            + "AND events_users.UserID = @uid;";
+                                            + "AND user_events.UserID = @uid;";
                             cmd.Parameters.AddWithValue("@gid", group.GroupId);
                             cmd.Parameters.AddWithValue("@uid", target.UserId);
                             cmd.Prepare();
@@ -1265,13 +1265,46 @@ namespace GiftServer
                             {
                                 while (Reader.Read())
                                 {
-                                    events.Add(new EventUser(Convert.ToUInt64(Reader["EventUserID"])));
+                                    events.Add(new Event(Convert.ToUInt64(Reader["EventID"])));
                                 }
                             }
                         }
                     }
                 }
                 return events;
+            }
+            /// <summary>
+            /// Get all events owned by this user and visible to the given group
+            /// </summary>
+            /// <param name="group">The group that wants to view events from this user</param>
+            /// <returns>A list of viewable events</returns>
+            public List<Event> GetEvents(Group group)
+            {
+                List<Event> events = new List<Event>();
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT groups_events.EventID "
+                                        + "FROM groups_events "
+                                        + "INNER JOIN user_events ON user_events.EventID = groups_events.EventID "
+                                        + "WHERE groups_events.GroupID = @gid "
+                                        + "AND user_events.UserID = @uid;";
+                        cmd.Parameters.AddWithValue("@gid", group.GroupId);
+                        cmd.Parameters.AddWithValue("@uid", UserId);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                events.Add(new Event(Convert.ToUInt64(reader["EventID"])));
+                            }
+                            return events;
+                        }
+                    }
+                }
             }
             /// <summary>
             /// Add an OAuth token for this user
@@ -1401,7 +1434,7 @@ namespace GiftServer
                     groups.AppendChild(info.ImportNode(group.Fetch().DocumentElement, true));
                 }
                 XmlElement events = info.CreateElement("events");
-                foreach (EventUser evnt in Events)
+                foreach (Event evnt in Events)
                 {
                     events.AppendChild(info.ImportNode(evnt.Fetch().DocumentElement, true));
                 }

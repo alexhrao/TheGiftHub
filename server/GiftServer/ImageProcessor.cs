@@ -8,10 +8,19 @@ namespace GiftServer
 {
     namespace Data
     {
-        class ImageProcessor
+        /// <summary>
+        /// Process an image and get it's final form
+        /// </summary>
+        public class ImageProcessor
         {
+            /// <summary>
+            /// The data (the output)
+            /// </summary>
             public readonly byte[] Data;
-
+            /// <summary>
+            /// Create a new image processor with the given contents
+            /// </summary>
+            /// <param name="contents">A byte array representing an image - any format is fine</param>
             public ImageProcessor(byte[] contents)
             {
                 // Switch data format:

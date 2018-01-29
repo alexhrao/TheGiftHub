@@ -299,7 +299,7 @@ namespace GiftServer
                                             case "Preferences":
                                                 return Update(_user.Preferences);
                                             case "Event":
-                                                return Update(new EventUser(changeId));
+                                                return Update(new Event(changeId));
                                             case "Group":
                                                 return Update(new Group(changeId));
                                             case "Gift":
@@ -322,7 +322,7 @@ namespace GiftServer
                                                 item = new User(new MailAddress(_dict["email"]));
                                                 break;
                                             case "Event":
-                                                item = new EventUser(fetchId);
+                                                item = new Event(fetchId);
                                                 break;
                                             case "Group":
                                                 item = new Group(fetchId);
@@ -756,7 +756,7 @@ namespace GiftServer
                 preferences.Update();
                 return "200";
             }
-            private string Update(EventUser evnt)
+            private string Update(Event evnt)
             {
                 switch (_dict["item"])
                 {
@@ -807,13 +807,13 @@ namespace GiftServer
                         }
                     case "addEvent":
                         {
-                            EventUser added = new EventUser(Convert.ToUInt64(_dict["eventID"]));
+                            Event added = new Event(Convert.ToUInt64(_dict["eventID"]));
                             group.Add(added);
                             break;
                         }
                     case "removeEvent":
                         {
-                            EventUser removed = new EventUser(Convert.ToUInt64(_dict["eventID"]));
+                            Event removed = new Event(Convert.ToUInt64(_dict["eventID"]));
                             group.Remove(removed);
                             break;
                         }

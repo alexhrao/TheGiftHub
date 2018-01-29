@@ -8,6 +8,8 @@ using System.Web;
 using System.Resources;
 using GiftServer.Server;
 using System.Threading;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GiftServer
 {
@@ -45,6 +47,14 @@ namespace GiftServer
                 HtmlDocument dash = new HtmlDocument();
                 dash.LoadHtml(page);
                 HtmlNode eventHolder = dash.DocumentNode.SelectSingleNode(@"//*[contains(concat("" "", normalize-space(@id), "" ""), "" eventHolder "")]");
+
+                List<Event> events = new List<Event>();
+                foreach (Group group in user.Groups)
+                {
+                    // Get all events associated with that group, add
+                    events.AddRange(group.Events);
+                }
+                events = events.Distinct().ToList();
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -53,12 +63,11 @@ namespace GiftServer
                         cmd.Connection = con;
                         // Get all events that have anything to do with anyone in any group with our user.
                         // look at template
-                        cmd.CommandText = "SELECT events_users_groups.EventUserID, users.UserName, users.UserEmail, users.UserURL, "
-                                        + "events_users.EventName, events_users.EventDay, events_users.EventMonth, events_users.EventYear, events_users.EventRecurs, events_users.EventDescription "
-                                        + "FROM events_users_groups "
-                                        + "INNER JOIN events_users ON events_users_groups.EventUserID = events_users.EventUserID "
-                                        + "INNER JOIN users ON events_users.UserID = users.UserID "
-                                        + "WHERE events_users.UserID IN ( "
+                        cmd.CommandText = "SELECT groups_events.EventID, users.UserName, users.UserEmail, users.UserURL "
+                                        + "FROM groups_events "
+                                        + "INNER JOIN user_events ON groups_events.EventID = user_events.EventID "
+                                        + "INNER JOIN users ON user_events.UserID = users.UserID "
+                                        + "WHERE user_events.UserID IN ( "
                                             + "SELECT UserID "
                                             + "FROM gift_registry_db.groups_users "
                                             + "WHERE GroupID IN ( "
@@ -67,7 +76,7 @@ namespace GiftServer
                                                 + "WHERE gift_registry_db.groups_users.UserID = @uid "
                                             + ") "
                                         + ") "
-                                        + "AND events_users_groups.GroupID IN ( "
+                                        + "AND groups_events.GroupID IN ( "
                                             + "SELECT GroupID "
                                             + "FROM gift_registry_db.groups_users "
                                             + "WHERE GroupID IN ( "
@@ -76,7 +85,7 @@ namespace GiftServer
                                                 + "WHERE gift_registry_db.groups_users.UserID = @uid "
                                             + ") "
                                         + ") "
-                                        + "ORDER BY events_users.EventMonth ASC, events_users.EventDay ASC, events_users.EventName;";
+                                        + "ORDER BY user_events.EventName;";
                         cmd.Parameters.AddWithValue("@uid", user.UserId);
                         cmd.Prepare();
                         int eventNum = 0;

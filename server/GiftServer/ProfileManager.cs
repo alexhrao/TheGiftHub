@@ -71,9 +71,9 @@ namespace GiftServer
                 bio.InnerHtml = HttpUtility.HtmlEncode(target.Bio);
 
                 HtmlNode events = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" events \")]");
-                foreach (EventUser evnt in viewer.GetEvents(target))
+                foreach (Event evnt in viewer.GetEvents(target))
                 {
-                    HtmlNode eventEntry = HtmlNode.CreateNode("<tr id=\"event" + evnt.EventUserId + "\"><td><h3><span id=\"eventCloser" + evnt.EventUserId + "\"></span></h3></td>"
+                    HtmlNode eventEntry = HtmlNode.CreateNode("<tr id=\"event" + evnt.EventId + "\"><td><h3><span id=\"eventCloser" + evnt.EventId + "\"></span></h3></td>"
                                                             + "<td class=\"event-name\"><h3>" + HttpUtility.HtmlEncode(evnt.Name) + " </h3></td></tr>");
                     events.AppendChild(eventEntry);
                 }
@@ -202,9 +202,9 @@ namespace GiftServer
                 }
 
                 HtmlNode events = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" events \")]");
-                foreach (EventUser evnt in user.Events)
+                foreach (Event evnt in user.Events)
                 {
-                    HtmlNode eventEntry = HtmlNode.CreateNode("<tr id=\"event" + evnt.EventUserId + "\"><td><h3><span id=\"eventCloser" + evnt.EventUserId + "\" class=\"glyphicon glyphicon-remove event-closer\"></span></h3></td>"
+                    HtmlNode eventEntry = HtmlNode.CreateNode("<tr id=\"event" + evnt.EventId + "\"><td><h3><span id=\"eventCloser" + evnt.EventId + "\" class=\"glyphicon glyphicon-remove event-closer\"></span></h3></td>"
                                                             + "<td class=\"event-name\"><h3>" + HttpUtility.HtmlEncode(evnt.Name) + " </h3></td></tr>");
                     events.AppendChild(eventEntry);
                 }

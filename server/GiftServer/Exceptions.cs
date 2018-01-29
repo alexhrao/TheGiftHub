@@ -146,18 +146,6 @@ namespace GiftServer
             public InvalidEventException(string type, int val) : base("Invalid " + type + " (" + val + ")") { }
         }
         /// <summary>
-        /// An attempt to modify a default event was made
-        /// </summary>
-        [Serializable]
-        public class DefaultEventException : EventException
-        {
-            /// <summary>
-            /// Creates a new exception with the name of the DefaultEvent
-            /// </summary>
-            /// <param name="e">the DefaultEvent</param>
-            public DefaultEventException(DefaultEvent e) : base(e.Name + " is a default event and cannot be modified") { }
-        }
-        /// <summary>
         /// If the category was not found
         /// </summary>
         [Serializable]

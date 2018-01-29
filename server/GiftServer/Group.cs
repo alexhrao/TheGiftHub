@@ -49,7 +49,7 @@ namespace GiftServer
                 }
                 set
                 {
-                    this.admin = value;
+                    admin = value;
                 }
             }
             private User admin;
@@ -62,8 +62,25 @@ namespace GiftServer
                 {
                     return new List<User>(users)
                     {
-                        this.Admin
+                        Admin
                     };
+                }
+            }
+            /// <summary>
+            /// A list of all events viewable to members of this group
+            /// </summary>
+            public List<Event> Events
+            {
+                get
+                {
+                    List<Event> events = new List<Event>();
+                    // For each User in this group, get all their events.
+                    // BUT: filter that by existing in that events groups!
+                    foreach (User member in Users)
+                    {
+                        events.AddRange(member.GetEvents(this));
+                    }
+                    return events;
                 }
             }
             private List<User> users = new List<User>();
@@ -86,10 +103,10 @@ namespace GiftServer
                         {
                             if (reader.Read())
                             {
-                                this.GroupId = groupID;
-                                this.Name = Convert.ToString(reader["GroupName"]);
-                                this.Description = Convert.ToString(reader["GroupDescription"]);
-                                this.admin = new User(Convert.ToUInt64(reader["AdminID"]));
+                                GroupId = groupID;
+                                Name = Convert.ToString(reader["GroupName"]);
+                                Description = Convert.ToString(reader["GroupDescription"]);
+                                admin = new User(Convert.ToUInt64(reader["AdminID"]));
                             }
                             else
                             {
@@ -117,12 +134,12 @@ namespace GiftServer
             /// <summary>
             /// Create a new group with no users
             /// </summary>
-            /// <param name="Admin">The Administrator for this group</param>
-            /// <param name="Name">The name of this group</param>
-            public Group(User Admin, string Name)
+            /// <param name="admin">The Administrator for this group</param>
+            /// <param name="name">The name of this group</param>
+            public Group(User admin, string name)
             {
-                this.admin = Admin;
-                this.Name = Name;
+                Admin = admin;
+                Name = name;
             }
             // Eventually, need to add support for children!
             /// <summary>
@@ -156,7 +173,7 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@admin", this.Admin.UserId);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
-                        this.GroupId = Convert.ToUInt64(cmd.LastInsertedId);
+                        GroupId = Convert.ToUInt64(cmd.LastInsertedId);
                     }
                     foreach (User user in Users)
                     {
@@ -221,7 +238,7 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "DELETE FROM events_users_groups WHERE GroupID = @id;";
+                        cmd.CommandText = "DELETE FROM groups_events WHERE GroupID = @id;";
                         cmd.Parameters.AddWithValue("@id", this.GroupId);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
@@ -310,7 +327,7 @@ namespace GiftServer
             /// Allow a given event to be seen by all members of this group
             /// </summary>
             /// <param name="evnt">The event that will now be viewable</param>
-            public void Add(EventUser evnt)
+            public void Add(Event evnt)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -318,8 +335,8 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "INSERT INTO events_users_groups (EventUserID, GroupID) VALUES (@eid, @gid);";
-                        cmd.Parameters.AddWithValue("@eid", evnt.EventUserId);
+                        cmd.CommandText = "INSERT INTO groups_events (GroupID, EventID) VALUES (@gid, @eid);";
+                        cmd.Parameters.AddWithValue("@eid", evnt.EventId);
                         cmd.Parameters.AddWithValue("@gid", GroupId);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
@@ -330,7 +347,7 @@ namespace GiftServer
             /// Don't allow a given event to be seen by all members of this group
             /// </summary>
             /// <param name="evnt">The event no longer viewable</param>
-            public void Remove(EventUser evnt)
+            public void Remove(Event evnt)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -338,9 +355,9 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "DELETE FROM events_users_groups WHERE GroupID = @gid AND EventUserID = @eid;";
+                        cmd.CommandText = "DELETE FROM groups_events WHERE GroupID = @gid AND EventID = @eid;";
                         cmd.Parameters.AddWithValue("@gid", GroupId);
-                        cmd.Parameters.AddWithValue("@eid", evnt.EventUserId);
+                        cmd.Parameters.AddWithValue("@eid", evnt.EventId);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                     }
