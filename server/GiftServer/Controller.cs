@@ -740,8 +740,8 @@ namespace GiftServer
                     case "delete":
                         _user.Delete();
                         Logout();
+                        // will return HERE so as to not update a null user
                         return LoginManager.Login();
-                    // will return HERE so as to not update a null user
                     default:
                         _response.StatusCode = 404;
                         return "404";

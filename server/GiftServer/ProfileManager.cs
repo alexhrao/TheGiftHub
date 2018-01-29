@@ -77,8 +77,6 @@ namespace GiftServer
                                                             + "<td class=\"event-name\"><h3>" + HttpUtility.HtmlEncode(evnt.Name) + " </h3></td></tr>");
                     events.AppendChild(eventEntry);
                 }
-                HtmlNode addEvent = HtmlNode.CreateNode("<tr id=\"eventAdder\" data-toggle=\"modal\" href=\"#addEvent\"><td><h3><span class=\"glyphicon glyphicon-plus\"></span></h3></td><td></td></tr>");
-                events.AppendChild(addEvent);
 
                 HtmlNode groups = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" groups \")]");
                 foreach (Group group in viewer.GetGroups(target))
@@ -87,8 +85,6 @@ namespace GiftServer
                                                + "<td class=\"group-name\"><h3>" + HttpUtility.HtmlEncode(group.Name) + " </h3></td></tr>");
                     groups.AppendChild(groupEntry);
                 }
-                HtmlNode addGroup = HtmlNode.CreateNode("<tr id=\"groupAdder\" type=\"button\" data-toggle=\"modal\" href=\"#addGroup\"><td><h3><span class=\"glyphicon glyphicon-plus\"></span></h3></td><td></td></tr>");
-                groups.AppendChild(addGroup);
                 return profile.DocumentNode.OuterHtml;
             }
             /// <summary>
