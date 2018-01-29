@@ -58,7 +58,7 @@ table {
     width: 100%;
 }
 
-a {
+:not(#navigator) a {
     color: lightgreen;
 }
 
