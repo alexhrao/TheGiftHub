@@ -30,7 +30,7 @@ namespace GiftServer
         ///     - It has an associated image
         ///     - It can be "serialized" as an XML Document
         /// </remarks>
-        public class User : ISynchronizable, IShowable, IFetchable, IEquatable<User>, IEquatable<Object>
+        public class User : ISynchronizable, IShowable, IFetchable, IEquatable<User>
         {
             /// <summary>
             /// The UserID for this user
