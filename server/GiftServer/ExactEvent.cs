@@ -84,11 +84,11 @@ namespace GiftServer
                 }
             }
 
-            private uint skipEvery = 0;
+            private int skipEvery = 0;
             /// <summary>
             /// Skip every x occurrences. Cannot be 0.
             /// </summary>
-            public uint SkipEvery
+            public int SkipEvery
             {
                 get
                 {
@@ -96,7 +96,7 @@ namespace GiftServer
                 }
                 set
                 {
-                    if (value != 0)
+                    if (value <= 0)
                     {
                         skipEvery = value;
                     }
@@ -205,7 +205,7 @@ namespace GiftServer
                             {
                                 ExactEventId = id;
                                 TimeInterval = Convert.ToString(reader["EventTimeInterval"]);
-                                SkipEvery = Convert.ToUInt32(reader["EventSkipEvery"]);
+                                SkipEvery = Convert.ToInt32(reader["EventSkipEvery"]);
                             }
                             else
                             {
@@ -215,6 +215,18 @@ namespace GiftServer
                     }
                 }
             }
+            /// <summary>
+            /// Create a new ExactEvents Ruleset
+            /// </summary>
+            /// <param name="e">The event this is bound to</param>
+            /// <param name="interval">The interval</param>
+            /// <param name="skip">The SkipEvery</param>
+            public ExactEvent(Event e, string interval, int skip)
+            {
+                Event = e;
+                TimeInterval = interval;
+                SkipEvery = skip;
+            }
 
             private DateTime Increment(DateTime currVal)
             {
@@ -223,16 +235,16 @@ namespace GiftServer
                 {
                     case 'D':
                         // Increment by a day
-                        incremented = currVal.AddDays(1);
+                        incremented = currVal.AddDays(skipEvery);
                         break;
                     case 'W':
-                        incremented = currVal.AddDays(7);
+                        incremented = currVal.AddDays(7 * skipEvery);
                         break;
                     case 'M':
-                        incremented = currVal.AddMonths(1);
+                        incremented = currVal.AddMonths(skipEvery);
                         break;
                     case 'Y':
-                        incremented = currVal.AddYears(1);
+                        incremented = currVal.AddYears(skipEvery);
                         break;
                     default:
                         incremented = currVal;
@@ -261,7 +273,23 @@ namespace GiftServer
             /// </remarks>
             public override bool Create()
             {
-                throw new NotImplementedException();
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "INSERT INTO exact_events (EventID, EventTimeInterval, EventSkipEvery) "
+                                        + "VALUES (@eid, @tin, @ski);";
+                        cmd.Parameters.AddWithValue("@eid", Event.EventId);
+                        cmd.Parameters.AddWithValue("@tin", timeInterval);
+                        cmd.Parameters.AddWithValue("@ski", skipEvery);
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                        ExactEventId = Convert.ToUInt64(cmd.LastInsertedId);
+                        return true;
+                    }
+                }
             }
             /// <summary>
             /// Update the record of this ruleset in the database
@@ -272,7 +300,24 @@ namespace GiftServer
             /// </remarks>
             public override bool Update()
             {
-                throw new NotImplementedException();
+                if (ExactEventId == 0)
+                {
+                    return Create();
+                }
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "UPDATE exact_events SET EventTimeInterval = @tin, EventSkipEvery = @ski WHERE ExactEventID = @eid;";
+                        cmd.Parameters.AddWithValue("@tin", timeInterval);
+                        cmd.Parameters.AddWithValue("@ski", skipEvery);
+                        cmd.Parameters.AddWithValue("@eid", ExactEventId);
+                        cmd.Prepare();
+                        return cmd.ExecuteNonQuery() == 1;
+                    }
+                }
             }
             /// <summary>
             /// Deletethe record of this ruleset in the database
@@ -283,15 +328,60 @@ namespace GiftServer
             /// </remarks>
             public override bool Delete()
             {
-                throw new NotImplementedException();
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "DELETE FROM exact_events WHERE ExactEventID = @eid;";
+                        cmd.Parameters.AddWithValue("@eid", ExactEventId);
+                        cmd.Prepare();
+                        if (cmd.ExecuteNonQuery() == 1)
+                        {
+                            ExactEventId = 0;
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
             }
             /// <summary>
             /// Serialize this ruleset
             /// </summary>
             /// <returns>A Serialized form of this ruleset</returns>
+            /// <remarks>
+            /// This XML Document has the following fields:
+            /// - exactEventId: The ID for this rule set
+            /// - timeInterval: A single character:
+            ///     - 'D' -> Daily
+            ///     - 'W' -> Weekly
+            ///     - 'M' -> Monthly
+            ///     - 'Y' -> Yearly
+            /// - skipEvery: A number that represents how many iterations to skip (i.e., every = 1, every other = 2, ...)
+            /// 
+            /// This is all wrapped in an exactEvent container
+            /// </remarks>
             public override XmlDocument Fetch()
             {
-                return new XmlDocument();
+                XmlDocument info = new XmlDocument();
+                XmlElement container = info.CreateElement("exactEvent");
+                info.AppendChild(container);
+
+                XmlElement id = info.CreateElement("exactEventId");
+                id.InnerText = ExactEventId.ToString();
+                XmlElement _timeInterval = info.CreateElement("timeInterval");
+                _timeInterval.InnerText = timeInterval.ToString();
+                XmlElement _skipEvery = info.CreateElement("skipEvery");
+                _skipEvery.InnerText = skipEvery.ToString();
+
+                container.AppendChild(id);
+                container.AppendChild(_timeInterval);
+                container.AppendChild(_skipEvery);
+                return info;
             }
         }
     }

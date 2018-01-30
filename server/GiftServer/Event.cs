@@ -205,6 +205,24 @@ namespace GiftServer
                 }
             }
             /// <summary>
+            /// Instantiate a newly created event
+            /// </summary>
+            /// <param name="name">The name of this event. Must not be empty</param>
+            /// <param name="startDate">The start date for this event</param>
+            /// <param name="owner">The creator of this event</param>
+            /// <param name="engine">The engine this event runs on - can be null</param>
+            public Event(string name, DateTime startDate, User owner, RulesEngine engine)
+            {
+                if (String.IsNullOrWhiteSpace(name))
+                {
+                    throw new ArgumentException("Name is blank");
+                }
+                Name = name;
+                StartDate = startDate;
+                User = owner;
+                Rules = engine;
+            }
+            /// <summary>
             /// Get the closest occurrence that happens in the future
             /// </summary>
             /// <param name="near">The date to find an event near</param>
@@ -332,13 +350,27 @@ namespace GiftServer
             /// <returns>A serialized version of these occurrences</returns>
             /// <remarks>
             /// Each occurrence is serialized with the following fields:
+            /// - eventId: The EventID for this occurrence
             /// - year: The year this event will occur
             /// - month: The month this event will occur
             /// - day: The day this event will occur
             /// </remarks>
             public XmlDocument FetchOccurrences(ulong limit, DateTime start)
             {
-                return new XmlDocument();
+                XmlDocument info = new XmlDocument();
+                XmlElement container = info.CreateElement("occurrences");
+                info.AppendChild(container);
+                uint count = 0;
+                foreach (Occurrence o in Rules.Occurrences)
+                {
+                    // Wait until date is greater than or equal to our start:
+                    if (o.Date >= start && count < limit)
+                    {
+                        container.AppendChild(info.ImportNode(o.Fetch().DocumentElement, true));
+                        count++;
+                    }
+                }
+                return info;
             }
             /// <summary>
             /// Fetch all occurrences starting at the given start date and ending at the given stop date
@@ -348,13 +380,25 @@ namespace GiftServer
             /// <returns>A serialized version of these occurrences</returns>
             /// <remarks>
             /// Each occurrence is serialized with the following fields:
+            /// - eventId: The ID for this occurrence's event
             /// - year: The year this event will occur
             /// - month: The month this event will occur
             /// - day: The day this event will occur
             /// </remarks>
             public XmlDocument FetchOccurrences(DateTime start, DateTime stop)
             {
-                return new XmlDocument();
+                XmlDocument info = new XmlDocument();
+                XmlElement container = info.CreateElement("occurrences");
+                info.AppendChild(container);
+                foreach (Occurrence o in Rules.Occurrences)
+                {
+                    // Wait until date is greater than or equal to our start:
+                    if (o.Date >= start && o.Date <= stop)
+                    {
+                        container.AppendChild(info.ImportNode(o.Fetch().DocumentElement, true));
+                    }
+                }
+                return info;
             }
         }
     }

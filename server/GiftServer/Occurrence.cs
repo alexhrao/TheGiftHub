@@ -50,9 +50,37 @@ namespace GiftServer
             /// Serialize this Occurrence
             /// </summary>
             /// <returns>An XmlDocument with the year, month, and day of this occurrence</returns>
+            /// <remarks>
+            /// This serialization has the following fields:
+            /// - eventId: The ID for the associated event
+            /// - year: The year this event occurs
+            /// - month: The month this event occurs
+            /// - day: The day this event occurs
+            /// 
+            /// This is all wrapped in an occurrence container
+            /// </remarks>
             public XmlDocument Fetch()
             {
-                return new XmlDocument();
+
+                XmlDocument info = new XmlDocument();
+                XmlElement container = info.CreateElement("occurrence");
+                info.AppendChild(container);
+
+                XmlElement id = info.CreateElement("eventId");
+                id.InnerText = Event.EventId.ToString();
+                XmlElement year = info.CreateElement("year");
+                year.InnerText = Date.Year.ToString();
+                XmlElement month = info.CreateElement("month");
+                month.InnerText = Date.Month.ToString();
+                XmlElement day = info.CreateElement("day");
+                day.InnerText = Date.Day.ToString();
+
+                container.AppendChild(id);
+                container.AppendChild(year);
+                container.AppendChild(month);
+                container.AppendChild(day);
+
+                return info;
             }
         }
     }

@@ -99,7 +99,7 @@ namespace GiftServer
                 }
                 set
                 {
-                    if (value != 0)
+                    if (value <= 0)
                     {
                         skipEvery = value;
                     }
@@ -174,7 +174,7 @@ namespace GiftServer
                 }
             }
 
-            private uint posn = 0;
+            private int posn = 0;
             /// <summary>
             /// The position within the month this event occurs.
             /// </summary>
@@ -183,7 +183,7 @@ namespace GiftServer
             /// 
             /// A value of 5 means that it will *always* happen on the last instance of that day within the month.
             /// </remarks>
-            public uint Posn
+            public int Posn
             {
                 get
                 {
@@ -309,7 +309,7 @@ namespace GiftServer
                                 TimeInterval = Convert.ToString(reader["EventTimeInterval"]);
                                 SkipEvery = Convert.ToInt32(reader["EventSkipEvery"]);
                                 DayOfWeek = Convert.ToString(reader["EventDayOfWeek"]);
-                                Posn = Convert.ToUInt32(reader["EventPosn"]);
+                                Posn = Convert.ToInt32(reader["EventPosn"]);
                             }
                             else
                             {
@@ -320,70 +320,90 @@ namespace GiftServer
                 }
             }
 
+            /// <summary>
+            /// Create a new RelativeEvent ruleset
+            /// </summary>
+            /// <param name="e">The event this is tied to</param>
+            /// <param name="interval">The interval to use</param>
+            /// <param name="skip">The skip to use</param>
+            /// <param name="day">The day of the week to use</param>
+            /// <param name="posn">The position within the month to use</param>
+            public RelativeEvent(Event e, string interval, int skip, string day, int posn)
+            {
+                Event = e;
+                TimeInterval = interval;
+                SkipEvery = skip;
+                DayOfWeek = day;
+                Posn = posn;
+            }
+
             private DateTime Increment(DateTime currVal)
             {
                 DateTime incremented = currVal;
                 switch (timeInterval)
                 {
                     case 'M':
-                        incremented = (incremented.AddMonths(SkipEvery)).AddDays((-1 * incremented.Day) + 1);
+                        incremented = incremented.AddMonths(SkipEvery);
                         break;
                     case 'Y':
-                        incremented = (incremented.AddYears(SkipEvery)).AddDays((-1 * incremented.Day) + 1);
+                        incremented = incremented.AddYears(SkipEvery);
                         break;
                     default:
                         break;
                 }
+                incremented = new DateTime(incremented.Year, incremented.Month, 1);
                 // loop until we reach the posn of that day. Unless it's 5
                 if (posn == 5)
                 {
-                    // just loop until day of week matches AND adding seven is new month:
-                    int currMonth = incremented.Month;
-                    while (currMonth == incremented.Month)
+                    // Loop from end of month until our day is it!
+                    incremented = incremented.AddMonths(1);
+                    bool found = false;
+                    while (!found)
                     {
-                        incremented = incremented.AddDays(1);
+                        incremented = incremented.AddDays(-1);
+                        // go back until our day  is correct!
                         switch (incremented.DayOfWeek)
                         {
                             case System.DayOfWeek.Sunday:
-                                if (dayOfWeek == 'N' && (incremented.AddDays(7)).Month != incremented.Month)
+                                if (dayOfWeek == 'N')
                                 {
-                                    return incremented;
+                                    found = true;
                                 }
                                 break;
                             case System.DayOfWeek.Monday:
-                                if (dayOfWeek == 'M' && (incremented.AddDays(7)).Month != incremented.Month)
+                                if (dayOfWeek == 'M')
                                 {
-                                    return incremented;
+                                    found = true;
                                 }
                                 break;
                             case System.DayOfWeek.Tuesday:
-                                if (dayOfWeek == 'T' && (incremented.AddDays(7)).Month != incremented.Month)
+                                if (dayOfWeek == 'T')
                                 {
-                                    return incremented;
+                                    found = true;
                                 }
                                 break;
                             case System.DayOfWeek.Wednesday:
-                                if (dayOfWeek == 'W' && (incremented.AddDays(7)).Month != incremented.Month)
+                                if (dayOfWeek == 'W')
                                 {
-                                    return incremented;
+                                    found = true;
                                 }
                                 break;
                             case System.DayOfWeek.Thursday:
-                                if (dayOfWeek == 'R' && (incremented.AddDays(7)).Month != incremented.Month)
+                                if (dayOfWeek == 'R')
                                 {
-                                    return incremented;
+                                    found = true;
                                 }
                                 break;
                             case System.DayOfWeek.Friday:
-                                if (dayOfWeek == 'F' && (incremented.AddDays(7)).Month != incremented.Month)
+                                if (dayOfWeek == 'F')
                                 {
-                                    return incremented;
+                                    found = true;
                                 }
                                 break;
                             case System.DayOfWeek.Saturday:
-                                if (dayOfWeek == 'S' && (incremented.AddDays(7)).Month != incremented.Month)
+                                if (dayOfWeek == 'S')
                                 {
-                                    return incremented;
+                                    found = true;
                                 }
                                 break;
                             default:
@@ -391,59 +411,71 @@ namespace GiftServer
                         }
                     }
                 }
-                int numPassed = 0;
-                while (numPassed < posn)
+                else
                 {
-                    incremented.AddDays(1);
-                    switch (incremented.DayOfWeek)
+                    int numPassed = 0;
+                    while (numPassed < posn)
                     {
-                        case System.DayOfWeek.Sunday:
-                            if (dayOfWeek == 'N')
-                            {
-                                numPassed++;
-                            }
-                            break;
-                        case System.DayOfWeek.Monday:
-                            if (dayOfWeek == 'M')
-                            {
-                                numPassed++;
-                            }
-                            break;
-                        case System.DayOfWeek.Tuesday:
-                            if (dayOfWeek == 'T')
-                            {
-                                numPassed++;
-                            }
-                            break;
-                        case System.DayOfWeek.Wednesday:
-                            if (dayOfWeek == 'W')
-                            {
-                                numPassed++;
-                            }
-                            break;
-                        case System.DayOfWeek.Thursday:
-                            if (dayOfWeek == 'R')
-                            {
-                                numPassed++;
-                            }
-                            break;
-                        case System.DayOfWeek.Friday:
-                            if (dayOfWeek == 'F')
-                            {
-                                numPassed++;
-                            }
-                            break;
-                        case System.DayOfWeek.Saturday:
-                            if (dayOfWeek == 'S')
-                            {
-                                numPassed++;
-                            }
-                            break;
-                        default:
-                            break;
+                        incremented = incremented.AddDays(1);
+                        switch (incremented.DayOfWeek)
+                        {
+                            case System.DayOfWeek.Sunday:
+                                if (dayOfWeek == 'N')
+                                {
+                                    numPassed++;
+                                }
+                                break;
+                            case System.DayOfWeek.Monday:
+                                if (dayOfWeek == 'M')
+                                {
+                                    numPassed++;
+                                }
+                                break;
+                            case System.DayOfWeek.Tuesday:
+                                if (dayOfWeek == 'T')
+                                {
+                                    numPassed++;
+                                }
+                                break;
+                            case System.DayOfWeek.Wednesday:
+                                if (dayOfWeek == 'W')
+                                {
+                                    numPassed++;
+                                }
+                                break;
+                            case System.DayOfWeek.Thursday:
+                                if (dayOfWeek == 'R')
+                                {
+                                    numPassed++;
+                                }
+                                break;
+                            case System.DayOfWeek.Friday:
+                                if (dayOfWeek == 'F')
+                                {
+                                    numPassed++;
+                                }
+                                break;
+                            case System.DayOfWeek.Saturday:
+                                if (dayOfWeek == 'S')
+                                {
+                                    numPassed++;
+                                }
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
-                return incremented;
+                return IsBlackout(incremented) ? Increment(incremented) : incremented;
+            }
+
+            private bool IsBlackout(DateTime poss)
+            {
+                return Event.Blackouts.Exists(x =>
+                                x.BlackoutDate.Year == poss.Year &&
+                                x.BlackoutDate.Month == poss.Month &&
+                                x.BlackoutDate.Day == poss.Day);
+
             }
             /// <summary>
             /// Create a record of this ruleset in the database
@@ -454,7 +486,25 @@ namespace GiftServer
             /// </remarks>
             public override bool Create()
             {
-                throw new NotImplementedException();
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "INSERT INTO relative_events (EventID, EventTimeInterval, EventSkipEvery, EventDayOfWeek, EventPosn) "
+                                        + "VALUES (@eid, @tin, @ski, @dow, @pos);";
+                        cmd.Parameters.AddWithValue("@eid", Event.EventId);
+                        cmd.Parameters.AddWithValue("@tin", timeInterval);
+                        cmd.Parameters.AddWithValue("@ski", skipEvery);
+                        cmd.Parameters.AddWithValue("@dow", dayOfWeek);
+                        cmd.Parameters.AddWithValue("@pos", posn);
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                        RelativeEventId = Convert.ToUInt64(cmd.LastInsertedId);
+                        return true;
+                    }
+                }
             }
             /// <summary>
             /// Update the record of this ruleset in the database
@@ -465,7 +515,31 @@ namespace GiftServer
             /// </remarks>
             public override bool Update()
             {
-                throw new NotImplementedException();
+                if (RelativeEventId == 0)
+                {
+                    return Create();
+                }
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "UPDATE exact_events SET "
+                                        + "EventTimeInterval = @tin, "
+                                        + "EventSkipEvery = @ski, "
+                                        + "EventDayOfWeek = @dow, "
+                                        + "EventPosn = @pos "
+                                        + "WHERE ExactEventID = @rid;";
+                        cmd.Parameters.AddWithValue("@tin", timeInterval);
+                        cmd.Parameters.AddWithValue("@ski", skipEvery);
+                        cmd.Parameters.AddWithValue("@dow", dayOfWeek);
+                        cmd.Parameters.AddWithValue("@pos", posn);
+                        cmd.Parameters.AddWithValue("@rid", RelativeEventId);
+                        cmd.Prepare();
+                        return cmd.ExecuteNonQuery() == 1;
+                    }
+                }
             }
             /// <summary>
             /// Deletethe record of this ruleset in the database
@@ -476,15 +550,74 @@ namespace GiftServer
             /// </remarks>
             public override bool Delete()
             {
-                throw new NotImplementedException();
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "DELETE FROM relative_events WHERE ExactEventID = @eid;";
+                        cmd.Parameters.AddWithValue("@eid", RelativeEventId);
+                        cmd.Prepare();
+                        if (cmd.ExecuteNonQuery() == 1)
+                        {
+                            RelativeEventId = 0;
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
             }
             /// <summary>
             /// Serialize this ruleset
             /// </summary>
             /// <returns>A Serialized form of this ruleset</returns>
+            /// <remarks>
+            /// This XML Document has the following fields:
+            /// - relativeEventId: The ID for this rule set
+            /// - timeInterval: A single character:
+            ///     - 'M' -> Monthly
+            ///     - 'Y' -> Yearly
+            /// - skipEvery: A number that represents how many iterations to skip (i.e., every = 1, every other = 2, ...)
+            /// - dayOfWeek: A character that represents the day of the week this event occurs on:
+            ///     - 'N' -> Sunday
+            ///     - 'M' -> Monday
+            ///     - 'T' -> Tuesday
+            ///     - 'W' -> Wednesday
+            ///     - 'R' -> Thursday
+            ///     - 'F' -> Friday
+            ///     - 'S' -> Saturday
+            /// - posn: A number that represents the position within the month, where 5 is the last x of the month
+            /// 
+            /// This is all wrapped in a relativeEvent container
+            /// </remarks>
             public override XmlDocument Fetch()
             {
-                return new XmlDocument();
+                XmlDocument info = new XmlDocument();
+                XmlElement container = info.CreateElement("relativeEvent");
+                info.AppendChild(container);
+
+                XmlElement id = info.CreateElement("relativeEventId");
+                id.InnerText = RelativeEventId.ToString();
+                XmlElement _timeInterval = info.CreateElement("timeInterval");
+                _timeInterval.InnerText = TimeInterval;
+                XmlElement _skipEvery = info.CreateElement("skipEvery");
+                _skipEvery.InnerText = skipEvery.ToString();
+                XmlElement _dayOfWeek = info.CreateElement("dayOfWeek");
+                _dayOfWeek.InnerText = DayOfWeek;
+                XmlElement _posn = info.CreateElement("posn");
+                _posn.InnerText = posn.ToString();
+
+                container.AppendChild(id);
+                container.AppendChild(_timeInterval);
+                container.AppendChild(_skipEvery);
+                container.AppendChild(_dayOfWeek);
+                container.AppendChild(_posn);
+
+                return info;
             }
         }
     }
