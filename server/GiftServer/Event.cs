@@ -241,7 +241,7 @@ namespace GiftServer
             /// <param name="start">The starting date</param>
             /// <param name="stop">The ending date</param>
             /// <returns></returns>
-            public static IEnumerable<Event> PoolOrder(List<Event> events, DateTime start, DateTime stop)
+            public static IEnumerable<Occurrence> PoolOrder(List<Event> events, DateTime start, DateTime stop)
             {
                 while (start <= stop)
                 {
@@ -252,7 +252,7 @@ namespace GiftServer
                         // As long as event occurrence date does not change keep chugging
                         if (start.Equals(e.GetNearestOccurrence(start)))
                         {
-                            yield return e;
+                            yield return new Occurrence(e, start);
                         }
                         else
                         {

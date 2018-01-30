@@ -270,7 +270,7 @@ namespace GiftServer
                         // TODO: Check if StartDate is occurrence
                         while (currVal <= Event.EndDate)
                         {
-                            yield return new Occurrence(currVal);
+                            yield return new Occurrence(Event, currVal);
                             currVal = Increment(currVal);
                         }
                     }
@@ -279,7 +279,7 @@ namespace GiftServer
                         // No end
                         while (true)
                         {
-                            yield return new Occurrence(currVal);
+                            yield return new Occurrence(Event, currVal);
                             currVal = Increment(currVal);
                         }
                     }

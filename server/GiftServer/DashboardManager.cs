@@ -61,18 +61,42 @@ namespace GiftServer
                 // Do it for next three months?
                 for (DateTime m = DateTime.Today; m < DateTime.Today.AddMonths(3); m = m.AddMonths(1))
                 {
-                    // For each event in this time interval, pretty print it:
-                    HtmlNode month = HtmlNode.CreateNode("<li></li>");
-                    HtmlNode monthName = HtmlNode.CreateNode("<h4></h4>");
-                    monthName.InnerHtml = m.ToString("MMMM");
-                    month.AppendChild(monthName);
-                    HtmlNode monthEvents = HtmlNode.CreateNode("<ul></ul>");
-                    foreach (Event e in Event.PoolOrder(events, m, new DateTime(m.Year, m.Month, 1).AddMonths(1).AddDays(-1)))
+                    // First print the month name, then print a ul for the events
+                    HtmlNode monthHeader = HtmlNode.CreateNode("<h2></h2>");
+                    monthHeader.AddClass("month-header");
+                    monthHeader.InnerHtml = DateTime.Today.Month.ToString("MMMM");
+                    eventHolder.AppendChild(monthHeader);
+                    HtmlNode monthEventsHolder = HtmlNode.CreateNode("<ul></ul>");
+                    monthEventsHolder.AddClass("month-events");
+                    int counter = 0;
+                    foreach (Occurrence o in Event.PoolOrder(events, m, new DateTime(m.Year, m.Month, 1).AddMonths(1).AddDays(-1)))
                     {
-                        //TODO: Pretty print event and add to monthEvents
+                        // Pretty print the event
+                        HtmlNode eventNode = HtmlNode.CreateNode("<li></li>");
+                        eventNode.AddClass("event-record");
+                        /* REPLACE WITH STRING MANAGER */
+                        eventNode.InnerHtml = "<a href=\"" + o.Event.User.UserUrl + "\">" + HttpUtility.HtmlEncode(o.Event.User.UserName)
+                                            + "</a> is celebrating " + HttpUtility.HtmlEncode(o.Event.Name)
+                                            + " on " + HttpUtility.HtmlEncode(o.Date.ToString("M"));
+                        if (counter > 4)
+                        {
+                            // Add hidden class
+                            eventNode.AddClass("hidden");
+                        }
+                        if (counter == 5)
+                        {
+                            // Add down arrow
+                            HtmlNode downArrow = HtmlNode.CreateNode("<i></i>");
+                            downArrow.AddClass("fa fa-angle-down text-center event-expander");
+                            monthEventsHolder.AppendChild(downArrow);
+                        }
+                        monthEventsHolder.AppendChild(eventNode);
+                        counter++;
                     }
                 }
-                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                return dash.DocumentNode.OuterHtml;
+                
+                /* using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
                     using (MySqlCommand cmd = new MySqlCommand())
@@ -142,6 +166,7 @@ namespace GiftServer
                     }
                 }
                 return dash.DocumentNode.OuterHtml;
+                */
             }
             /// <summary>
             /// Creates a new dashboard for the given user

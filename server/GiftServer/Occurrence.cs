@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Xml;
 
 namespace GiftServer
@@ -11,37 +10,14 @@ namespace GiftServer
         /// </summary>
         public class Occurrence : IFetchable, IComparable<DateTime>, IComparable<Occurrence>
         {
+            /// <summary>
+            /// The date of this occurrence
+            /// </summary>
             public readonly DateTime Date;
             /// <summary>
-            /// The year this event occurs in
+            /// The event this occurrence references
             /// </summary>
-            public int Year
-            {
-                get
-                {
-                    return Date.Year;
-                }
-            }
-            /// <summary>
-            /// The month this event occurs in
-            /// </summary>
-            public int Month
-            {
-                get
-                {
-                    return Date.Month;
-                }
-            }
-            /// <summary>
-            /// The day this event occurs in
-            /// </summary>
-            public int Day
-            {
-                get
-                {
-                    return Date.Day;
-                }
-            }
+            public readonly Event Event;
             /// <summary>
             /// Compare this to another date
             /// </summary>
@@ -61,22 +37,14 @@ namespace GiftServer
                 return Date.CompareTo(o.Date);
             }
             /// <summary>
-            /// Create an occurrence from a given DateTime
+            /// Create an occurrence from a given Event and DateTime
             /// </summary>
+            /// <param name="e">The Event this occurrence should reference</param>
             /// <param name="date">The date this event occurs - time is ignored</param>
-            public Occurrence(DateTime date)
+            public Occurrence(Event e, DateTime date)
             {
+                Event = e;
                 Date = date;
-            }
-            /// <summary>
-            /// Create an occurrence from a year, month, and day
-            /// </summary>
-            /// <param name="year">The year this event occurs in</param>
-            /// <param name="month">The month this event occurs in</param>
-            /// <param name="day">The day this event occurs on</param>
-            public Occurrence(int year, int month, int day)
-            {
-                Date = new DateTime(year, month, day);
             }
             /// <summary>
             /// Serialize this Occurrence
