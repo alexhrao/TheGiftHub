@@ -11,7 +11,7 @@ namespace GiftServer
         /// </summary>
         public class Occurrence : IFetchable
         {
-            private DateTime _date;
+            public readonly DateTime Date;
             /// <summary>
             /// The year this event occurs in
             /// </summary>
@@ -19,7 +19,7 @@ namespace GiftServer
             {
                 get
                 {
-                    return _date.Year;
+                    return Date.Year;
                 }
             }
             /// <summary>
@@ -29,7 +29,7 @@ namespace GiftServer
             {
                 get
                 {
-                    return _date.Month;
+                    return Date.Month;
                 }
             }
             /// <summary>
@@ -39,7 +39,7 @@ namespace GiftServer
             {
                 get
                 {
-                    return _date.Day;
+                    return Date.Day;
                 }
             }
             /// <summary>
@@ -48,7 +48,7 @@ namespace GiftServer
             /// <param name="date">The date this event occurs - time is ignored</param>
             public Occurrence(DateTime date)
             {
-                _date = date;
+                Date = date;
             }
             /// <summary>
             /// Create an occurrence from a year, month, and day
@@ -58,7 +58,7 @@ namespace GiftServer
             /// <param name="day">The day this event occurs on</param>
             public Occurrence(int year, int month, int day)
             {
-                _date = new DateTime(year, month, day);
+                Date = new DateTime(year, month, day);
             }
             /// <summary>
             /// Serialize this Occurrence

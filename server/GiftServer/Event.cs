@@ -3,6 +3,7 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using System.Xml;
 
 namespace GiftServer
@@ -193,6 +194,59 @@ namespace GiftServer
                         }
                     }
                 }
+            }
+            /// <summary>
+            /// Get the closest occurrence that happens in the future
+            /// </summary>
+            /// <param name="near">The date to find an event near</param>
+            /// <returns>The occurrence for this event - or null, if no occurrence after near is found</returns>
+            public Occurrence GetNearestOccurrence(DateTime near)
+            {
+                foreach (Occurrence occur in Rules.Occurrences)
+                {
+                    if (occur.Date >= near)
+                    {
+                        return occur;
+                    }
+                }
+                return null;
+            }
+
+            /// <summary>
+            /// Give the events in order
+            /// </summary>
+            /// <remarks>
+            /// Given a pool of events, this will continue to return the next event.
+            /// 
+            /// Note that this means, if event A occurs monthly, and event B occurs yearly, event A could show up many times before event B
+            /// </remarks>
+            /// <param name="events">The pool of events</param>
+            /// <param name="start">The starting date</param>
+            /// <param name="stop">The ending date</param>
+            /// <returns></returns>
+            public static IEnumerable<Event> PoolOrder(List<Event> events, DateTime start, DateTime stop)
+            {
+                while (start <= stop)
+                {
+                    events = events.OrderBy(e => e.GetNearestOccurrence(start)).ToList();
+                    start = events[0].GetNearestOccurrence(start).Date;
+                    foreach (Event e in events)
+                    {
+                        // As long as event occurrence date does not change keep chugging
+                        if (start.Equals(e.GetNearestOccurrence(start)))
+                        {
+                            yield return e;
+                        }
+                        else
+                        {
+                            start = e.GetNearestOccurrence(start).Date;
+                            break;
+                        }
+                    }
+                }
+                // Events are sorted by their first future date - so for each of them, iterate until the date changes.
+                // Change start date to that day, reorder the list, and engage
+                // Reorder list 
             }
             /// <summary>
             /// Create a record of this event in the database

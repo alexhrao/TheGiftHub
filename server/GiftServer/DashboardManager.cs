@@ -54,7 +54,24 @@ namespace GiftServer
                     // Get all events associated with that group, add
                     events.AddRange(group.Events);
                 }
-                events = events.Distinct().ToList();
+                // Events should be ordered by the first future date
+                events = events.Distinct().OrderBy(e => e.GetNearestOccurrence(DateTime.Today).Date).ToList();
+                // For each event (up to some amount), list the name of the user and say 
+                // Group by groups, drop to user, then to event?
+                // Do it for next three months?
+                for (DateTime m = DateTime.Today; m < DateTime.Today.AddMonths(3); m = m.AddMonths(1))
+                {
+                    // For each event in this time interval, pretty print it:
+                    HtmlNode month = HtmlNode.CreateNode("<li></li>");
+                    HtmlNode monthName = HtmlNode.CreateNode("<h4></h4>");
+                    monthName.InnerHtml = m.ToString("MMMM");
+                    month.AppendChild(monthName);
+                    HtmlNode monthEvents = HtmlNode.CreateNode("<ul></ul>");
+                    foreach (Event e in Event.PoolOrder(events, m, new DateTime(m.Year, m.Month, 1).AddMonths(1).AddDays(-1)))
+                    {
+                        //TODO: Pretty print event and add to monthEvents
+                    }
+                }
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
