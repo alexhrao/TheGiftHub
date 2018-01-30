@@ -9,7 +9,7 @@ namespace GiftServer
         /// <summary>
         /// A single occurrence of an event
         /// </summary>
-        public class Occurrence : IFetchable
+        public class Occurrence : IFetchable, IComparable<DateTime>, IComparable<Occurrence>
         {
             public readonly DateTime Date;
             /// <summary>
@@ -41,6 +41,24 @@ namespace GiftServer
                 {
                     return Date.Day;
                 }
+            }
+            /// <summary>
+            /// Compare this to another date
+            /// </summary>
+            /// <param name="d">The date to compare</param>
+            /// <returns>-1 if this is before, 0 if on the same day, and 1 after</returns>
+            public int CompareTo(DateTime d)
+            {
+                return Date.CompareTo(d);
+            }
+            /// <summary>
+            /// Compare this to another Occurrence
+            /// </summary>
+            /// <param name="o">The occurrence to compare</param>
+            /// <returns>-1 if this is before, 0 if on the same day, and 1 after</returns>
+            public int CompareTo(Occurrence o)
+            {
+                return Date.CompareTo(o.Date);
             }
             /// <summary>
             /// Create an occurrence from a given DateTime

@@ -13,7 +13,7 @@ namespace GiftServer
         /// <summary>
         /// An event that can recur
         /// </summary>
-        public class Event : ISynchronizable, IFetchable, IEquatable<Event>, IEquatable<Object>
+        public class Event : ISynchronizable, IFetchable, IEquatable<Event>, IComparable<Event>
         {
             /// <summary>
             /// The EventID for this Event
@@ -116,6 +116,15 @@ namespace GiftServer
                 return EventId.GetHashCode();
             }
             /// <summary>
+            /// Compares two events
+            /// </summary>
+            /// <param name="e">The event to compare</param>
+            /// <returns>-1 if this event is before, 0 if this event is on the same day, and 1 if this event is after</returns>
+            public int CompareTo(Event e)
+            {
+                return GetNearestOccurrence().CompareTo(e.GetNearestOccurrence());
+            }
+            /// <summary>
             /// Fetch an existing Event from the database
             /// </summary>
             /// <param name="id">The EventID</param>
@@ -210,6 +219,14 @@ namespace GiftServer
                     }
                 }
                 return null;
+            }
+            /// <summary>
+            /// Get the closest occurrence that happens in the future from today
+            /// </summary>
+            /// <returns>The same as GetNearestOccurrence(DateTime near), where near is Today</returns>
+            public Occurrence GetNearestOccurrence()
+            {
+                return GetNearestOccurrence(DateTime.Today);
             }
 
             /// <summary>
