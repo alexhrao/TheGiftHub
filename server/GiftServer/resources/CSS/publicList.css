@@ -1,9 +1,22 @@
-﻿#userName {
+﻿body,
+html {
+    background: linear-gradient(141deg, #0fb8ad 0%, #1fc8db 51%, #2cb5e8 75%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: black;
+}
+
+#userName {
     text-indent: 10px;
 }
 
 table {
     max-width: 75%;
+    background-color: rgba(255, 255, 255, 0.4);
+}
+thead,
+tbody {
+    background-color: transparent;
 }
 
 tr {
@@ -13,12 +26,6 @@ tr {
 
 th {
     text-align: center;
-}
-
-body {
-    background-color: #CECECE;
-    color: black;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 img {
@@ -134,11 +141,4 @@ img {
 }
 #userName a {
     color: lightgreen;
-}
-body,
-html {
-    background: linear-gradient(141deg, #0fb8ad 0%, #1fc8db 51%, #2cb5e8 75%);
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    color: black;
 }
