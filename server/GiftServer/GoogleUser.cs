@@ -1,5 +1,6 @@
 ﻿using GiftServer.Properties;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -15,7 +16,7 @@ namespace GiftServer
         /// <remarks>
         /// This is for users who authenticate via the "Sign in with Google" method.
         /// </remarks>
-        public class GoogleUser : OAuthUser
+        public class GoogleUser : OAuthUser, IEquatable<GoogleUser>
         {
             private string name;
             /// <summary>
@@ -102,80 +103,56 @@ namespace GiftServer
                 email = new MailAddress(parsed["email"].Value<string>());
                 oAuthId = parsed["sub"].Value<string>();
                 picture = parsed["picture"].Value<string>();
-
+            }
+            /// <summary>
+            /// Find whether or not the object is this GoogleUser
+            /// </summary>
+            /// <param name="obj">Object to test</param>
+            /// <returns>True if they are the same value</returns>
+            public override bool Equals(object obj)
+            {
+                if (obj != null && obj is GoogleUser g)
+                {
+                    return Equals(g);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            /// <summary>
+            /// Find whether or not the OAuthUser is this GoogleUser
+            /// </summary>
+            /// <param name="user">The OAuthUser</param>
+            /// <returns>True if they are the same value</returns>
+            public override bool Equals(OAuthUser user)
+            {
+                if (user != null && user is GoogleUser g)
+                {
+                    return Equals(g);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            /// <summary>
+            /// Find whether or not the two GoogleUsers are identical
+            /// </summary>
+            /// <param name="user">The users to compare</param>
+            /// <returns>True if they are the same user</returns>
+            public bool Equals(GoogleUser user)
+            {
+                return user != null && user.OAuthId == OAuthId;
+            }
+            /// <summary>
+            /// Get the hash code for this GoogleUser
+            /// </summary>
+            /// <returns>The hash code</returns>
+            public override int GetHashCode()
+            {
+                return (OAuthId + "Google").GetHashCode();
             }
         }
     }
 }
-
-/*
- * Old code - tried to do it without the URL
-            public static UserCredential Verify(string token)
-            {
-
-                // testing basic API:
-                PlusService plusService = new PlusService(
-                    new BaseClientService.Initializer()
-                    {
-                        ApiKey = ""
-                    });
-                Person me = plusService.People.Get("me").Execute();
-                Type myType = me.GetType();
-                IList<PropertyInfo> props = new List<PropertyInfo>(myType.GetProperties());
-
-                foreach (PropertyInfo info in props)
-                {
-                    Console.WriteLine("Property " + info.Name + " -> " + info.GetValue(me));
-                }
-
-
-                IAuthorizationCodeFlow flow = new AuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
-                {
-                    ClientSecrets = new ClientSecrets
-                    {
-                        ClientId = Constants.GoogleClientID,
-                        ClientSecret = Constants.GoogleClientSecret
-                    },
-                    Scopes = new[] { PlusService.Scope.UserinfoProfile, PlusService.Scope.UserinfoEmail },
-                    DataStore = new FileDataStore("helloWorld")
-                });
-                flow.CreateAuthorizationCodeRequest(".");
-                TokenResponse a = flow.LoadTokenAsync(token, CancellationToken.None).Result;
-                UserCredential credential = new UserCredential(flow, token, a);
-                return credential;
-            }
-
-
-
-
-
-
-
-            private static GoogleClientSecrets GetClientConfiguration()
-            {
-                using (var stream = new FileStream("client_secrets.json", FileMode.Open, FileAccess.Read))
-                {
-                    return GoogleClientSecrets.Load(stream);
-                }
-            }
-            private static PlusService GetPlusService(TokenResponse credentials)
-            {
-                IAuthorizationCodeFlow flow =
-                new GoogleAuthorizationCodeFlow(
-                    new GoogleAuthorizationCodeFlow.Initializer
-                    {
-                        ClientSecrets = GetClientConfiguration().Secrets,
-                        Scopes = new string[] { PlusService.Scope.PlusLogin }
-                    });
-
-                UserCredential credential = new UserCredential(flow, "me", credentials);
-
-                return new PlusService(
-                    new Google.Apis.Services.BaseClientService.Initializer()
-                    {
-                        ApplicationName = "Haikunamatata",
-                        HttpClientInitializer = credential
-                    });
-            }
-
-*/

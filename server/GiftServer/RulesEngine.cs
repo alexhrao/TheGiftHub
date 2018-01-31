@@ -12,12 +12,6 @@ namespace GiftServer
         public abstract class RulesEngine : ISynchronizable, IFetchable, IEquatable<RulesEngine>
         {
             /// <summary>
-            /// See if two rule sets are actually the same one
-            /// </summary>
-            /// <param name="engine">The rules engine</param>
-            /// <returns>True if they are the same type and have the same ID</returns>
-            public abstract bool Equals(RulesEngine engine);
-            /// <summary>
             /// A List of Occurrences for this event
             /// </summary>
             /// <remarks>
@@ -48,6 +42,12 @@ namespace GiftServer
             /// </summary>
             /// <returns>A status flag</returns>
             public abstract bool Delete();
+            /// <summary>
+            /// See if two rule sets are actually the same one
+            /// </summary>
+            /// <param name="engine">The rules engine</param>
+            /// <returns>True if they are the same type and have the same ID</returns>
+            public abstract bool Equals(RulesEngine engine);
             /// <summary>
             /// Serialize this Rule
             /// </summary>

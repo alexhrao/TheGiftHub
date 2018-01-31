@@ -29,6 +29,34 @@ namespace GiftServer
             /// </summary>
             public readonly bool IsPurchased = false;
             /// <summary>
+            /// Fetch an existing reservation record from the database
+            /// </summary>
+            /// <param name="reservationId">The ReservationID</param>
+            public Reservation(ulong reservationId)
+            {
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT UserID, GiftID FROM reservations WHERE ReservationID = @rid;";
+                        cmd.Parameters.AddWithValue("@rid", reservationId);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                User = new User(Convert.ToUInt64(reader["UserID"]));
+                                Gift = new Gift(Convert.ToUInt64(reader["GiftID"]));
+                                // IsPurchased = Convert.ToBoolean(reader["IsPurchased"]);
+                                ReservationId = reservationId;
+                            }
+                        }
+                    }
+                }
+            }
+            /// <summary>
             /// See if the given object is the same as this reservation
             /// </summary>
             /// <param name="obj">The object to compare</param>
@@ -61,35 +89,6 @@ namespace GiftServer
             {
                 return ReservationId.GetHashCode();
             }
-            /// <summary>
-            /// Fetch an existing reservation record from the database
-            /// </summary>
-            /// <param name="reservationId">The ReservationID</param>
-            public Reservation(ulong reservationId)
-            {
-                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
-                {
-                    con.Open();
-                    using (MySqlCommand cmd = new MySqlCommand())
-                    {
-                        cmd.Connection = con;
-                        cmd.CommandText = "SELECT UserID, GiftID FROM reservations WHERE ReservationID = @rid;";
-                        cmd.Parameters.AddWithValue("@rid", reservationId);
-                        cmd.Prepare();
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            if (reader.Read())
-                            {
-                                User = new User(Convert.ToUInt64(reader["UserID"]));
-                                Gift = new Gift(Convert.ToUInt64(reader["GiftID"]));
-                                // IsPurchased = Convert.ToBoolean(reader["IsPurchased"]);
-                                ReservationId = reservationId;
-                            }
-                        }
-                    }
-                }
-            }
-
             /// <summary>
             /// Serializes this reservation
             /// </summary>

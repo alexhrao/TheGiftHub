@@ -8,7 +8,7 @@ namespace GiftServer
         /// <summary>
         /// A single occurrence of an event
         /// </summary>
-        public class Occurrence : IFetchable, IComparable<DateTime>, IComparable<Occurrence>
+        public class Occurrence : IFetchable, IComparable<DateTime>, IComparable<Occurrence>, IEquatable<Occurrence>
         {
             /// <summary>
             /// The date of this occurrence
@@ -18,6 +18,16 @@ namespace GiftServer
             /// The event this occurrence references
             /// </summary>
             public readonly Event Event;
+            /// <summary>
+            /// Create an occurrence from a given Event and DateTime
+            /// </summary>
+            /// <param name="e">The Event this occurrence should reference</param>
+            /// <param name="date">The date this event occurs - time is ignored</param>
+            public Occurrence(Event e, DateTime date)
+            {
+                Event = e;
+                Date = date;
+            }
             /// <summary>
             /// Compare this to another date
             /// </summary>
@@ -44,14 +54,37 @@ namespace GiftServer
                 }
             }
             /// <summary>
-            /// Create an occurrence from a given Event and DateTime
+            /// See if the given object is actually this occurrence
             /// </summary>
-            /// <param name="e">The Event this occurrence should reference</param>
-            /// <param name="date">The date this event occurs - time is ignored</param>
-            public Occurrence(Event e, DateTime date)
+            /// <param name="obj">The object to inspect</param>
+            /// <returns>True if they represent the same occurrence value</returns>
+            public override bool Equals(object obj)
             {
-                Event = e;
-                Date = date;
+                if (obj != null && obj is Occurrence o)
+                {
+                    return Equals(o);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            /// <summary>
+            /// See if these two Occurrences are equal
+            /// </summary>
+            /// <param name="o">The occurrence</param>
+            /// <returns>True if they are the same day and event</returns>
+            public bool Equals(Occurrence o)
+            {
+                return o != null && o.Event.Equals(Event) && o.Date.Equals(Date);
+            }
+            /// <summary>
+            /// Get the hash code for this occurrence
+            /// </summary>
+            /// <returns>The hash code</returns>
+            public override int GetHashCode()
+            {
+                return Event.GetHashCode() + Date.GetHashCode();
             }
             /// <summary>
             /// Serialize this Occurrence

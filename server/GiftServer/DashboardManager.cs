@@ -2,8 +2,6 @@
 using HtmlAgilityPack;
 using GiftServer.Properties;
 using GiftServer.Data;
-using MySql.Data.MySqlClient;
-using System.Configuration;
 using System.Web;
 using System.Resources;
 using GiftServer.Server;

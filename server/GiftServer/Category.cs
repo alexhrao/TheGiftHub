@@ -32,6 +32,69 @@ namespace GiftServer
             /// </summary>
             public readonly string Description;
             /// <summary>
+            /// Given the Category ID, this will fetch all the necessary information
+            /// </summary>
+            /// <param name="id">The ID of the category; if 0, this method has undefined results</param>
+            public Category(ulong id)
+            {
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT * FROM categories WHERE CategoryID = @id;";
+                        cmd.Parameters.AddWithValue("@id", id);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                CategoryId = id;
+                                Name = Convert.ToString(reader["CategoryName"]);
+                                Description = Convert.ToString(reader["CategoryDescription"]);
+                            }
+                            else
+                            {
+                                throw new CategoryNotFoundException(id);
+                            }
+                        }
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Like the constructor for ID, this will create a new instance of Category, fetching information for the specified category name
+            /// </summary>
+            /// <param name="name">The EXACT name of the category</param>
+            public Category(string name)
+            {
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT * FROM categories WHERE CategoryName = @name;";
+                        cmd.Parameters.AddWithValue("@name", name);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                CategoryId = Convert.ToUInt64(reader["CategoryID"]);
+                                Name = Convert.ToString(reader["CategoryName"]);
+                                Description = Convert.ToString(reader["CategoryDescription"]);
+                            }
+                            else
+                            {
+                                throw new CategoryNotFoundException(name);
+                            }
+                        }
+                    }
+                }
+            }
+            /// <summary>
             /// See if the given object is actually this category
             /// </summary>
             /// <param name="obj">The object to compare</param>
@@ -93,71 +156,6 @@ namespace GiftServer
             {
                 return !(a == b);
             }
-
-            /// <summary>
-            /// Given the Category ID, this will fetch all the necessary information
-            /// </summary>
-            /// <param name="id">The ID of the category; if 0, this method has undefined results</param>
-            public Category(ulong id)
-            {
-                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
-                {
-                    con.Open();
-                    using (MySqlCommand cmd = new MySqlCommand())
-                    {
-                        cmd.Connection = con;
-                        cmd.CommandText = "SELECT * FROM categories WHERE CategoryID = @id;";
-                        cmd.Parameters.AddWithValue("@id", id);
-                        cmd.Prepare();
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            if (reader.Read())
-                            {
-                                this.CategoryId = id;
-                                this.Name = Convert.ToString(reader["CategoryName"]);
-                                this.Description = Convert.ToString(reader["CategoryDescription"]);
-                            }
-                            else
-                            {
-                                throw new CategoryNotFoundException(id);
-                            }
-                        }
-                    }
-                }
-            }
-
-            /// <summary>
-            /// Like the constructor for ID, this will create a new instance of Category, fetching information for the specified category name
-            /// </summary>
-            /// <param name="name">The EXACT name of the category</param>
-            public Category(string name)
-            {
-                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
-                {
-                    con.Open();
-                    using (MySqlCommand cmd = new MySqlCommand())
-                    {
-                        cmd.Connection = con;
-                        cmd.CommandText = "SELECT * FROM categories WHERE CategoryName = @name;";
-                        cmd.Parameters.AddWithValue("@name", name);
-                        cmd.Prepare();
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            if (reader.Read())
-                            {
-                                this.CategoryId = Convert.ToUInt64(reader["CategoryID"]);
-                                this.Name = Convert.ToString(reader["CategoryName"]);
-                                this.Description = Convert.ToString(reader["CategoryDescription"]);
-                            }
-                            else
-                            {
-                                throw new CategoryNotFoundException(name);
-                            }
-                        }
-                    }
-                }
-            }
-
             /// <summary>
             /// Fetch implements the IFetchable interface.
             /// </summary>

@@ -84,40 +84,6 @@ namespace GiftServer
                 }
             }
             private List<User> users = new List<User>();
-
-            /// <summary>
-            /// Find if this group is equal to this object
-            /// </summary>
-            /// <param name="obj">The object to compare to</param>
-            /// <returns>A boolean if the two objects are equal</returns>
-            public override bool Equals(object obj)
-            {
-                if (obj != null && obj is Group g)
-                {
-                    return Equals(g);
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            /// <summary>
-            /// Find out if this group is equal to another
-            /// </summary>
-            /// <param name="group">The group to compare</param>
-            /// <returns>true if they are indeed the same group</returns>
-            public bool Equals(Group group)
-            {
-                return group != null && group.GroupId == GroupId;
-            }
-            /// <summary>
-            /// Get the hash code for this object
-            /// </summary>
-            /// <returns>The code</returns>
-            public override int GetHashCode()
-            {
-                return GroupId.GetHashCode();
-            }
             /// <summary>
             /// Fetch a group from the database
             /// </summary>
@@ -152,8 +118,8 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT groups_users.UserID FROM groups_users WHERE groups_users.GroupID = @gid AND NOT groups_users.UserID = @aid;";
-                        cmd.Parameters.AddWithValue("@gid", this.GroupId);
-                        cmd.Parameters.AddWithValue("@aid", this.Admin.UserId);
+                        cmd.Parameters.AddWithValue("@gid", GroupId);
+                        cmd.Parameters.AddWithValue("@aid", Admin.UserId);
                         cmd.Prepare();
                         using (MySqlDataReader Reader = cmd.ExecuteReader())
                         {
@@ -179,14 +145,14 @@ namespace GiftServer
             /// <summary>
             /// Create a new group with specified members
             /// </summary>
-            /// <param name="Admin">The administrator for this group</param>
-            /// <param name="Name">The name of this group</param>
-            /// <param name="Users">The members of this group (excluding the admin)</param>
-            public Group(User Admin, string Name, List<User> Users)
+            /// <param name="admin">The administrator for this group</param>
+            /// <param name="name">The name of this group</param>
+            /// <param name="users">The members of this group (excluding the admin)</param>
+            public Group(User admin, string name, List<User> users)
             {
-                this.admin = Admin;
-                this.Name = Name;
-                this.users = Users;
+                admin = Admin;
+                Name = name;
+                this.users = users;
             }
             /// <summary>
             /// Create this group in the database
@@ -202,9 +168,9 @@ namespace GiftServer
                         cmd.Connection = con;
                         cmd.CommandText = "INSERT INTO groups (GroupName, GroupDescription, AdminID) "
                                         + "VALUES (@name, @desc, @admin);";
-                        cmd.Parameters.AddWithValue("@name", this.Name);
-                        cmd.Parameters.AddWithValue("@desc", this.Description);
-                        cmd.Parameters.AddWithValue("@admin", this.Admin.UserId);
+                        cmd.Parameters.AddWithValue("@name", Name);
+                        cmd.Parameters.AddWithValue("@desc", Description);
+                        cmd.Parameters.AddWithValue("@admin", Admin.UserId);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                         GroupId = Convert.ToUInt64(cmd.LastInsertedId);
@@ -216,7 +182,7 @@ namespace GiftServer
                             cmd.Connection = con;
                             cmd.CommandText = "INSERT INTO groups_users (GroupID, UserID, IsChild) "
                                             + "VALUES (@gid, @uid, FALSE);";
-                            cmd.Parameters.AddWithValue("@gid", this.GroupId);
+                            cmd.Parameters.AddWithValue("@gid", GroupId);
                             cmd.Parameters.AddWithValue("@uid", user.UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
@@ -246,10 +212,10 @@ namespace GiftServer
                                         + "GroupDescription = @desc, "
                                         + "AdminID = @uid "
                                         + "WHERE GroupID = @id;";
-                        cmd.Parameters.AddWithValue("@name", this.Name);
-                        cmd.Parameters.AddWithValue("@desc", this.Description);
-                        cmd.Parameters.AddWithValue("@uid", this.Admin.UserId);
-                        cmd.Parameters.AddWithValue("@id", this.GroupId);
+                        cmd.Parameters.AddWithValue("@name", Name);
+                        cmd.Parameters.AddWithValue("@desc", Description);
+                        cmd.Parameters.AddWithValue("@uid", Admin.UserId);
+                        cmd.Parameters.AddWithValue("@id", GroupId);
                         cmd.Prepare();
                         return cmd.ExecuteNonQuery() == 0;
                     }
@@ -273,7 +239,7 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "DELETE FROM groups_events WHERE GroupID = @id;";
-                        cmd.Parameters.AddWithValue("@id", this.GroupId);
+                        cmd.Parameters.AddWithValue("@id", GroupId);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                     }
@@ -282,7 +248,7 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "DELETE FROM groups_gifts WHERE GroupID = @id;";
-                        cmd.Parameters.AddWithValue("@id", this.GroupId);
+                        cmd.Parameters.AddWithValue("@id", GroupId);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                     }
@@ -291,7 +257,7 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "DELETE FROM groups_users WHERE GroupID = @id;";
-                        cmd.Parameters.AddWithValue("@id", this.GroupId);
+                        cmd.Parameters.AddWithValue("@id", GroupId);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                     }
@@ -300,11 +266,11 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "DELETE FROM groups WHERE GroupID = @id;";
-                        cmd.Parameters.AddWithValue("@id", this.GroupId);
+                        cmd.Parameters.AddWithValue("@id", GroupId);
                         cmd.Prepare();
                         if (cmd.ExecuteNonQuery() == 1)
                         {
-                            this.GroupId = 0;
+                            GroupId = 0;
                             return true;
                         }
                         else
@@ -438,7 +404,39 @@ namespace GiftServer
                     }
                 }
             }
-
+            /// <summary>
+            /// Find if this group is equal to this object
+            /// </summary>
+            /// <param name="obj">The object to compare to</param>
+            /// <returns>A boolean if the two objects are equal</returns>
+            public override bool Equals(object obj)
+            {
+                if (obj != null && obj is Group g)
+                {
+                    return Equals(g);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            /// <summary>
+            /// Find out if this group is equal to another
+            /// </summary>
+            /// <param name="group">The group to compare</param>
+            /// <returns>true if they are indeed the same group</returns>
+            public bool Equals(Group group)
+            {
+                return group != null && group.GroupId == GroupId;
+            }
+            /// <summary>
+            /// Get the hash code for this object
+            /// </summary>
+            /// <returns>The code</returns>
+            public override int GetHashCode()
+            {
+                return GroupId.GetHashCode();
+            }
             /// <summary>
             /// Serializes this group's information
             /// </summary>

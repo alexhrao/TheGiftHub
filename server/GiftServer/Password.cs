@@ -2,7 +2,6 @@
 using GiftServer.Exceptions;
 using System;
 using System.Security.Cryptography;
-using System.Web;
 using System.Xml;
 
 namespace GiftServer

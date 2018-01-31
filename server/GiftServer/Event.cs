@@ -83,48 +83,6 @@ namespace GiftServer
                 }
             }
             /// <summary>
-            /// Find out if this object is equal to this event
-            /// </summary>
-            /// <param name="obj">The object to compare</param>
-            /// <returns>A boolean of whether they are equal or not</returns>
-            public override bool Equals(object obj)
-            {
-                if (obj != null && obj is Event e)
-                {
-                    return Equals(e);
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            /// <summary>
-            /// Check if this Event is equal to another event
-            /// </summary>
-            /// <param name="evnt">The event to compare</param>
-            /// <returns>False if null or not the same event</returns>
-            public bool Equals(Event evnt)
-            {
-                return evnt != null && evnt.EventId == EventId;
-            }
-            /// <summary>
-            /// 
-            /// </summary>
-            /// <returns></returns>
-            public override int GetHashCode()
-            {
-                return EventId.GetHashCode();
-            }
-            /// <summary>
-            /// Compares two events
-            /// </summary>
-            /// <param name="e">The event to compare</param>
-            /// <returns>-1 if this event is before, 0 if this event is on the same day, and 1 if this event is after</returns>
-            public int CompareTo(Event e)
-            {
-                return GetNearestOccurrence().CompareTo(e.GetNearestOccurrence());
-            }
-            /// <summary>
             /// Fetch an existing Event from the database
             /// </summary>
             /// <param name="id">The EventID</param>
@@ -373,7 +331,48 @@ namespace GiftServer
                 }
                 return occur;
             }
-
+            /// <summary>
+            /// Find out if this object is equal to this event
+            /// </summary>
+            /// <param name="obj">The object to compare</param>
+            /// <returns>A boolean of whether they are equal or not</returns>
+            public override bool Equals(object obj)
+            {
+                if (obj != null && obj is Event e)
+                {
+                    return Equals(e);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            /// <summary>
+            /// Check if this Event is equal to another event
+            /// </summary>
+            /// <param name="evnt">The event to compare</param>
+            /// <returns>False if null or not the same event</returns>
+            public bool Equals(Event evnt)
+            {
+                return evnt != null && evnt.EventId == EventId;
+            }
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <returns></returns>
+            public override int GetHashCode()
+            {
+                return EventId.GetHashCode();
+            }
+            /// <summary>
+            /// Compares two events
+            /// </summary>
+            /// <param name="e">The event to compare</param>
+            /// <returns>-1 if this event is before, 0 if this event is on the same day, and 1 if this event is after</returns>
+            public int CompareTo(Event e)
+            {
+                return GetNearestOccurrence().CompareTo(e.GetNearestOccurrence());
+            }
             /// <summary>
             /// Serialize this Event as an XML document.
             /// </summary>
@@ -381,80 +380,6 @@ namespace GiftServer
             public XmlDocument Fetch()
             {
                 return new XmlDocument();
-            }
-
-            /// <summary>
-            /// Fetch the given number of recurrences from the beginning
-            /// </summary>
-            /// <param name="limit">The number of recurrences to fetch</param>
-            /// <returns>A serialized version of these occurrences</returns>
-            /// <remarks>
-            /// Each occurrence is serialized with the following fields:
-            /// - year: The year this event will occur
-            /// - month: The month this event will occur
-            /// - day: The day this event will occur
-            /// </remarks>
-            public XmlDocument FetchOccurrences(ulong limit)
-            {
-                return FetchOccurrences(limit, StartDate);
-            }
-            /// <summary>
-            /// Fetch the given number of recurrences, starting at the given start date
-            /// </summary>
-            /// <param name="limit">The number of occurrences to fetch</param>
-            /// <param name="start">The start date</param>
-            /// <returns>A serialized version of these occurrences</returns>
-            /// <remarks>
-            /// Each occurrence is serialized with the following fields:
-            /// - eventId: The EventID for this occurrence
-            /// - year: The year this event will occur
-            /// - month: The month this event will occur
-            /// - day: The day this event will occur
-            /// </remarks>
-            public XmlDocument FetchOccurrences(ulong limit, DateTime start)
-            {
-                XmlDocument info = new XmlDocument();
-                XmlElement container = info.CreateElement("occurrences");
-                info.AppendChild(container);
-                ulong count = 0;
-                foreach (Occurrence o in Rules.Occurrences)
-                {
-                    // Wait until date is greater than or equal to our start:
-                    if (o.Date >= start && count < limit)
-                    {
-                        container.AppendChild(info.ImportNode(o.Fetch().DocumentElement, true));
-                        count++;
-                    }
-                }
-                return info;
-            }
-            /// <summary>
-            /// Fetch all occurrences starting at the given start date and ending at the given stop date
-            /// </summary>
-            /// <param name="start">The date this fetch should start at</param>
-            /// <param name="stop">The date this fetch should stop at</param>
-            /// <returns>A serialized version of these occurrences</returns>
-            /// <remarks>
-            /// Each occurrence is serialized with the following fields:
-            /// - eventId: The ID for this occurrence's event
-            /// - year: The year this event will occur
-            /// - month: The month this event will occur
-            /// - day: The day this event will occur
-            /// </remarks>
-            public XmlDocument FetchOccurrences(DateTime start, DateTime stop)
-            {
-                XmlDocument info = new XmlDocument();
-                XmlElement container = info.CreateElement("occurrences");
-                info.AppendChild(container);
-                foreach (Occurrence o in Rules.Occurrences)
-                {
-                    // Wait until date is greater than or equal to our start:
-                    if (o.Date >= start && o.Date <= stop)
-                    {
-                        container.AppendChild(info.ImportNode(o.Fetch().DocumentElement, true));
-                    }
-                }
-                return info;
             }
         }
     }

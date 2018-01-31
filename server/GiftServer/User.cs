@@ -255,39 +255,6 @@ namespace GiftServer
                 }
             }
             /// <summary>
-            /// Checks if this user is equal to the given object
-            /// </summary>
-            /// <param name="obj">The object to compare</param>
-            /// <returns>A boolean flag - false if null, not a user, or </returns>
-            public override bool Equals(object obj)
-            {
-                if (obj != null && obj is User u)
-                {
-                    return Equals(u);
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            /// <summary>
-            /// Checks if this user is equal to the given user
-            /// </summary>
-            /// <param name="user"></param>
-            /// <returns></returns>
-            public bool Equals(User user)
-            {
-                return user != null && UserId == user.UserId;
-            }
-            /// <summary>
-            /// Overrides the hash code operator
-            /// </summary>
-            /// <returns>The hash for this user</returns>
-            public override int GetHashCode()
-            {
-                return UserId.GetHashCode();
-            }
-            /// <summary>
             /// Initializes a new User
             /// </summary>
             /// <param name="id">The UserID</param>
@@ -1348,7 +1315,6 @@ namespace GiftServer
             /// <param name="token">The OAuth token to add</param>
             public void AddOAuth(OAuthUser token)
             {
-                // TODO: Ensure that login isn't already taken
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -1409,6 +1375,39 @@ namespace GiftServer
                         break;
                 }
                 Update();
+            }
+            /// <summary>
+            /// Checks if this user is equal to the given object
+            /// </summary>
+            /// <param name="obj">The object to compare</param>
+            /// <returns>A boolean flag - false if null, not a user, or </returns>
+            public override bool Equals(object obj)
+            {
+                if (obj != null && obj is User u)
+                {
+                    return Equals(u);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            /// <summary>
+            /// Checks if this user is equal to the given user
+            /// </summary>
+            /// <param name="user"></param>
+            /// <returns></returns>
+            public bool Equals(User user)
+            {
+                return user != null && UserId == user.UserId;
+            }
+            /// <summary>
+            /// Overrides the hash code operator
+            /// </summary>
+            /// <returns>The hash for this user</returns>
+            public override int GetHashCode()
+            {
+                return UserId.GetHashCode();
             }
             /// <summary>
             /// "Serializes" the User as an XML Document

@@ -179,40 +179,6 @@ namespace GiftServer
                 }
             }
             /// <summary>
-            /// See if this object is this gift
-            /// </summary>
-            /// <param name="obj">The object to inspect</param>
-            /// <returns>If the object is the same as this gift</returns>
-            public override bool Equals(object obj)
-            {
-                if (obj != null && obj is Gift g)
-                {
-                    return Equals(g);
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            /// <summary>
-            /// See if the two gifts are equal
-            /// </summary>
-            /// <param name="gift">The gift to compare</param>
-            /// <returns>If the two gifts are equal</returns>
-            public bool Equals(Gift gift)
-            {
-                return gift != null && gift.GiftId == GiftId;
-            }
-            /// <summary>
-            /// Get the hash code for this gift
-            /// </summary>
-            /// <returns>This gift's hash code</returns>
-            public override int GetHashCode()
-            {
-                return GiftId.GetHashCode();
-            }
-
-            /// <summary>
             /// Fetch an existing gift
             /// </summary>
             /// <param name="id">The existing gift</param>
@@ -521,6 +487,39 @@ namespace GiftServer
                         cmd.ExecuteNonQuery();
                     }
                 }
+            }
+            /// <summary>
+            /// See if this object is this gift
+            /// </summary>
+            /// <param name="obj">The object to inspect</param>
+            /// <returns>If the object is the same as this gift</returns>
+            public override bool Equals(object obj)
+            {
+                if (obj != null && obj is Gift g)
+                {
+                    return Equals(g);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            /// <summary>
+            /// See if the two gifts are equal
+            /// </summary>
+            /// <param name="gift">The gift to compare</param>
+            /// <returns>If the two gifts are equal</returns>
+            public bool Equals(Gift gift)
+            {
+                return gift != null && gift.GiftId == GiftId;
+            }
+            /// <summary>
+            /// Get the hash code for this gift
+            /// </summary>
+            /// <returns>This gift's hash code</returns>
+            public override int GetHashCode()
+            {
+                return GiftId.GetHashCode();
             }
             /// <summary>
             /// Serialize this gift as an XML Document

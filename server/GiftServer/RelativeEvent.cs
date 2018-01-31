@@ -202,56 +202,6 @@ namespace GiftServer
                 }
             }
             /// <summary>
-            /// See if the given object is the same as this one
-            /// </summary>
-            /// <param name="obj">The object to compare</param>
-            /// <returns>Whether or not they are equal</returns>
-            public override bool Equals(object obj)
-            {
-                if (obj != null && obj is RelativeEvent r)
-                {
-                    return Equals(r);
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            /// <summary>
-            /// See if the given rules engine is the same as this one
-            /// </summary>
-            /// <param name="engine">The engine to compare</param>
-            /// <returns>Whether or not they are equal</returns>
-            public override bool Equals(RulesEngine engine)
-            {
-                if (engine != null && engine is RelativeEvent r)
-                {
-                    return Equals(r);
-                }
-                else
-                {
-                    return false;
-                }
-
-            }
-            /// <summary>
-            /// Check if the given RelativeEvent Engine is equal to this one
-            /// </summary>
-            /// <param name="engine">The engine to compare</param>
-            /// <returns>If the two are the same engine</returns>
-            public bool Equals(RelativeEvent engine)
-            {
-                return engine != null && engine.RelativeEventId == RelativeEventId;
-            }
-            /// <summary>
-            /// A hash for this engine
-            /// </summary>
-            /// <returns>The hash for this engine</returns>
-            public override int GetHashCode()
-            {
-                return RelativeEventId.GetHashCode();
-            }
-            /// <summary>
             /// All occurrences of this event
             /// </summary>
             /// <remarks>
@@ -323,14 +273,12 @@ namespace GiftServer
             /// <summary>
             /// Create a new RelativeEvent ruleset
             /// </summary>
-            /// <param name="e">The event this is tied to</param>
             /// <param name="interval">The interval to use</param>
             /// <param name="skip">The skip to use</param>
             /// <param name="day">The day of the week to use</param>
             /// <param name="posn">The position within the month to use</param>
-            public RelativeEvent(Event e, string interval, int skip, string day, int posn)
+            public RelativeEvent(string interval, int skip, string day, int posn)
             {
-                Event = e;
                 TimeInterval = interval;
                 SkipEvery = skip;
                 DayOfWeek = day;
@@ -570,6 +518,56 @@ namespace GiftServer
                         }
                     }
                 }
+            }
+            /// <summary>
+            /// See if the given object is the same as this one
+            /// </summary>
+            /// <param name="obj">The object to compare</param>
+            /// <returns>Whether or not they are equal</returns>
+            public override bool Equals(object obj)
+            {
+                if (obj != null && obj is RelativeEvent r)
+                {
+                    return Equals(r);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            /// <summary>
+            /// See if the given rules engine is the same as this one
+            /// </summary>
+            /// <param name="engine">The engine to compare</param>
+            /// <returns>Whether or not they are equal</returns>
+            public override bool Equals(RulesEngine engine)
+            {
+                if (engine != null && engine is RelativeEvent r)
+                {
+                    return Equals(r);
+                }
+                else
+                {
+                    return false;
+                }
+
+            }
+            /// <summary>
+            /// Check if the given RelativeEvent Engine is equal to this one
+            /// </summary>
+            /// <param name="engine">The engine to compare</param>
+            /// <returns>If the two are the same engine</returns>
+            public bool Equals(RelativeEvent engine)
+            {
+                return engine != null && engine.RelativeEventId == RelativeEventId;
+            }
+            /// <summary>
+            /// A hash for this engine
+            /// </summary>
+            /// <returns>The hash for this engine</returns>
+            public override int GetHashCode()
+            {
+                return RelativeEventId.GetHashCode();
             }
             /// <summary>
             /// Serialize this ruleset

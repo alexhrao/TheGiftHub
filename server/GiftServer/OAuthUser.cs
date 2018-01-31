@@ -1,4 +1,5 @@
-﻿using System.Net.Mail;
+﻿using System;
+using System.Net.Mail;
 
 namespace GiftServer
 {
@@ -7,7 +8,7 @@ namespace GiftServer
         /// <summary>
         /// A User who has logged in from an OAuth source
         /// </summary>
-        public abstract class OAuthUser
+        public abstract class OAuthUser : IEquatable<OAuthUser>
         {
             /// <summary>
             /// The name of this user
@@ -50,6 +51,12 @@ namespace GiftServer
             {
                 get;
             }
+            /// <summary>
+            /// Check if this OAuthUser is the same as another
+            /// </summary>
+            /// <param name="user">OAuthUser to check</param>
+            /// <returns>true if they are equal</returns>
+            public abstract bool Equals(OAuthUser user);
         }
     }
 }

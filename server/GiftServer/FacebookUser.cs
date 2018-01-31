@@ -16,7 +16,7 @@ namespace GiftServer
         /// <remarks>
         /// This is for users who authenticate via the "Sign in with Google" method.
         /// </remarks>
-        public class FacebookUser : OAuthUser
+        public class FacebookUser : OAuthUser, IEquatable<FacebookUser>
         {
             private string name;
             /// <summary>
@@ -103,6 +103,55 @@ namespace GiftServer
                 email = new MailAddress(parsed["email"].Value<string>());
                 oAuthId = parsed["id"].Value<string>();
                 picture = parsed["picture"]["data"]["url"].Value<string>();
+            }
+            /// <summary>
+            /// Find whether or not the object is this FacebookUser
+            /// </summary>
+            /// <param name="obj">Object to test</param>
+            /// <returns>True if they are the same value</returns>
+            public override bool Equals(object obj)
+            {
+                if (obj != null && obj is FacebookUser f)
+                {
+                    return Equals(f);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            /// <summary>
+            /// Find whether or not the OAuthUser is this FacebookUser
+            /// </summary>
+            /// <param name="user">The OAuthUser</param>
+            /// <returns>True if they are the same value</returns>
+            public override bool Equals(OAuthUser user)
+            {
+                if (user != null && user is FacebookUser f)
+                {
+                    return Equals(f);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            /// <summary>
+            /// Find whether or not the two FacebookUsers are identical
+            /// </summary>
+            /// <param name="user">The users to compare</param>
+            /// <returns>True if they are the same user</returns>
+            public bool Equals(FacebookUser user)
+            {
+                return user != null && user.OAuthId == OAuthId;
+            }
+            /// <summary>
+            /// Get the hash code for this FacebookUser
+            /// </summary>
+            /// <returns>The hash code</returns>
+            public override int GetHashCode()
+            {
+                return (OAuthId + "Facebook").GetHashCode();
             }
         }
     }
