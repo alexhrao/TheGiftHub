@@ -363,6 +363,69 @@ $(document).ready(function () {
         }
     });
 });
+// New Event
+$(document).ready(function () {
+    $('#newEventPrevious').click(function () {
+        // Switch what step we are on and engage
+        switch (newEventStep()) {
+            case 0:
+                // Step 2 -> 1
+                $('#newEvent1').fadeOut(500, function () {
+                    $('#newEvent0').fadeIn(500);
+                });
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            case 7:
+                break;
+            case 8:
+                break;
+            case 9:
+                break;
+        }
+    });
+    $('#newEventNext').click(function () {
+        // Switch the step
+        switch (newEventStep()) {
+            case 0:
+                // Step 1 -> 2:
+                // Most validation is done via keypress and friends
+                // so just move to next step:
+                $('#newEvent0').fadeOut(500, function () {
+                    $('#newEvent1').fadeIn(500);
+                });
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            case 7:
+                break;
+            case 8:
+                break;
+            case 9:
+                break;
+        }
+    });
+});
 $(document).ready(function () {
     $('#uploadNewImg').click(function () {
         $.post(".", {
@@ -548,6 +611,16 @@ function daysInMonth(month) {
         return 0;
     }
     return new Date(2004, month, 0).getDate();
+}
+function newEventStep() {
+    // Loop through all steps; get the one that is not hidden
+    var ind = 0;
+    $('.step').each(function (index) {
+        if ($(this).hasClass("hidden")) {
+            ind = index;
+            return false;
+        }
+    });
 }
 function getImagePortion(imgObj, newWidth, newHeight, startX, startY, ratio) {
     /* the parameters: - the image element - the new width - the new height - the x point we start taking pixels - the y point we start taking pixels - the ratio */

@@ -236,9 +236,231 @@
                         <h4 class="modal-title">Add New Event</h4>
                     </div>
                     <div class="modal-body">
+                        <div class="row step-header text-center">
+                            <h1>Let's Make an Event!</h1>
+                        </div>
+                        <div id="newEvent0" class="row text-center step">
+                            <div class="row text-center step-header">
+                                <h2>What do you want to call your new event?</h2>
+                            </div>
+                            <div class="row text-center step-content">
+                                <input id="newEventName" class="form-control step-control" type="text" placeholder="Event Name" />
+                            </div>
+                        </div>
+                        <div id="newEvent1" class="row text-center step collapse">
+                            <div class="row text-center step-header">
+                                <h2>Great! When does <span class="event-name-placeholder"></span> start?</h2>
+                            </div>
+                            <div class="row text-center step-content">
+                                <input id="newEventStartDate" class="form-control step-control" type="date" placeholder="Start Date" />
+                            </div>
+                        </div>
+                        <div id="newEvent2" class="row text-center step collapse">
+                            <div class="row text-center step-header">
+                                <h2>Perfect! Does <span class="event-name-placeholder"></span> recur?</h2>
+                            </div>
+                            <div class="row text-center step-content">
+                                <div class="col-md-4">
+                                    <button id="newEventNoRecur" class="btn btn-info step-button btn-block" type="button">
+                                        No
+                                    </button>
+                                </div>
+                                <div class="col-md-4">
+
+                                </div>
+                                <div class="col-md-4">
+                                    <button id="newEventRecurs" class="btn btn-info step-button btn-block" type="button">
+                                        Yes
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="newEvent3" class="row text-center step collapse">
+                            <div class="row text-center step-header">
+                                <h2>Gotcha. What kind of recurrence do we have here?</h2>
+                            </div>
+                            <div class="row text-center step-content">
+                                <div class="row text-center">
+                                    <div class="col-md-4 text-center">
+                                        <!-- TODO: Add Explanations -->
+                                        <button id="newEventExact" class="btn btn-info step-button btn-block" type="button">
+                                            "Exact" Event
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 text-center">
+                                        <button id="newEventRelative" class="btn btn-info step-button btn-block" type="button">
+                                            "Relative" Event
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- This (And Next) Step need to possibly be reorganized, though all controls are needed -->
+                        <div id="newEvent4" class="row text-center step collapse">
+                            <div class="row text-center step-header">
+                                <h2>Sweet! On what timescale does <span class="event-name-placeholder"></span> repeat?</h2>
+                            </div>
+                            <div class="row text-center step-content">
+                                <div class="col-md-6">
+                                    <select id="newExactSkip" class="form-control step-control">
+                                        <option value="1">Every</option>
+                                        <option value="2">Every Other</option>
+                                        <option value="n">Every n</option>
+                                    </select>
+                                    <input id="newExactSkipEvery" class="form-control step-control hidden" type="number" />
+                                </div>
+                                <div class="col-md-6">
+                                    <select id="newExactInterval" class="form-control step-control">
+                                        <option value="D">Day</option>
+                                        <option value="W">Week</option>
+                                        <option value="M">Month</option>
+                                        <option value="Y">Year</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="newEvent5" class="row text-center step collapse">
+                            <div class="row text-center step-header">
+                                <h2>Sweet! So what timescale does <span class="event-name-placeholder"></span> run on?</h2>
+                            </div>
+                            <div class="row text-center step-content">
+                                <div class="col-md-1">
+                                    <p class="step-control">
+                                        The
+                                    </p>
+                                </div>
+                                <div class="col-md-2">
+                                    <select id="newRelativePosn" class="form-control step-control">
+                                        <option value="1">First</option>
+                                        <option value="2">Second</option>
+                                        <option value="3">Third</option>
+                                        <option value="4">Fourth</option>
+                                        <option value="4">Last</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <select id="newRelativeDay" class="form-control step-control">
+                                        <option value="N">Sunday</option>
+                                        <option value="M">Monday</option>
+                                        <option value="T">Tuesday</option>
+                                        <option value="W">Wednesday</option>
+                                        <option value="R">Thursday</option>
+                                        <option value="F">Friday</option>
+                                        <option value="S">Saturday</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-1">
+                                    <p class="step-control">
+                                        of
+                                    </p>
+                                </div>
+                                <div class="col-md-2">
+                                    <select id="newRelativeSkip" class="form-control step-control">
+                                        <option value="1">Every</option>
+                                        <option value="2">Every Other</option>
+                                        <option value="n">Every n</option>
+                                    </select>
+                                    <input id="newRelativeSkipEvery" class="form-control step-control hidden" type="number" />
+                                </div>
+                                <div class="col-md-3">
+                                    <select id="newRelativeInterval" class="form-control step-control">
+                                        <option value="JAN">January</option>
+                                        <option value="FEB">February</option>
+                                        <option value="MAR">March</option>
+                                        <option value="APR">April</option>
+                                        <option value="MAY">May</option>
+                                        <option value="JUN">June</option>
+                                        <option value="JUL">July</option>
+                                        <option value="AUG">August</option>
+                                        <option value="SEP">September</option>
+                                        <option value="OCT">October</option>
+                                        <option value="NOV">November</option>
+                                        <option value="DEC">December</option>
+                                        <option value="MON">Month</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="newEvent6" class="row text-center step collapse">
+                            <div class="row text-center step-header">
+                                <h2>Noted! When does <span class="event-name-placeholder"></span> stop recurring?</h2>
+                            </div>
+                            <div class="row text-center step-content">
+                                <div class="row">
+                                    <p class="step-control">
+                                        <em>
+                                            Leave Blank if <span class="event-name-placeholder"></span> never stops...
+                                        </em>
+                                    </p>
+                                </div>
+                                <div class="row">
+                                    <input id="newEventStopDate" class="form-control step-control" type="date" placeholder="Stop Date" />
+                                </div>
+                            </div>
+                        </div>
+                        <div id="newEvent7" class="row text-center step collapse">
+                            <div class="row text-center step-header">
+                                <h2>Nice! Are there any days you want to black out?</h2>
+                            </div>
+                            <div class="row text-center step-content">
+                                <div class="row">
+                                    <p class="text-center step-control">
+                                        <em>
+                                            List any date below that you don't want the event to occur on
+                                        </em>
+                                    </p>
+                                </div>
+                                <div class="row text-center">
+                                    <div id="newEventBlackouts">
+                                        <input class="form-control step-control event-blackout" type="date" placeholder="Blackout Date" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="newEvent8" class="row text-center step collapse">
+                            <div class="row text-center step-header">
+                                <h2>What groups should be able to see this?</h2>
+                            </div>
+                            <div class="row text-center step-content">
+                                <div id="newEventGroups">
+                                    <div class="col-md-6 text-center">
+
+                                    </div>
+                                    <div class="col-md-6 text-center">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="newEvent9" class="row text-center step collapse">
+                            <div class="row text-center step-header">
+                                <h2>You're all done! Here's what we have:</h2>
+                            </div>
+                            <div class="row text-center step-content">
+                                <div id="newEventDescription">
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <button id="newEventPrevious" type="button" class="btn btn-info hidden text-center">
+                                    <i class="fa fa-angle-left"></i>
+                                </button>
+                            </div>
+                            <div class="col-sm-4">
+
+                            </div>
+                            <div class="col-sm-4">
+                                <button id="newEventNext" type="button" class="btn btn-info text-center" disabled>
+                                    <i class="fa fa-angle-right"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
