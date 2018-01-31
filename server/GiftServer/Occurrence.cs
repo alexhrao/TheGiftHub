@@ -34,7 +34,14 @@ namespace GiftServer
             /// <returns>-1 if this is before, 0 if on the same day, and 1 after</returns>
             public int CompareTo(Occurrence o)
             {
-                return Date.CompareTo(o.Date);
+                if (o == null)
+                {
+                    return -1;
+                }
+                else
+                {
+                    return Date.CompareTo(o.Date);
+                }
             }
             /// <summary>
             /// Create an occurrence from a given Event and DateTime

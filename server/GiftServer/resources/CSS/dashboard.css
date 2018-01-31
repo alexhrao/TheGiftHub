@@ -4,10 +4,15 @@
     background-attachment: fixed;
 }
 
-#eventHolder > li {
-    cursor: pointer;
+.month-expander {
+    margin-left: 2px;
 }
-
-.event-header {
+.month-header {
+    color: darkgray;
+}
+.event-record {
     color: black;
+}
+a {
+    color: forestgreen;
 }

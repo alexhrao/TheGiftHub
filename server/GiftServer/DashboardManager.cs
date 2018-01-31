@@ -55,27 +55,34 @@ namespace GiftServer
                     events.AddRange(group.Events);
                 }
                 // Events should be ordered by the first future date
-                events = events.Distinct().OrderBy(e => e.GetNearestOccurrence(DateTime.Today).Date).ToList();
+                events.RemoveAll(e => e.GetNearestOccurrence(DateTime.Today) == null);
+                events = events.Distinct().OrderBy(e => e.GetNearestOccurrence(DateTime.Today)).ToList();
+
                 // For each event (up to some amount), list the name of the user and say 
                 // Group by groups, drop to user, then to event?
                 // Do it for next three months?
-                for (DateTime m = DateTime.Today; m < DateTime.Today.AddMonths(3); m = m.AddMonths(1))
+                DateTime low = DateTime.Today;
+                DateTime stop = new DateTime(low.Year, low.Month, 1).AddMonths(3);
+                for (DateTime m = new DateTime(low.Year, low.Month, 1); m < stop; m = m.AddMonths(1))
                 {
                     // First print the month name, then print a ul for the events
                     HtmlNode monthHeader = HtmlNode.CreateNode("<h2></h2>");
                     monthHeader.AddClass("month-header");
-                    monthHeader.InnerHtml = DateTime.Today.Month.ToString("MMMM");
+                    monthHeader.InnerHtml = m.ToString("MMMM");
+                    HtmlNode monthExpander = HtmlNode.CreateNode("<i></i>");
+                    monthExpander.AddClass("fa fa-angle-left month-expander");
+                    monthHeader.AppendChild(monthExpander);
                     eventHolder.AppendChild(monthHeader);
                     HtmlNode monthEventsHolder = HtmlNode.CreateNode("<ul></ul>");
                     monthEventsHolder.AddClass("month-events");
                     int counter = 0;
-                    foreach (Occurrence o in Event.PoolOrder(events, m, new DateTime(m.Year, m.Month, 1).AddMonths(1).AddDays(-1)))
+                    foreach (Occurrence o in Event.PoolOrder(events, m > low ? m : low, new DateTime(m.Year, m.Month, 1).AddMonths(1).AddDays(-1)))
                     {
                         // Pretty print the event
                         HtmlNode eventNode = HtmlNode.CreateNode("<li></li>");
                         eventNode.AddClass("event-record");
                         /* REPLACE WITH STRING MANAGER */
-                        eventNode.InnerHtml = "<a href=\"" + o.Event.User.UserUrl + "\">" + HttpUtility.HtmlEncode(o.Event.User.UserName)
+                        eventNode.InnerHtml = "<a href=\"" + Constants.URL + "/?dest=list&user=" + o.Event.User.UserUrl + "\">" + HttpUtility.HtmlEncode(o.Event.User.UserName)
                                             + "</a> is celebrating " + HttpUtility.HtmlEncode(o.Event.Name)
                                             + " on " + HttpUtility.HtmlEncode(o.Date.ToString("M"));
                         if (counter > 4)
@@ -93,6 +100,7 @@ namespace GiftServer
                         monthEventsHolder.AppendChild(eventNode);
                         counter++;
                     }
+                    eventHolder.AppendChild(monthEventsHolder);
                 }
                 return dash.DocumentNode.OuterHtml;
                 

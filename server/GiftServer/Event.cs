@@ -146,7 +146,7 @@ namespace GiftServer
                                 EventId = id;
                                 Name = Convert.ToString(reader["EventName"]);
                                 StartDate = (DateTime)(reader["EventStartDate"]);
-                                EndDate = (DateTime?)(reader["EventEndDate"]);
+                                EndDate = (DateTime?)(reader["EventEndDate"] == DBNull.Value ? null : reader["EventEndDate"]);
                                 User = new User(Convert.ToUInt64(reader["UserID"]));
                             }
                             else
@@ -167,7 +167,10 @@ namespace GiftServer
                         {
                             if (reader.Read())
                             {
-                                Rules = new ExactEvent(Convert.ToUInt64(reader["ExactEventID"]));
+                                Rules = new ExactEvent(Convert.ToUInt64(reader["ExactEventID"]))
+                                {
+                                    Event = this
+                                };
                             }
                         }
                     }
@@ -183,7 +186,10 @@ namespace GiftServer
                             {
                                 if (reader.Read())
                                 {
-                                    Rules = new RelativeEvent(Convert.ToUInt64(reader["RelativeEventID"]));
+                                    Rules = new RelativeEvent(Convert.ToUInt64(reader["RelativeEventID"]))
+                                    {
+                                        Event = this
+                                    };
                                 }
                             }
                         }
@@ -229,14 +235,21 @@ namespace GiftServer
             /// <returns>The occurrence for this event - or null, if no occurrence after near is found</returns>
             public Occurrence GetNearestOccurrence(DateTime near)
             {
-                foreach (Occurrence occur in Rules.Occurrences)
+                if (Rules == null)
                 {
-                    if (occur.Date >= near)
-                    {
-                        return occur;
-                    }
+                    return StartDate >= near ? new Occurrence(this, StartDate) : null;
                 }
-                return null;
+                else
+                {
+                    foreach (Occurrence occur in Rules.Occurrences)
+                    {
+                        if (occur.Date >= near)
+                        {
+                            return occur;
+                        }
+                    }
+                    return null;
+                }
             }
             /// <summary>
             /// Get the closest occurrence that happens in the future from today
@@ -261,27 +274,17 @@ namespace GiftServer
             /// <returns></returns>
             public static IEnumerable<Occurrence> PoolOrder(List<Event> events, DateTime start, DateTime stop)
             {
-                while (start <= stop)
+                // Expand into a list of all occurrences
+                List<Occurrence> occurrences = new List<Occurrence>();
+                foreach (Event e in events)
                 {
-                    events = events.OrderBy(e => e.GetNearestOccurrence(start)).ToList();
-                    start = events[0].GetNearestOccurrence(start).Date;
-                    foreach (Event e in events)
-                    {
-                        // As long as event occurrence date does not change keep chugging
-                        if (start.Equals(e.GetNearestOccurrence(start)))
-                        {
-                            yield return new Occurrence(e, start);
-                        }
-                        else
-                        {
-                            start = e.GetNearestOccurrence(start).Date;
-                            break;
-                        }
-                    }
+                    occurrences.AddRange(e.GetOccurrences(start, stop));
                 }
-                // Events are sorted by their first future date - so for each of them, iterate until the date changes.
-                // Change start date to that day, reorder the list, and engage
-                // Reorder list 
+                occurrences = occurrences.OrderBy(o => o.Date).ToList();
+                foreach (Occurrence o in occurrences)
+                {
+                    yield return o;
+                }
             }
             /// <summary>
             /// Create a record of this event in the database
@@ -316,6 +319,59 @@ namespace GiftServer
             public bool Delete()
             {
                 return false;
+            }
+            /// <summary>
+            /// Get Occurrences starting from today, with a limiit
+            /// </summary>
+            /// <param name="limit">The maximum number of occurrences to fetch</param>
+            /// <returns>A List of Occurrences</returns>
+            public List<Occurrence> GetOccurrences(ulong limit)
+            {
+                return GetOccurrences(DateTime.Today, limit);
+            }
+            /// <summary>
+            /// Get Occurrences starting from a date, with a limiit
+            /// </summary>
+            /// <param name="start">The starting date</param>
+            /// <param name="limit">The maximum number of occurrences to fetch</param>
+            /// <returns>A List of Occurrences</returns>
+            public List<Occurrence> GetOccurrences(DateTime start, ulong limit)
+            {
+                List<Occurrence> occur = new List<Occurrence>();
+                uint count = 0;
+                foreach (Occurrence o in Rules.Occurrences)
+                {
+                    // Wait until date is greater than or equal to our start:
+                    if (o.Date >= start && count < limit)
+                    {
+                        occur.Add(o);
+                        count++;
+                    }
+                }
+                return occur;
+            }
+            /// <summary>
+            /// Get Occurrences starting a date and ending on a date
+            /// </summary>
+            /// <param name="start">The start date, inclusive</param>
+            /// <param name="stop">The end date, inclusive</param>
+            /// <returns>A List of Occurrences</returns>
+            public List<Occurrence> GetOccurrences(DateTime start, DateTime stop)
+            {
+                List<Occurrence> occur = new List<Occurrence>();
+                foreach (Occurrence o in Rules.Occurrences)
+                {
+                    // Wait until date is greater than or equal to our start:
+                    if (o.Date >= start && o.Date <= stop)
+                    {
+                        occur.Add(o);
+                    }
+                    if (o.Date > stop)
+                    {
+                        break;
+                    }
+                }
+                return occur;
             }
 
             /// <summary>
@@ -360,7 +416,7 @@ namespace GiftServer
                 XmlDocument info = new XmlDocument();
                 XmlElement container = info.CreateElement("occurrences");
                 info.AppendChild(container);
-                uint count = 0;
+                ulong count = 0;
                 foreach (Occurrence o in Rules.Occurrences)
                 {
                     // Wait until date is greater than or equal to our start:

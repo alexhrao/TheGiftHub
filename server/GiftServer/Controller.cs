@@ -209,6 +209,7 @@ namespace GiftServer
                                                 }
                                                 catch (Exception e)
                                                 {
+                                                    Warnings.Add(new ExecutionErrorWarning(e));
                                                     return LoginManager.FailLogin(e);
                                                 }
                                         }

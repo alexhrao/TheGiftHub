@@ -99,7 +99,7 @@ namespace GiftServer
                 }
                 set
                 {
-                    if (value <= 0)
+                    if (value > 0)
                     {
                         skipEvery = value;
                     }
