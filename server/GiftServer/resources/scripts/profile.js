@@ -6,8 +6,7 @@ $(document).ready(function () {
 });
 $(document).ready(function () {
     $('#events .event-closer').click(function () {
-        var eNumber = this.id;
-        eNumber = parseInt(eNumber.substring(11))
+        eNumber = $(this).attr('data-event-id');
         $.post(".",
             {
                 action: "Change",
@@ -27,7 +26,7 @@ $(document).ready(function () {
 $(document).ready(function () {
     $('#groups .group-closer').click(function () {
         var gNumber = this.id;
-        gNumber = parseInt(gNumber.substring(11))
+        gNumber = $(this).attr('data-group-id');
         $.post(".",
             {
                 action: "Change",
@@ -367,8 +366,8 @@ $(document).ready(function () {
 $(document).ready(function () {
     // State Variables
     var newEventSteps = [0];
-    var newEventStartDate = null;
-    var newEventEndDate = null;
+    var newEventStartDate = "";
+    var newEventEndDate = "";
     var newEventName = null;
     var newEventRecurs = null;
     var newEventRecurType = null;
@@ -381,12 +380,7 @@ $(document).ready(function () {
     var newEventBlackouts = [];
 
     $('#newEventPrevious').click(function () {
-        // Switch what step we are on and engage
-        // For all of them:
-            // hide this
-            // show prev
         if (newEventSteps[newEventSteps.length - 1] == 9) {
-            // hide submit
             $('#newEventSubmit').addClass("hidden");
             $('#newEventNext').removeClass("hidden");
         }
@@ -400,55 +394,33 @@ $(document).ready(function () {
         // Switch the step
         switch (newEventSteps[newEventSteps.length - 1]) {
             case 0:
-                // Step 1 -> 2:
-                // Most validation is done via keypress and friends
-                // so just move to next step:
-                // Store event name
                 newEventName = $('#newEventName').val();
-                newEventSteps.push(1);
                 // Fill in all spans
                 $('.event-name-placeholder').text(newEventName);
-                $('#newEvent0').fadeOut(500, function () {
-                    $('#newEvent1').fadeIn(500);
-                });
+                dispatch(1);
                 $('#newEventPrevious').removeClass("hidden");
                 $('#newEventNext').prop('disabled', true);
                 break;
             case 1:
                 newEventStartDate = $('#newEventStartDate').val();
-                newEventSteps.push(2);
-                $('#newEvent1').fadeOut(500, function () {
-                    $('#newEvent2').fadeIn(500);
-                });
+                dispatch(2);
                 $('#newEventNext').attr('disabled', true);
                 break;
             case 2:
                 if (newEventRecurs) {
                     // Go to 3
-                    newEventSteps.push(3);
-                    $('#newEvent2').fadeOut(500, function () {
-                        $('#newEvent3').fadeIn(500);
-                    });
+                    dispatch(3);
                     $('#newEventNext').attr('disabled', true);
                 } else {
-                    newEventSteps.push(8);
-                    $('#newEvent2').fadeOut(500, function () {
-                        $('#newEvent8').fadeIn(500);
-                    });
+                    dispatch(8);
                 }
                 break;
             case 3:
                 if (newEventRecurType == "exact") {
                     // Go to next
-                    newEventSteps.push(4);
-                    $('#newEvent3').fadeOut(500, function () {
-                        $('#newEvent4').fadeIn(500);
-                    });
+                    dispatch(4);
                 } else {
-                    newEventSteps.push(5);
-                    $('#newEvent3').fadeOut(500, function () {
-                        $('#newEvent5').fadeIn(500);
-                    });
+                    dispatch(5);
                 }
                 break;
             case 4:
@@ -457,10 +429,7 @@ $(document).ready(function () {
                 if (newEventSkip == "n") {
                     newEventSkip = $('#newExactSkipEvery').val();
                 }
-                newEventSteps.push(6);
-                $('#newEvent4').fadeOut(500, function () {
-                    $('#newEvent6').fadeIn(500);
-                });
+                dispatch(6);
                 break;
             case 5:
                 newEventInterval = $('#newRelativeInterval').val();
@@ -470,170 +439,39 @@ $(document).ready(function () {
                 }
                 newEventDayOfWeek = $('#newRelativeDayOfWeek').val();
                 newEventPosn = $('#newRelativePosn').val();
-                newEventSteps.push(6);
-                $('#newEvent5').fadeOut(500, function () {
-                    $('#newEvent6').fadeIn(500);
-                });
+                dispatch(6);
                 break;
             case 6:
                 newEventEndDate = $('#newEventEndDate').val();
-                newEventSteps.push(7);
-                $('#newEvent6').fadeOut(500, function () {
-                    $('#newEvent7').fadeIn(500);
-                });
+                dispatch(7);
                 break;
             case 7:
                 $('.event-blackout').each(function (index) {
                     newEventBlackouts.push($(this).val());
                 });
-                newEventSteps.push(8);
-                $('#newEvent7').fadeOut(500, function () {
-                    $('#newEvent8').fadeIn(500);
-                });
+                dispatch(8);
                 break;
             case 8:
                 $('.event-group').each(function (index) {
                     newEventGroupIds.push($(this).attr('data-group-id'));
                     newEventGroupNames.push($(this).attr('data-group-name'));
                 });
-                newEventSteps.push(9);
-                $('#newEvent8').fadeOut(500, function () {
-                    $('#newEvent9').fadeIn(500);
-                });
+                dispatch(9);
                 $('#newEventNext').addClass('hidden');
-                // Fill Description div:
-                var desc = $('#newEventDescription');
-                var str;
-                if (newEventRecurs) {
-                    // see if exact or relative:
-                    if (newEventRecurType == "exact") {
-                        str = "<p>" + escapeHtml(newEventName) + " starts on " + escapeHtml(newEventStartDate) + ", and occurs every ";
-                        if (newEventSkip == 2) {
-                            var str = str + "other ";
-                        } else if (newEventSkip > 2) {
-                            var str = str + newEventSkip + " ";
-                        }
-                        if (newEventInterval == 'D') {
-                            str = str + "Day";
-                        } else if (newEventInterval == 'W') {
-                            str = str + "Week";
-                        } else if (newEventInterval == 'M') {
-                            str = str + "Month";
-                        } else {
-                            str = str + "Year";
-                        }
-                    } else {
-                        // Relative event
-                        str = "<p>" + escapeHtml(newEventName) + " starts on " + escapeHtml(newEventStartDate) + ", and occurs on the ";
-                        if (newEventPosn == 1) {
-                            str = str + "First ";
-                        } else if (newEventPosn == 2) {
-                            str = str + "Second ";
-                        } else if (newEventPosn == 3) {
-                            str = str + "Third ";
-                        } else if (newEventPosn == 4) {
-                            str = str + "Fourth ";
-                        } else {
-                            str = str + "Last ";
-                        }
-                        if (newEventDayOfWeek == "N") {
-                            str = str + "Sunday";
-                        } else if (newEventDayOfWeek == "M") {
-                            str = str + "Monday";
-                        } else if (newEventDayOfWeek == "T") {
-                            str = str + "Tuesday";
-                        } else if (newEventDayOfWeek == "W") {
-                            str = str + "Wednesday";
-                        } else if (newEventDayOfWeek == "R") {
-                            str = str + "Thursday";
-                        } else if (newEventDayOfWeek == "F") {
-                            str = str + "Friday";
-                        } else if (newEventDayOfWeek == "S") {
-                            str = str + "Saturday";
-                        }
-                        str = str + " of every ";
-                        if (newEventSkip == 2) {
-                            str = str + "other ";
-                        } else if (newEventSkip > 2) {
-                            str = str + newEventSkip;
-                        }
-                        if (newEventInterval == "JAN") {
-                            str += "January";
-                        } else if (newEventInterval == "FEB") {
-                            str += "February";
-                        } else if (newEventInterval == "MAR") {
-                            str += "March";
-                        } else if (newEventInterval == "APR") {
-                            str += "April";
-                        } else if (newEventInterval == "MAY") {
-                            str += "May";
-                        } else if (newEventInterval == "JUN") {
-                            str += "June";
-                        } else if (newEventInterval == "JUL") {
-                            str += "July";
-                        } else if (newEventInterval == "AUG") {
-                            str += "August";
-                        } else if (newEventInterval == "SEP") {
-                            str += "September";
-                        } else if (newEventInterval == "OCT") {
-                            str += "October";
-                        } else if (newEventInterval == "NOV") {
-                            str += "November";
-                        } else if (newEventInterval == "DEC") {
-                            str += "December";
-                        } else {
-                            str += "Month";
-                        }
-                    }
-                    if (newEventEndDate != null) {
-                        str = str + ". It stops on " + escapeHtml(newEventEndDate) + ".";
-                    } else {
-                        str = str + ".";
-                    }
-                    str = str + "</p>";
-                    str = $(str);
-                    desc.append(str);
-
-                    if (newEventBlackouts.length > 0) {
-                        var intro = "<p>Additionally, this event will <em><strong>not</strong></em> occur on any of the following dates:</p>";
-                        var blackouts = $("<ul></ul>");
-                        for (var i = 0; i < newEventBlackouts; i++) {
-                            blackouts.append($("<li>" + escapeHtml(newEventBlackouts[i]) + "</li>"));
-                        }
-                        desc.append(intro);
-                        desc.append(blackouts);
-                    }
-                } else {
-                    // Single date:
-                    str = $("<p>" + escapeHtml(newEventName) + " occurs on " + escapeHtml(newEventStartDate) + ".</p>");
-                    desc.append(str);
-                }
-                desc.append($("<br /><p>It's viewable by the following groups:</p>"));
-                var groups = $("<ul></ul>");
-                for (var i = 0; i < newEventGroupNames; i++) {
-                    groups.append("<li>" + escapeHtml(newEventGroupNames[i]) + "</li>");
-                }
-                desc.append(groups);
                 // unhide button
+                fillDescription();
                 $('#newEventSubmit').removeClass("hidden");
                 break;
         }
     });
-
-    $('#newEventName').keypress(function () {
-        if ($('#newEventName').val() && $('#newEventName').val().length <= 32 && $('#newEventName').val().trim()) {
-            $('#newEventNext').removeAttr('disabled');
-        } else {
-            $('#newEventNext').attr('disabled', true);
-        }
-    });
-    $('#newEventStartDate').change(function () {
-        if ($('#newEventStartDate').val()) {
-            $('#newEventNext').removeAttr('disabled');
-        } else {
-            $('#newEventNext').attr('disabled', true);
-        }
-    });
+    function dispatch(next) {
+        newEventSteps.push(next);
+        $('#newEvent' + newEventSteps[length - 2]).fadeOut(500, function () {
+            $('#newEvent' + next).fadeIn(500);
+        });
+    }
+    $('#newEventName').keypress(validateName);
+    $('#newEventStartDate').change(validateStartDate);
     $('#newEventRecurYes').click(function () {
         $('#newEventRecurYes').removeClass('btn-info btn-danger').addClass('btn-success').html("Yes <i class=\"fa fa-check\"></i>");
         $('#newEventRecurNo').removeClass('btn-info btn-success').addClass('btn-info').html("No");
@@ -667,6 +505,13 @@ $(document).ready(function () {
             $('#newEventNext').removeAttr('disabled');
         }
     });
+    $('#newExactSkipEvery').keypress(function () {
+        if ($('#newExactSkipEvery').val() && $('#newExactSkipEvery').val() > 0) {
+            $('#newEventNext').removeAttr('disabled');
+        } else {
+            $('#newEventNext').attr('disabled', true);
+        }
+    });
     $('#newRelativeSkip').change(function () {
         if ($('#newRelativeSkip').val() == 'n') {
             $('#newRelativeSkipEvery').removeClass("hidden");
@@ -676,6 +521,247 @@ $(document).ready(function () {
             $('#newEventNext').removeAttr('disabled');
         }
     });
+    function validateName() {
+        if ($('#newEventName').val() && $('#newEventName').val().length <= 32 && $('#newEventName').val().trim()) {
+            return isCorrect();
+        } else {
+            $('#newEventNext').attr('disabled', true);
+            return false;
+        }
+    }
+    function validateStartDate() {
+        if ($('#newEventStartDate').val()) {
+            return isCorrect();
+        } else {
+            $('#newEventNext').attr('disabled', true);
+            return false;
+        }
+    }
+    function validateEndDate() {
+        if ($('#newEventEndDate').val()) {
+            // check if less than start
+            if (new Date(newEventStartDate) < new Date(newEventEndDate)) {
+                // OK
+                return isCorrect();
+            } else {
+                // show error
+                $('#newEventMessage').text("Please choose an end date that is after your starting date").addClass('step-error');
+                $('#newEventMessages').removeClass("hidden");
+                $('#newEventNext').attr('disabled', true);
+                return false;
+            }
+        } else {
+            // null so fine
+            return isCorrect();
+        }
+    }
+    function isCorrect() {
+        $('#newEventNext').removeAttr('disabled');
+        $('#newEventMessages').addClass("hidden");
+        $('#newEventMessage').removeClass("step-danger step-info");
+        return true;
+    }
+    function createEvent() {
+        // Post to the serve all the date details:
+        if (!newEventRecurs) {
+            // no recurrence, so just send:
+            // Name
+            // Date
+            // Groups
+            $.post(".", {
+                action: "Create",
+                type: "Event",
+                name: newEventName,
+                startDate: newEventStartDate
+            }, createGroups);
+        } else {
+            // figure out type of recurrence and engage:
+            if (newEventRecurType == "exact") {
+                // post new exact event:
+                // Name
+                // StartDate
+                // SkipEvery
+                // Interval
+                // Then add blackouts, etc?
+                $.post(".", {
+                    action: "Create",
+                    type: "Event",
+                    name: newEventName,
+                    startDate: newEventStartDate,
+                    endDate: newEventEndDate,
+                    recurType: newEventRecurType,
+                    skipEvery: newEventSkip,
+                    interval: newEventInterval
+                }, createBlackouts);
+            } else {
+                $.post("." {
+                    action: "Create",
+                    type: "Event",
+                    name: newEventName,
+                    startDate: newEventStartDate,
+                    endDate: newEventEndDate,
+                    recurType: newEventRecurType,
+                    skipEvery: newEventSkip,
+                    interval: newEventInterval,
+                    posn: newEventPosn,
+                    dayOfWeek: newEventDayOfWeek
+                }, createBlackouts);
+            }
+        }
+    }
+    function createGroups(eid) {
+        for (var i = 0; i < newEventGroupIds.length; i++) {
+            $.post(".", {
+                action: "Change",
+                type: "Event",
+                itemId: eid,
+                item: "addGroup",
+                groupId: newEventGroupIds[i]
+            });
+        }
+        var eventHolder = $('#events');
+
+        // Add record of event to event lines
+        var row = $('<tr></tr');
+        row.attr('data-event-id', eid);
+        var closer = $('<span></span>');
+        closer.addClass('event-closer');
+        closer.attr('data-event-id', eid);
+        row.append($('<td></td>').append(closer));
+        var eName = $('<h3></h3>');
+        eName.text(newEventName);
+        row.append($('<td></td>').append(eName));
+        eventHolder.append(row);
+    }
+
+    function createBlackouts(eid) {
+        // Add blackouts
+        for (var i = 0; i < newEventBlackouts.length; i++) {
+            $.post(".", {
+                action: "Change",
+                type: "Event",
+                itemId: eid,
+                item: "addBlackout",
+                blackout: newEventBlackouts[i]
+            });
+        }
+        createGroups(eid);
+    }
+    function fillDescription() {
+        // Fill Description div:
+        var desc = $('#newEventDescription');
+        var str;
+        if (newEventRecurs) {
+            // see if exact or relative:
+            if (newEventRecurType == "exact") {
+                str = "<p>" + escapeHtml(newEventName) + " starts on " + escapeHtml(newEventStartDate) + ", and occurs every ";
+                if (newEventSkip == 2) {
+                    var str = str + "other ";
+                } else if (newEventSkip > 2) {
+                    var str = str + newEventSkip + " ";
+                }
+                if (newEventInterval == 'D') {
+                    str = str + "Day";
+                } else if (newEventInterval == 'W') {
+                    str = str + "Week";
+                } else if (newEventInterval == 'M') {
+                    str = str + "Month";
+                } else {
+                    str = str + "Year";
+                }
+            } else {
+                // Relative event
+                str = "<p>" + escapeHtml(newEventName) + " starts on " + escapeHtml(newEventStartDate) + ", and occurs on the ";
+                if (newEventPosn == 1) {
+                    str = str + "First ";
+                } else if (newEventPosn == 2) {
+                    str = str + "Second ";
+                } else if (newEventPosn == 3) {
+                    str = str + "Third ";
+                } else if (newEventPosn == 4) {
+                    str = str + "Fourth ";
+                } else {
+                    str = str + "Last ";
+                }
+                if (newEventDayOfWeek == "N") {
+                    str = str + "Sunday";
+                } else if (newEventDayOfWeek == "M") {
+                    str = str + "Monday";
+                } else if (newEventDayOfWeek == "T") {
+                    str = str + "Tuesday";
+                } else if (newEventDayOfWeek == "W") {
+                    str = str + "Wednesday";
+                } else if (newEventDayOfWeek == "R") {
+                    str = str + "Thursday";
+                } else if (newEventDayOfWeek == "F") {
+                    str = str + "Friday";
+                } else if (newEventDayOfWeek == "S") {
+                    str = str + "Saturday";
+                }
+                str = str + " of every ";
+                if (newEventSkip == 2) {
+                    str = str + "other ";
+                } else if (newEventSkip > 2) {
+                    str = str + newEventSkip;
+                }
+                if (newEventInterval == "JAN") {
+                    str += "January";
+                } else if (newEventInterval == "FEB") {
+                    str += "February";
+                } else if (newEventInterval == "MAR") {
+                    str += "March";
+                } else if (newEventInterval == "APR") {
+                    str += "April";
+                } else if (newEventInterval == "MAY") {
+                    str += "May";
+                } else if (newEventInterval == "JUN") {
+                    str += "June";
+                } else if (newEventInterval == "JUL") {
+                    str += "July";
+                } else if (newEventInterval == "AUG") {
+                    str += "August";
+                } else if (newEventInterval == "SEP") {
+                    str += "September";
+                } else if (newEventInterval == "OCT") {
+                    str += "October";
+                } else if (newEventInterval == "NOV") {
+                    str += "November";
+                } else if (newEventInterval == "DEC") {
+                    str += "December";
+                } else {
+                    str += "Month";
+                }
+            }
+            if (newEventEndDate != null) {
+                str = str + ". It stops on " + escapeHtml(newEventEndDate) + ".";
+            } else {
+                str = str + ".";
+            }
+            str = str + "</p>";
+            str = $(str);
+            desc.append(str);
+
+            if (newEventBlackouts.length > 0) {
+                var intro = $("<p>Additionally, this event will <em><strong>not</strong></em> occur on any of the following dates:</p>");
+                var blackouts = $("<ul></ul>");
+                for (var i = 0; i < newEventBlackouts; i++) {
+                    blackouts.append($("<li>" + escapeHtml(newEventBlackouts[i]) + "</li>"));
+                }
+                desc.append(intro);
+                desc.append(blackouts);
+            }
+        } else {
+            // Single date:
+            str = $("<p>" + escapeHtml(newEventName) + " occurs on " + escapeHtml(newEventStartDate) + ".</p>");
+            desc.append(str);
+        }
+        desc.append($("<br /><p>It's viewable by the following groups:</p>"));
+        var groups = $("<ul></ul>");
+        for (var i = 0; i < newEventGroupNames; i++) {
+            groups.append("<li>" + escapeHtml(newEventGroupNames[i]) + "</li>");
+        }
+        desc.append(groups);
+    }
 });
 $(document).ready(function () {
     $('#uploadNewImg').click(function () {

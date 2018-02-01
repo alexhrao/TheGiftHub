@@ -256,13 +256,42 @@ namespace GiftServer
                                                     group.Create();
                                                     return group.GroupId.ToString();
                                                 }
-                                                catch (Exception)
+                                                catch (Exception e)
                                                 {
-                                                    // What do we do?
+                                                    Warnings.Add(new ExecutionErrorWarning(e));
                                                     return "0";
                                                 }
                                             case "Event":
-                                                return "0";
+                                                try
+                                                {
+                                                    Event e = null;
+                                                    RulesEngine rules = null;
+                                                    // If not recurring, then RulesEngine is null:
+                                                    if (_dict["recurType"] != "")
+                                                    {
+                                                        // Figure out type of recur:
+                                                        if (_dict["recurType"] == "exact")
+                                                        {
+                                                            rules = new ExactEvent(_dict["interval"], Convert.ToInt32(_dict["skipEvery"]));
+                                                        }
+                                                        else
+                                                        {
+                                                            rules = new RelativeEvent(_dict["interval"], Convert.ToInt32(_dict["skipEvery"]), _dict["dayOfWeek"], Convert.ToInt32(_dict["posn"]));
+                                                        }
+                                                    }
+                                                    e = new Event(_dict["name"], DateTime.Parse(_dict["startDate"]), _user, rules);
+                                                    if (_dict["endDate"] != "")
+                                                    {
+                                                        e.EndDate = DateTime.Parse(_dict["endDate"]);
+                                                    }
+                                                    e.Create();
+                                                    return e.EventId.ToString();
+                                                }
+                                                catch (Exception e)
+                                                {
+                                                    Warnings.Add(new ExecutionErrorWarning(e));
+                                                    return "0";
+                                                }
                                             case "Gift":
                                                 try
                                                 {
@@ -757,20 +786,48 @@ namespace GiftServer
                 preferences.Update();
                 return "200";
             }
-            private string Update(Event evnt)
+            private string Update(Event e)
             {
                 switch (_dict["item"])
                 {
                     case "name":
+                        e.Name = _dict["name"].Trim() != "" ? _dict["name"] : throw new ArgumentException("invalid name");
                         break;
+                    case "startDate":
+                        e.StartDate = DateTime.Parse(_dict["startDate"]);
+                        break;
+                    case "endDate":
+                        e.EndDate = DateTime.Parse(_dict["endDate"]);
+                        break;
+                    case "addGroup":
+                        {
+                            Group group = new Group(Convert.ToUInt64(_dict["groupId"]));
+                            group.Add(e);
+                            return "200";
+                        }
+                    case "removeGroup":
+                        {
+                            Group group = new Group(Convert.ToUInt64(_dict["groupId"]));
+                            group.Remove(e);
+                            return "200";
+                        }
+                    case "addBlackout":
+                        {
+                            Blackout blackout = new Blackout(e, DateTime.Parse(_dict["blackout"]));
+                            break;
+                        }
+                    case "removeBlackout":
+                        {
+                            break;
+                        }
                     case "delete":
-                        evnt.Delete();
+                        e.Delete();
                         return "200";
                     default:
                         _response.StatusCode = 404;
                         return "404";
                 }
-                evnt.Update();
+                e.Update();
                 return "200";
             }
             private string Update(Group group)

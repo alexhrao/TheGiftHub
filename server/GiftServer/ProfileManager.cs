@@ -73,7 +73,7 @@ namespace GiftServer
                 HtmlNode events = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" events \")]");
                 foreach (Event evnt in viewer.GetEvents(target))
                 {
-                    HtmlNode eventEntry = HtmlNode.CreateNode("<tr id=\"event" + evnt.EventId + "\"><td><h3><span id=\"eventCloser" + evnt.EventId + "\"></span></h3></td>"
+                    HtmlNode eventEntry = HtmlNode.CreateNode("<tr data-event-id=\"" + evnt.EventId + "\"><td><span class=\"event-closer\" data-event-id=\"" + evnt.EventId + "\"></span></td>"
                                                             + "<td class=\"event-name\"><h3>" + HttpUtility.HtmlEncode(evnt.Name) + " </h3></td></tr>");
                     events.AppendChild(eventEntry);
                 }
@@ -81,7 +81,7 @@ namespace GiftServer
                 HtmlNode groups = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" groups \")]");
                 foreach (Group group in viewer.GetGroups(target))
                 {
-                    HtmlNode groupEntry = HtmlNode.CreateNode("<tr id=\"group" + group.GroupId + "\"><td><h3><span id=\"groupCloser" + group.GroupId + "\"></span></h3></td>"
+                    HtmlNode groupEntry = HtmlNode.CreateNode("<tr data-group-id=\"" + group.GroupId + "\"><td><span class=\"group-closer\" data-group-id=\"" + group.GroupId + "\"></span></td>"
                                                + "<td class=\"group-name\"><h3>" + HttpUtility.HtmlEncode(group.Name) + " </h3></td></tr>");
                     groups.AppendChild(groupEntry);
                 }

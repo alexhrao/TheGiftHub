@@ -185,6 +185,10 @@ namespace GiftServer
                 StartDate = startDate;
                 User = owner;
                 Rules = engine;
+                if (Rules != null)
+                {
+                    Rules.Event = this;
+                }
             }
             /// <summary>
             /// Get the closest occurrence that happens in the future

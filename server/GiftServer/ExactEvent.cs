@@ -169,12 +169,10 @@ namespace GiftServer
             /// <summary>
             /// Create a new ExactEvents Ruleset
             /// </summary>
-            /// <param name="e">The event this is bound to</param>
             /// <param name="interval">The interval</param>
             /// <param name="skip">The SkipEvery</param>
-            public ExactEvent(Event e, string interval, int skip)
+            public ExactEvent(string interval, int skip)
             {
-                Event = e;
                 TimeInterval = interval;
                 SkipEvery = skip;
             }
