@@ -620,7 +620,7 @@ $(document).ready(function () {
                     interval: newEventInterval
                 }, createBlackouts);
             } else {
-                $.post("." {
+                $.post(".", {
                     action: "Create",
                     type: "Event",
                     name: newEventName,
