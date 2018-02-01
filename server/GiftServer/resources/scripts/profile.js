@@ -521,6 +521,32 @@ $(document).ready(function () {
             $('#newEventNext').removeAttr('disabled');
         }
     });
+    $('.event-blackout').change(function () {
+        // Check value of last one, if not empty, add one:
+        var lastElem = $('.event-blackout').last();
+        if (lastElem.val()) {
+            var newRow = $('<div></div>');
+            newRow.addClass("text-center row");
+            var newBlack = $('<input />');
+            newBlack.addClass('form-control step-control event-blackout');
+            newBlack.attr('type', 'date');
+            newBlack.attr('placeholder', 'Blackout Date');
+            newRow.append(newBlack);
+            $('#newEventBlackouts').append(newRow);
+        } else {
+            // Now check second to last. If valueless, delete last
+            if ($('.event-blackout:nth-last-child(2)').val()) {
+                // Delete last row
+                lastElem.parent.remove();
+            }
+        }
+        // Loop through all BUT the last two, delete if empty
+        $('.event-blackout:nth-last-child(n+3)').each(function (index) {
+            if (!$(this).val() && !$(this).is(":focus")) {
+
+            }
+        });
+    });
     function validateName() {
         if ($('#newEventName').val() && $('#newEventName').val().length <= 32 && $('#newEventName').val().trim()) {
             return isCorrect();
