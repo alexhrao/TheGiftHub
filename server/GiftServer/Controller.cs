@@ -284,6 +284,10 @@ namespace GiftServer
                                                     {
                                                         e.EndDate = DateTime.Parse(_dict["endDate"]);
                                                     }
+                                                    else
+                                                    {
+                                                        e.EndDate = null;
+                                                    }
                                                     e.Create();
                                                     return e.EventId.ToString();
                                                 }
