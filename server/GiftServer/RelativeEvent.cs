@@ -37,56 +37,79 @@ namespace GiftServer
                 private set;
             } = 0;
 
-            private char timeInterval = '\0';
+            private string timeInterval = "";
             /// <summary>
-            /// The Time Interval for this event
+            /// The month this occurs in - blank if monthly
             /// </summary>
             /// <remarks>
-            /// This method will accept the following values:
+            /// This method will always return the three letter month code in all capitals (i.e., JAN, FEB, etc.).
             /// 
-            /// - d, day, or daily
-            /// - w, week, or weekly
-            /// - m, month, or monthly
-            /// - y, year, or yearly
-            /// 
-            /// In any case, but will return a single character.
+            /// You can either give it a 3 letter code or the full name in any case.
             /// </remarks>
             public string TimeInterval
             {
                 get
                 {
-                    return timeInterval.ToString();
+                    return timeInterval;
                 }
                 set
                 {
-                    switch (value.ToLower())
+                    // Switch the month values
+                    switch (value)
                     {
-                        case "d":
-                        case "day":
-                        case "daily":
-                            timeInterval = 'D';
+                        case "jan":
+                        case "january":
+                            timeInterval = "JAN";
                             break;
-                        case "w":
-                        case "week":
-                        case "weekly":
-                            timeInterval = 'W';
+                        case "feb":
+                        case "february":
+                            timeInterval = "FEB";
                             break;
-                        case "m":
-                        case "month":
-                        case "monthly":
-                            timeInterval = 'M';
+                        case "mar":
+                        case "march":
+                            timeInterval = "MAR";
                             break;
-                        case "y":
-                        case "year":
-                        case "yearly":
-                            timeInterval = 'Y';
+                        case "apr":
+                        case "april":
+                            timeInterval = "APR";
+                            break;
+                        case "may":
+                            timeInterval = "MAY";
+                            break;
+                        case "jun":
+                        case "june":
+                            timeInterval = "JUN";
+                            break;
+                        case "jul":
+                        case "july":
+                            timeInterval = "JUL";
+                            break;
+                        case "aug":
+                        case "august":
+                            timeInterval = "AUG";
+                            break;
+                        case "sep":
+                        case "september":
+                            timeInterval = "SEP";
+                            break;
+                        case "oct":
+                        case "october":
+                            timeInterval = "OCT";
+                            break;
+                        case "nov":
+                        case "november":
+                            timeInterval = "NOV";
+                            break;
+                        case "dec":
+                        case "december":
+                            timeInterval = "DEC";
                             break;
                         default:
-                            throw new ArgumentException(value);
+                            timeInterval = "";
+                            break;
                     }
                 }
             }
-
             private int skipEvery = 0;
             /// <summary>
             /// Skip every x occurrences. Cannot be 0.
@@ -248,7 +271,7 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT RelativeEventID, EventTimeInterval, EventSkipEvery, EventDayOfWeek, "
-                                        + "EventPosn FROM relative_events WHERE RelativeEventID = @rid;";
+                                        + "EventPosn, EventMonth FROM relative_events WHERE RelativeEventID = @rid;";
                         cmd.Parameters.AddWithValue("@rid", id);
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
@@ -273,7 +296,7 @@ namespace GiftServer
             /// <summary>
             /// Create a new RelativeEvent ruleset
             /// </summary>
-            /// <param name="interval">The interval to use</param>
+            /// <param name="interval">The interval to use - A Month for a specific month or empty for occurring monthly</param>
             /// <param name="skip">The skip to use</param>
             /// <param name="day">The day of the week to use</param>
             /// <param name="posn">The position within the month to use</param>
@@ -288,16 +311,50 @@ namespace GiftServer
             private DateTime Increment(DateTime currVal)
             {
                 DateTime incremented = currVal;
+                // If a month, move a year into the first day of that month:
                 switch (timeInterval)
                 {
-                    case 'M':
-                        incremented = incremented.AddMonths(SkipEvery);
+                    case "JAN":
+                        incremented = new DateTime(currVal.Year + 1, 1, 1);
                         break;
-                    case 'Y':
-                        incremented = incremented.AddYears(SkipEvery);
+                    case "FEB":
+                        incremented = new DateTime(currVal.Year + 1, 2, 1);
+                        break;
+                    case "MAR":
+                        incremented = new DateTime(currVal.Year + 1, 3, 1);
+                        break;
+                    case "APR":
+                        incremented = new DateTime(currVal.Year + 1, 4, 1);
+                        break;
+                    case "MAY":
+                        incremented = new DateTime(currVal.Year + 1, 5, 1);
+                        break;
+                    case "JUN":
+                        incremented = new DateTime(currVal.Year + 1, 6, 1);
+                        break;
+                    case "JUL":
+                        incremented = new DateTime(currVal.Year + 1, 7, 1);
+                        break;
+                    case "AUG":
+                        incremented = new DateTime(currVal.Year + 1, 8, 1);
+                        break;
+                    case "SEP":
+                        incremented = new DateTime(currVal.Year + 1, 9, 1);
+                        break;
+                    case "OCT":
+                        incremented = new DateTime(currVal.Year + 1, 10, 1);
+                        break;
+                    case "NOV":
+                        incremented = new DateTime(currVal.Year + 1, 11, 1);
+                        break;
+                    case "DEC":
+                        incremented = new DateTime(currVal.Year + 1, 12, 1);
                         break;
                     default:
+                        incremented = incremented.AddMonths(1);
+                        incremented = new DateTime(incremented.Year, incremented.Month, 1);
                         break;
+                        // Occurs monthly
                 }
                 incremented = new DateTime(incremented.Year, incremented.Month, 1);
                 // loop until we reach the posn of that day. Unless it's 5

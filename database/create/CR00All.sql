@@ -116,7 +116,7 @@ ALTER TABLE gift_registry_db.exact_events
 CREATE TABLE gift_registry_db.relative_events (
 	RelativeEventID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     EventID INT NOT NULL UNIQUE,
-    EventTimeInterval CHAR(1) NOT NULL,
+    EventTimeInterval CHAR(3) NOT NULL,
     EventSkipEvery INT NOT NULL, # ONLY POSITIVE
     EventDayOfWeek CHAR(1) NOT NULL,
     EventPosn INT NOT NULL # ONLY 1-5

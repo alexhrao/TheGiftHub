@@ -76,11 +76,11 @@ INSERT INTO exact_events (EventID, EventTimeInterval, EventSkipEvery)
     
 -- Create the Relative Event Rule
 INSERT INTO relative_events (EventID, EventTimeInterval, EventSkipEvery, EventDayOfWeek, EventPosn)
-	VALUES (2, 'Y', 1, 'M', 2);
+	VALUES (2, 'MAR', 1, 'M', 2);
 INSERT INTO relative_events (EventID, EventTimeInterval, EventSkipEvery, EventDayOfWeek, EventPosn)
-	VALUES (6, 'M', 2, 'S', 3);
+	VALUES (6, NULL, 2, 'S', 3);
 INSERT INTO relative_events (EventID, EventTimeInterval, EventSkipEvery, EventDayOfWeek, EventPosn)
-	VALUES (8, 'M', 1, 'T', 5);
+	VALUES (8, NULL, 1, 'T', 5);
 
 -- Create Blackout Dates
 INSERT INTO blackout_events (EventID, EventBlackoutDate)
