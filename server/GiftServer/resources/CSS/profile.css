@@ -92,3 +92,18 @@ table {
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
+.step-content {
+    margin: auto;
+    width: 75%;
+}
+.step-button {
+    margin: auto;
+}
+.step-header {
+    font-size: 85%;
+}
+.event-name-placeholder {
+    
+    word-wrap: break-word;
+}

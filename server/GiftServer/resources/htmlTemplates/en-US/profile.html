@@ -244,7 +244,9 @@
                                 <h2>What do you want to call your new event?</h2>
                             </div>
                             <div class="row text-center step-content">
-                                <input id="newEventName" class="form-control step-control" type="text" placeholder="Event Name" />
+                                <div class="col-xs-12 text-center">
+                                    <input id="newEventName" class="form-control step-control" type="text" placeholder="Event Name" />
+                                </div>
                             </div>
                         </div>
                         <div id="newEvent1" class="row text-center step collapse">
@@ -261,7 +263,7 @@
                             </div>
                             <div class="row text-center step-content">
                                 <div class="col-md-4">
-                                    <button id="newEventNoRecur" class="btn btn-info step-button btn-block" type="button">
+                                    <button id="newEventRecurNo" class="btn btn-info step-button btn-block" type="button">
                                         No
                                     </button>
                                 </div>
@@ -269,7 +271,7 @@
 
                                 </div>
                                 <div class="col-md-4">
-                                    <button id="newEventRecurs" class="btn btn-info step-button btn-block" type="button">
+                                    <button id="newEventRecurYes" class="btn btn-info step-button btn-block" type="button">
                                         Yes
                                     </button>
                                 </div>
@@ -277,22 +279,32 @@
                         </div>
                         <div id="newEvent3" class="row text-center step collapse">
                             <div class="row text-center step-header">
-                                <h2>Gotcha. What kind of recurrence do we have here?</h2>
+                                <h2>Gotcha. What kind of recurrence?</h2>
                             </div>
                             <div class="row text-center step-content">
                                 <div class="row text-center">
                                     <div class="col-md-4 text-center">
                                         <!-- TODO: Add Explanations -->
-                                        <button id="newEventExact" class="btn btn-info step-button btn-block" type="button">
-                                            "Exact" Event
+                                        <button id="newEventExact" class="btn btn-info step-button btn-block text-center" type="button">
+                                            Exact
                                         </button>
+                                    </div>
+                                    <div class="col-md-8 text-center">
+                                        <p>
+                                            Exact Events are ones that occur at a regular time interval - think "Every January 3rd," or "Every other week starting from today"
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4 text-center">
-                                        <button id="newEventRelative" class="btn btn-info step-button btn-block" type="button">
-                                            "Relative" Event
+                                        <button id="newEventRelative" class="btn btn-info step-button btn-block text-center" type="button">
+                                            Relative
                                         </button>
+                                    </div>
+                                    <div class="col-md-8 text-center">
+                                        <p>
+                                            Relative Events are ones that occur at variable time intervals - think "The third Monday of every month," or "The last Thursday of every three years"
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -300,7 +312,7 @@
                         <!-- This (And Next) Step need to possibly be reorganized, though all controls are needed -->
                         <div id="newEvent4" class="row text-center step collapse">
                             <div class="row text-center step-header">
-                                <h2>Sweet! On what timescale does <span class="event-name-placeholder"></span> repeat?</h2>
+                                <h2>Sweet! On what timescale?</h2>
                             </div>
                             <div class="row text-center step-content">
                                 <div class="col-md-6">
@@ -309,7 +321,7 @@
                                         <option value="2">Every Other</option>
                                         <option value="n">Every n</option>
                                     </select>
-                                    <input id="newExactSkipEvery" class="form-control step-control hidden" type="number" />
+                                    <input id="newExactSkipEvery" class="form-control step-control hidden" type="number" placeholder="3" />
                                 </div>
                                 <div class="col-md-6">
                                     <select id="newExactInterval" class="form-control step-control">
@@ -362,7 +374,7 @@
                                         <option value="2">Every Other</option>
                                         <option value="n">Every n</option>
                                     </select>
-                                    <input id="newRelativeSkipEvery" class="form-control step-control hidden" type="number" />
+                                    <input id="newRelativeSkipEvery" class="form-control step-control hidden" type="number" placeholder="3" />
                                 </div>
                                 <div class="col-md-3">
                                     <select id="newRelativeInterval" class="form-control step-control">
@@ -458,6 +470,9 @@
                             <div class="col-sm-4">
                                 <button id="newEventNext" type="button" class="btn btn-info text-center" disabled>
                                     <i class="fa fa-angle-right"></i>
+                                </button>
+                                <button id="newEventSubmit" type="button" class="btn btn-success text-center hidden">
+                                    Submit <i class="fa fa-send-o"></i>
                                 </button>
                             </div>
                         </div>
