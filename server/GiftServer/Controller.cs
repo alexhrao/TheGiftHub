@@ -804,7 +804,7 @@ namespace GiftServer
                         e.EndDate = DateTime.Parse(_dict["endDate"]);
                         break;
                     case "addGroup":
-                        new Group(Convert.ToUInt64(_dict["groupId"])).Remove(e);
+                        new Group(Convert.ToUInt64(_dict["groupId"])).Add(e);
                         return "200";
                     case "removeGroup":
                         new Group(Convert.ToUInt64(_dict["groupId"])).Remove(e);
