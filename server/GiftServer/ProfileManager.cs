@@ -75,15 +75,10 @@ namespace GiftServer
                 {
                     HtmlNode eventRow = HtmlNode.CreateNode("<tr></tr>");
                     eventRow.Attributes.Add("data-event-id", evnt.EventId.ToString());
-                    HtmlNode eventCloser = HtmlNode.CreateNode("<span></span>");
-                    eventCloser.AddClass("event-closer");
-                    eventCloser.Attributes.Add("data-event-id", evnt.EventId.ToString());
-                    HtmlNode eventCloserTd = HtmlNode.CreateNode("<td></td>");
-                    eventCloserTd.AppendChild(eventCloser);
                     HtmlNode eventName = HtmlNode.CreateNode("<td></td>");
                     eventName.AddClass("event-name");
                     eventName.AppendChild(HtmlNode.CreateNode("<h3>" + HttpUtility.HtmlEncode(evnt.Name) + "</h3>"));
-                    eventRow.AppendChild(eventCloserTd);
+                    eventRow.AppendChild(HtmlNode.CreateNode("<td></td>"));
                     eventRow.AppendChild(eventName);
                     
                     events.AppendChild(eventRow);
@@ -94,15 +89,10 @@ namespace GiftServer
                 {
                     HtmlNode groupRow = HtmlNode.CreateNode("<tr></tr>");
                     groupRow.Attributes.Add("data-group-id", group.GroupId.ToString());
-                    HtmlNode groupCloser = HtmlNode.CreateNode("<span></span>");
-                    groupCloser.AddClass("group-closer");
-                    groupCloser.Attributes.Add("data-group-id", group.GroupId.ToString());
-                    HtmlNode groupCloserTd = HtmlNode.CreateNode("<td></td>");
-                    groupCloserTd.AppendChild(groupCloser);
                     HtmlNode groupName = HtmlNode.CreateNode("<td></td>");
                     groupName.AddClass("group-name");
                     groupName.AppendChild(HtmlNode.CreateNode("<h3>" + HttpUtility.HtmlEncode(group.Name) + "</h3>"));
-                    groupRow.AppendChild(groupCloserTd);
+                    groupRow.AppendChild(HtmlNode.CreateNode("<td></td>"));
                     groupRow.AppendChild(groupName);
                     groups.AppendChild(groupRow);
                 }
@@ -192,7 +182,7 @@ namespace GiftServer
                     // Checkmark
                     facebookLoginStatus.RemoveAllChildren();
                     HtmlNode checkMark = HtmlNode.CreateNode("<span></span>");
-                    checkMark.AddClass("fa fa-close oauth-confirmed");
+                    checkMark.AddClass("fas fa-times oauth-confirmed");
                     checkMark.Id = "facebookConfirmed";
                     facebookLoginStatus.RemoveClass("text-center");
                     facebookLoginStatus.AppendChild(checkMark);
@@ -204,7 +194,7 @@ namespace GiftServer
                     // Checkmark
                     googleLoginStatus.RemoveAllChildren();
                     HtmlNode checkMark = HtmlNode.CreateNode("<span></span>");
-                    checkMark.AddClass("fa fa-close oauth-confirmed");
+                    checkMark.AddClass("fas fa-times oauth-confirmed");
                     checkMark.Id = "googleConfirmed";
                     googleLoginStatus.RemoveClass("text-center");
                     googleLoginStatus.AppendChild(checkMark);
@@ -250,8 +240,8 @@ namespace GiftServer
                 {
                     HtmlNode eventRow = HtmlNode.CreateNode("<tr></tr>");
                     eventRow.Attributes.Add("data-event-id", evnt.EventId.ToString());
-                    HtmlNode eventCloser = HtmlNode.CreateNode("<span></span>");
-                    eventCloser.AddClass("event-closer fa fa-close");
+                    HtmlNode eventCloser = HtmlNode.CreateNode("<i></i>");
+                    eventCloser.AddClass("event-closer fas fa-times");
                     eventCloser.Attributes.Add("data-event-id", evnt.EventId.ToString());
                     HtmlNode eventCloserTd = HtmlNode.CreateNode("<td></td>");
                     eventCloserTd.AppendChild(eventCloser);
@@ -270,7 +260,7 @@ namespace GiftServer
                     addRow.Attributes.Add("data-toggle", "modal");
                     addRow.Attributes.Add("href", "#addEvent");
                     HtmlNode adder = HtmlNode.CreateNode("<span></span>");
-                    adder.AddClass("fa fa-plus");
+                    adder.AddClass("fas fa-plus");
                     HtmlNode adderTd = HtmlNode.CreateNode("<td></td>");
                     adderTd.AppendChild(HtmlNode.CreateNode("<h3></h3>"));
                     adderTd.FirstChild.AppendChild(adder);
@@ -284,8 +274,8 @@ namespace GiftServer
                 {
                     HtmlNode groupRow = HtmlNode.CreateNode("<tr></tr>");
                     groupRow.Attributes.Add("data-group-id", group.GroupId.ToString());
-                    HtmlNode groupCloser = HtmlNode.CreateNode("<span></span>");
-                    groupCloser.AddClass("group-closer fa fa-close");
+                    HtmlNode groupCloser = HtmlNode.CreateNode("<i></i>");
+                    groupCloser.AddClass("group-closer fas fa-times");
                     groupCloser.Attributes.Add("data-group-id", group.GroupId.ToString());
                     HtmlNode groupCloserTd = HtmlNode.CreateNode("<td></td>");
                     groupCloserTd.AppendChild(groupCloser);
@@ -303,7 +293,7 @@ namespace GiftServer
                     addRow.Attributes.Add("data-toggle", "modal");
                     addRow.Attributes.Add("href", "#addGroup");
                     HtmlNode adder = HtmlNode.CreateNode("<span></span>");
-                    adder.AddClass("fa fa-plus");
+                    adder.AddClass("fas fa-plus");
                     HtmlNode adderTd = HtmlNode.CreateNode("<td></td>");
                     adderTd.AppendChild(HtmlNode.CreateNode("<h3></h3>"));
                     adderTd.FirstChild.AppendChild(adder);

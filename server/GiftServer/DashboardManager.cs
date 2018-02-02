@@ -93,7 +93,7 @@ namespace GiftServer
                         counter++;
                     }
                     HtmlNode downArrow = HtmlNode.CreateNode("<i></i>");
-                    downArrow.AddClass("fa fa-angle-down text-center event-expander");
+                    downArrow.AddClass("fas fa-angle-down text-center event-expander");
                     monthEventsHolder.AppendChild(downArrow);
                     eventHolder.AppendChild(monthEventsHolder);
                 }
@@ -149,7 +149,7 @@ namespace GiftServer
                         counter++;
                     }
                     HtmlNode downArrow = HtmlNode.CreateNode("<i></i>");
-                    downArrow.AddClass("fa fa-angle-down text-center event-expander");
+                    downArrow.AddClass("fas fa-angle-down text-center event-expander");
                     monthEventsHolder.AppendChild(downArrow);
                     eventHolder.AppendChild(monthEventsHolder);
                 }

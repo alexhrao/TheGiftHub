@@ -145,7 +145,7 @@ $(document).ready(function () {
         // grab name
         var name = $('#foundUser').text();
         var id = $('#foundUser').val();
-        $('#newGroupMembers').prepend("<li data-user-id=\"" + id + "\">" + name + " <a class=\"remove-user\"><i class=\"fa fa-times\"></i></a ></li > ");
+        $('#newGroupMembers').prepend("<li data-user-id=\"" + id + "\">" + name + " <a class=\"remove-user\"><i class=\"fas fa-times\"></i></a ></li > ");
         $('#userResult').addClass("hidden");
         $('#newGroupAddUser').val("");
     });
@@ -206,7 +206,7 @@ $(document).ready(function () {
                     for (var i = 0; i < members.length; i++) {
                         var id = members[i].children[0].innerHTML;
                         var name = members[i].children[1].innerHTML;
-                        $('#editGroupMembers').prepend("<li data-user-id=\"" + id + "\">" + name + " <a class=\"remove-user\"><i class=\"fa fa-times\"></i></a></li>");
+                        $('#editGroupMembers').prepend("<li data-user-id=\"" + id + "\">" + name + " <a class=\"remove-user\"><i class=\"fas fa-times\"></i></a></li>");
                         $('#origGroupMembers').prepend("<li data-user-id=\"" + id + "\"></li>");
                     }
                     $('#editGroup').modal('show');
@@ -250,7 +250,7 @@ $(document).ready(function () {
         // grab name
         var name = $('#editFoundUser').text();
         var id = $('#editFoundUser').val();
-        $('#editGroupMembers').prepend("<li data-user-id=\"" + id + "\">" + name + " <a class=\"remove-user\"><i class=\"fa fa-times\"></i></a></li>");
+        $('#editGroupMembers').prepend("<li data-user-id=\"" + id + "\">" + name + " <a class=\"remove-user\"><i class=\"fas fa-times\"></i></a></li>");
         $('#editUserResult').addClass("hidden");
         $('#editGroupAddUser').val("");
     });
@@ -470,25 +470,25 @@ $(document).ready(function () {
     $('#newEventName').keyup(validateName);
     $('#newEventStartDate').change(validateStartDate);
     $('#newEventRecurYes').click(function () {
-        $('#newEventRecurYes').removeClass('btn-info btn-danger').addClass('btn-success').html("Yes <i class=\"fa fa-check\"></i>");
+        $('#newEventRecurYes').removeClass('btn-info btn-danger').addClass('btn-success').html("Yes <i class=\"fas fa-check\"></i>");
         $('#newEventRecurNo').removeClass('btn-info btn-success').addClass('btn-info').html("No");
         $('#newEventNext').removeAttr('disabled');
         newEventRecurs = true;
     });
     $('#newEventRecurNo').click(function () {
-        $('#newEventRecurNo').removeClass('btn-info btn-danger').addClass('btn-success').html("No <i class=\"fa fa-check\"></i>");
+        $('#newEventRecurNo').removeClass('btn-info btn-danger').addClass('btn-success').html("No <i class=\"fas fa-check\"></i>");
         $('#newEventRecurYes').removeClass('btn-info btn-success').addClass('btn-info').html("Yes");
         $('#newEventNext').removeAttr('disabled');
         newEventRecurs = false;
     });
     $('#newEventExact').click(function () {
-        $('#newEventExact').removeClass('btn-info btn-danger').addClass('btn-success').html("Exact <i class=\"fa fa-check\"></i>");
+        $('#newEventExact').removeClass('btn-info btn-danger').addClass('btn-success').html("Exact <i class=\"fas fa-check\"></i>");
         $('#newEventRelative').removeClass('btn-info btn-success').addClass('btn-info').html("Relative");
         $('#newEventNext').removeAttr('disabled');
         newEventRecurType = "exact";
     });
     $('#newEventRelative').click(function () {
-        $('#newEventRelative').removeClass('btn-info btn-danger').addClass('btn-success').html("Relative <i class=\"fa fa-check\"></i>");
+        $('#newEventRelative').removeClass('btn-info btn-danger').addClass('btn-success').html("Relative <i class=\"fas fa-check\"></i>");
         $('#newEventExact').removeClass('btn-info btn-success').addClass('btn-info').html("Exact");
         $('#newEventNext').removeAttr('disabled');
         newEventRecurType = "relative";
@@ -684,8 +684,8 @@ $(document).ready(function () {
         // Add record of event to event lines
         var row = $('<tr></tr');
         row.attr('data-event-id', eid);
-        var closer = $('<span></span>');
-        closer.addClass('event-closer');
+        var closer = $('<i></i>');
+        closer.addClass('event-closer fas fa-times');
         closer.attr('data-event-id', eid);
         row.append($('<td></td>').append(closer));
         var eName = $('<h3></h3>');
@@ -913,7 +913,7 @@ function onSuccess(googleUser) {
         if (resp == "success") {
             // Show user we succeeded
             $('#googleLoginStatus *').remove();
-            $('#googleLoginStatus').append('<span id=\"googleConfirmed\" class=\"fa fa-close oauth-confirmed\"></span>');
+            $('#googleLoginStatus').append('<i id=\"googleConfirmed\" class=\"fas fa-times oauth-confirmed\"></i>');
             var auth2 = gapi.auth2.getAuthInstance();
             auth2.signOut();
         } else {
@@ -956,7 +956,7 @@ function fbLoginStatusChange(response) {
             var resp = xhr.responseText;
             if (resp == "success") {
                 $('#facebookLoginStatus *').remove();
-                $('#facebookLoginStatus').append('<span id=\"facebookConfirmed\" class=\"fa fa-close oauth-confirmed\"></span>');
+                $('#facebookLoginStatus').append('<i id=\"facebookConfirmed\" class=\"fas fa-times oauth-confirmed\"></i>');
             } else {
                 // We need to die gracefully
 

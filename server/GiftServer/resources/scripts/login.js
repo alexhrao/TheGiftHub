@@ -100,7 +100,7 @@ function validateReset() {
 function loadingLogin(btn) {
     var elem = $(btn).parent();
     $(btn).remove();
-    elem.append('<i class="fa fa-spinner fa-spin fa-3x fa-fw signup-loader"></i>');
+    elem.append('<i class="fas fa-spinner fa-spin fa-3x fa-fw signup-loader"></i>');
 }
 function onSuccess(googleUser) {
     // Show spinner

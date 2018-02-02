@@ -70,7 +70,7 @@ table {
 .oauth-confirmed {
     font-size: 36px;
 }
-.oauth-confirmed.fa-close {
+.oauth-confirmed.fa-times {
     color: darkred;
     cursor: pointer;
 }
