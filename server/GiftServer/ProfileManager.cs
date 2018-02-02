@@ -82,7 +82,7 @@ namespace GiftServer
                 foreach (Group group in viewer.GetGroups(target))
                 {
                     HtmlNode groupEntry = HtmlNode.CreateNode("<tr data-group-id=\"" + group.GroupId + "\"><td><span class=\"group-closer\" data-group-id=\"" + group.GroupId + "\"></span></td>"
-                                               + "<td class=\"group-name\"><h3>" + HttpUtility.HtmlEncode(group.Name) + " </h3></td></tr>");
+                                                            + "<td class=\"group-name\"><h3>" + HttpUtility.HtmlEncode(group.Name) + " </h3></td></tr>");
                     groups.AppendChild(groupEntry);
                 }
                 return profile.DocumentNode.OuterHtml;
@@ -109,7 +109,8 @@ namespace GiftServer
                 HtmlNode email = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" email \")]");
                 // HtmlNode emailChange = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userEmailChange \")]");
                 // emailChange.SetAttributeValue("placeholder", HttpUtility.HtmlEncode(user.Email));
-                email.InnerHtml = HttpUtility.HtmlEncode("Email: " + user.Email);
+                email.InnerHtml = HttpUtility.HtmlEncode("Email: " + user.Email.Address);
+                email.Attributes.Add("data-user-email", user.Email.Address);
                 HtmlNode id = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@name), \" \"), \" userID \")]");
                 id.Attributes["value"].Value = user.UserId.ToString();
                 if (user.BirthMonth != 0)
@@ -204,12 +205,43 @@ namespace GiftServer
                 HtmlNode events = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" events \")]");
                 foreach (Event evnt in user.Events)
                 {
-                    HtmlNode eventEntry = HtmlNode.CreateNode("<tr id=\"event" + evnt.EventId + "\"><td><h3><span id=\"eventCloser" + evnt.EventId + "\" class=\"glyphicon glyphicon-remove event-closer\"></span></h3></td>"
+                    HtmlNode eventEntry = HtmlNode.CreateNode("<tr data-event-id=\"" + evnt.EventId + "\"><td><h3><span data-event-id=\"" + evnt.EventId + "\" class=\"glyphicon glyphicon-remove event-closer\"></span></h3></td>"
                                                             + "<td class=\"event-name\"><h3>" + HttpUtility.HtmlEncode(evnt.Name) + " </h3></td></tr>");
                     events.AppendChild(eventEntry);
                 }
                 HtmlNode addEvent = HtmlNode.CreateNode("<tr id=\"eventAdder\" data-toggle=\"modal\" href=\"#addEvent\"><td><h3><span class=\"glyphicon glyphicon-plus\"></span></h3></td><td></td></tr>");
                 events.AppendChild(addEvent);
+
+                // Fill groups:
+                HtmlNode newEventGroupLeft = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" newEventGroups \")]").FirstChild;
+                HtmlNode newEventGroupRight = newEventGroupLeft.NextSibling;
+                bool alt = true;
+                foreach (Group group in user.Groups)
+                {
+                    // Left
+                    HtmlNode groupCheck = HtmlNode.CreateNode("<label></label>");
+                    groupCheck.AddClass("checkbox-inline");
+                    groupCheck.Attributes.Add("data -group-id", HttpUtility.HtmlEncode(group.GroupId));
+                    HtmlNode check = HtmlNode.CreateNode("<input />");
+                    check.Attributes.Add("type", "checkbox");
+                    check.Attributes.Add("value", "");
+                    check.Attributes.Add("data-group-id", HttpUtility.HtmlEncode(group.GroupId));
+                    groupCheck.AppendChild(check);
+                    HtmlNode groupName = HtmlNode.CreateNode("<p></p>");
+                    groupName.InnerHtml = HttpUtility.HtmlEncode(group.Name);
+                    groupCheck.AppendChild(groupName);
+                    // Alternate
+                    if (alt)
+                    {
+                        newEventGroupLeft.AppendChild(groupCheck);
+                    }
+                    else
+                    {
+                        // Right
+                        newEventGroupRight.AppendChild(groupCheck);
+                    }
+                    alt = !alt;
+                }
 
                 HtmlNode groups = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" groups \")]");
                 foreach (Group group in user.Groups)

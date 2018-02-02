@@ -16,7 +16,7 @@ $(document).ready(function () {
             },
             function (data, status) {
                 if (data == 200) {
-                    $('#event' + eNumber).remove();
+                    $("[data-event-id='" + eNumber + "']").remove();
                 } else {
                     alert("We're unable to make your changes right now - try again in a few minutes.");
                 }
@@ -36,7 +36,7 @@ $(document).ready(function () {
             },
             function (data, status) {
                 if (data == 200) {
-                    $('#group' + gNumber).remove();
+                    $("[data-group-id='" + gNumber + "']").remove();
                 } else {
                     alert("We're unable to make your changes right now - try again in a few minutes.");
                 }
@@ -559,7 +559,7 @@ $(document).ready(function () {
         // Loop through all BUT the last two, delete if empty
         $('.event-blackout:nth-last-child(n+3)').each(function (index) {
             if (!$(this).val() && !$(this).is(":focus")) {
-
+                $(this).remove();
             }
         });
     });
@@ -659,8 +659,6 @@ $(document).ready(function () {
                 groupId: newEventGroupIds[i]
             });
         }
-        var eventHolder = $('#events');
-
         // Add record of event to event lines
         var row = $('<tr></tr');
         row.attr('data-event-id', eid);
@@ -671,7 +669,7 @@ $(document).ready(function () {
         var eName = $('<h3></h3>');
         eName.text(newEventName);
         row.append($('<td></td>').append(eName));
-        eventHolder.append(row);
+        $('#eventAdder').before(row);
     }
 
     function createBlackouts(eid) {
@@ -844,7 +842,7 @@ $(document).ready(function () {
         $('#deleteAccount').modal();
     });
     $('#deleteAccountEmail').keyup(function () {
-        if ($('#deleteAccountEmail').val() == $('#email').text().substr(7)) {
+        if ($('#deleteAccountEmail').val() == $('#email').attr('data-user-email')) {
             $('#deleteAccountConfirm').removeClass("hidden");
         } else {
             $('#deleteAccountConfirm').addClass("hidden");
