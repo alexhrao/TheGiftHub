@@ -452,13 +452,10 @@ $(document).ready(function () {
                 dispatch(8);
                 break;
             case 8:
-                $('.event-group').each(function (index) {
-                    newEventGroupIds.push($(this).attr('data-group-id'));
-                    newEventGroupNames.push($(this).attr('data-group-name'));
-                });
                 dispatch(9);
                 $('#newEventNext').addClass('hidden');
                 // unhide button
+                addNewGroups();
                 fillDescription();
                 $('#newEventSubmit').removeClass("hidden");
                 break;
@@ -563,6 +560,29 @@ $(document).ready(function () {
             }
         });
     });
+    $('#editSharedGroups input').each(function () {
+        // post each of these
+        if ($(this)[0].checked) {
+            $.post(".",
+                {
+                    action: "Change",
+                    type: "Group",
+                    item: "addGift",
+                    itemId: $(this).attr('data-group-id'),
+                    giftId: $('#editGiftId').val()
+                });
+        } else {
+            $.post(".",
+                {
+                    action: "Change",
+                    type: "Group",
+                    item: "removeGift",
+                    itemId: $(this).attr('data-group-id'),
+                    giftId: $('#editGiftId').val()
+                });
+        }
+
+    });
     $('#newEventSubmit').click(createEvent);
     function validateName() {
         if ($('#newEventName').val() && $('#newEventName').val().length <= 32 && $('#newEventName').val().trim()) {
@@ -650,6 +670,8 @@ $(document).ready(function () {
         }
     }
     function createGroups(eid) {
+        // Populate IDs:
+
         for (var i = 0; i < newEventGroupIds.length; i++) {
             $.post(".", {
                 action: "Change",
@@ -684,6 +706,19 @@ $(document).ready(function () {
             });
         }
         createGroups(eid);
+    }
+    function addGroups() {
+        // Clear arrays
+        newEventGroupIds = [];
+        newEventGroupNames = [];
+        $('.group-check').each(function () {
+            // If checked, push name and id onto arrays
+            if ($(this)[0].checked) {
+                // Add group
+                newEventGroupIds.push($(this).attr('data-group-id'));
+                newEventGroupNames.push($(this).attr('data-group-name'));
+            }
+        });
     }
     function fillDescription() {
         // Fill Description div:

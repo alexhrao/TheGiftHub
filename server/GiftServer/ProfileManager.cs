@@ -221,11 +221,13 @@ namespace GiftServer
                     // Left
                     HtmlNode groupCheck = HtmlNode.CreateNode("<label></label>");
                     groupCheck.AddClass("checkbox-inline");
-                    groupCheck.Attributes.Add("data -group-id", HttpUtility.HtmlEncode(group.GroupId));
+                    groupCheck.Attributes.Add("data-group-id", HttpUtility.HtmlEncode(group.GroupId));
                     HtmlNode check = HtmlNode.CreateNode("<input />");
+                    check.AddClass("group-check");
                     check.Attributes.Add("type", "checkbox");
                     check.Attributes.Add("value", "");
                     check.Attributes.Add("data-group-id", HttpUtility.HtmlEncode(group.GroupId));
+                    check.Attributes.Add("data-group-name", HttpUtility.HtmlEncode(group.Name));
                     groupCheck.AppendChild(check);
                     HtmlNode groupName = HtmlNode.CreateNode("<p></p>");
                     groupName.InnerHtml = HttpUtility.HtmlEncode(group.Name);
