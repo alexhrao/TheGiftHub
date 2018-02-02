@@ -74,10 +74,6 @@ namespace GiftServer
             /// </summary>
             public readonly NavigationManager NavigationManager;
             /// <summary>
-            /// The Group Manager for this controller instance
-            /// </summary>
-            public readonly GroupManager GroupManager;
-            /// <summary>
             /// The Dashboard Manager for this controller instance
             /// </summary>
             public readonly DashboardManager DashboardManager;
@@ -109,7 +105,6 @@ namespace GiftServer
                 GetUser();
                 LoginManager = new LoginManager(this);
                 NavigationManager = new NavigationManager(this);
-                GroupManager = new GroupManager(this);
                 DashboardManager = new DashboardManager(this);
                 ProfileManager = new ProfileManager(this);
                 ListManager = new ListManager(this);

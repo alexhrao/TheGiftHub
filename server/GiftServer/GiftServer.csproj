@@ -138,7 +138,6 @@
     <Compile Include="ProfileManager.cs" />
     <Compile Include="DashboardManager.cs" />
     <Compile Include="Exceptions.cs" />
-    <Compile Include="GroupManager.cs" />
     <Compile Include="ISynchronizable.cs" />
     <Compile Include="LoginManager.cs" />
     <Compile Include="NavigationManager.cs" />
@@ -203,7 +202,9 @@
     <None Include="resources\AWS\AWS.rdp" />
     <None Include="resources\AWS\PrimaryServer.pem" />
     <None Include="resources\AWS\PrimaryServer.ppk" />
+    <None Include="resources\CSS\colorPicker.min.css.map" />
     <None Include="resources\images\branding\logo.pub" />
+    <None Include="resources\scripts\colorPicker.min.js.map" />
     <None Include="Scripts\jquery-3.3.1.min.map" />
     <None Include="Scripts\jquery-3.3.1.slim.min.map" />
     <None Include="toc.yml" />
@@ -228,6 +229,7 @@
     <Content Include="docs\MySqlTransaction.xml" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="resources\CSS\colorPicker.min.css" />
     <Content Include="resources\CSS\dashboard.css" />
     <Content Include="resources\CSS\header.css" />
     <Content Include="resources\CSS\list.css" />
@@ -248,6 +250,7 @@
     <Content Include="resources\htmlTemplates\fr-FR\termsOfService.html" />
     <Content Include="resources\images\branding\facebookLogo.png" />
     <Content Include="resources\images\branding\googleLogo.png" />
+    <Content Include="resources\scripts\colorPicker.min.js" />
     <Content Include="resources\scripts\dashboard.js" />
     <Content Include="resources\scripts\header.js" />
     <Content Include="resources\scripts\list.js" />

@@ -73,17 +73,38 @@ namespace GiftServer
                 HtmlNode events = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" events \")]");
                 foreach (Event evnt in viewer.GetEvents(target))
                 {
-                    HtmlNode eventEntry = HtmlNode.CreateNode("<tr data-event-id=\"" + evnt.EventId + "\"><td><span class=\"event-closer\" data-event-id=\"" + evnt.EventId + "\"></span></td>"
-                                                            + "<td class=\"event-name\"><h3>" + HttpUtility.HtmlEncode(evnt.Name) + " </h3></td></tr>");
-                    events.AppendChild(eventEntry);
+                    HtmlNode eventRow = HtmlNode.CreateNode("<tr></tr>");
+                    eventRow.Attributes.Add("data-event-id", evnt.EventId.ToString());
+                    HtmlNode eventCloser = HtmlNode.CreateNode("<span></span>");
+                    eventCloser.AddClass("event-closer");
+                    eventCloser.Attributes.Add("data-event-id", evnt.EventId.ToString());
+                    HtmlNode eventCloserTd = HtmlNode.CreateNode("<td></td>");
+                    eventCloserTd.AppendChild(eventCloser);
+                    HtmlNode eventName = HtmlNode.CreateNode("<td></td>");
+                    eventName.AddClass("event-name");
+                    eventName.AppendChild(HtmlNode.CreateNode("<h3>" + HttpUtility.HtmlEncode(evnt.Name) + "</h3>"));
+                    eventRow.AppendChild(eventCloserTd);
+                    eventRow.AppendChild(eventName);
+                    
+                    events.AppendChild(eventRow);
                 }
 
                 HtmlNode groups = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" groups \")]");
                 foreach (Group group in viewer.GetGroups(target))
                 {
-                    HtmlNode groupEntry = HtmlNode.CreateNode("<tr data-group-id=\"" + group.GroupId + "\"><td><span class=\"group-closer\" data-group-id=\"" + group.GroupId + "\"></span></td>"
-                                                            + "<td class=\"group-name\"><h3>" + HttpUtility.HtmlEncode(group.Name) + " </h3></td></tr>");
-                    groups.AppendChild(groupEntry);
+                    HtmlNode groupRow = HtmlNode.CreateNode("<tr></tr>");
+                    groupRow.Attributes.Add("data-group-id", group.GroupId.ToString());
+                    HtmlNode groupCloser = HtmlNode.CreateNode("<span></span>");
+                    groupCloser.AddClass("group-closer");
+                    groupCloser.Attributes.Add("data-group-id", group.GroupId.ToString());
+                    HtmlNode groupCloserTd = HtmlNode.CreateNode("<td></td>");
+                    groupCloserTd.AppendChild(groupCloser);
+                    HtmlNode groupName = HtmlNode.CreateNode("<td></td>");
+                    groupName.AddClass("group-name");
+                    groupName.AppendChild(HtmlNode.CreateNode("<h3>" + HttpUtility.HtmlEncode(group.Name) + "</h3>"));
+                    groupRow.AppendChild(groupCloserTd);
+                    groupRow.AppendChild(groupName);
+                    groups.AppendChild(groupRow);
                 }
                 return profile.DocumentNode.OuterHtml;
             }
@@ -124,22 +145,6 @@ namespace GiftServer
                     HtmlNode birthday = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" birthday \")]");
                     birthday.InnerHtml = HttpUtility.HtmlEncode("Birthday: " + "Not Set");
                 }
-                /*
-                 * DEPRECATED - We will no longer be offering a theme
-                HtmlNode theme = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" theme \")]");
-                switch (user.Preferences.Theme)
-                {
-                    case 1:
-                        theme.Attributes["style"].Value = "background: red;";
-                        break;
-                    case 2:
-                        theme.Attributes["style"].Value = "background: blue;";
-                        break;
-                    default:
-                        theme.Attributes["style"].Value = "background: red;";
-                        break;
-                }
-                */
                 HtmlNode cultures = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userCulture \")]");
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -159,12 +164,15 @@ namespace GiftServer
                                 string cultureCode = Convert.ToString(Reader["CultureLanguage"]) + "-" + Convert.ToString(Reader["CultureLocation"]);
                                 if (!isFound && cultureCode.ToLower().Equals(user.Preferences.Culture.ToLower()))
                                 {
-                                    culture = HtmlNode.CreateNode("<option selected value=\"" + cultureCode + "\"></option>");
+                                    culture = HtmlNode.CreateNode("<option></option>");
+                                    culture.Attributes.Add("selected", "");
+                                    culture.Attributes.Add("value", cultureCode);
                                     isFound = true;
                                 }
                                 else
                                 {
-                                    culture = HtmlNode.CreateNode("<option value=\"" + cultureCode + "\"></option>");
+                                    culture = HtmlNode.CreateNode("<option></option>");
+                                    culture.Attributes.Add("value", cultureCode);
                                 }
                                 culture.InnerHtml = HttpUtility.HtmlEncode(Convert.ToString(Reader["CultureDesc"]));
                                 cultures.AppendChild(culture);
@@ -202,15 +210,7 @@ namespace GiftServer
                     googleLoginStatus.AppendChild(checkMark);
                 }
 
-                HtmlNode events = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" events \")]");
-                foreach (Event evnt in user.Events)
-                {
-                    HtmlNode eventEntry = HtmlNode.CreateNode("<tr data-event-id=\"" + evnt.EventId + "\"><td><h3><span data-event-id=\"" + evnt.EventId + "\" class=\"glyphicon glyphicon-remove event-closer\"></span></h3></td>"
-                                                            + "<td class=\"event-name\"><h3>" + HttpUtility.HtmlEncode(evnt.Name) + " </h3></td></tr>");
-                    events.AppendChild(eventEntry);
-                }
-                HtmlNode addEvent = HtmlNode.CreateNode("<tr id=\"eventAdder\" data-toggle=\"modal\" href=\"#addEvent\"><td><h3><span class=\"glyphicon glyphicon-plus\"></span></h3></td><td></td></tr>");
-                events.AppendChild(addEvent);
+
 
                 // Fill groups:
                 HtmlNode newEventGroupLeft = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" newEventGroups \")]").FirstChild;
@@ -245,15 +245,72 @@ namespace GiftServer
                     alt = !alt;
                 }
 
+                HtmlNode events = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" events \")]");
+                foreach (Event evnt in user.Events)
+                {
+                    HtmlNode eventRow = HtmlNode.CreateNode("<tr></tr>");
+                    eventRow.Attributes.Add("data-event-id", evnt.EventId.ToString());
+                    HtmlNode eventCloser = HtmlNode.CreateNode("<span></span>");
+                    eventCloser.AddClass("event-closer fa fa-close");
+                    eventCloser.Attributes.Add("data-event-id", evnt.EventId.ToString());
+                    HtmlNode eventCloserTd = HtmlNode.CreateNode("<td></td>");
+                    eventCloserTd.AppendChild(eventCloser);
+                    HtmlNode eventName = HtmlNode.CreateNode("<td></td>");
+                    eventName.Attributes.Add("data-event-id", evnt.EventId.ToString());
+                    eventName.AddClass("event-name");
+                    eventName.AppendChild(HtmlNode.CreateNode("<h3>" + HttpUtility.HtmlEncode(evnt.Name) + "</h3>"));
+                    eventRow.AppendChild(eventCloserTd);
+                    eventRow.AppendChild(eventName);
+
+                    events.AppendChild(eventRow);
+                }
+                {
+                    HtmlNode addRow = HtmlNode.CreateNode("<tr></tr>");
+                    addRow.Id = "eventAdder";
+                    addRow.Attributes.Add("data-toggle", "modal");
+                    addRow.Attributes.Add("href", "#addEvent");
+                    HtmlNode adder = HtmlNode.CreateNode("<span></span>");
+                    adder.AddClass("fa fa-plus");
+                    HtmlNode adderTd = HtmlNode.CreateNode("<td></td>");
+                    adderTd.AppendChild(HtmlNode.CreateNode("<h3></h3>"));
+                    adderTd.FirstChild.AppendChild(adder);
+                    addRow.AppendChild(adderTd);
+                    addRow.AppendChild(HtmlNode.CreateNode("<td></td>"));
+                    events.AppendChild(addRow);
+                }
+
                 HtmlNode groups = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" groups \")]");
                 foreach (Group group in user.Groups)
                 {
-                    HtmlNode groupEntry = HtmlNode.CreateNode("<tr id=\"group" + group.GroupId + "\"><td><h3><span id=\"groupCloser" + group.GroupId + "\" class=\"glyphicon glyphicon-remove group-closer\"></span></h3></td>"
-                                               + "<td data-group-id=\"" + group.GroupId + "\" class=\"group-name\"><h3>" + HttpUtility.HtmlEncode(group.Name) + " </h3></td></tr>");
-                    groups.AppendChild(groupEntry);
+                    HtmlNode groupRow = HtmlNode.CreateNode("<tr></tr>");
+                    groupRow.Attributes.Add("data-group-id", group.GroupId.ToString());
+                    HtmlNode groupCloser = HtmlNode.CreateNode("<span></span>");
+                    groupCloser.AddClass("group-closer fa fa-close");
+                    groupCloser.Attributes.Add("data-group-id", group.GroupId.ToString());
+                    HtmlNode groupCloserTd = HtmlNode.CreateNode("<td></td>");
+                    groupCloserTd.AppendChild(groupCloser);
+                    HtmlNode groupName = HtmlNode.CreateNode("<td></td>");
+                    groupName.AddClass("group-name");
+                    groupName.Attributes.Add("data-group-id", group.GroupId.ToString());
+                    groupName.AppendChild(HtmlNode.CreateNode("<h3>" + HttpUtility.HtmlEncode(group.Name) + "</h3>"));
+                    groupRow.AppendChild(groupCloserTd);
+                    groupRow.AppendChild(groupName);
+                    groups.AppendChild(groupRow);
                 }
-                HtmlNode addGroup = HtmlNode.CreateNode("<tr id=\"groupAdder\" type=\"button\" data-toggle=\"modal\" href=\"#addGroup\"><td><h3><span class=\"glyphicon glyphicon-plus\"></span></h3></td><td></td></tr>");
-                groups.AppendChild(addGroup);
+                {
+                    HtmlNode addRow = HtmlNode.CreateNode("<tr></tr>");
+                    addRow.Id = "groupAdder";
+                    addRow.Attributes.Add("data-toggle", "modal");
+                    addRow.Attributes.Add("href", "#addGroup");
+                    HtmlNode adder = HtmlNode.CreateNode("<span></span>");
+                    adder.AddClass("fa fa-plus");
+                    HtmlNode adderTd = HtmlNode.CreateNode("<td></td>");
+                    adderTd.AppendChild(HtmlNode.CreateNode("<h3></h3>"));
+                    adderTd.FirstChild.AppendChild(adder);
+                    addRow.AppendChild(adderTd);
+                    addRow.AppendChild(HtmlNode.CreateNode("<td></td>"));
+                    groups.AppendChild(addRow);
+                }
                 return profile.DocumentNode.OuterHtml;
             }
         }

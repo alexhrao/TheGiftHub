@@ -77,9 +77,13 @@ namespace GiftServer
                         HtmlNode eventNode = HtmlNode.CreateNode("<li></li>");
                         eventNode.AddClass("event-record");
                         /* REPLACE WITH STRING MANAGER */
-                        eventNode.InnerHtml = "<a href=\"" + Constants.URL + "/?dest=list&user=" + o.Event.User.UserUrl + "\">" + HttpUtility.HtmlEncode(o.Event.User.UserName)
-                                            + "</a> is celebrating " + HttpUtility.HtmlEncode(o.Event.Name)
-                                            + " on " + HttpUtility.HtmlEncode(o.Date.ToString("M"));
+                        HtmlNode eventLink = HtmlNode.CreateNode("<a></a>");
+                        eventLink.Attributes.Add("href", Constants.URL + "/?dest=list&user=" + o.Event.User.UserUrl);
+                        eventLink.InnerHtml = HttpUtility.HtmlEncode(o.Event.User.UserName);
+                        HtmlNode eventDesc = HtmlNode.CreateNode("<p></p>");
+                        eventDesc.InnerHtml = " is celebrating " + HttpUtility.HtmlEncode(o.Event.Name) + " on " + HttpUtility.HtmlEncode(o.Date.ToString("M"));
+                        eventNode.AppendChild(eventLink);
+                        eventNode.AppendChild(eventDesc);
                         if (counter > 4)
                         {
                             // Add hidden class
@@ -105,14 +109,13 @@ namespace GiftServer
                 return UpdateEvents(user, NavigationManager.NavigationBar(user) + ResourceManager.GetString("dashboard"));
             }
             /// <summary>
-            /// Updates the Feed for this user
+            /// Updates the new events for this user
             /// </summary>
             /// <param name="user">The viewer</param>
             /// <param name="page">The current dashboard page</param>
             /// <returns>Updated Feed HTML</returns>
             public string UpdateMyEvents(User user, string page)
             {
-                // TODO
                 HtmlDocument dash = new HtmlDocument();
                 dash.LoadHtml(page);
                 HtmlNode eventHolder = dash.DocumentNode.SelectSingleNode(@"//*[contains(concat("" "", normalize-space(@id), "" ""), "" myEventHolder "")]");

@@ -41,13 +41,16 @@ namespace GiftServer
                 HtmlNode groupHolder = bar.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" groupHolder \")]");
                 foreach (Group group in user.Groups)
                 {
-                    HtmlNode groupMenu = HtmlNode.CreateNode("<li class=\"dropdown-submenu\"></li>");
-
+                    HtmlNode groupMenu = HtmlNode.CreateNode("<li></li>");
+                    groupMenu.AddClass("dropdown-submenu");
                     HtmlNode groupName = HtmlNode.CreateNode("<p></p>");
-                    groupName.InnerHtml = HttpUtility.HtmlEncode(group.Name) + " <span class=\"glyphicon glyphicon-arrow-right text-right\"></span>";
+                    HtmlNode rightArrow = HtmlNode.CreateNode("<span></span>");
+                    rightArrow.AddClass("glyphicon glyphicon-arrow-right text-right");
+                    groupName.InnerHtml = HttpUtility.HtmlEncode(group.Name);
                     groupMenu.AppendChild(groupName);
-
-                    HtmlNode users = HtmlNode.CreateNode("<ul class=\"dropdown-menu\"></ul>");
+                    groupMenu.AppendChild(rightArrow);
+                    HtmlNode users = HtmlNode.CreateNode("<ul></ul>");
+                    users.AddClass("dropdown-menu");
                     foreach (User member in group.Users)
                     {
                         // Add user to navbar

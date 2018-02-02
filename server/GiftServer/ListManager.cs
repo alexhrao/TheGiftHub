@@ -62,27 +62,95 @@ namespace GiftServer
                     {
                         HtmlNode giftRow = HtmlNode.CreateNode("<tr id=\"" + gift.GiftId + "\" class=\"gift-row\"></tr>");
 
-                        HtmlNode pict = HtmlNode.CreateNode("<td><div class=\"parent\"><img class=\"img-thumbnail img-gift img-responsive child\" src=\"" + gift.GetImage() + "\" /></div></td>");
-                        HtmlNode rate = HtmlNode.CreateNode("<td><div class=\"parent\"><p class=\"child\"><input class=\"star-rating\" data-show-clear=\"false\" data-show-caption=\"false\" value=\"" + gift.Rating.ToString("N2") + "\" /></p></div></td>");
-                        HtmlNode name = HtmlNode.CreateNode("<td><div class=\"parent\"><p class=\"child\">" + HttpUtility.HtmlEncode(gift.Name) + "</p></div></td>");
-                        HtmlNode quan = HtmlNode.CreateNode("<td><div class=\"parent\"><p class=\"child\">" + gift.Quantity + "</p></div></td>");
-                        HtmlNode cost = HtmlNode.CreateNode("<td><div class=\"parent\"><p class=\"child\">" + gift.Cost.ToString("C") + "</p></div></td>");
-                        HtmlNode desc = HtmlNode.CreateNode("<td><div class=\"parent\"><p class=\"description child\">" + HttpUtility.HtmlEncode(gift.Description) + "</p></div></td>");
-                        giftRow.AppendChild(pict);
-                        giftRow.AppendChild(rate);
-                        giftRow.AppendChild(name);
-                        giftRow.AppendChild(quan);
-                        giftRow.AppendChild(cost);
-                        giftRow.AppendChild(desc);
+                        giftRow.AddClass("gift-row");
+                        giftRow.Attributes.Add("data-gift-id", gift.GiftId.ToString());
+
+                        HtmlNode parent = HtmlNode.CreateNode("<div></div>");
+                        parent.AddClass("parent");
+
+                        HtmlNode child = HtmlNode.CreateNode("<p></p>");
+                        child.AddClass("child");
+
+                        HtmlNode cell = HtmlNode.CreateNode("<td></td>");
+
+                        // Picture
+                        HtmlNode pict = HtmlNode.CreateNode("<img />");
+                        pict.AddClass("img-thumbnail img-gift img-responsive child");
+                        pict.Attributes.Add("src", gift.GetImage());
+
+                        HtmlNode pictParent = parent.Clone();
+                        pictParent.AppendChild(pict);
+                        HtmlNode pictCell = cell.Clone();
+                        pictCell.AppendChild(pictParent);
+
+                        // Rating
+                        HtmlNode rate = HtmlNode.CreateNode("<input />");
+                        rate.AddClass("star-rating");
+                        rate.Attributes.Add("data-show-clear", "false");
+                        rate.Attributes.Add("data-show-caption", "false");
+                        rate.Attributes.Add("value", gift.Rating.ToString("N2"));
+
+                        HtmlNode rateCell = cell.Clone();
+                        HtmlNode rateParent = parent.Clone();
+                        HtmlNode rateChild = child.Clone();
+                        rateChild.AppendChild(rate);
+                        rateParent.AppendChild(rateChild);
+                        rateCell.AppendChild(rateParent);
+
+                        // Name
+                        HtmlNode name = child.Clone();
+                        name.InnerHtml = HttpUtility.HtmlEncode(gift.Name);
+
+                        HtmlNode nameCell = cell.Clone();
+                        HtmlNode nameParent = parent.Clone();
+                        nameParent.AppendChild(name);
+                        nameCell.AppendChild(nameParent);
+
+                        // Quantity
+                        HtmlNode quan = child.Clone();
+                        quan.InnerHtml = gift.Quantity.ToString();
+
+                        HtmlNode quanCell = cell.Clone();
+                        HtmlNode quanParent = parent.Clone();
+                        quanParent.AppendChild(quan);
+                        quanCell.AppendChild(quanParent);
+
+                        // Cost
+                        HtmlNode cost = child.Clone();
+                        cost.InnerHtml = gift.Cost.ToString("C");
+
+                        HtmlNode costCell = cell.Clone();
+                        HtmlNode costParent = parent.Clone();
+                        costParent.AppendChild(cost);
+                        costCell.AppendChild(costParent);
+
+                        // Description
+                        HtmlNode desc = child.Clone();
+                        desc.InnerHtml = HttpUtility.HtmlEncode(gift.Description);
+
+                        HtmlNode descCell = cell.Clone();
+                        HtmlNode descParent = parent.Clone();
+                        descParent.AppendChild(desc);
+                        descCell.AppendChild(descParent);
+                        
+                        giftRow.AppendChild(pictCell);
+                        giftRow.AppendChild(rateCell);
+                        giftRow.AppendChild(nameCell);
+                        giftRow.AppendChild(quanCell);
+                        giftRow.AppendChild(costCell);
+                        giftRow.AppendChild(descCell);
 
                         giftTable.AppendChild(giftRow);
 
-                        HtmlNode item = HtmlNode.CreateNode("<tr id=\"" + gift.GiftId + "\" class=\"gift-row\">" +
-                                                            "<td><div class=\"parent\"><img class=\"img-thumbnail img-responsive child\" src=\"" + gift.GetImage() + "\" /></div>" +
-                                                            "<div class=\"parent\"><p class=\"child\"><input class=\"star-rating\" data-show-clear=\"false\" data-show-caption=\"false\" value=\"" + gift.Rating.ToString("N2") + "\" /></p></div></td>" +
-                                                            "<td><div class=\"parent\"><p classs\"child\">" + HttpUtility.HtmlEncode(gift.Name) + "</p></div></td>" +
-                                                            "</tr>");
-                        giftTableMicro.AppendChild(item);
+                        HtmlNode microRow = HtmlNode.CreateNode("<tr></tr>");
+                        microRow.Attributes.Add("data-gift-id", gift.GiftId.ToString());
+                        microRow.AddClass("gift-row");
+
+                        microRow.AppendChild(pictCell.Clone());
+                        microRow.AppendChild(rateCell.Clone());
+                        microRow.AppendChild(nameCell.Clone());
+
+                        giftTableMicro.AppendChild(microRow);
                     }
                 }
                 return list.DocumentNode.OuterHtml;
