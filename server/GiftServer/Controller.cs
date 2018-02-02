@@ -280,7 +280,7 @@ namespace GiftServer
                                                         }
                                                     }
                                                     e = new Event(_dict["name"], DateTime.Parse(_dict["startDate"]), _user, rules);
-                                                    if (_dict["endDate"] != "")
+                                                    if (!String.IsNullOrWhiteSpace(_dict["endDate"]))
                                                     {
                                                         e.EndDate = DateTime.Parse(_dict["endDate"]);
                                                     }
@@ -804,26 +804,17 @@ namespace GiftServer
                         e.EndDate = DateTime.Parse(_dict["endDate"]);
                         break;
                     case "addGroup":
-                        {
-                            Group group = new Group(Convert.ToUInt64(_dict["groupId"]));
-                            group.Add(e);
-                            return "200";
-                        }
+                        new Group(Convert.ToUInt64(_dict["groupId"])).Remove(e);
+                        return "200";
                     case "removeGroup":
-                        {
-                            Group group = new Group(Convert.ToUInt64(_dict["groupId"]));
-                            group.Remove(e);
-                            return "200";
-                        }
+                        new Group(Convert.ToUInt64(_dict["groupId"])).Remove(e);
+                        return "200";
                     case "addBlackout":
-                        {
-                            Blackout blackout = new Blackout(e, DateTime.Parse(_dict["blackout"]));
-                            break;
-                        }
+                        new Blackout(e, DateTime.Parse(_dict["blackout"])).Create();
+                        return "200";
                     case "removeBlackout":
-                        {
-                            break;
-                        }
+                        new Blackout(e, DateTime.Parse(_dict["blackout"])).Delete();
+                        return "200";
                     case "delete":
                         e.Delete();
                         return "200";

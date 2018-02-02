@@ -3,3 +3,15 @@ $(document).ready(function () {
         $(this).find('span').toggleClass('glyphicon-chevron-right').toggleClass('glyphicon-chevron-down');
     });
 });
+
+$(document).ready(function () {
+    $('.event-expander').click(function () {
+        if ($(this).hasClass("fa-angle-down")) {
+            $(this).parent().children(".hidden").removeClass("hidden").addClass("event-to-hide");
+            $(this).removeClass("fa-angle-down").addClass("fa-angle-up");
+        } else {
+            $(this).parent().children(".event-to-hide").removeClass(".event-to-hide").addClass("hidden");
+            $(this).removeClass("fa-angle-up").addClass("fa-angle-down");
+        }
+    });
+});

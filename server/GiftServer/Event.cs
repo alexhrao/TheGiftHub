@@ -257,7 +257,25 @@ namespace GiftServer
             /// </remarks>
             public bool Create()
             {
-                return false;
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "INSERT INTO user_events (UserID, EventName, EventStartDate, EventEndDate)  "
+                                        + "VALUES (@uid, @enm, @esd, @eed);";
+                        cmd.Parameters.AddWithValue("@uid", User.UserId);
+                        cmd.Parameters.AddWithValue("@enm", Name);
+                        cmd.Parameters.AddWithValue("@esd", StartDate);
+                        cmd.Parameters.AddWithValue("@eed", EndDate.HasValue ? EndDate.Value.ToString("yyyy-MM-dd") : null);
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                        EventId = Convert.ToUInt64(cmd.LastInsertedId);
+                        Rules.Create();
+                        return true;
+                    }
+                }
             }
 
             /// <summary>
@@ -300,6 +318,14 @@ namespace GiftServer
             public List<Occurrence> GetOccurrences(DateTime start, ulong limit)
             {
                 List<Occurrence> occur = new List<Occurrence>();
+                if (Rules == null)
+                {
+                    if (StartDate >= start)
+                    {
+                        occur.Add(new Occurrence(this, StartDate));
+                    }
+                    return occur;
+                }
                 uint count = 0;
                 foreach (Occurrence o in Rules.Occurrences)
                 {
@@ -321,6 +347,14 @@ namespace GiftServer
             public List<Occurrence> GetOccurrences(DateTime start, DateTime stop)
             {
                 List<Occurrence> occur = new List<Occurrence>();
+                if (Rules == null)
+                {
+                    if (StartDate >= start && StartDate <= stop)
+                    {
+                        occur.Add(new Occurrence(this, StartDate));
+                    }
+                    return occur;
+                }
                 foreach (Occurrence o in Rules.Occurrences)
                 {
                     // Wait until date is greater than or equal to our start:

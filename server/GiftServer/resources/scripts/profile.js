@@ -466,11 +466,11 @@ $(document).ready(function () {
     });
     function dispatch(next) {
         newEventSteps.push(next);
-        $('#newEvent' + newEventSteps[length - 2]).fadeOut(500, function () {
+        $('#newEvent' + newEventSteps[newEventSteps.length - 2]).fadeOut(500, function () {
             $('#newEvent' + next).fadeIn(500);
         });
     }
-    $('#newEventName').keypress(validateName);
+    $('#newEventName').keyup(validateName);
     $('#newEventStartDate').change(validateStartDate);
     $('#newEventRecurYes').click(function () {
         $('#newEventRecurYes').removeClass('btn-info btn-danger').addClass('btn-success').html("Yes <i class=\"fa fa-check\"></i>");
@@ -505,7 +505,23 @@ $(document).ready(function () {
             $('#newEventNext').removeAttr('disabled');
         }
     });
-    $('#newExactSkipEvery').keypress(function () {
+    $('#newExactSkip').keyup(function () {
+        if ($('#newExactSkip').val() == 'n') {
+            $('#newExactSkipEvery').removeClass("hidden");
+            $('#newEventNext').attr('disabled', true);
+        } else {
+            $('#newExactSkipEvery').addClass("hidden");
+            $('#newEventNext').removeAttr('disabled');
+        }
+    });
+    $('#newExactSkipEvery').change(function () {
+        if ($('#newExactSkipEvery').val() && $('#newExactSkipEvery').val() > 0) {
+            $('#newEventNext').removeAttr('disabled');
+        } else {
+            $('#newEventNext').attr('disabled', true);
+        }
+    });
+    $('#newExactSkipEvery').keyup(function () {
         if ($('#newExactSkipEvery').val() && $('#newExactSkipEvery').val() > 0) {
             $('#newEventNext').removeAttr('disabled');
         } else {
@@ -547,20 +563,19 @@ $(document).ready(function () {
             }
         });
     });
+    $('#newEventSubmit').click(createEvent);
     function validateName() {
         if ($('#newEventName').val() && $('#newEventName').val().length <= 32 && $('#newEventName').val().trim()) {
-            return isCorrect();
+            isCorrect();
         } else {
             $('#newEventNext').attr('disabled', true);
-            return false;
         }
     }
     function validateStartDate() {
         if ($('#newEventStartDate').val()) {
-            return isCorrect();
+            isCorrect();
         } else {
             $('#newEventNext').attr('disabled', true);
-            return false;
         }
     }
     function validateEndDate() {
@@ -568,17 +583,16 @@ $(document).ready(function () {
             // check if less than start
             if (new Date(newEventStartDate) < new Date(newEventEndDate)) {
                 // OK
-                return isCorrect();
+                isCorrect();
             } else {
                 // show error
                 $('#newEventMessage').text("Please choose an end date that is after your starting date").addClass('step-error');
                 $('#newEventMessages').removeClass("hidden");
                 $('#newEventNext').attr('disabled', true);
-                return false;
             }
         } else {
             // null so fine
-            return isCorrect();
+            isCorrect();
         }
     }
     function isCorrect() {
@@ -770,7 +784,7 @@ $(document).ready(function () {
             if (newEventBlackouts.length > 0) {
                 var intro = $("<p>Additionally, this event will <em><strong>not</strong></em> occur on any of the following dates:</p>");
                 var blackouts = $("<ul></ul>");
-                for (var i = 0; i < newEventBlackouts; i++) {
+                for (var i = 0; i < newEventBlackouts.length - 1; i++) {
                     blackouts.append($("<li>" + escapeHtml(newEventBlackouts[i]) + "</li>"));
                 }
                 desc.append(intro);

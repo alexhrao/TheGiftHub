@@ -271,7 +271,7 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT RelativeEventID, EventTimeInterval, EventSkipEvery, EventDayOfWeek, "
-                                        + "EventPosn, EventMonth FROM relative_events WHERE RelativeEventID = @rid;";
+                                        + "EventPosn FROM relative_events WHERE RelativeEventID = @rid;";
                         cmd.Parameters.AddWithValue("@rid", id);
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
