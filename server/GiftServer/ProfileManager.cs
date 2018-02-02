@@ -259,7 +259,7 @@ namespace GiftServer
                     addRow.Id = "eventAdder";
                     addRow.Attributes.Add("data-toggle", "modal");
                     addRow.Attributes.Add("href", "#addEvent");
-                    HtmlNode adder = HtmlNode.CreateNode("<span></span>");
+                    HtmlNode adder = HtmlNode.CreateNode("<i></i>");
                     adder.AddClass("fas fa-plus");
                     HtmlNode adderTd = HtmlNode.CreateNode("<td></td>");
                     adderTd.AppendChild(HtmlNode.CreateNode("<h3></h3>"));
@@ -292,7 +292,7 @@ namespace GiftServer
                     addRow.Id = "groupAdder";
                     addRow.Attributes.Add("data-toggle", "modal");
                     addRow.Attributes.Add("href", "#addGroup");
-                    HtmlNode adder = HtmlNode.CreateNode("<span></span>");
+                    HtmlNode adder = HtmlNode.CreateNode("<i></i>");
                     adder.AddClass("fas fa-plus");
                     HtmlNode adderTd = HtmlNode.CreateNode("<td></td>");
                     adderTd.AppendChild(HtmlNode.CreateNode("<h3></h3>"));
