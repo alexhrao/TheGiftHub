@@ -86,6 +86,10 @@ $(document).ready(function ($) {
                     $('#editGiftStores').val(dom.getElementsByTagName("stores")[0].innerHTML);
                     $('#editGiftCost').val(dom.getElementsByTagName("cost")[0].innerHTML);
                     $('#editGiftQuantity').val(dom.getElementsByTagName("quantity")[0].innerHTML);
+                    $('#editGiftColorPicker').colorpicker({
+                        "useAlpha": false,
+                        "color": dom.getElementsByTagName("color")[0].innerHTML
+                    });
                     $('#editGiftColor').css("background-color", dom.getElementsByTagName("color")[0].innerHTML);
                     $('#editGiftColorText').val(dom.getElementsByTagName("colorText")[0].innerHTML);
                     $('#editGiftSize').val(dom.getElementsByTagName("size")[0].innerHTML);
@@ -113,7 +117,7 @@ $(document).ready(function ($) {
             cost: $('#editGiftCost').val(),
             quantity: $('#editGiftQuantity').val(),
             rating: $('#editGiftRating').val(),
-            color: rgb2hex($('#editGiftColor').css("background-color")),
+            color: $('#editGiftColor').val(),
             colorText: $('#editGiftColorText').val()
         }, function (data, status) {
             if (data == 200) {
@@ -172,6 +176,10 @@ $(document).ready(function () {
     });
 });
 $(document).ready(function () {
+    $('#newGiftColorPicker').colorpicker({
+        "useAlpha": false,
+        "color": "#000000"
+    });
     $('#newGiftSubmit').click(function () {
         $.post(".", {
             action: "Create",
@@ -186,7 +194,7 @@ $(document).ready(function () {
             cost: $('#newGiftCost').val(),
             quantity: $('#newGiftQuantity').val(),
             rating: $('#newGiftRating').val(),
-            color: rgb2hex($('#newGiftColor').css("background-color")),
+            color: $('#newGiftColor').val(),
             colorText: $('#newGiftColorText').val()
         }, function (data, status) {
             if (data !== "0" && $('#newImageAdded').val() == 1) {

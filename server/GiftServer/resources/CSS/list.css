@@ -128,3 +128,13 @@ img {
 #userName a {
     color: lightgreen;
 }
+
+.color-swatch {
+    border-radius: 4px;
+    border-left: 1px solid #ccc;
+}
+
+#newGiftColorPicker,
+#editGiftColorPicker {
+    margin-right: 10px;
+}
