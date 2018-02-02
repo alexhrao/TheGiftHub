@@ -45,7 +45,8 @@ p {
     font-size: 22px;
 }
 
-.glyphicon {
+.fas,
+.far {
     font-size: 75%;
 }
 

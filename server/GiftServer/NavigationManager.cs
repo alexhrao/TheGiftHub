@@ -44,8 +44,8 @@ namespace GiftServer
                     HtmlNode groupMenu = HtmlNode.CreateNode("<li></li>");
                     groupMenu.AddClass("dropdown-submenu");
                     HtmlNode groupName = HtmlNode.CreateNode("<p></p>");
-                    HtmlNode rightArrow = HtmlNode.CreateNode("<span></span>");
-                    rightArrow.AddClass("glyphicon glyphicon-arrow-right text-right");
+                    HtmlNode rightArrow = HtmlNode.CreateNode("<i></i>");
+                    rightArrow.AddClass("fas fa-long-arrow-alt-right text-right");
                     groupName.InnerHtml = HttpUtility.HtmlEncode(group.Name);
                     groupMenu.AppendChild(groupName);
                     groupMenu.AppendChild(rightArrow);
