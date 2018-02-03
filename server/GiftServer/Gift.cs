@@ -427,7 +427,7 @@ namespace GiftServer
             /// </remarks>
             public string GetImage()
             {
-                return GetImage(this.GiftId);
+                return GetImage(GiftId);
             }
             /// <summary>
             /// Get the image for a specified giftID
@@ -436,7 +436,7 @@ namespace GiftServer
             /// <returns>The qualified path (See GetImage() for more information)</returns>
             public static string GetImage(ulong id)
             {
-                string path = System.IO.Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + id + Constants.ImageFormat;
+                string path = Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + id + Constants.ImageFormat;
                 // if file exists, return path. Otherwise, return default
                 // Race condition, but I don't know how to solve (yet)
                 if (File.Exists(path))
