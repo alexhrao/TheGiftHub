@@ -261,12 +261,14 @@ namespace GiftServer
             /// <remarks>
             /// This assumes that the ID exists; if it doesn't, a UserNotFoundException is thrown.
             /// </remarks>
+            /// <exception cref="UserNotFoundException">Thrown if user can't be found</exception>
+            /// <exception cref="InvalidPasswordException">Thrown if given password is invalid</exception>
             public User(ulong id)
             {
                 Synchronize(id);
             }
             /// <summary>
-            /// Initializes a new User
+            /// Initializes an existing user with email address in email
             /// </summary>
             /// <param name="email">The User's Email</param>
             /// <remarks>
@@ -469,9 +471,9 @@ namespace GiftServer
             /// Resets their password
             /// </summary>
             /// <param name="password">The new password</param>
-            /// <param name="ResetManager">A ResetManager that will generate the notification for this user.</param>
+            /// <param name="sender">A sender that will generate the notification for this user.</param>
             /// <returns>A status of whether or not it successfully reset the user's password</returns>
-            public bool UpdatePassword(string password, ResetManager ResetManager)
+            public bool UpdatePassword(string password, Action<MailAddress, User> sender)
             {
                 if (UserId == 0)
                 {
@@ -493,28 +495,7 @@ namespace GiftServer
                         cmd.ExecuteNonQuery();
                     }
                 }
-                // Send email
-                try
-                {
-                    MailMessage email = new MailMessage(new MailAddress(Constants.OrgName + "<" + Constants.SupportEmail + ">"), Email)
-                    {
-                        Body = ResetManager.GenerateNotification(this),
-                        Subject = ResetManager.ResetNotificationSubject,
-                        IsBodyHtml = true
-                    };
-                    using (SmtpClient sender = new SmtpClient(Constants.SmtpClient, Convert.ToInt32(Constants.SmtpPort)))
-                    {
-                        sender.EnableSsl = true;
-                        sender.DeliveryMethod = SmtpDeliveryMethod.Network;
-                        sender.UseDefaultCredentials = false;
-                        sender.Credentials = new NetworkCredential(Constants.SupportEmail, Constants.EmailPassword);
-                        sender.Send(email);
-                    }
-                }
-                catch (SmtpException)
-                {
-                    // Silenced - nothing we can do here and, frankly, nothing to tell the user...
-                }
+                sender(Email, this);
                 return true;
             }
             private void Synchronize(ulong id, string password)
@@ -586,9 +567,9 @@ namespace GiftServer
                         cmd.CommandText = "SELECT UserID FROM users WHERE UserEmail = @email;";
                         cmd.Parameters.AddWithValue("@email", Email.Address);
                         cmd.Prepare();
-                        using (MySqlDataReader Reader = cmd.ExecuteReader())
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            if (Reader.Read())
+                            if (reader.Read())
                             {
                                 // User already exists; throw exception:
                                 throw new DuplicateUserException(Email);
@@ -655,11 +636,11 @@ namespace GiftServer
                         cmd.CommandText = "SELECT TimeCreated FROM users WHERE UserID = @id;";
                         cmd.Parameters.AddWithValue("@id", UserId);
                         cmd.Prepare();
-                        using (MySqlDataReader Reader = cmd.ExecuteReader())
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            while (Reader.Read())
+                            if (reader.Read())
                             {
-                                DateJoined = (DateTime)(Reader["TimeCreated"]);
+                                DateJoined = (DateTime)(reader["TimeCreated"]);
                             }
                         }
                     }
@@ -797,84 +778,18 @@ namespace GiftServer
                         RemoveImage();
                         // Remove preferences
                         Preferences.Delete();
-                        // Delete from event futures, groups, and events:
-                        using (MySqlCommand cmd = new MySqlCommand())
+                        // Delete records of events:
+                        foreach (Event e in Events)
                         {
-                            // Get EventUserID:
-                            cmd.Connection = con;
-                            cmd.CommandText = "DELETE FROM events_users_futures WHERE EventUserID IN (SELECT EventUserID FROM events_users WHERE UserID = @id);";
-                            cmd.Parameters.AddWithValue("@id", UserId);
-                            cmd.Prepare();
-                            cmd.ExecuteNonQuery();
+                            e.Delete();
                         }
-                        using (MySqlCommand cmd = new MySqlCommand())
+                        foreach (Gift gift in Gifts)
                         {
-                            // Get EventUserID:
-                            cmd.Connection = con;
-                            cmd.CommandText = "DELETE FROM events_users_groups WHERE EventUserID IN (SELECT EventUserID FROM events_users WHERE UserID = @id);";
-                            cmd.Parameters.AddWithValue("@id", UserId);
-                            cmd.Prepare();
-                            cmd.ExecuteNonQuery();
+                            gift.Delete();
                         }
-                        using (MySqlCommand cmd = new MySqlCommand())
+                        foreach (Group group in Groups)
                         {
-                            cmd.Connection = con;
-                            cmd.CommandText = "DELETE FROM events_users WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", UserId);
-                            cmd.Prepare();
-                            cmd.ExecuteNonQuery();
-                        }
-                        // Delete from purchases and reservations:
-                        using (MySqlCommand cmd = new MySqlCommand())
-                        {
-                            cmd.Connection = con;
-                            cmd.CommandText = "DELETE FROM purchases WHERE ReservationID IN (SELECT ReservationID FROM reservations WHERE UserID = @id);";
-                            cmd.Parameters.AddWithValue("@id", UserId);
-                            cmd.Prepare();
-                            cmd.ExecuteNonQuery();
-                        }
-                        // Delete from reservations
-                        using (MySqlCommand cmd = new MySqlCommand())
-                        {
-                            cmd.Connection = con;
-                            cmd.CommandText = "DELETE FROM reservations WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", UserId);
-                            cmd.Prepare();
-                            cmd.ExecuteNonQuery();
-                        }
-                        // Delete gifts from receptions, groups, and gifts:
-                        using (MySqlCommand cmd = new MySqlCommand())
-                        {
-                            cmd.Connection = con;
-                            cmd.CommandText = "DELETE FROM receptions WHERE GiftID IN (SELECT GiftID FROM gifts WHERE UserID = @id);";
-                            cmd.Parameters.AddWithValue("@id", UserId);
-                            cmd.Prepare();
-                            cmd.ExecuteNonQuery();
-                        }
-                        using (MySqlCommand cmd = new MySqlCommand())
-                        {
-                            cmd.Connection = con;
-                            cmd.CommandText = "DELETE FROM groups_gifts WHERE GiftID IN (SELECT GiftID FROM gifts WHERE UserID = @id);";
-                            cmd.Parameters.AddWithValue("@id", UserId);
-                            cmd.Prepare();
-                            cmd.ExecuteNonQuery();
-                        }
-                        using (MySqlCommand cmd = new MySqlCommand())
-                        {
-                            cmd.Connection = con;
-                            cmd.CommandText = "DELETE FROM gifts WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", UserId);
-                            cmd.Prepare();
-                            cmd.ExecuteNonQuery();
-                        }
-                        // Delete from groups_users
-                        using (MySqlCommand cmd = new MySqlCommand())
-                        {
-                            cmd.Connection = con;
-                            cmd.CommandText = "DELETE FROM groups_users WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", UserId);
-                            cmd.Prepare();
-                            cmd.ExecuteNonQuery();
+                            group.Remove(this);
                         }
                         // No need to delete from groups; guaranteed to NOT be admin of any
                         // Delete from Passwordresets
@@ -882,15 +797,6 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "DELETE FROM passwordresets WHERE UserID = @id;";
-                            cmd.Parameters.AddWithValue("@id", UserId);
-                            cmd.Prepare();
-                            cmd.ExecuteNonQuery();
-                        }
-                        // Delete from preferences
-                        using (MySqlCommand cmd = new MySqlCommand())
-                        {
-                            cmd.Connection = con;
-                            cmd.CommandText = "DELETE FROM preferences WHERE UserID = @id;";
                             cmd.Parameters.AddWithValue("@id", UserId);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
@@ -913,7 +819,7 @@ namespace GiftServer
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
-                        this.UserId = 0;
+                        UserId = 0;
                         return true;
                     }
                 }
@@ -935,7 +841,10 @@ namespace GiftServer
             /// </remarks>
             public void RemoveImage()
             {
-                File.Delete(Directory.GetCurrentDirectory() + "/resources/images/users/User" + UserId + Constants.ImageFormat);
+                if (File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User" + UserId + Constants.ImageFormat))
+                {
+                    File.Delete(Directory.GetCurrentDirectory() + "/resources/images/users/User" + UserId + Constants.ImageFormat);
+                }
             }
             /// <summary>
             /// Returns the path for this user's image

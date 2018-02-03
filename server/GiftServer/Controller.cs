@@ -225,7 +225,30 @@ namespace GiftServer
                                         // POST data will have userID in userID input. Reset the password and let the user know.
                                         _user = new User(Convert.ToUInt64(_dict["userID"]));
                                         string password = _dict["password"];
-                                        _user.UpdatePassword(password, ResetManager);
+                                        _user.UpdatePassword(password, new Action<MailAddress, User>((Email, User) =>
+                                        {
+                                            try
+                                            {
+                                                MailMessage email = new MailMessage(new MailAddress(Constants.OrgName + "<" + Constants.SupportEmail + ">"), Email)
+                                                {
+                                                    Body = ResetManager.GenerateNotification(User),
+                                                    Subject = ResetManager.ResetNotificationSubject,
+                                                    IsBodyHtml = true
+                                                };
+                                                using (SmtpClient sender = new SmtpClient(Constants.SmtpClient, Convert.ToInt32(Constants.SmtpPort)))
+                                                {
+                                                    sender.EnableSsl = true;
+                                                    sender.DeliveryMethod = SmtpDeliveryMethod.Network;
+                                                    sender.UseDefaultCredentials = false;
+                                                    sender.Credentials = new NetworkCredential(Constants.SupportEmail, Constants.EmailPassword);
+                                                    sender.Send(email);
+                                                }
+                                            }
+                                            catch (SmtpException)
+                                            {
+                                                // Silenced - nothing we can do here and, frankly, nothing to tell the user...
+                                            }
+                                        }));
                                         return ResetManager.ResetPasswordSuccess();
                                     case "Create":
                                         switch (_dict["type"])
