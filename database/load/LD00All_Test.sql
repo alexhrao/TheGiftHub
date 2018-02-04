@@ -1,4 +1,4 @@
-USE gift_registry_db;
+USE gift_registry_db_test;
 
 -- Create categories:
 INSERT INTO categories (CategoryName, CategoryDescription)
@@ -20,7 +20,8 @@ INSERT INTO preferences (UserID, UserCulture, UserTheme)
     
 -- Create Password:
 INSERT INTO passwords (UserID, PasswordHash, PasswordSalt, PasswordIter)
-    VALUES (1, 'UJIOl8xUU7ccIQH5Ofs+Awfdsa==', 'UJIOl8xUU7ccIQH5Ofs+Aw==', 10000);
+    VALUES (1, 'xITVQ4AJ9eLfuzeG+cxeajH3QRw=', 'lN6ivSpluwewZWZCVXFNBw==', 10000);
+
 INSERT INTO passwords (UserID, PasswordHash, PasswordSalt, PasswordIter)
     VALUES (2, '12345678901234567890', '1234567890123567', 10000);
 

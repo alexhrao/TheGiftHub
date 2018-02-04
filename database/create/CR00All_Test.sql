@@ -1,20 +1,20 @@
-CREATE DATABASE gift_registry_db_test;
+CREATE DATABASE gift_registry_db;
 
-CREATE TABLE gift_registry_db_test.cultures (
+CREATE TABLE gift_registry_db.cultures (
     CultureID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     CultureLanguage CHAR(2) NOT NULL,
     CultureLocation CHAR(2) NOT NULL,
     CultureDesc VARCHAR(255) NULL
 );
 
-CREATE TABLE gift_registry_db_test.categories (
+CREATE TABLE gift_registry_db.categories (
     CategoryID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     CategoryName VARCHAR(255) NOT NULL,
     CategoryDescription VARCHAR(4096) NULL
 );
 
 /*
-CREATE TABLE gift_registry_db_test.default_events (
+CREATE TABLE gift_registry_db.default_events (
     EventID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     EventDay INT NOT NULL,
     EventMonth INT NOT NULL,
@@ -24,19 +24,19 @@ CREATE TABLE gift_registry_db_test.default_events (
     EventDescription VARCHAR(4095) NULL
 );
 
-CREATE TABLE gift_registry_db_test.default_events_futures (
+CREATE TABLE gift_registry_db.default_events_futures (
     EventFutureID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     EventID INT NOT NULL,
     EventYear INT NOT NULL,
     EventMonth INT NOT NULL,
     EventDay INT NOT NULL
 );
-ALTER TABLE gift_registry_db_test.default_events_futures
+ALTER TABLE gift_registry_db.default_events_futures
     ADD CONSTRAINT FK_DefaultEventsFuture FOREIGN KEY (EventID)
-        REFERENCES gift_registry_db_test.default_events(EventID);
+        REFERENCES gift_registry_db.default_events(EventID);
 
 */
-CREATE TABLE gift_registry_db_test.users (
+CREATE TABLE gift_registry_db.users (
     UserID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     UserName VARCHAR(255) NOT NULL,
     UserEmail VARCHAR(255) NOT NULL UNIQUE,
@@ -50,17 +50,17 @@ CREATE TABLE gift_registry_db_test.users (
 );
         
 /* This is a one-to-one relationship - just for simplicity, it has been moved to a different table */
-CREATE TABLE gift_registry_db_test.preferences (
+CREATE TABLE gift_registry_db.preferences (
     PreferenceID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     UserID INT NOT NULL,
     UserCulture CHAR(5) NOT NULL,
     UserTheme TINYINT UNSIGNED NULL DEFAULT 0
 );
-ALTER TABLE gift_registry_db_test.preferences
+ALTER TABLE gift_registry_db.preferences
     ADD CONSTRAINT FK_UsersPreferences FOREIGN KEY (UserID)
-        REFERENCES gift_registry_db_test.users(UserID);
+        REFERENCES gift_registry_db.users(UserID);
         
-CREATE TABLE gift_registry_db_test.passwords (
+CREATE TABLE gift_registry_db.passwords (
     PasswordID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     UserID INT NOT NULL,
     PasswordHash CHAR(28) NOT NULL,
@@ -68,52 +68,52 @@ CREATE TABLE gift_registry_db_test.passwords (
     PasswordIter INT UNSIGNED NOT NULL,
     CreateStamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-ALTER TABLE gift_registry_db_test.passwords
+ALTER TABLE gift_registry_db.passwords
     ADD CONSTRAINT FK_PasswordsUsers FOREIGN KEY (UserID)
-        REFERENCES gift_registry_db_test.users(UserID);
+        REFERENCES gift_registry_db.users(UserID);
     
-CREATE TABLE gift_registry_db_test.groups (
+CREATE TABLE gift_registry_db.groups (
     GroupID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     GroupName VARCHAR(255) NOT NULL,
     GroupDescription VARCHAR(4095) NULL,
     AdminID INT NOT NULL
 );
-ALTER TABLE gift_registry_db_test.groups
+ALTER TABLE gift_registry_db.groups
     ADD CONSTRAINT FK_GroupsUser FOREIGN KEY (AdminID)
-        REFERENCES gift_registry_db_test.users(UserID);
+        REFERENCES gift_registry_db.users(UserID);
 
-CREATE TABLE gift_registry_db_test.passwordresets (
+CREATE TABLE gift_registry_db.passwordresets (
     PasswordResetID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     UserID INT NOT NULL,
     ResetHash CHAR(88) NOT NULL,
     TimeCreated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-ALTER TABLE gift_registry_db_test.passwordresets
+ALTER TABLE gift_registry_db.passwordresets
     ADD CONSTRAINT FK_PasswordResetsUser FOREIGN KEY (UserID)
-        REFERENCES gift_registry_db_test.users(UserID);
+        REFERENCES gift_registry_db.users(UserID);
 
-CREATE TABLE gift_registry_db_test.user_events (
+CREATE TABLE gift_registry_db.user_events (
 	EventID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     UserID INT NOT NULL,
     EventStartDate DATE NOT NULL,
     EventEndDate DATE NULL,
     EventName VARCHAR(256) NOT NULL
 );
-ALTER TABLE gift_registry_db_test.user_events
+ALTER TABLE gift_registry_db.user_events
 	ADD CONSTRAINT FK_EventsUsers FOREIGN KEY (UserID)
-		REFERENCES gift_registry_db_test.users(UserID);
+		REFERENCES gift_registry_db.users(UserID);
 
-CREATE TABLE gift_registry_db_test.exact_events (
+CREATE TABLE gift_registry_db.exact_events (
 	ExactEventID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     EventID INT NOT NULL UNIQUE,
     EventTimeInterval CHAR(1) NOT NULL,
     EventSkipEvery INT NOT NULL # ONLY POSITIVE
 );
-ALTER TABLE gift_registry_db_test.exact_events
+ALTER TABLE gift_registry_db.exact_events
 	ADD CONSTRAINT FK_ExactEvents FOREIGN KEY (EventID)
-		REFERENCES gift_registry_db_test.user_events(EventID);
+		REFERENCES gift_registry_db.user_events(EventID);
         
-CREATE TABLE gift_registry_db_test.relative_events (
+CREATE TABLE gift_registry_db.relative_events (
 	RelativeEventID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     EventID INT NOT NULL UNIQUE,
     EventTimeInterval CHAR(3) NULL,
@@ -121,20 +121,20 @@ CREATE TABLE gift_registry_db_test.relative_events (
     EventDayOfWeek CHAR(1) NOT NULL,
     EventPosn INT NOT NULL # ONLY 1-5
 );
-ALTER TABLE gift_registry_db_test.relative_events
+ALTER TABLE gift_registry_db.relative_events
 	ADD CONSTRAINT FK_RelativeEvents FOREIGN KEY (EventID)
-		REFERENCES gift_registry_db_test.user_events(EventID);
+		REFERENCES gift_registry_db.user_events(EventID);
 
-CREATE TABLE gift_registry_db_test.blackout_events (
-	BlackoutEventID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE gift_registry_db.event_blackouts (
+	EventBlackoutID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     EventID INT NOT NULL,
     EventBlackoutDate DATE NOT NULL
 );
-ALTER TABLE gift_registry_db_test.blackout_events
+ALTER TABLE gift_registry_db.event_blackouts
 	ADD CONSTRAINT FK_BlackoutEvents FOREIGN KEY (EventID)
-		REFERENCES gift_registry_db_test.user_events(EventID);
+		REFERENCES gift_registry_db.user_events(EventID);
         
-CREATE TABLE gift_registry_db_test.gifts (
+CREATE TABLE gift_registry_db.gifts (
     GiftID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     UserID INT NOT NULL,
     GiftName VARCHAR(255) NOT NULL,
@@ -151,78 +151,78 @@ CREATE TABLE gift_registry_db_test.gifts (
     GiftAddStamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     GiftReceivedDate DATE NULL
 );
-ALTER TABLE gift_registry_db_test.gifts
+ALTER TABLE gift_registry_db.gifts
     ADD CONSTRAINT FK_GiftsUsers FOREIGN KEY (UserID)
-        REFERENCES gift_registry_db_test.users(UserID);
-ALTER TABLE gift_registry_db_test.gifts
+        REFERENCES gift_registry_db.users(UserID);
+ALTER TABLE gift_registry_db.gifts
     ADD CONSTRAINT FK_GiftsCategories FOREIGN KEY (CategoryID)
-        REFERENCES gift_registry_db_test.categories(CategoryID);
+        REFERENCES gift_registry_db.categories(CategoryID);
         
-CREATE TABLE gift_registry_db_test.groups_users (
+CREATE TABLE gift_registry_db.groups_users (
     GroupUserID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     GroupID INT NOT NULL,
     UserID INT NOT NULL,
     IsChild BOOLEAN NOT NULL DEFAULT FALSE
 );
-ALTER TABLE gift_registry_db_test.groups_users
+ALTER TABLE gift_registry_db.groups_users
     ADD CONSTRAINT FK_GroupsUsers_Users FOREIGN KEY (UserID)
-        REFERENCES gift_registry_db_test.users(UserID);
-ALTER TABLE gift_registry_db_test.groups_users
+        REFERENCES gift_registry_db.users(UserID);
+ALTER TABLE gift_registry_db.groups_users
     ADD CONSTRAINT FK_GroupsUsers_Groups FOREIGN KEY (GroupID)
-        REFERENCES gift_registry_db_test.groups(GroupID);
+        REFERENCES gift_registry_db.groups(GroupID);
 
-CREATE TABLE gift_registry_db_test.groups_gifts (
+CREATE TABLE gift_registry_db.groups_gifts (
     GroupGiftID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     GroupID INT NOT NULL,
     GiftID INT NOT NULL
 );
-ALTER TABLE gift_registry_db_test.groups_gifts
+ALTER TABLE gift_registry_db.groups_gifts
     ADD CONSTRAINT FK_GroupsGifts_Groups FOREIGN KEY (GroupID)
-        REFERENCES gift_registry_db_test.groups(GroupID);
-ALTER TABLE gift_registry_db_test.groups_gifts
+        REFERENCES gift_registry_db.groups(GroupID);
+ALTER TABLE gift_registry_db.groups_gifts
     ADD CONSTRAINT FK_GroupsGifts_Gifts FOREIGN KEY (GiftID)
-        REFERENCES gift_registry_db_test.gifts(GiftID);
+        REFERENCES gift_registry_db.gifts(GiftID);
 
-CREATE TABLE gift_registry_db_test.groups_events (
+CREATE TABLE gift_registry_db.groups_events (
 	GroupEventID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     GroupID INT NOT NULL,
     EventID INT NOT NULL
 );
-ALTER TABLE gift_registry_db_test.groups_events
+ALTER TABLE gift_registry_db.groups_events
     ADD CONSTRAINT FK_GroupsEvents_Groups FOREIGN KEY (GroupID)
-        REFERENCES gift_registry_db_test.groups(GroupID);
-ALTER TABLE gift_registry_db_test.groups_events
+        REFERENCES gift_registry_db.groups(GroupID);
+ALTER TABLE gift_registry_db.groups_events
     ADD CONSTRAINT FK_GroupsEvents_Events FOREIGN KEY (EventID)
-        REFERENCES gift_registry_db_test.user_events(EventID);
+        REFERENCES gift_registry_db.user_events(EventID);
 
-CREATE TABLE gift_registry_db_test.receptions (
+CREATE TABLE gift_registry_db.receptions (
     ReceptionID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     GiftID INT NOT NULL,
     NumReceived INT NOT NULL DEFAULT 0,
     ReceptionStamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-ALTER TABLE gift_registry_db_test.receptions
+ALTER TABLE gift_registry_db.receptions
     ADD CONSTRAINT FK_GiftsReceptions FOREIGN KEY (GiftID)
-        REFERENCES gift_registry_db_test.gifts(GiftID);
+        REFERENCES gift_registry_db.gifts(GiftID);
 
-CREATE TABLE gift_registry_db_test.reservations (
+CREATE TABLE gift_registry_db.reservations (
     ReservationID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     GiftID INT NOT NULL,
     UserID INT NOT NULL,
     ReserveStamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-ALTER TABLE gift_registry_db_test.reservations
+ALTER TABLE gift_registry_db.reservations
     ADD CONSTRAINT FK_ReservationsGifts FOREIGN KEY (GiftID)
-        REFERENCES gift_registry_db_test.gifts(GiftID);
-ALTER TABLE gift_registry_db_test.reservations
+        REFERENCES gift_registry_db.gifts(GiftID);
+ALTER TABLE gift_registry_db.reservations
     ADD CONSTRAINT FK_ReservationsUsers FOREIGN KEY (UserID)
-        REFERENCES gift_registry_db_test.users(UserID);
+        REFERENCES gift_registry_db.users(UserID);
         
-CREATE TABLE gift_registry_db_test.purchases (
+CREATE TABLE gift_registry_db.purchases (
     PurchaseID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     ReservationID INT NOT NULL,
     PurchaseStamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-ALTER TABLE gift_registry_db_test.purchases
+ALTER TABLE gift_registry_db.purchases
     ADD CONSTRAINT FK_PurchasesReservations FOREIGN KEY (ReservationID)
-        REFERENCES gift_registry_db_test.reservations(ReservationID);
+        REFERENCES gift_registry_db.reservations(ReservationID);
