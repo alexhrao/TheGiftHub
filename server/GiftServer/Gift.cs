@@ -353,43 +353,19 @@ namespace GiftServer
                 {
                     return false;
                 }
+                // Delete from reservations, remove from groups, remove our image, delete from main table:
+                foreach (Reservation res in Reservations)
+                {
+                    res.Delete();
+                }
+                foreach (Group group in Groups)
+                {
+                    group.Remove(this);
+                }
                 RemoveImage();
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
-                    using (MySqlCommand cmd = new MySqlCommand())
-                    {
-                        cmd.Connection = con;
-                        cmd.CommandText = "DELETE p.* FROM purchases p "
-                                        + "INNER JOIN reservations r ON p.ReservationID = r.ReservationID "
-                                        + "WHERE r.GiftID = @gid;";
-                        cmd.Parameters.AddWithValue("@gid", GiftId);
-                        cmd.Prepare();
-                    }
-                    using (MySqlCommand cmd = new MySqlCommand())
-                    {
-                        cmd.Connection = con;
-                        cmd.CommandText = "DELETE FROM reservations WHERE GiftID = @gid;";
-                        cmd.Parameters.AddWithValue("@gid", GiftId);
-                        cmd.Prepare();
-                        cmd.ExecuteNonQuery();
-                    }
-                    using (MySqlCommand cmd = new MySqlCommand())
-                    {
-                        cmd.Connection = con;
-                        cmd.CommandText = "DELETE FROM receptions WHERE GiftID = @gid;";
-                        cmd.Parameters.AddWithValue("@gid", GiftId);
-                        cmd.Prepare();
-                        cmd.ExecuteNonQuery();
-                    }
-                    using (MySqlCommand cmd = new MySqlCommand())
-                    {
-                        cmd.Connection = con;
-                        cmd.CommandText = "DELETE FROM groups_gifts WHERE GiftID = @gid;";
-                        cmd.Parameters.AddWithValue("@gid", GiftId);
-                        cmd.Prepare();
-                        cmd.ExecuteNonQuery();
-                    }
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;

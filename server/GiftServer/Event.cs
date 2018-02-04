@@ -287,7 +287,27 @@ namespace GiftServer
             /// </remarks>
             public bool Update()
             {
-                return false;
+                // First update the event, then update the rules engine
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "UPDATE user_events SET EventName = @nam, EventStartDate = @std, EventEndDate = @edt "
+                                        + "WHERE EventID = @eid;";
+                        cmd.Parameters.AddWithValue("@nam", Name);
+                        cmd.Parameters.AddWithValue("@std", StartDate);
+                        cmd.Parameters.AddWithValue("@edt", EndDate.HasValue ? EndDate.Value.ToString("yyyy-MM-dd") : null);
+                        cmd.Parameters.AddWithValue("@eid", EventId);
+                        cmd.ExecuteNonQuery();
+                        if (Rules != null)
+                        {
+                            Rules.Update();
+                        }
+                    }
+                }
+                return true;
             }
             /// <summary>
             /// Delete an event
@@ -298,7 +318,28 @@ namespace GiftServer
             /// </remarks>
             public bool Delete()
             {
-                return false;
+                // Delete rules, remove from groups, delete from db.
+                if (Rules != null)
+                {
+                    Rules.Delete();
+                    Rules = null;
+                }
+                foreach (Group group in Groups)
+                {
+                    group.Remove(this);
+                }
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "DELETE FROM user_events WHERE EventID = @eid;";
+                        cmd.Parameters.AddWithValue("@eid", EventId);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                return true;
             }
             /// <summary>
             /// Get Occurrences starting from today, with a limiit

@@ -53,6 +53,7 @@ namespace GiftServer
                 }
             }
             private User admin;
+            private List<User> users = new List<User>();
             /// <summary>
             /// A list of all members including the administrator
             /// </summary>
@@ -83,7 +84,20 @@ namespace GiftServer
                     return events;
                 }
             }
-            private List<User> users = new List<User>();
+
+            public List<Gift> Gifts
+            {
+                get
+                {
+                    List<Gift> gifts = new List<Gift>();
+                    foreach (User member in Users)
+                    {
+                        gifts.AddRange(member.Gifts.FindAll(gift => gift.Groups.Exists(group => group.GroupId == GroupId)));
+                    }
+                    return gifts;
+                }
+            }
+
             /// <summary>
             /// Fetch a group from the database
             /// </summary>
@@ -231,36 +245,25 @@ namespace GiftServer
                 {
                     return false;
                 }
+                // Remove gifts, users, events, Delete this
+                foreach (Gift gift in Gifts)
+                {
+                    Remove(gift);
+                }
+                foreach (User member in users)
+                {
+                    // Use w/o ADMIN to remove
+                    Remove(member);
+                }
+                foreach (Event e in Events)
+                {
+                    Remove(e);
+                }
+                // Delete myself
+
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
-                    // Delete from EventsUsersGroups
-                    using (MySqlCommand cmd = new MySqlCommand())
-                    {
-                        cmd.Connection = con;
-                        cmd.CommandText = "DELETE FROM groups_events WHERE GroupID = @id;";
-                        cmd.Parameters.AddWithValue("@id", GroupId);
-                        cmd.Prepare();
-                        cmd.ExecuteNonQuery();
-                    }
-                    // Delete from GroupsGifts
-                    using (MySqlCommand cmd = new MySqlCommand())
-                    {
-                        cmd.Connection = con;
-                        cmd.CommandText = "DELETE FROM groups_gifts WHERE GroupID = @id;";
-                        cmd.Parameters.AddWithValue("@id", GroupId);
-                        cmd.Prepare();
-                        cmd.ExecuteNonQuery();
-                    }
-                    // Delete from GroupsUsers
-                    using (MySqlCommand cmd = new MySqlCommand())
-                    {
-                        cmd.Connection = con;
-                        cmd.CommandText = "DELETE FROM groups_users WHERE GroupID = @id;";
-                        cmd.Parameters.AddWithValue("@id", GroupId);
-                        cmd.Prepare();
-                        cmd.ExecuteNonQuery();
-                    }
                     // Delete from Groups
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
