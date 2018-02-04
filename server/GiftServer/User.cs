@@ -987,31 +987,17 @@ namespace GiftServer
             /// </remarks>
             public List<Gift> GetGifts(User target)
             {
+                // For each gift owned by target, iterate over its groups until we find one in common with ours!
                 List<Gift> gifts = new List<Gift>();
-                // get all gifts owned by target and that have a record in groups_gifts
-                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                foreach (Gift gift in target.Gifts)
                 {
-                    con.Open();
-                    foreach (Group group in GetGroups(target))
+                    foreach (Group g in gift.Groups)
                     {
-                        using (MySqlCommand cmd = new MySqlCommand())
+                        if (Groups.Exists(x => x.GroupId == g.GroupId))
                         {
-                            cmd.Connection = con;
-                            cmd.CommandText = "SELECT groups_gifts.GiftID "
-                                            + "FROM groups_gifts "
-                                            + "INNER JOIN gifts ON gifts.GiftID = groups_gifts.GiftID "
-                                            + "WHERE GroupID = @gid "
-                                            + "AND gifts.UserID = @uid;";
-                            cmd.Parameters.AddWithValue("@gid", group.GroupId);
-                            cmd.Parameters.AddWithValue("@uid", target.UserId);
-                            cmd.Prepare();
-                            using (MySqlDataReader Reader = cmd.ExecuteReader())
-                            {
-                                while (Reader.Read())
-                                {
-                                    gifts.Add(new Gift(Convert.ToUInt64(Reader["GiftID"])));
-                                }
-                            }
+                            // Add and break
+                            gifts.Add(gift);
+                            break;
                         }
                     }
                 }
@@ -1030,30 +1016,12 @@ namespace GiftServer
             public List<Group> GetGroups(User target)
             {
                 List<Group> groups = new List<Group>();
-                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                // For each group in target, see if GroupID is found in ours
+                foreach (Group g in target.Groups)
                 {
-                    con.Open();
-                    using (MySqlCommand cmd = new MySqlCommand())
+                    if (Groups.Exists(x => x.GroupId == g.GroupId))
                     {
-                        cmd.Connection = con;
-                        cmd.CommandText = "SELECT DISTINCT GroupID "
-                                        + "FROM groups_users "
-                                        + "WHERE UserID = @id2 "
-                                        + "AND GroupID IN ( "
-                                            + "SELECT DISTINCT GroupID "
-                                            + "FROM groups_users "
-                                            + "WHERE UserID = @id1 "
-                                        + ");";
-                        cmd.Parameters.AddWithValue("@id1", UserId);
-                        cmd.Parameters.AddWithValue("@id2", target.UserId);
-                        cmd.Prepare();
-                        using (MySqlDataReader Reader = cmd.ExecuteReader())
-                        {
-                            while (Reader.Read())
-                            {
-                                groups.Add(new Group(Convert.ToUInt64(Reader["GroupID"])));
-                            }
-                        }
+                        groups.Add(g);
                     }
                 }
                 return groups;
@@ -1072,30 +1040,18 @@ namespace GiftServer
             /// </remarks>
             public List<Event> GetEvents(User target)
             {
+                // For each event owned by target, see shared groups. If ANY of those shared groups are common with us, add!
                 List<Event> events = new List<Event>();
-                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                foreach (Event e in target.Events)
                 {
-                    con.Open();
-                    foreach (Group group in GetGroups(target))
+                    // Iterate over the groups, find if any are common. If so, break (we found the group!)
+                    foreach (Group g in e.Groups)
                     {
-                        using (MySqlCommand cmd = new MySqlCommand())
+                        if (Groups.Exists(x => x.GroupId == g.GroupId))
                         {
-                            cmd.Connection = con;
-                            cmd.CommandText = "SELECT groups_events.EventID "
-                                            + "FROM groups_events "
-                                            + "INNER JOIN user_events ON user_events.EventID = groups_events.EventID "
-                                            + "WHERE GroupID = @gid "
-                                            + "AND user_events.UserID = @uid;";
-                            cmd.Parameters.AddWithValue("@gid", group.GroupId);
-                            cmd.Parameters.AddWithValue("@uid", target.UserId);
-                            cmd.Prepare();
-                            using (MySqlDataReader Reader = cmd.ExecuteReader())
-                            {
-                                while (Reader.Read())
-                                {
-                                    events.Add(new Event(Convert.ToUInt64(Reader["EventID"])));
-                                }
-                            }
+                            // Add to group and break!
+                            events.Add(e);
+                            break;
                         }
                     }
                 }
@@ -1109,30 +1065,21 @@ namespace GiftServer
             public List<Event> GetEvents(Group group)
             {
                 List<Event> events = new List<Event>();
-                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                foreach (Event e in Events)
                 {
-                    con.Open();
-                    using (MySqlCommand cmd = new MySqlCommand())
+                    // See if groupIds match
+                    foreach (Group g in e.Groups)
                     {
-                        cmd.Connection = con;
-                        cmd.CommandText = "SELECT groups_events.EventID "
-                                        + "FROM groups_events "
-                                        + "INNER JOIN user_events ON user_events.EventID = groups_events.EventID "
-                                        + "WHERE groups_events.GroupID = @gid "
-                                        + "AND user_events.UserID = @uid;";
-                        cmd.Parameters.AddWithValue("@gid", group.GroupId);
-                        cmd.Parameters.AddWithValue("@uid", UserId);
-                        cmd.Prepare();
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        // See if GroupIDs match:
+                        if (g.GroupId == group.GroupId)
                         {
-                            while (reader.Read())
-                            {
-                                events.Add(new Event(Convert.ToUInt64(reader["EventID"])));
-                            }
-                            return events;
+                            events.Add(e);
+                            // We found a match, no need to keep looking
+                            break;
                         }
                     }
                 }
+                return events;
             }
             /// <summary>
             /// Add an OAuth token for this user
