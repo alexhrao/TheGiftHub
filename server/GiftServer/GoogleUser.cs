@@ -98,11 +98,18 @@ namespace GiftServer
                 string result = resp.Content.ReadAsStringAsync().Result;
                 // Parse
                 JObject parsed = JObject.Parse(result);
-                name = parsed["name"].Value<string>();
-                locale = parsed["locale"].Value<string>();
-                email = new MailAddress(parsed["email"].Value<string>());
-                oAuthId = parsed["sub"].Value<string>();
-                picture = parsed["picture"].Value<string>();
+                try
+                {
+                    name = parsed["name"].Value<string>();
+                    locale = parsed["locale"].Value<string>();
+                    email = new MailAddress(parsed["email"].Value<string>());
+                    oAuthId = parsed["sub"].Value<string>();
+                    picture = parsed["picture"].Value<string>();
+                }
+                catch (ArgumentNullException)
+                {
+                    throw new ArgumentException("Invalid Google Token");
+                }
             }
             /// <summary>
             /// Find whether or not the object is this GoogleUser

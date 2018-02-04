@@ -49,7 +49,7 @@ namespace GiftServer
             /// <remarks>
             /// Can contain any character, including emojis. There is no "First, Last" fields, to aid localization
             /// </remarks>
-            public string UserName = "";
+            public string Name = "";
             /// <summary>
             /// The Email Address for this user
             /// </summary>
@@ -97,15 +97,19 @@ namespace GiftServer
             /// By definition, any character within this URL does not need to be escaped in any known HTML protocol. Furthermore, it 
             /// is gauranteed to be unique among all users.
             /// </remarks>
-            public string UserUrl = "";
-            /// <summary>
-            /// The date this user created his or her account.
-            /// </summary>
-            public DateTime DateJoined
+            public string UserUrl
             {
                 get;
                 private set;
-            }
+            } = "";
+            /// <summary>
+            /// The date this user created his or her account.
+            /// </summary>
+            public DateTime? DateJoined
+            {
+                get;
+                private set;
+            } = null;
             private string googleId = null;
             /// <summary>
             /// The Unique GoogleID for this user.
@@ -516,7 +520,7 @@ namespace GiftServer
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT users.*, passwords.PasswordHash, passwords.PasswordSalt, passwords.PasswordIter "
                                         + "FROM users "
-                                        + "INNER JOIN passwords ON passwords.UserID = users.UserID "
+                                        + "LEFT JOIN passwords ON passwords.UserID = users.UserID "
                                         + "WHERE users.UserID = @id;";
                         cmd.Parameters.AddWithValue("@id", id);
                         cmd.Prepare();
@@ -525,11 +529,14 @@ namespace GiftServer
                             if (Reader.Read())
                             {
                                 ID = id;
-                                UserName = Convert.ToString(Reader["UserName"]);
+                                Name = Convert.ToString(Reader["UserName"]);
                                 Email = new MailAddress(Convert.ToString(Reader["UserEmail"]));
-                                Password = new Password(Convert.ToString(Reader["PasswordHash"]),
+                                if (!String.IsNullOrEmpty(Convert.ToString(Reader["PasswordHash"])))
+                                {
+                                    Password = new Password(Convert.ToString(Reader["PasswordHash"]),
                                                         Convert.ToString(Reader["PasswordSalt"]),
                                                         Convert.ToInt32(Reader["PasswordIter"]));
+                                }
                                 BirthDay = Convert.ToInt32(Reader["UserBirthDay"]);
                                 BirthMonth = Convert.ToInt32(Reader["UserBirthMonth"]);
                                 DateJoined = (DateTime)(Reader["TimeCreated"]);
@@ -554,9 +561,12 @@ namespace GiftServer
             /// <remarks>
             /// If the email is already taken, this will throw a DuplicatUserException
             /// </remarks>
-            /// <returns>A status of success or failure</returns>
             public void Create()
             {
+                if ((BirthDay == 0 ^ BirthMonth == 0))
+                {
+                    throw new ArgumentException("Birth Month is " + BirthMonth.ToString() + " But Birth Day is " + BirthDay.ToString());
+                }
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -599,7 +609,7 @@ namespace GiftServer
                         cmd.Connection = con;
                         cmd.CommandText = "INSERT INTO users (UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL, UserGoogleID, userFacebookID) "
                             + "VALUES (@name, @email, @bmonth, @bday, @bio, @url, @gid, @fid);";
-                        cmd.Parameters.AddWithValue("@name", UserName);
+                        cmd.Parameters.AddWithValue("@name", Name);
                         cmd.Parameters.AddWithValue("@email", Email);
                         cmd.Parameters.AddWithValue("@bmonth", BirthMonth);
                         cmd.Parameters.AddWithValue("@bday", BirthDay);
@@ -608,6 +618,7 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@gid", GoogleId);
                         cmd.Parameters.AddWithValue("@fid", FacebookId);
                         cmd.Prepare();
+                        cmd.ExecuteNonQuery();
                         ID = Convert.ToUInt64(cmd.LastInsertedId);
                     }
                     using (MySqlCommand cmd = new MySqlCommand())
@@ -642,7 +653,7 @@ namespace GiftServer
             private void Create(OAuthUser info)
             {
                 Email = info.Email;
-                UserName = info.Name;
+                Name = info.Name;
 
                 switch (info)
                 {
@@ -669,9 +680,12 @@ namespace GiftServer
             /// <remarks>
             /// If the ID is 0, this will instead _create_ a new user
             /// </remarks>
-            /// <returns>A status of the update process</returns>
             public void Update()
             {
+                if ((BirthDay == 0 ^ BirthMonth == 0))
+                {
+                    throw new ArgumentException("Birth Month is " + BirthMonth.ToString() + " But Birth Day is " + BirthDay.ToString());
+                }
                 if (ID == 0)
                 {
                     // User does not exist - create new one instead.
@@ -712,7 +726,7 @@ namespace GiftServer
                             + "UserGoogleID = @gid, "
                             + "UserFacebookID = @fid "
                             + "WHERE UserID = @uid;";
-                        cmd.Parameters.AddWithValue("@name", UserName);
+                        cmd.Parameters.AddWithValue("@name", Name);
                         cmd.Parameters.AddWithValue("@email", Email);
                         cmd.Parameters.AddWithValue("@bio", Bio);
                         cmd.Parameters.AddWithValue("@bmonth", BirthMonth);
@@ -729,9 +743,9 @@ namespace GiftServer
             private void Update(OAuthUser user)
             {
                 bool isChanged = false;
-                if (user.Name != UserName)
+                if (user.Name != Name)
                 {
-                    UserName = user.Name;
+                    Name = user.Name;
                     isChanged = true;
                 }
                 if (Controller.ParseCulture(user.Locale) != Preferences.Culture)
@@ -750,7 +764,6 @@ namespace GiftServer
             /// <remarks>
             /// This is a permanent change, and will delete all memberships, gifts, and preferences.
             /// </remarks>
-            /// <returns>A status flag</returns>
             public void Delete()
             {
                 // TODO: Gauruntee not admin of any group
@@ -1205,7 +1218,7 @@ namespace GiftServer
                 XmlElement id = info.CreateElement("userId");
                 id.InnerText = ID.ToString();
                 XmlElement userName = info.CreateElement("userName");
-                userName.InnerText = (UserName);
+                userName.InnerText = (Name);
                 XmlElement email = info.CreateElement("email");
                 email.InnerText = Email.Address;
                 // XmlElement password = Password.Fetch().DocumentElement;
@@ -1216,7 +1229,7 @@ namespace GiftServer
                 XmlElement bio = info.CreateElement("bio");
                 bio.InnerText = Bio;
                 XmlElement dateJoined = info.CreateElement("dateJoined");
-                dateJoined.InnerText = (DateJoined.ToString("yyyy-MM-dd"));
+                dateJoined.InnerText = (DateJoined.Value.ToString("yyyy-MM-dd"));
                 XmlElement image = info.CreateElement("image");
                 image.InnerText = GetImage();
                 XmlElement groups = info.CreateElement("groups");

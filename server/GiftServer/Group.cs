@@ -469,7 +469,7 @@ namespace GiftServer
                     XmlElement userId = info.CreateElement("userId");
                     XmlElement userName = info.CreateElement("userName");
                     userId.InnerText = user.ID.ToString();
-                    userName.InnerText = user.UserName;
+                    userName.InnerText = user.Name;
                     member.AppendChild(userId);
                     member.AppendChild(userName);
                     members.AppendChild(member);

@@ -11,7 +11,10 @@ INSERT INTO users (UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, U
     VALUES ('Alex Rao', 'alexhrao@gmail.com', 7, 3, "I LOVE to have fun!", "UJIOl8xUU7ccIQH5Ofs0Awfdsa00");
 INSERT INTO users (UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL)
     VALUES ('Raeedah Choudhury', 'raeedah.choudhury@gmail.com', 11, 19, "I love my boyfriend", "UJIOl8xUU7ccIQH5Ofs0Awfdsa11");
-
+INSERT INTO users (UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL)
+    VALUES ('Alex Tes', 'alexhrao@gatech.edu', 7, 3, "fdsafdsa", "UJIOl7xUU7ccIQH5Ofs0Awfdsa00");
+INSERT INTO users (UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL)
+    VALUES ('Alex Tes', 'arao81@gatech.edu', 7, 3, "fdsafdsa", "UJIOl7xfU7ccIQH5Ofs0Awfdsa00");
 -- Create preferences:
 INSERT INTO preferences (UserID, UserCulture, UserTheme)
     VALUES (1, 'en-US', 0);

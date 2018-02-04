@@ -158,7 +158,7 @@ namespace GiftServer
                 HtmlDocument email = new HtmlDocument();
                 email.LoadHtml(HtmlManager.GetString("header") + HtmlManager.GetString("passwordResetNotification"));
                 HtmlNode name = email.DocumentNode.SelectSingleNode(@"//*[contains(concat("" "", normalize-space(@id), "" ""), "" userName "")]");
-                name.InnerHtml = HttpUtility.HtmlEncode(user.UserName);
+                name.InnerHtml = HttpUtility.HtmlEncode(user.Name);
                 return email.DocumentNode.OuterHtml;
             }
         }

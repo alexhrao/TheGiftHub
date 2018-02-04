@@ -59,7 +59,7 @@ namespace GiftServer
                             HtmlNode userNode = HtmlNode.CreateNode("<li></li>");
                             HtmlNode userLink = HtmlNode.CreateNode("<a></a>");
                             userLink.SetAttributeValue("href", Constants.URL + "/?dest=user&user=" + member.UserUrl);
-                            userLink.InnerHtml = HttpUtility.HtmlEncode(member.UserName);
+                            userLink.InnerHtml = HttpUtility.HtmlEncode(member.Name);
                             userNode.AppendChild(userLink);
                             users.AppendChild(userNode);
                         }

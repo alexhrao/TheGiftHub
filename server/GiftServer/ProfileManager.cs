@@ -48,9 +48,9 @@ namespace GiftServer
                 HtmlNode img = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userImage \")]");
                 img.Attributes["src"].Value = target.GetImage();
                 HtmlNode name = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
-                name.InnerHtml = HttpUtility.HtmlEncode(target.UserName);
+                name.InnerHtml = HttpUtility.HtmlEncode(target.Name);
                 HtmlNode timeMember = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" timeMember \")]");
-                timeMember.InnerHtml = HttpUtility.HtmlEncode("Member since " + target.DateJoined.ToString("m") + ", " + target.DateJoined.ToString("yyyy"));
+                timeMember.InnerHtml = HttpUtility.HtmlEncode("Member since " + target.DateJoined.Value.ToString("m") + ", " + target.DateJoined.Value.ToString("yyyy"));
                 HtmlNode listLink = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" listLink \")]");
                 listLink.SetAttributeValue("href", Constants.URL + "?dest=list&user=" + target.UserUrl);
                 HtmlNode email = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" email \")]");
@@ -112,14 +112,10 @@ namespace GiftServer
                 HtmlNode img = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userImage \")]");
                 img.Attributes["src"].Value = user.GetImage();
                 HtmlNode name = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
-                // HtmlNode nameChange = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userNameChange \")]");
-                // nameChange.SetAttributeValue("placeholder", HttpUtility.HtmlEncode(user.UserName));
-                name.InnerHtml = HttpUtility.HtmlEncode(user.UserName);
+                name.InnerHtml = HttpUtility.HtmlEncode(user.Name);
                 HtmlNode timeMember = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" timeMember \")]");
-                timeMember.InnerHtml = HttpUtility.HtmlEncode("Member since " + user.DateJoined.ToString("m") + ", " + user.DateJoined.ToString("yyyy"));
+                timeMember.InnerHtml = HttpUtility.HtmlEncode("Member since " + user.DateJoined.Value.ToString("m") + ", " + user.DateJoined.Value.ToString("yyyy"));
                 HtmlNode email = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" email \")]");
-                // HtmlNode emailChange = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userEmailChange \")]");
-                // emailChange.SetAttributeValue("placeholder", HttpUtility.HtmlEncode(user.Email));
                 email.InnerHtml = HttpUtility.HtmlEncode("Email: " + user.Email.Address);
                 email.Attributes.Add("data-user-email", user.Email.Address);
                 HtmlNode id = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@name), \" \"), \" userID \")]");

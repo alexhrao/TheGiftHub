@@ -4,6 +4,8 @@ using GiftServer.Data;
 using GiftServer.Exceptions;
 using System.Net.Mail;
 using GiftServer.Security;
+using MySql.Data.MySqlClient;
+using System.Configuration;
 
 namespace GiftServerTests
 {
@@ -53,12 +55,44 @@ namespace GiftServerTests
 
         [TestCategory("User"), TestCategory("Instantiate"), TestCategory("Successful")]
         [TestMethod]
-        public void UserInstantiate_ValidCredentials_NewUser()
+        public void UserInstantiate_ValidCredentials_ExistingUser()
         {
             User user = new User(new MailAddress("alexhrao@gmail.com"), "MyPassword");
             Assert.IsNotNull(user, "Valid User was not initialized");
-            Assert.AreEqual("Alex Rao", user.UserName, "Incorrect User was fetched!");
+            Assert.AreEqual("Alex Rao", user.Name, "Incorrect User was fetched!");
         }
+
+        [TestCategory("User"), TestCategory("Initialize"), TestCategory("Successful"), TestCategory("OAuth")]
+        [TestMethod]
+        public void UserInitialize_ValidGoogleData_ExistingUser()
+        {
+            // Need valid (fake) GoogleUserID
+        }
+
+        [TestCategory("User"), TestCategory("Initialize"), TestCategory("Successful"), TestCategory("OAuth")]
+        [TestMethod]
+        public void UserInitialize_ValidFacebookData_ExistingUser()
+        {
+            // Need valid (fake) FacebookUserID
+        }
+
+        [TestCategory("User"), TestCategory("Initialize"), TestCategory("ExceptionThrown"), TestCategory("OAuth")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void UserInitialize_InvalidGoogleData_ExceptionThrown()
+        {
+            GoogleUser user = new GoogleUser("12345");
+        }
+
+        [TestCategory("User"), TestCategory("Initialize"), TestCategory("ExceptionThrown"), TestCategory("OAuth")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void UserInitialize_InvalidFacebookData_ExceptionThrown()
+        {
+            FacebookUser user = new FacebookUser("12345");
+        }
+
+
 
         [TestCategory("User"), TestCategory("Create"), TestCategory("ExceptionThrown")]
         [TestMethod]
@@ -74,14 +108,118 @@ namespace GiftServerTests
         public void UserCreate_ValidData_NewUser()
         {
             User user = new User(new MailAddress("alexhrao@hotmail.com"), new Password("HelloWorld123"));
-            Assert.AreNotEqual(user.ID, 0, "UserID was not updated after creation");
+            DateTime? before = user.DateJoined;
+            Assert.IsFalse(before.HasValue);
+            user.Create();
+            Assert.AreNotEqual(user.ID, 0L, "UserID was not updated after creation");
+            Assert.IsTrue(user.DateJoined.HasValue, "User Timestamp not updated");
         }
 
-        [ClassCleanup]
-        public static void Cleanup()
+
+
+        [TestCategory("User"), TestCategory("Update"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserUpdate_ValidUser_NewName()
         {
-            // Delete user alexhrao@hotmail.com
+            User user = new User(new MailAddress("alexhrao@gmail.com"));
+            user.Name = "Alejandro";
+            user.Update();
+            User tester = new User(new MailAddress("alexhrao@gmail.com"));
+            Assert.AreEqual("Alejandro", tester.Name, "Name not updated");
+        }
+
+        [TestCategory("User"), TestCategory("Update"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserUpdate_ValidUser_NewEmail()
+        {
+            User user = new User(new MailAddress("alexhrao@gatech.edu"));
+            user.Email = new MailAddress("alexhrao@outlook.com");
+            user.Update();
+            User tester = new User(new MailAddress("alexhrao@outlook.com"));
+            Assert.AreEqual("alexhrao@outlook.com", tester.Email.Address, "Email not updated not updated");
+        }
+        [TestCategory("User"), TestCategory("Update"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(DuplicateUserException))]
+        public void UserUpdate_DuplicateEmail_ExceptionThrown()
+        {
+            User tester = new User(new MailAddress("arao81@gatech.edu"));
+            tester.Email = new MailAddress("alexhrao@gmail.com");
+            tester.Update();
+        }
+
+        [TestCategory("User"), TestCategory("Update"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserUpdate_ValidUser_NewPassword()
+        {
+            User user = new User(new MailAddress("raeedah.choudhury@gmail.com"));
+            user.UpdatePassword("HelloWorld2.0", new Action<MailAddress, User>((a, b) => { }));
+            User tester = new User(new MailAddress("raeedah.choudhury@gmail.com"));
+            Assert.IsTrue(tester.Password.Verify("HelloWorld2.0"), "Password not updated in DB");
+            Assert.IsTrue(user.Password.Verify("HelloWorld2.0"), "Password not updated locally");
+        }
+
+        [TestCategory("User"), TestCategory("Update"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserUpdate_ValidUser_NewBirthDay()
+        {
+            User user = new User(new MailAddress("alexhrao@gmail.com"));
+            user.BirthDay = 1;
+            user.BirthMonth = 2;
+            user.Update();
+        }
+
+        [TestCategory("User"), TestCategory("Update"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserUpdate_ValidUser_RemoveBirth()
+        {
+            User user = new User(new MailAddress("alexhrao@gmail.com"));
+            user.BirthDay = 0;
+            user.BirthMonth = 0;
+            user.Update();
+        }
+
+        [TestCategory("User"), TestCategory("Update"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void UserUpdate_BirthMonthWithoutDay_ExceptionThrown()
+        {
+            User user = new User(new MailAddress("alexhrao@gmail.com"));
+            user.BirthMonth = 1;
+            user.BirthDay = 0;
+            user.Update();
+        }
+
+        [TestCategory("User"), TestCategory("Update"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void UserUpdate_BirthDayWithoutMonth_ExceptionThrown()
+        {
+            User user = new User(new MailAddress("alexhrao@gmail.com"));
+            user.BirthMonth = 0;
+            user.BirthDay = 1;
+            user.Update();
+        }
+
+
+
+        [TestCategory("User"), TestCategory("Delete"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserDelete_ValidUser_NoUser()
+        {
             User user = new User(new MailAddress("alexhrao@hotmail.com"));
+            user.Delete();
+            Assert.AreEqual<ulong>(user.ID, 0L, "UserID was not reset to 0");
+        }
+
+        [TestCategory("User"), TestCategory("Delete"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserDelete_DeleteTwice_NoUser()
+        {
+            User user = new User(new MailAddress("alexhrao@yahoo.com"), new Password("HelloWorld123"));
+            Assert.AreEqual<ulong>(user.ID, 0L, "UserID was not set to 0");
+            user.Create();
+            user.Delete();
             user.Delete();
         }
     }
