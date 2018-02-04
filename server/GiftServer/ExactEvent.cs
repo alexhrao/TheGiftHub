@@ -28,10 +28,10 @@ namespace GiftServer
             /// <summary>
             /// The ID for this Exact Event
             /// </summary>
-            public ulong ExactEventId
+            public override sealed ulong ID
             {
                 get;
-                private set;
+                private protected set;
             } = 0;
 
             private char timeInterval = '\0';
@@ -154,7 +154,7 @@ namespace GiftServer
                         {
                             if (reader.Read())
                             {
-                                ExactEventId = id;
+                                ID = id;
                                 TimeInterval = Convert.ToString(reader["EventTimeInterval"]);
                                 SkipEvery = Convert.ToInt32(reader["EventSkipEvery"]);
                             }
@@ -220,7 +220,7 @@ namespace GiftServer
             /// <remarks>
             /// Note that, since Event already creates this, it is unlikely the end user will need this method
             /// </remarks>
-            public override bool Create()
+            public override void Create()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -230,52 +230,52 @@ namespace GiftServer
                         cmd.Connection = con;
                         cmd.CommandText = "INSERT INTO exact_events (EventID, EventTimeInterval, EventSkipEvery) "
                                         + "VALUES (@eid, @tin, @ski);";
-                        cmd.Parameters.AddWithValue("@eid", Event.EventId);
+                        cmd.Parameters.AddWithValue("@eid", Event.ID);
                         cmd.Parameters.AddWithValue("@tin", timeInterval);
                         cmd.Parameters.AddWithValue("@ski", skipEvery);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
-                        ExactEventId = Convert.ToUInt64(cmd.LastInsertedId);
-                        return true;
+                        ID = Convert.ToUInt64(cmd.LastInsertedId);
                     }
                 }
             }
             /// <summary>
             /// Update the record of this ruleset in the database
             /// </summary>
-            /// <returns>A status flag</returns>
             /// <remarks>
             /// Note that, since Event already updates this, it is unlikely the end user will need this method
             /// </remarks>
-            public override bool Update()
+            public override void Update()
             {
-                if (ExactEventId == 0)
+                if (ID == 0)
                 {
-                    return Create();
+                    Create();
                 }
-                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                else
                 {
-                    con.Open();
-                    using (MySqlCommand cmd = new MySqlCommand())
+                    using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                     {
-                        cmd.Connection = con;
-                        cmd.CommandText = "UPDATE exact_events SET EventTimeInterval = @tin, EventSkipEvery = @ski WHERE ExactEventID = @eid;";
-                        cmd.Parameters.AddWithValue("@tin", timeInterval);
-                        cmd.Parameters.AddWithValue("@ski", skipEvery);
-                        cmd.Parameters.AddWithValue("@eid", ExactEventId);
-                        cmd.Prepare();
-                        return cmd.ExecuteNonQuery() == 1;
+                        con.Open();
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "UPDATE exact_events SET EventTimeInterval = @tin, EventSkipEvery = @ski WHERE ExactEventID = @eid;";
+                            cmd.Parameters.AddWithValue("@tin", timeInterval);
+                            cmd.Parameters.AddWithValue("@ski", skipEvery);
+                            cmd.Parameters.AddWithValue("@eid", ID);
+                            cmd.Prepare();
+                            cmd.ExecuteNonQuery();
+                        }
                     }
                 }
             }
             /// <summary>
             /// Deletethe record of this ruleset in the database
             /// </summary>
-            /// <returns>A status flag</returns>
             /// <remarks>
             /// Note that, since Event already deletes this, it is unlikely the end user will need this method
             /// </remarks>
-            public override bool Delete()
+            public override void Delete()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -284,17 +284,10 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "DELETE FROM exact_events WHERE ExactEventID = @eid;";
-                        cmd.Parameters.AddWithValue("@eid", ExactEventId);
+                        cmd.Parameters.AddWithValue("@eid", ID);
                         cmd.Prepare();
-                        if (cmd.ExecuteNonQuery() == 1)
-                        {
-                            ExactEventId = 0;
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                        cmd.ExecuteNonQuery();
+                        ID = 0;
                     }
                 }
             }
@@ -338,7 +331,7 @@ namespace GiftServer
             /// <returns>If the two are equal</returns>
             public bool Equals(ExactEvent engine)
             {
-                return engine != null && engine.ExactEventId == ExactEventId;
+                return engine != null && engine.ID == ID;
             }
             /// <summary>
             /// Get the hash code for this instnace
@@ -346,7 +339,7 @@ namespace GiftServer
             /// <returns>The hash code</returns>
             public override int GetHashCode()
             {
-                return ExactEventId.GetHashCode();
+                return ID.GetHashCode();
             }
 
             /// <summary>
@@ -372,7 +365,7 @@ namespace GiftServer
                 info.AppendChild(container);
 
                 XmlElement id = info.CreateElement("exactEventId");
-                id.InnerText = ExactEventId.ToString();
+                id.InnerText = ID.ToString();
                 XmlElement _timeInterval = info.CreateElement("timeInterval");
                 _timeInterval.InnerText = timeInterval.ToString();
                 XmlElement _skipEvery = info.CreateElement("skipEvery");

@@ -24,7 +24,7 @@ namespace GiftServer
             /// <remarks>
             /// A GiftID means a deleted gift (or one never created).
             /// </remarks>
-            public ulong GiftId
+            public ulong ID
             {
                 get;
                 private set;
@@ -135,7 +135,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "SELECT ReservationID FROM reservations WHERE GiftID = @gid;";
-                            cmd.Parameters.AddWithValue("@gid", this.GiftId);
+                            cmd.Parameters.AddWithValue("@gid", ID);
                             cmd.Prepare();
                             using (MySqlDataReader reader = cmd.ExecuteReader())
                             {
@@ -164,7 +164,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "SELECT GroupID FROM groups_gifts WHERE GiftID = @gid;";
-                            cmd.Parameters.AddWithValue("@gid", GiftId);
+                            cmd.Parameters.AddWithValue("@gid", ID);
                             cmd.Prepare();
                             using (MySqlDataReader reader = cmd.ExecuteReader())
                             {
@@ -197,7 +197,7 @@ namespace GiftServer
                         {
                             if (reader.Read())
                             {
-                                GiftId = id;
+                                ID = id;
                                 User = new User(Convert.ToUInt64(reader["UserID"]));
                                 Name = Convert.ToString(reader["GiftName"]);
                                 Description = Convert.ToString(reader["GiftDescription"]);
@@ -235,8 +235,7 @@ namespace GiftServer
             /// <summary>
             /// Create the gift within the database
             /// </summary>
-            /// <returns>A status for this operation</returns>
-            public bool Create()
+            public void Create()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -246,7 +245,7 @@ namespace GiftServer
                         cmd.Connection = con;
                         cmd.CommandText = "INSERT INTO gifts (UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating, GiftReceivedDate) "
                                         + "VALUES (@uid, @name, @desc, @url, @cost, @stores, @quantity, @hex, @color, @size, @category, @rating, @rec);";
-                        cmd.Parameters.AddWithValue("@uid", User.UserId);
+                        cmd.Parameters.AddWithValue("@uid", User.ID);
                         cmd.Parameters.AddWithValue("@name", Name);
                         cmd.Parameters.AddWithValue("@desc", Description);
                         cmd.Parameters.AddWithValue("@url", Url);
@@ -262,27 +261,21 @@ namespace GiftServer
                         cmd.Prepare();
                         if (cmd.ExecuteNonQuery() == 1)
                         {
-                            GiftId = Convert.ToUInt64(cmd.LastInsertedId);
+                            ID = Convert.ToUInt64(cmd.LastInsertedId);
                             using (MySqlCommand timer = new MySqlCommand())
                             {
                                 timer.Connection = con;
                                 timer.CommandText = "SELECT GiftAddStamp FROM gifts WHERE GiftID = @gid;";
-                                timer.Parameters.AddWithValue("@gid", GiftId);
+                                timer.Parameters.AddWithValue("@gid", ID);
                                 timer.Prepare();
                                 using (MySqlDataReader reader = timer.ExecuteReader())
                                 {
                                     if (reader.Read())
                                     {
                                         TimeStamp = (DateTime)(reader["GiftAddStamp"]);
-                                        return true;
                                     }
                                 }
                             }
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
                         }
                     }
                 }
@@ -290,91 +283,89 @@ namespace GiftServer
             /// <summary>
             /// Update this gift in the database
             /// </summary>
-            /// <returns>A status flag</returns>
-            public bool Update()
+            public void Update()
             {
-                if (GiftId == 0)
+                if (ID == 0)
                 {
-                    return Create();
+                    Create();
                 }
-                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                else
                 {
-                    con.Open();
-                    using (MySqlCommand cmd = new MySqlCommand())
+                    using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                     {
-                        cmd.Connection = con;
-                        cmd.CommandText = "UPDATE gifts " +
-                                            "SET GiftName = @name, " +
-                                            "GiftDescription = @description, " +
-                                            "GiftURL = @url, " +
-                                            "GiftCost = @cost, " +
-                                            "GiftStores = @stores, " +
-                                            "GiftQuantity = @quant, " +
-                                            "GiftColor = @color, " +
-                                            "GiftColorText = @colorText, " +
-                                            "GiftSize = @size, " +
-                                            "CategoryID = @cid, " +
-                                            "GiftRating = @rating, " +
-                                            "GiftReceivedDate = @rec " +
-                                            "WHERE GiftID = @gid;";
-                        cmd.Parameters.AddWithValue("@name", Name);
-                        cmd.Parameters.AddWithValue("@description", Description);
-                        cmd.Parameters.AddWithValue("@url", Url);
-                        cmd.Parameters.AddWithValue("@cost", Cost);
-                        cmd.Parameters.AddWithValue("@stores", Stores);
-                        cmd.Parameters.AddWithValue("@quant", Quantity);
-                        cmd.Parameters.AddWithValue("@color", Color);
-                        cmd.Parameters.AddWithValue("@colorText", ColorText);
-                        cmd.Parameters.AddWithValue("@size", Size);
-                        cmd.Parameters.AddWithValue("@cid", Category.CategoryId);
-                        cmd.Parameters.AddWithValue("@rating", Rating);
-                        cmd.Parameters.AddWithValue("@gid", GiftId);
-                        if (DateReceived == DateTime.MinValue)
+                        con.Open();
+                        using (MySqlCommand cmd = new MySqlCommand())
                         {
-                            cmd.Parameters.AddWithValue("@rec", null);
+                            cmd.Connection = con;
+                            cmd.CommandText = "UPDATE gifts " +
+                                                "SET GiftName = @name, " +
+                                                "GiftDescription = @description, " +
+                                                "GiftURL = @url, " +
+                                                "GiftCost = @cost, " +
+                                                "GiftStores = @stores, " +
+                                                "GiftQuantity = @quant, " +
+                                                "GiftColor = @color, " +
+                                                "GiftColorText = @colorText, " +
+                                                "GiftSize = @size, " +
+                                                "CategoryID = @cid, " +
+                                                "GiftRating = @rating, " +
+                                                "GiftReceivedDate = @rec " +
+                                                "WHERE GiftID = @gid;";
+                            cmd.Parameters.AddWithValue("@name", Name);
+                            cmd.Parameters.AddWithValue("@description", Description);
+                            cmd.Parameters.AddWithValue("@url", Url);
+                            cmd.Parameters.AddWithValue("@cost", Cost);
+                            cmd.Parameters.AddWithValue("@stores", Stores);
+                            cmd.Parameters.AddWithValue("@quant", Quantity);
+                            cmd.Parameters.AddWithValue("@color", Color);
+                            cmd.Parameters.AddWithValue("@colorText", ColorText);
+                            cmd.Parameters.AddWithValue("@size", Size);
+                            cmd.Parameters.AddWithValue("@cid", Category.CategoryId);
+                            cmd.Parameters.AddWithValue("@rating", Rating);
+                            cmd.Parameters.AddWithValue("@gid", ID);
+                            if (DateReceived == DateTime.MinValue)
+                            {
+                                cmd.Parameters.AddWithValue("@rec", null);
+                            }
+                            else
+                            {
+                                cmd.Parameters.AddWithValue("@rec", DateReceived.ToString("yyyy-MM-dd"));
+                            }
+                            cmd.Prepare();
+                            cmd.ExecuteNonQuery();
                         }
-                        else
-                        {
-                            cmd.Parameters.AddWithValue("@rec", DateReceived.ToString("yyyy-MM-dd"));
-                        }
-                        cmd.Prepare();
-                        cmd.ExecuteNonQuery();
-                        return true;
                     }
                 }
             }
             /// <summary>
             /// Delete this gift from the database
             /// </summary>
-            /// <returns>A status flag</returns>
-            public bool Delete()
+            public void Delete()
             {
-                if (GiftId == 0)
+                if (ID != 0)
                 {
-                    return false;
-                }
-                // Delete from reservations, remove from groups, remove our image, delete from main table:
-                foreach (Reservation res in Reservations)
-                {
-                    res.Delete();
-                }
-                foreach (Group group in Groups)
-                {
-                    group.Remove(this);
-                }
-                RemoveImage();
-                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
-                {
-                    con.Open();
-                    using (MySqlCommand cmd = new MySqlCommand())
+                    // Delete from reservations, remove from groups, remove our image, delete from main table:
+                    foreach (Reservation res in Reservations)
                     {
-                        cmd.Connection = con;
-                        cmd.CommandText = "DELETE FROM gifts WHERE GiftID = @gid;";
-                        cmd.Parameters.AddWithValue("@gid", GiftId);
-                        cmd.Prepare();
-                        cmd.ExecuteNonQuery();
-                        GiftId = 0;
-                        return true;
+                        res.Delete();
+                    }
+                    foreach (Group group in Groups)
+                    {
+                        group.Remove(this);
+                    }
+                    RemoveImage();
+                    using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                    {
+                        con.Open();
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "DELETE FROM gifts WHERE GiftID = @gid;";
+                            cmd.Parameters.AddWithValue("@gid", ID);
+                            cmd.Prepare();
+                            cmd.ExecuteNonQuery();
+                            ID = 0;
+                        }
                     }
                 }
             }
@@ -385,14 +376,14 @@ namespace GiftServer
             public void SaveImage(byte[] contents)
             {
                 ImageProcessor processor = new ImageProcessor(contents);
-                File.WriteAllBytes(Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + this.GiftId + Constants.ImageFormat, processor.Data);
+                File.WriteAllBytes(Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + this.ID + Constants.ImageFormat, processor.Data);
             }
             /// <summary>
             /// Remove the associated image
             /// </summary>
             public void RemoveImage()
             {
-                File.Delete(Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + this.GiftId + Constants.ImageFormat);
+                File.Delete(Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + this.ID + Constants.ImageFormat);
             }
             /// <summary>
             /// Get the image associated with this gift
@@ -403,7 +394,7 @@ namespace GiftServer
             /// </remarks>
             public string GetImage()
             {
-                return GetImage(GiftId);
+                return GetImage(ID);
             }
             /// <summary>
             /// Get the image for a specified giftID
@@ -437,8 +428,8 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "INSERT INTO groups_gifts (GroupID, GiftID) VALUES (@groupId, @giftId);";
-                        cmd.Parameters.AddWithValue("@groupId", group.GroupId);
-                        cmd.Parameters.AddWithValue("@giftId", GiftId);
+                        cmd.Parameters.AddWithValue("@groupId", group.ID);
+                        cmd.Parameters.AddWithValue("@giftId", ID);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                     }
@@ -457,8 +448,8 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "DELETE FROM groups_gifts WHERE GiftID = @giftId AND GroupID = @groupId;";
-                        cmd.Parameters.AddWithValue("@giftId", GiftId);
-                        cmd.Parameters.AddWithValue("@groupId", group.GroupId);
+                        cmd.Parameters.AddWithValue("@giftId", ID);
+                        cmd.Parameters.AddWithValue("@groupId", group.ID);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                     }
@@ -487,7 +478,7 @@ namespace GiftServer
             /// <returns>If the two gifts are equal</returns>
             public bool Equals(Gift gift)
             {
-                return gift != null && gift.GiftId == GiftId;
+                return gift != null && gift.ID == ID;
             }
             /// <summary>
             /// Get the hash code for this gift
@@ -495,7 +486,7 @@ namespace GiftServer
             /// <returns>This gift's hash code</returns>
             public override int GetHashCode()
             {
-                return GiftId.GetHashCode();
+                return ID.GetHashCode();
             }
             /// <summary>
             /// Serialize this gift as an XML Document
@@ -531,9 +522,9 @@ namespace GiftServer
                 XmlElement container = info.CreateElement("gift");
                 info.AppendChild(container);
                 XmlElement id = info.CreateElement("giftId");
-                id.InnerText = GiftId.ToString();
+                id.InnerText = ID.ToString();
                 XmlElement user = info.CreateElement("user");
-                user.InnerText = User.UserId.ToString();
+                user.InnerText = User.ID.ToString();
                 XmlElement name = info.CreateElement("name");
                 name.InnerText = Name;
                 XmlElement description = info.CreateElement("description");
@@ -562,7 +553,7 @@ namespace GiftServer
                 foreach (Group group in Groups)
                 {
                     XmlElement groupElem = info.CreateElement("group");
-                    groupElem.InnerText = group.GroupId.ToString();
+                    groupElem.InnerText = group.ID.ToString();
                     groups.AppendChild(groupElem);
                 }
                 XmlElement reservations = info.CreateElement("reservations");

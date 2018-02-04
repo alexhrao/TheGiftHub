@@ -18,7 +18,7 @@ namespace GiftServer
             /// <summary>
             /// The EventID for this Event
             /// </summary>
-            public ulong EventId
+            public ulong ID
             {
                 get;
                 private set;
@@ -52,7 +52,32 @@ namespace GiftServer
             /// <summary>
             /// A list of Blackout Dates.
             /// </summary>
-            public List<Blackout> Blackouts = new List<Blackout>();
+            public List<Blackout> Blackouts
+            {
+                get
+                {
+                    List<Blackout> blackouts = new List<Blackout>();
+                    using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                    {
+                        con.Open();
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "SELECT EventBlackoutID FROM event_blackouts WHERE EventID = @eid;";
+                            cmd.Parameters.AddWithValue("@eid", ID);
+                            cmd.Prepare();
+                            using (MySqlDataReader reader = cmd.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    blackouts.Add(new Blackout(Convert.ToUInt64(reader["EventBlackoutID"])));
+                                }
+                            }
+                        }
+                    }
+                    return blackouts;
+                }
+            }
             /// <summary>
             /// A list of groups this event is visible to
             /// </summary>
@@ -68,7 +93,7 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "SELECT GroupID FROM groups_events WHERE EventID = @eid;";
-                            cmd.Parameters.AddWithValue("@eid", EventId);
+                            cmd.Parameters.AddWithValue("@eid", ID);
                             cmd.Prepare();
                             using (MySqlDataReader reader = cmd.ExecuteReader())
                             {
@@ -101,7 +126,7 @@ namespace GiftServer
                         {
                             if (reader.Read())
                             {
-                                EventId = id;
+                                ID = id;
                                 Name = Convert.ToString(reader["EventName"]);
                                 StartDate = (DateTime)(reader["EventStartDate"]);
                                 EndDate = (DateTime?)(reader["EventEndDate"] == DBNull.Value ? null : reader["EventEndDate"]);
@@ -149,20 +174,6 @@ namespace GiftServer
                                         Event = this
                                     };
                                 }
-                            }
-                        }
-                    }
-                    using (MySqlCommand cmd = new MySqlCommand())
-                    {
-                        cmd.Connection = con;
-                        cmd.CommandText = "SELECT BlackoutEventID FROM blackout_events WHERE EventID = @eid;";
-                        cmd.Parameters.AddWithValue("@eid", id);
-                        cmd.Prepare();
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                Blackouts.Add(new Blackout(Convert.ToUInt64(reader["BlackoutEventID"])));
                             }
                         }
                     }
@@ -251,11 +262,10 @@ namespace GiftServer
             /// <summary>
             /// Create a record of this event in the database
             /// </summary>
-            /// <returns>A status flag</returns>
             /// <remarks>
             /// This also creates the necessary rules engine.
             /// </remarks>
-            public bool Create()
+            public void Create()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -265,15 +275,14 @@ namespace GiftServer
                         cmd.Connection = con;
                         cmd.CommandText = "INSERT INTO user_events (UserID, EventName, EventStartDate, EventEndDate)  "
                                         + "VALUES (@uid, @enm, @esd, @eed);";
-                        cmd.Parameters.AddWithValue("@uid", User.UserId);
+                        cmd.Parameters.AddWithValue("@uid", User.ID);
                         cmd.Parameters.AddWithValue("@enm", Name);
                         cmd.Parameters.AddWithValue("@esd", StartDate);
                         cmd.Parameters.AddWithValue("@eed", EndDate.HasValue ? EndDate.Value.ToString("yyyy-MM-dd") : null);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
-                        EventId = Convert.ToUInt64(cmd.LastInsertedId);
+                        ID = Convert.ToUInt64(cmd.LastInsertedId);
                         Rules.Create();
-                        return true;
                     }
                 }
             }
@@ -281,11 +290,10 @@ namespace GiftServer
             /// <summary>
             /// Update an existing event
             /// </summary>
-            /// <returns>A status flag</returns>
             /// <remarks>
             /// This will also update any rule changes
             /// </remarks>
-            public bool Update()
+            public void Update()
             {
                 // First update the event, then update the rules engine
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -299,7 +307,7 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@nam", Name);
                         cmd.Parameters.AddWithValue("@std", StartDate);
                         cmd.Parameters.AddWithValue("@edt", EndDate.HasValue ? EndDate.Value.ToString("yyyy-MM-dd") : null);
-                        cmd.Parameters.AddWithValue("@eid", EventId);
+                        cmd.Parameters.AddWithValue("@eid", ID);
                         cmd.ExecuteNonQuery();
                         if (Rules != null)
                         {
@@ -307,16 +315,14 @@ namespace GiftServer
                         }
                     }
                 }
-                return true;
             }
             /// <summary>
             /// Delete an event
             /// </summary>
-            /// <returns>A status flag</returns>
             /// <remarks>
             /// This will also delete any rule sets
             /// </remarks>
-            public bool Delete()
+            public void Delete()
             {
                 // Delete rules, remove from groups, delete from db.
                 if (Rules != null)
@@ -328,6 +334,10 @@ namespace GiftServer
                 {
                     group.Remove(this);
                 }
+                foreach (Blackout blackout in Blackouts)
+                {
+                    blackout.Delete();
+                }
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -335,11 +345,10 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "DELETE FROM user_events WHERE EventID = @eid;";
-                        cmd.Parameters.AddWithValue("@eid", EventId);
+                        cmd.Parameters.AddWithValue("@eid", ID);
                         cmd.ExecuteNonQuery();
                     }
                 }
-                return true;
             }
             /// <summary>
             /// Get Occurrences starting from today, with a limiit
@@ -433,7 +442,7 @@ namespace GiftServer
             /// <returns>False if null or not the same event</returns>
             public bool Equals(Event evnt)
             {
-                return evnt != null && evnt.EventId == EventId;
+                return evnt != null && evnt.ID == ID;
             }
             /// <summary>
             /// 
@@ -441,7 +450,7 @@ namespace GiftServer
             /// <returns></returns>
             public override int GetHashCode()
             {
-                return EventId.GetHashCode();
+                return ID.GetHashCode();
             }
             /// <summary>
             /// Compares two events

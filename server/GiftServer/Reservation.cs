@@ -16,7 +16,7 @@ namespace GiftServer
             /// <summary>
             /// The reservation ID
             /// </summary>
-            public ulong ReservationId
+            public ulong ID
             {
                 get;
                 private set;
@@ -59,7 +59,7 @@ namespace GiftServer
                                 User = new User(Convert.ToUInt64(reader["UserID"]));
                                 Gift = new Gift(Convert.ToUInt64(reader["GiftID"]));
                                 // IsPurchased = Convert.ToBoolean(reader["IsPurchased"]);
-                                ReservationId = reservationId;
+                                ID = reservationId;
                             }
                         }
                     }
@@ -79,8 +79,7 @@ namespace GiftServer
             /// <summary>
             /// Creates a record of this in the Database
             /// </summary>
-            /// <returns>A Status Flag</returns>
-            public bool Create()
+            public void Create()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -89,7 +88,7 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT COUNT(*) AS NumRes FROM reservations WHERE GiftID = @gid;";
-                        cmd.Parameters.AddWithValue("@gid", Gift.GiftId);
+                        cmd.Parameters.AddWithValue("@gid", Gift.ID);
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
@@ -103,8 +102,8 @@ namespace GiftServer
                             cmd.Connection = con;
                             // Add to reserved:
                             cmd.CommandText = "INSERT INTO reservations (GiftID, UserID) VALUES (@gid, @uid);";
-                            cmd.Parameters.AddWithValue("@gid", Gift.GiftId);
-                            cmd.Parameters.AddWithValue("@uid", User.UserId);
+                            cmd.Parameters.AddWithValue("@gid", Gift.ID);
+                            cmd.Parameters.AddWithValue("@uid", User.ID);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -115,14 +114,12 @@ namespace GiftServer
                     }
                     // If purchased, insert into purchased table? (or just have date that reps purchase date)
                 }
-                return true;
             }
 
             /// <summary>
             /// Updates a record of this in the database
             /// </summary>
-            /// <returns>A Status flag</returns>
-            public bool Update()
+            public void Update()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -131,20 +128,18 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "UPDATE reservations SET UserID = @uid, GiftID = @gid WHERE ReservationID = @rid;";
-                        cmd.Parameters.AddWithValue("@uid", User.UserId);
-                        cmd.Parameters.AddWithValue("@gid", Gift.GiftId);
-                        cmd.Parameters.AddWithValue("@rid", ReservationId);
+                        cmd.Parameters.AddWithValue("@uid", User.ID);
+                        cmd.Parameters.AddWithValue("@gid", Gift.ID);
+                        cmd.Parameters.AddWithValue("@rid", ID);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                     }
                 }
-                return true;
             }
             /// <summary>
             /// Deletes the record of this from the database
             /// </summary>
-            /// <returns>A status flag</returns>
-            public bool Delete()
+            public void Delete()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -153,11 +148,10 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "DELETE FROM reservations WHERE ReservationID = @rid;";
-                        cmd.Parameters.AddWithValue("@rid", ReservationId);
-                        ReservationId = 0;
+                        cmd.Parameters.AddWithValue("@rid", ID);
+                        ID = 0;
                     }
                 }
-                return true;
             }
             /// <summary>
             /// See if the given object is the same as this reservation
@@ -182,7 +176,7 @@ namespace GiftServer
             /// <returns>Whether or not the two reservations are equal</returns>
             public bool Equals(Reservation reservation)
             {
-                return reservation != null && reservation.ReservationId == ReservationId;
+                return reservation != null && reservation.ID == ID;
             }
             /// <summary>
             /// Get the hash code for this reservation
@@ -190,7 +184,7 @@ namespace GiftServer
             /// <returns>The hash code for this reservation</returns>
             public override int GetHashCode()
             {
-                return ReservationId.GetHashCode();
+                return ID.GetHashCode();
             }
             /// <summary>
             /// Serializes this reservation
@@ -213,11 +207,11 @@ namespace GiftServer
                 info.AppendChild(container);
 
                 XmlElement resId = info.CreateElement("reservationId");
-                resId.InnerText = ReservationId.ToString();
+                resId.InnerText = ID.ToString();
                 XmlElement user = info.CreateElement("userId");
-                user.InnerText = User.UserId.ToString();
+                user.InnerText = User.ID.ToString();
                 XmlElement gift = info.CreateElement("giftId");
-                gift.InnerText = Gift.GiftId.ToString();
+                gift.InnerText = Gift.ID.ToString();
                 XmlElement purchased = info.CreateElement("isPurchased");
                 purchased.InnerText = IsPurchased.ToString().ToLower();
 

@@ -8,20 +8,24 @@
         public interface ISynchronizable
         {
             /// <summary>
+            /// The ID for this Synchronizable object
+            /// </summary>
+            ulong ID
+            {
+                get;
+            }
+            /// <summary>
             /// Create a record of this in the database
             /// </summary>
-            /// <returns>A Status Flag</returns>
-            bool Create();
+            void Create();
             /// <summary>
             /// Update a record of this in the database
             /// </summary>
-            /// <returns>A Status Flag</returns>
-            bool Update();
+            void Update();
             /// <summary>
             /// Delete the record of this in the database
             /// </summary>
-            /// <returns>A Status Flag</returns>
-            bool Delete();
+            void Delete();
         }
     }
 }

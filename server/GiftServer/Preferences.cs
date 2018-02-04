@@ -14,7 +14,7 @@ namespace GiftServer
             /// <summary>
             /// The ID for this set of preferences
             /// </summary>
-            public ulong PreferenceId
+            public ulong ID
             {
                 get;
                 private set;
@@ -63,14 +63,14 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT * FROM preferences WHERE preferences.UserID = @uid;";
-                        cmd.Parameters.AddWithValue("@uid", user.UserId);
+                        cmd.Parameters.AddWithValue("@uid", user.ID);
                         cmd.Prepare();
                         using (MySqlDataReader Reader = cmd.ExecuteReader())
                         {
                             if (Reader.Read())
                             {
                                 // We have data!
-                                PreferenceId = Convert.ToUInt64(Reader["PreferenceID"]);
+                                ID = Convert.ToUInt64(Reader["PreferenceID"]);
                                 culture = Convert.ToString(Reader["UserCulture"]);
                             }
                         }
@@ -92,7 +92,7 @@ namespace GiftServer
             public Preferences(ulong preferenceId)
             {
                 // Try and get preferences
-                PreferenceId = preferenceId;
+                ID = preferenceId;
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -108,7 +108,7 @@ namespace GiftServer
                             {
                                 // We have data!
                                 User = new User(Convert.ToUInt64(Reader["UserID"]));
-                                PreferenceId = User.Preferences.PreferenceId;
+                                ID = User.Preferences.ID;
                                 culture = User.Preferences.Culture;
                             }
                         }
@@ -118,8 +118,7 @@ namespace GiftServer
             /// <summary>
             /// Create a record for this set of preferences in the database
             /// </summary>
-            /// <returns>A status flag</returns>
-            public bool Create()
+            public void Create()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -129,26 +128,18 @@ namespace GiftServer
                         cmd.Connection = con;
                         cmd.CommandText = "INSERT INTO preferences (UserID, UserCulture) "
                                         + "VALUES (@uid, @clt);";
-                        cmd.Parameters.AddWithValue("@uid", User.UserId);
+                        cmd.Parameters.AddWithValue("@uid", User.ID);
                         cmd.Parameters.AddWithValue("@clt", culture);
                         cmd.Prepare();
-                        if (cmd.ExecuteNonQuery() == 1)
-                        {
-                            PreferenceId = Convert.ToUInt64(cmd.LastInsertedId);
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                        cmd.ExecuteNonQuery();
+                        ID = Convert.ToUInt64(cmd.LastInsertedId);
                     }
                 }
             }
             /// <summary>
             /// Update existing preferences
             /// </summary>
-            /// <returns>A status flag</returns>
-            public bool Update()
+            public void Update()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -160,17 +151,16 @@ namespace GiftServer
                                         + "SET UserCulture = @clt "
                                         + "WHERE PreferenceID = @pid;";
                         cmd.Parameters.AddWithValue("@clt", culture);
-                        cmd.Parameters.AddWithValue("@pid", PreferenceId);
+                        cmd.Parameters.AddWithValue("@pid", ID);
                         cmd.Prepare();
-                        return cmd.ExecuteNonQuery() == 1;
+                        cmd.ExecuteNonQuery();
                     }
                 }
             }
             /// <summary>
             /// Delete these preferences
             /// </summary>
-            /// <returns>A status flag</returns>
-            public bool Delete()
+            public void Delete()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -179,17 +169,10 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "DELETE FROM preferences WHERE UserID = @uid;";
-                        cmd.Parameters.AddWithValue("@uid", User.UserId);
+                        cmd.Parameters.AddWithValue("@uid", User.ID);
                         cmd.Prepare();
-                        if (cmd.ExecuteNonQuery() == 1)
-                        {
-                            PreferenceId = 0;
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                        cmd.ExecuteNonQuery();
+                        ID = 0;
                     }
                 }
             }
@@ -216,7 +199,7 @@ namespace GiftServer
             /// <returns>Whether or not they are equal</returns>
             public bool Equals(Preferences prefs)
             {
-                return prefs != null && prefs.PreferenceId == PreferenceId;
+                return prefs != null && prefs.ID == ID;
             }
             /// <summary>
             /// The hash code for these preferences
@@ -224,7 +207,7 @@ namespace GiftServer
             /// <returns>The hash code</returns>
             public override int GetHashCode()
             {
-                return PreferenceId.GetHashCode();
+                return ID.GetHashCode();
             }
             /// <summary>
             /// Serializes the Preferences as an XML Document
@@ -243,7 +226,7 @@ namespace GiftServer
                 XmlElement container = info.CreateElement("preferences");
                 info.AppendChild(container);
                 XmlElement id = info.CreateElement("preferenceId");
-                id.InnerText = PreferenceId.ToString();
+                id.InnerText = ID.ToString();
                 XmlElement userCulture = info.CreateElement("culture");
                 userCulture.InnerText = culture;
 

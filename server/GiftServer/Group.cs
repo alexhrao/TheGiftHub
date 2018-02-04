@@ -25,7 +25,7 @@ namespace GiftServer
             /// <remarks>
             /// If this is 0, the group must be Created() before anything else makes sense.
             /// </remarks>
-            public ulong GroupId
+            public ulong ID
             {
                 get;
                 private set;
@@ -84,7 +84,9 @@ namespace GiftServer
                     return events;
                 }
             }
-
+            /// <summary>
+            /// Gifts viewable to all members of this group
+            /// </summary>
             public List<Gift> Gifts
             {
                 get
@@ -92,7 +94,7 @@ namespace GiftServer
                     List<Gift> gifts = new List<Gift>();
                     foreach (User member in Users)
                     {
-                        gifts.AddRange(member.Gifts.FindAll(gift => gift.Groups.Exists(group => group.GroupId == GroupId)));
+                        gifts.AddRange(member.Gifts.FindAll(gift => gift.Groups.Exists(group => group.ID == ID)));
                     }
                     return gifts;
                 }
@@ -117,7 +119,7 @@ namespace GiftServer
                         {
                             if (reader.Read())
                             {
-                                GroupId = groupID;
+                                ID = groupID;
                                 Name = Convert.ToString(reader["GroupName"]);
                                 Description = Convert.ToString(reader["GroupDescription"]);
                                 admin = new User(Convert.ToUInt64(reader["AdminID"]));
@@ -132,8 +134,8 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT groups_users.UserID FROM groups_users WHERE groups_users.GroupID = @gid AND NOT groups_users.UserID = @aid;";
-                        cmd.Parameters.AddWithValue("@gid", GroupId);
-                        cmd.Parameters.AddWithValue("@aid", Admin.UserId);
+                        cmd.Parameters.AddWithValue("@gid", ID);
+                        cmd.Parameters.AddWithValue("@aid", Admin.ID);
                         cmd.Prepare();
                         using (MySqlDataReader Reader = cmd.ExecuteReader())
                         {
@@ -171,8 +173,7 @@ namespace GiftServer
             /// <summary>
             /// Create this group in the database
             /// </summary>
-            /// <returns>A status flag</returns>
-            public bool Create()
+            public void Create()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -184,10 +185,10 @@ namespace GiftServer
                                         + "VALUES (@name, @desc, @admin);";
                         cmd.Parameters.AddWithValue("@name", Name);
                         cmd.Parameters.AddWithValue("@desc", Description);
-                        cmd.Parameters.AddWithValue("@admin", Admin.UserId);
+                        cmd.Parameters.AddWithValue("@admin", Admin.ID);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
-                        GroupId = Convert.ToUInt64(cmd.LastInsertedId);
+                        ID = Convert.ToUInt64(cmd.LastInsertedId);
                     }
                     foreach (User user in Users)
                     {
@@ -196,55 +197,51 @@ namespace GiftServer
                             cmd.Connection = con;
                             cmd.CommandText = "INSERT INTO groups_users (GroupID, UserID, IsChild) "
                                             + "VALUES (@gid, @uid, FALSE);";
-                            cmd.Parameters.AddWithValue("@gid", GroupId);
-                            cmd.Parameters.AddWithValue("@uid", user.UserId);
+                            cmd.Parameters.AddWithValue("@gid", ID);
+                            cmd.Parameters.AddWithValue("@uid", user.ID);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
                     }
                 }
-                return true;
             }
             /// <summary>
             /// Update this group in the database
             /// </summary>
-            /// <returns>A status flag</returns>
-            public bool Update()
+            public void Update()
             {
-                if (GroupId == 0)
+                if (ID == 0)
                 {
-                    return Create();
+                    Create();
                 }
-                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                else
                 {
-                    con.Open();
-                    using (MySqlCommand cmd = new MySqlCommand())
+                    using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                     {
-                        cmd.Connection = con;
-                        cmd.CommandText = "UPDATE groups "
-                                        + "SET GroupName = @name, "
-                                        + "GroupDescription = @desc, "
-                                        + "AdminID = @uid "
-                                        + "WHERE GroupID = @id;";
-                        cmd.Parameters.AddWithValue("@name", Name);
-                        cmd.Parameters.AddWithValue("@desc", Description);
-                        cmd.Parameters.AddWithValue("@uid", Admin.UserId);
-                        cmd.Parameters.AddWithValue("@id", GroupId);
-                        cmd.Prepare();
-                        return cmd.ExecuteNonQuery() == 0;
+                        con.Open();
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "UPDATE groups "
+                                            + "SET GroupName = @name, "
+                                            + "GroupDescription = @desc, "
+                                            + "AdminID = @uid "
+                                            + "WHERE GroupID = @id;";
+                            cmd.Parameters.AddWithValue("@name", Name);
+                            cmd.Parameters.AddWithValue("@desc", Description);
+                            cmd.Parameters.AddWithValue("@uid", Admin.ID);
+                            cmd.Parameters.AddWithValue("@id", ID);
+                            cmd.Prepare();
+                            cmd.ExecuteNonQuery();
+                        }
                     }
                 }
             }
             /// <summary>
             /// Delete this group from the database
             /// </summary>
-            /// <returns>A status flag</returns>
-            public bool Delete()
+            public void Delete()
             {
-                if (GroupId == 0)
-                {
-                    return false;
-                }
                 // Remove gifts, users, events, Delete this
                 foreach (Gift gift in Gifts)
                 {
@@ -269,17 +266,9 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "DELETE FROM groups WHERE GroupID = @id;";
-                        cmd.Parameters.AddWithValue("@id", GroupId);
+                        cmd.Parameters.AddWithValue("@id", ID);
                         cmd.Prepare();
-                        if (cmd.ExecuteNonQuery() == 1)
-                        {
-                            GroupId = 0;
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                        cmd.ExecuteNonQuery();
                     }
                 }
             }
@@ -297,8 +286,8 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "INSERT INTO groups_users (GroupID, UserID) VALUES (@gid, @uid);";
-                        cmd.Parameters.AddWithValue("@gid", GroupId);
-                        cmd.Parameters.AddWithValue("@uid", user.UserId);
+                        cmd.Parameters.AddWithValue("@gid", ID);
+                        cmd.Parameters.AddWithValue("@uid", user.ID);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                     }
@@ -318,8 +307,8 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "DELETE FROM groups_users WHERE GroupID = @gid AND UserID = @uid;";
-                        cmd.Parameters.AddWithValue("@gid", GroupId);
-                        cmd.Parameters.AddWithValue("@uid", user.UserId);
+                        cmd.Parameters.AddWithValue("@gid", ID);
+                        cmd.Parameters.AddWithValue("@uid", user.ID);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                     }
@@ -339,8 +328,8 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "INSERT INTO groups_events (GroupID, EventID) VALUES (@gid, @eid);";
-                        cmd.Parameters.AddWithValue("@eid", evnt.EventId);
-                        cmd.Parameters.AddWithValue("@gid", GroupId);
+                        cmd.Parameters.AddWithValue("@eid", evnt.ID);
+                        cmd.Parameters.AddWithValue("@gid", ID);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                     }
@@ -359,8 +348,8 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "DELETE FROM groups_events WHERE GroupID = @gid AND EventID = @eid;";
-                        cmd.Parameters.AddWithValue("@gid", GroupId);
-                        cmd.Parameters.AddWithValue("@eid", evnt.EventId);
+                        cmd.Parameters.AddWithValue("@gid", ID);
+                        cmd.Parameters.AddWithValue("@eid", evnt.ID);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                     }
@@ -380,8 +369,8 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "INSERT INTO groups_gifts (GroupID, GiftID) VALUES (@grid, @gid);";
-                        cmd.Parameters.AddWithValue("@grid", GroupId);
-                        cmd.Parameters.AddWithValue("@gid", gift.GiftId);
+                        cmd.Parameters.AddWithValue("@grid", ID);
+                        cmd.Parameters.AddWithValue("@gid", gift.ID);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                     }
@@ -400,8 +389,8 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "DELETE FROM groups_gifts WHERE GroupID = @grid AND GiftID = @gid;";
-                        cmd.Parameters.AddWithValue("@grid", GroupId);
-                        cmd.Parameters.AddWithValue("@gid", gift.GiftId);
+                        cmd.Parameters.AddWithValue("@grid", ID);
+                        cmd.Parameters.AddWithValue("@gid", gift.ID);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                     }
@@ -430,7 +419,7 @@ namespace GiftServer
             /// <returns>true if they are indeed the same group</returns>
             public bool Equals(Group group)
             {
-                return group != null && group.GroupId == GroupId;
+                return group != null && group.ID == ID;
             }
             /// <summary>
             /// Get the hash code for this object
@@ -438,7 +427,7 @@ namespace GiftServer
             /// <returns>The code</returns>
             public override int GetHashCode()
             {
-                return GroupId.GetHashCode();
+                return ID.GetHashCode();
             }
             /// <summary>
             /// Serializes this group's information
@@ -466,20 +455,20 @@ namespace GiftServer
                 info.AppendChild(container);
 
                 XmlElement id = info.CreateElement("groupId");
-                id.InnerText = GroupId.ToString();
+                id.InnerText = ID.ToString();
                 XmlElement name = info.CreateElement("name");
                 name.InnerText = Name;
                 XmlElement description = info.CreateElement("description");
                 description.InnerText = Description;
                 XmlElement admin = info.CreateElement("adminId");
-                admin.InnerText = Admin.UserId.ToString();
+                admin.InnerText = Admin.ID.ToString();
                 XmlElement members = info.CreateElement("members");
                 foreach (User user in users)
                 {
                     XmlElement member = info.CreateElement("member");
                     XmlElement userId = info.CreateElement("userId");
                     XmlElement userName = info.CreateElement("userName");
-                    userId.InnerText = user.UserId.ToString();
+                    userId.InnerText = user.ID.ToString();
                     userName.InnerText = user.UserName;
                     member.AppendChild(userId);
                     member.AppendChild(userName);

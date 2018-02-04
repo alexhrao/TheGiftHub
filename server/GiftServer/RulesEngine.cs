@@ -12,6 +12,14 @@ namespace GiftServer
         public abstract class RulesEngine : ISynchronizable, IFetchable, IEquatable<RulesEngine>
         {
             /// <summary>
+            /// The ID of this rules engine
+            /// </summary>
+            public abstract ulong ID
+            {
+                get;
+                private protected set;
+            }
+            /// <summary>
             /// A List of Occurrences for this event
             /// </summary>
             /// <remarks>
@@ -31,17 +39,17 @@ namespace GiftServer
             /// Create a record of this event rule in the database
             /// </summary>
             /// <returns>A status flag</returns>
-            public abstract bool Create();
+            public abstract void Create();
             /// <summary>
             /// Update a record of this event rule in the database
             /// </summary>
             /// <returns>A status flag</returns>
-            public abstract bool Update();
+            public abstract void Update();
             /// <summary>
             /// Delete the record of this event rule in the database
             /// </summary>
             /// <returns>A status flag</returns>
-            public abstract bool Delete();
+            public abstract void Delete();
             /// <summary>
             /// See if two rule sets are actually the same one
             /// </summary>

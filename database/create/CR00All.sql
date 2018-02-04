@@ -125,12 +125,12 @@ ALTER TABLE gift_registry_db.relative_events
 	ADD CONSTRAINT FK_RelativeEvents FOREIGN KEY (EventID)
 		REFERENCES gift_registry_db.user_events(EventID);
 
-CREATE TABLE gift_registry_db.blackout_events (
-	BlackoutEventID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE gift_registry_db.event_blackouts (
+	EventBlackoutID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     EventID INT NOT NULL,
     EventBlackoutDate DATE NOT NULL
 );
-ALTER TABLE gift_registry_db.blackout_events
+ALTER TABLE gift_registry_db.event_blackouts
 	ADD CONSTRAINT FK_BlackoutEvents FOREIGN KEY (EventID)
 		REFERENCES gift_registry_db.user_events(EventID);
         
