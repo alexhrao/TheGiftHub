@@ -74,9 +74,7 @@ namespace GiftServerTests
         public void UserCreate_ValidData_NewUser()
         {
             User user = new User(new MailAddress("alexhrao@hotmail.com"), new Password("HelloWorld123"));
-            bool res = user.Create();
-            Assert.IsTrue(res, "Valid Create() returned false");
-            Assert.AreNotEqual(user.UserId, 0, "UserID was not updated after creation");
+            Assert.AreNotEqual(user.ID, 0, "UserID was not updated after creation");
         }
 
         [ClassCleanup]
