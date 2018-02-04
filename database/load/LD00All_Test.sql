@@ -84,9 +84,9 @@ INSERT INTO relative_events (EventID, EventTimeInterval, EventSkipEvery, EventDa
 	VALUES (8, NULL, 1, 'T', 5);
 
 -- Create Blackout Dates
-INSERT INTO blackout_events (EventID, EventBlackoutDate)
+INSERT INTO event_blackouts (EventID, EventBlackoutDate)
 	VALUES (4, '2017-02-05');
-INSERT INTO blackout_events (EventID, EventBlackoutDate)
+INSERT INTO event_blackouts (EventID, EventBlackoutDate)
 	VALUES (8, '2017-06-27');
 
 -- Add events to groups
