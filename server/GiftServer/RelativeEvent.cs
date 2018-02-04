@@ -31,10 +31,10 @@ namespace GiftServer
             /// <summary>
             /// The ID for this Relative Event Rule
             /// </summary>
-            public ulong RelativeEventId
+            public override sealed ulong ID
             {
                 get;
-                private set;
+                private protected set;
             } = 0;
 
             private string timeInterval = "";
@@ -278,7 +278,7 @@ namespace GiftServer
                         {
                             if (reader.Read())
                             {
-                                RelativeEventId = id;
+                                ID = id;
                                 TimeInterval = Convert.ToString(reader["EventTimeInterval"]);
                                 SkipEvery = Convert.ToInt32(reader["EventSkipEvery"]);
                                 DayOfWeek = Convert.ToString(reader["EventDayOfWeek"]);
@@ -489,7 +489,7 @@ namespace GiftServer
             /// <remarks>
             /// Note that, since Event already creates this, it is unlikely the end user will need this method
             /// </remarks>
-            public override bool Create()
+            public override void Create()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -499,15 +499,14 @@ namespace GiftServer
                         cmd.Connection = con;
                         cmd.CommandText = "INSERT INTO relative_events (EventID, EventTimeInterval, EventSkipEvery, EventDayOfWeek, EventPosn) "
                                         + "VALUES (@eid, @tin, @ski, @dow, @pos);";
-                        cmd.Parameters.AddWithValue("@eid", Event.EventId);
+                        cmd.Parameters.AddWithValue("@eid", Event.ID);
                         cmd.Parameters.AddWithValue("@tin", timeInterval);
                         cmd.Parameters.AddWithValue("@ski", skipEvery);
                         cmd.Parameters.AddWithValue("@dow", dayOfWeek);
                         cmd.Parameters.AddWithValue("@pos", posn);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
-                        RelativeEventId = Convert.ToUInt64(cmd.LastInsertedId);
-                        return true;
+                        ID = Convert.ToUInt64(cmd.LastInsertedId);
                     }
                 }
             }
@@ -518,31 +517,34 @@ namespace GiftServer
             /// <remarks>
             /// Note that, since Event already updates this, it is unlikely the end user will need this method
             /// </remarks>
-            public override bool Update()
+            public override void Update()
             {
-                if (RelativeEventId == 0)
+                if (ID == 0)
                 {
-                    return Create();
+                    Create();
                 }
-                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                else
                 {
-                    con.Open();
-                    using (MySqlCommand cmd = new MySqlCommand())
+                    using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                     {
-                        cmd.Connection = con;
-                        cmd.CommandText = "UPDATE exact_events SET "
-                                        + "EventTimeInterval = @tin, "
-                                        + "EventSkipEvery = @ski, "
-                                        + "EventDayOfWeek = @dow, "
-                                        + "EventPosn = @pos "
-                                        + "WHERE ExactEventID = @rid;";
-                        cmd.Parameters.AddWithValue("@tin", timeInterval);
-                        cmd.Parameters.AddWithValue("@ski", skipEvery);
-                        cmd.Parameters.AddWithValue("@dow", dayOfWeek);
-                        cmd.Parameters.AddWithValue("@pos", posn);
-                        cmd.Parameters.AddWithValue("@rid", RelativeEventId);
-                        cmd.Prepare();
-                        return cmd.ExecuteNonQuery() == 1;
+                        con.Open();
+                        using (MySqlCommand cmd = new MySqlCommand())
+                        {
+                            cmd.Connection = con;
+                            cmd.CommandText = "UPDATE exact_events SET "
+                                            + "EventTimeInterval = @tin, "
+                                            + "EventSkipEvery = @ski, "
+                                            + "EventDayOfWeek = @dow, "
+                                            + "EventPosn = @pos "
+                                            + "WHERE ExactEventID = @rid;";
+                            cmd.Parameters.AddWithValue("@tin", timeInterval);
+                            cmd.Parameters.AddWithValue("@ski", skipEvery);
+                            cmd.Parameters.AddWithValue("@dow", dayOfWeek);
+                            cmd.Parameters.AddWithValue("@pos", posn);
+                            cmd.Parameters.AddWithValue("@rid", ID);
+                            cmd.Prepare();
+                            cmd.ExecuteNonQuery();
+                        }
                     }
                 }
             }
@@ -553,7 +555,7 @@ namespace GiftServer
             /// <remarks>
             /// Note that, since Event already deletes this, it is unlikely the end user will need this method
             /// </remarks>
-            public override bool Delete()
+            public override void Delete()
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -562,17 +564,9 @@ namespace GiftServer
                     {
                         cmd.Connection = con;
                         cmd.CommandText = "DELETE FROM relative_events WHERE ExactEventID = @eid;";
-                        cmd.Parameters.AddWithValue("@eid", RelativeEventId);
+                        cmd.Parameters.AddWithValue("@eid", ID);
                         cmd.Prepare();
-                        if (cmd.ExecuteNonQuery() == 1)
-                        {
-                            RelativeEventId = 0;
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
-                        }
+                        cmd.ExecuteNonQuery();
                     }
                 }
             }
@@ -616,7 +610,7 @@ namespace GiftServer
             /// <returns>If the two are the same engine</returns>
             public bool Equals(RelativeEvent engine)
             {
-                return engine != null && engine.RelativeEventId == RelativeEventId;
+                return engine != null && engine.ID == ID;
             }
             /// <summary>
             /// A hash for this engine
@@ -624,7 +618,7 @@ namespace GiftServer
             /// <returns>The hash for this engine</returns>
             public override int GetHashCode()
             {
-                return RelativeEventId.GetHashCode();
+                return ID.GetHashCode();
             }
             /// <summary>
             /// Serialize this ruleset
@@ -656,7 +650,7 @@ namespace GiftServer
                 info.AppendChild(container);
 
                 XmlElement id = info.CreateElement("relativeEventId");
-                id.InnerText = RelativeEventId.ToString();
+                id.InnerText = ID.ToString();
                 XmlElement _timeInterval = info.CreateElement("timeInterval");
                 _timeInterval.InnerText = TimeInterval;
                 XmlElement _skipEvery = info.CreateElement("skipEvery");

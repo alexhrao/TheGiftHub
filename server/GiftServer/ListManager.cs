@@ -46,7 +46,7 @@ namespace GiftServer
                 list.LoadHtml(NavigationManager.NavigationBar(target) + HtmlManager.GetString("publicList"));
                 // Get all gifts that are visible to THIS USER
                 HtmlNode userId = list.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" thisUserId \")]");
-                userId.SetAttributeValue("data-user-id", viewer.UserId.ToString());
+                userId.SetAttributeValue("data-user-id", viewer.ID.ToString());
                 List<Gift> gifts = viewer.GetGifts(target);
                 HtmlNode userName = list.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
                 userName.InnerHtml = "<a href=\"" + Constants.URL + "/?dest=user&user=" + target.UserUrl + "\">" + HttpUtility.HtmlEncode(target.UserName) + "</a>'s " + StringManager.GetString("giftList");
@@ -60,10 +60,10 @@ namespace GiftServer
                     // Print gift information
                     if (gift.DateReceived == DateTime.MinValue)
                     {
-                        HtmlNode giftRow = HtmlNode.CreateNode("<tr id=\"" + gift.GiftId + "\" class=\"gift-row\"></tr>");
+                        HtmlNode giftRow = HtmlNode.CreateNode("<tr id=\"" + gift.ID + "\" class=\"gift-row\"></tr>");
 
                         giftRow.AddClass("gift-row");
-                        giftRow.Attributes.Add("data-gift-id", gift.GiftId.ToString());
+                        giftRow.Attributes.Add("data-gift-id", gift.ID.ToString());
 
                         HtmlNode parent = HtmlNode.CreateNode("<div></div>");
                         parent.AddClass("parent");
@@ -143,7 +143,7 @@ namespace GiftServer
                         giftTable.AppendChild(giftRow);
 
                         HtmlNode microRow = HtmlNode.CreateNode("<tr></tr>");
-                        microRow.Attributes.Add("data-gift-id", gift.GiftId.ToString());
+                        microRow.Attributes.Add("data-gift-id", gift.ID.ToString());
                         microRow.AddClass("gift-row");
 
                         microRow.AppendChild(pictCell.Clone());
@@ -166,7 +166,7 @@ namespace GiftServer
                 myList.LoadHtml(NavigationManager.NavigationBar(target) + HtmlManager.GetString("list"));
                 // Add category options to new and edit:
                 HtmlNode userId = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" thisUserId \")]");
-                userId.SetAttributeValue("data-user-id", target.UserId.ToString());
+                userId.SetAttributeValue("data-user-id", target.ID.ToString());
                 HtmlNode categoryEdit = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" editGiftCategory \")]");
                 HtmlNode categoryNew = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" newGiftCategory \")]");
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -197,8 +197,8 @@ namespace GiftServer
                 HtmlNode groupsEdit = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" editSharedGroups \")]");
                 foreach (Group group in target.Groups)
                 {
-                    HtmlNode entry = HtmlNode.CreateNode("<label class=\"checkbox-inline col-xs-5\" data-group-id=\"" + HttpUtility.HtmlEncode(group.GroupId) + "\"></label>");
-                    entry.AppendChild(HtmlNode.CreateNode("<input type=\"checkbox\" value=\"\" data-group-id=\"" + HttpUtility.HtmlEncode(group.GroupId) + "\" />"));
+                    HtmlNode entry = HtmlNode.CreateNode("<label class=\"checkbox-inline col-xs-5\" data-group-id=\"" + HttpUtility.HtmlEncode(group.ID) + "\"></label>");
+                    entry.AppendChild(HtmlNode.CreateNode("<input type=\"checkbox\" value=\"\" data-group-id=\"" + HttpUtility.HtmlEncode(group.ID) + "\" />"));
                     HtmlNode node = HtmlNode.CreateNode("<p></p>");
                     node.InnerHtml = HttpUtility.HtmlEncode(group.Name);
                     entry.AppendChild(node);
@@ -217,7 +217,7 @@ namespace GiftServer
                     // Print gift information
                     if (gift.DateReceived == DateTime.MinValue)
                     {
-                        HtmlNode giftRow = HtmlNode.CreateNode("<tr id=\"" + gift.GiftId + "\" class=\"gift-row\"></tr>");
+                        HtmlNode giftRow = HtmlNode.CreateNode("<tr id=\"" + gift.ID + "\" class=\"gift-row\"></tr>");
 
                         HtmlNode pict = HtmlNode.CreateNode("<td><div class=\"parent\"><img class=\"img-thumbnail img-gift img-responsive child\" src=\"" + gift.GetImage() + "\" /></div></td>");
                         HtmlNode rate = HtmlNode.CreateNode("<td><div class=\"parent\"><p class=\"child\"><input class=\"star-rating\" data-show-clear=\"false\" data-show-caption=\"false\" value=\"" + gift.Rating.ToString("N2") + "\" /></p></div></td>");
@@ -234,7 +234,7 @@ namespace GiftServer
 
                         giftTable.AppendChild(giftRow);
 
-                        HtmlNode item = HtmlNode.CreateNode("<tr id=\"" + gift.GiftId + "\" class=\"gift-row\">" +
+                        HtmlNode item = HtmlNode.CreateNode("<tr id=\"" + gift.ID + "\" class=\"gift-row\">" +
                                                             "<td><div class=\"parent\"><img class=\"img-thumbnail img-responsive child\" src=\"" + gift.GetImage() + "\" /></div>" +
                                                             "<div class=\"parent\"><p class=\"child\"><input class=\"star-rating\" data-show-clear=\"false\" data-show-caption=\"false\" value=\"" + gift.Rating.ToString("N2") + "\" /></p></div></td>" +
                                                             "<td><div class=\"parent\"><p classs\"child\">" + HttpUtility.HtmlEncode(gift.Name) + "</p></div></td>" +

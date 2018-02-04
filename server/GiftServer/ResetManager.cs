@@ -113,7 +113,7 @@ namespace GiftServer
                 HtmlDocument pg = new HtmlDocument();
                 pg.LoadHtml(HtmlManager.GetString("header") + HtmlManager.GetString("passwordReset"));
                 HtmlNode hidden = pg.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@name), \" \"), \" userID \")]");
-                hidden.Attributes["value"].Value = Convert.ToString(user.UserId);
+                hidden.Attributes["value"].Value = Convert.ToString(user.ID);
                 return pg.DocumentNode.OuterHtml;
             }
             /// <summary>

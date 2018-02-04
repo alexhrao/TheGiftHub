@@ -74,7 +74,7 @@ namespace GiftServer
                 foreach (Event evnt in viewer.GetEvents(target))
                 {
                     HtmlNode eventRow = HtmlNode.CreateNode("<tr></tr>");
-                    eventRow.Attributes.Add("data-event-id", evnt.EventId.ToString());
+                    eventRow.Attributes.Add("data-event-id", evnt.ID.ToString());
                     HtmlNode eventName = HtmlNode.CreateNode("<td></td>");
                     eventName.AddClass("event-name");
                     eventName.AppendChild(HtmlNode.CreateNode("<h3>" + HttpUtility.HtmlEncode(evnt.Name) + "</h3>"));
@@ -88,7 +88,7 @@ namespace GiftServer
                 foreach (Group group in viewer.GetGroups(target))
                 {
                     HtmlNode groupRow = HtmlNode.CreateNode("<tr></tr>");
-                    groupRow.Attributes.Add("data-group-id", group.GroupId.ToString());
+                    groupRow.Attributes.Add("data-group-id", group.ID.ToString());
                     HtmlNode groupName = HtmlNode.CreateNode("<td></td>");
                     groupName.AddClass("group-name");
                     groupName.AppendChild(HtmlNode.CreateNode("<h3>" + HttpUtility.HtmlEncode(group.Name) + "</h3>"));
@@ -123,7 +123,7 @@ namespace GiftServer
                 email.InnerHtml = HttpUtility.HtmlEncode("Email: " + user.Email.Address);
                 email.Attributes.Add("data-user-email", user.Email.Address);
                 HtmlNode id = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@name), \" \"), \" userID \")]");
-                id.Attributes["value"].Value = user.UserId.ToString();
+                id.Attributes["value"].Value = user.ID.ToString();
                 if (user.BirthMonth != 0)
                 {
                     DateTime dob = new DateTime(2004, user.BirthMonth, user.BirthDay);
@@ -211,12 +211,12 @@ namespace GiftServer
                     // Left
                     HtmlNode groupCheck = HtmlNode.CreateNode("<label></label>");
                     groupCheck.AddClass("checkbox-inline");
-                    groupCheck.Attributes.Add("data-group-id", HttpUtility.HtmlEncode(group.GroupId));
+                    groupCheck.Attributes.Add("data-group-id", HttpUtility.HtmlEncode(group.ID));
                     HtmlNode check = HtmlNode.CreateNode("<input />");
                     check.AddClass("group-check");
                     check.Attributes.Add("type", "checkbox");
                     check.Attributes.Add("value", "");
-                    check.Attributes.Add("data-group-id", HttpUtility.HtmlEncode(group.GroupId));
+                    check.Attributes.Add("data-group-id", HttpUtility.HtmlEncode(group.ID));
                     check.Attributes.Add("data-group-name", HttpUtility.HtmlEncode(group.Name));
                     groupCheck.AppendChild(check);
                     HtmlNode groupName = HtmlNode.CreateNode("<p></p>");
@@ -239,14 +239,14 @@ namespace GiftServer
                 foreach (Event evnt in user.Events)
                 {
                     HtmlNode eventRow = HtmlNode.CreateNode("<tr></tr>");
-                    eventRow.Attributes.Add("data-event-id", evnt.EventId.ToString());
+                    eventRow.Attributes.Add("data-event-id", evnt.ID.ToString());
                     HtmlNode eventCloser = HtmlNode.CreateNode("<i></i>");
                     eventCloser.AddClass("event-closer fas fa-times");
-                    eventCloser.Attributes.Add("data-event-id", evnt.EventId.ToString());
+                    eventCloser.Attributes.Add("data-event-id", evnt.ID.ToString());
                     HtmlNode eventCloserTd = HtmlNode.CreateNode("<td></td>");
                     eventCloserTd.AppendChild(eventCloser);
                     HtmlNode eventName = HtmlNode.CreateNode("<td></td>");
-                    eventName.Attributes.Add("data-event-id", evnt.EventId.ToString());
+                    eventName.Attributes.Add("data-event-id", evnt.ID.ToString());
                     eventName.AddClass("event-name");
                     eventName.AppendChild(HtmlNode.CreateNode("<h3>" + HttpUtility.HtmlEncode(evnt.Name) + "</h3>"));
                     eventRow.AppendChild(eventCloserTd);
@@ -273,15 +273,15 @@ namespace GiftServer
                 foreach (Group group in user.Groups)
                 {
                     HtmlNode groupRow = HtmlNode.CreateNode("<tr></tr>");
-                    groupRow.Attributes.Add("data-group-id", group.GroupId.ToString());
+                    groupRow.Attributes.Add("data-group-id", group.ID.ToString());
                     HtmlNode groupCloser = HtmlNode.CreateNode("<i></i>");
                     groupCloser.AddClass("group-closer fas fa-times");
-                    groupCloser.Attributes.Add("data-group-id", group.GroupId.ToString());
+                    groupCloser.Attributes.Add("data-group-id", group.ID.ToString());
                     HtmlNode groupCloserTd = HtmlNode.CreateNode("<td></td>");
                     groupCloserTd.AppendChild(groupCloser);
                     HtmlNode groupName = HtmlNode.CreateNode("<td></td>");
                     groupName.AddClass("group-name");
-                    groupName.Attributes.Add("data-group-id", group.GroupId.ToString());
+                    groupName.Attributes.Add("data-group-id", group.ID.ToString());
                     groupName.AppendChild(HtmlNode.CreateNode("<h3>" + HttpUtility.HtmlEncode(group.Name) + "</h3>"));
                     groupRow.AppendChild(groupCloserTd);
                     groupRow.AppendChild(groupName);

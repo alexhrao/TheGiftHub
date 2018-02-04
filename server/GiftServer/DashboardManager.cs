@@ -53,7 +53,7 @@ namespace GiftServer
                     events.AddRange(group.Events);
                 }
                 // Events should be ordered by the first future date
-                events.RemoveAll(e => e.GetNearestOccurrence(DateTime.Today) == null || e.User.UserId == user.UserId);
+                events.RemoveAll(e => e.GetNearestOccurrence(DateTime.Today) == null || e.User.ID == user.ID);
                 events = events.Distinct().OrderBy(e => e.GetNearestOccurrence(DateTime.Today)).ToList();
 
                 // For each event (up to some amount), list the name of the user and say 

@@ -163,7 +163,7 @@ namespace GiftServer
                                                 try
                                                 {
                                                     _user = new User(new GoogleUser(_dict["token"]), new Action<MailAddress>((MailAddress email) => PasswordReset.SendRecoveryEmail(email, ResetManager)));
-                                                    string hash = AddConnection(_user.UserId, _request.RemoteEndPoint);
+                                                    string hash = AddConnection(_user.ID, _request.RemoteEndPoint);
                                                     Cookie logger = new Cookie("UserHash", hash);
                                                     _response.Cookies.Add(logger);
                                                     _response.AppendHeader("dest", "dashboard");
@@ -178,7 +178,7 @@ namespace GiftServer
                                                 try
                                                 {
                                                     _user = new User(new FacebookUser(_dict["token"]), new Action<MailAddress>((MailAddress email) => PasswordReset.SendRecoveryEmail(email, ResetManager)));
-                                                    string hash = AddConnection(_user.UserId, _request.RemoteEndPoint);
+                                                    string hash = AddConnection(_user.ID, _request.RemoteEndPoint);
                                                     Cookie logger = new Cookie("UserHash", hash);
                                                     _response.Cookies.Add(logger);
                                                     _response.AppendHeader("dest", "dashboard");
@@ -195,7 +195,7 @@ namespace GiftServer
                                                 {
                                                     _user = new User(new MailAddress(_dict["email"]), _dict["password"]);
                                                     // Get hash
-                                                    string hash = AddConnection(_user.UserId, _request.RemoteEndPoint);
+                                                    string hash = AddConnection(_user.ID, _request.RemoteEndPoint);
                                                     Cookie logger = new Cookie("UserHash", hash);
                                                     _response.Cookies.Add(logger);
                                                     _response.AppendHeader("dest", "dashboard");
@@ -225,7 +225,30 @@ namespace GiftServer
                                         // POST data will have userID in userID input. Reset the password and let the user know.
                                         _user = new User(Convert.ToUInt64(_dict["userID"]));
                                         string password = _dict["password"];
-                                        _user.UpdatePassword(password, ResetManager);
+                                        _user.UpdatePassword(password, new Action<MailAddress, User>((Email, User) =>
+                                        {
+                                            try
+                                            {
+                                                MailMessage email = new MailMessage(new MailAddress(Constants.OrgName + "<" + Constants.SupportEmail + ">"), Email)
+                                                {
+                                                    Body = ResetManager.GenerateNotification(User),
+                                                    Subject = ResetManager.ResetNotificationSubject,
+                                                    IsBodyHtml = true
+                                                };
+                                                using (SmtpClient sender = new SmtpClient(Constants.SmtpClient, Convert.ToInt32(Constants.SmtpPort)))
+                                                {
+                                                    sender.EnableSsl = true;
+                                                    sender.DeliveryMethod = SmtpDeliveryMethod.Network;
+                                                    sender.UseDefaultCredentials = false;
+                                                    sender.Credentials = new NetworkCredential(Constants.SupportEmail, Constants.EmailPassword);
+                                                    sender.Send(email);
+                                                }
+                                            }
+                                            catch (SmtpException)
+                                            {
+                                                // Silenced - nothing we can do here and, frankly, nothing to tell the user...
+                                            }
+                                        }));
                                         return ResetManager.ResetPasswordSuccess();
                                     case "Create":
                                         switch (_dict["type"])
@@ -249,7 +272,7 @@ namespace GiftServer
                                                 {
                                                     Group group = new Group(_user, _dict["name"]);
                                                     group.Create();
-                                                    return group.GroupId.ToString();
+                                                    return group.ID.ToString();
                                                 }
                                                 catch (Exception e)
                                                 {
@@ -284,7 +307,7 @@ namespace GiftServer
                                                         e.EndDate = null;
                                                     }
                                                     e.Create();
-                                                    return e.EventId.ToString();
+                                                    return e.ID.ToString();
                                                 }
                                                 catch (Exception e)
                                                 {
@@ -309,7 +332,7 @@ namespace GiftServer
                                                         Color = _dict["color"]
                                                     };
                                                     gift.Create();
-                                                    return gift.GiftId.ToString();
+                                                    return gift.ID.ToString();
                                                 }
                                                 catch (Exception e)
                                                 {
@@ -452,7 +475,7 @@ namespace GiftServer
                         }
                         else if (_user != null)
                         {
-                            if (Path.GetFileNameWithoutExtension(path).Equals("User" + _user.UserId))
+                            if (Path.GetFileNameWithoutExtension(path).Equals("User" + _user.ID))
                             {
                                 // This user - write path
                                 Write(path);
@@ -485,7 +508,7 @@ namespace GiftServer
                             // If GiftID and UserID match, we will be able to read; otherwise, no
                             // Get GID:
                             ulong gid = Convert.ToUInt64(Path.GetFileNameWithoutExtension(path).Substring(4));
-                            if (_user.Gifts.Exists(new Predicate<Gift>(g => g.GiftId == gid)))
+                            if (_user.Gifts.Exists(new Predicate<Gift>(g => g.ID == gid)))
                             {
                                 // Found in our own gifts; write
                                 Write(path);
@@ -493,7 +516,7 @@ namespace GiftServer
                             else
                             {
                                 Gift gift = new Gift(gid);
-                                if (gift.Groups.FindAll(g => g.Users.Exists(u => u.UserId == _user.UserId)).Count == 0)
+                                if (gift.Groups.FindAll(g => g.Users.Exists(u => u.ID == _user.ID)).Count == 0)
                                 {
                                     _response.StatusCode = 403;
                                     message = "Forbidden - You are not in any common groups with this gift.";
@@ -892,7 +915,7 @@ namespace GiftServer
                         gift.Delete();
                         return "200";
                     case "reserve":
-                        int release = gift.Reservations.FindAll(g => g.User.UserId == _user.UserId).Count;
+                        int release = gift.Reservations.FindAll(g => g.User.ID == _user.ID).Count;
                         _user.Release(gift, release);
                         int reserve = Convert.ToInt32(_dict["numReserve"]);
                         int reserved = _user.Reserve(gift, reserve);

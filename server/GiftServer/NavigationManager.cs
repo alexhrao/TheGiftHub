@@ -54,7 +54,7 @@ namespace GiftServer
                     foreach (User member in group.Users)
                     {
                         // Add user to navbar
-                        if (user.UserId != member.UserId)
+                        if (user.ID != member.ID)
                         {
                             HtmlNode userNode = HtmlNode.CreateNode("<li></li>");
                             HtmlNode userLink = HtmlNode.CreateNode("<a></a>");

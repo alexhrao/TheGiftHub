@@ -196,7 +196,7 @@ namespace GiftServer
             /// Exception thrown if no more reservations exist
             /// </summary>
             /// <param name="gift">The gift</param>
-            public ReservationOverflowException(Gift gift) : base("Gift with ID " + gift.GiftId + " Has no more available reservations") { }
+            public ReservationOverflowException(Gift gift) : base("Gift with ID " + gift.ID + " Has no more available reservations") { }
         }
     }
 }

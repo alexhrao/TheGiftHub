@@ -107,7 +107,7 @@ namespace GiftServer
                 info.AppendChild(container);
 
                 XmlElement id = info.CreateElement("eventId");
-                id.InnerText = Event.EventId.ToString();
+                id.InnerText = Event.ID.ToString();
                 XmlElement year = info.CreateElement("year");
                 year.InnerText = Date.Year.ToString();
                 XmlElement month = info.CreateElement("month");
