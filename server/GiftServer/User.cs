@@ -43,20 +43,61 @@ namespace GiftServer
                 get;
                 private set;
             } = 0;
+            private string name = "";
             /// <summary>
             /// The User's Name
             /// </summary>
             /// <remarks>
             /// Can contain any character, including emojis. There is no "First, Last" fields, to aid localization
             /// </remarks>
-            public string Name = "";
+            public string Name
+            {
+                get
+                {
+                    return name;
+                }
+                set
+                {
+                    if (!String.IsNullOrWhiteSpace(value))
+                    {
+                        name = value;
+                    }
+                    else if (value == null)
+                    {
+                        throw new ArgumentNullException("Null user name");
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Invalid user name");
+                    }
+                }
+            }
+            private MailAddress email;
             /// <summary>
             /// The Email Address for this user
             /// </summary>
             /// <remarks>
             /// This address MUST be unique, since it's used as the Unique identifier (aside from the UserID, of course)
             /// </remarks>
-            public MailAddress Email;
+            public MailAddress Email
+            {
+                get
+                {
+                    return email;
+                }
+                set
+                {
+                    if (value != null)
+                    {
+                        email = value;
+                    }
+                    else
+                    {
+                        throw new ArgumentNullException("Null Email");
+                    }
+                }
+            }
+            private Password password;
             /// <summary>
             /// The Password for this user.
             /// </summary>
@@ -66,7 +107,24 @@ namespace GiftServer
             /// CAN access the Salt, Hash, and number of iterations used via the Password, and can 
             /// validate a given password against this property.
             /// </remarks>
-            public Password Password;
+            public Password Password
+            {
+                get
+                {
+                    return password;
+                }
+                set
+                {
+                    if (value != null)
+                    {
+                        password = value;
+                    }
+                    else
+                    {
+                        throw new ArgumentNullException("Null Password");
+                    }
+                }
+            }
             /// <summary>
             /// The birth month - we don't store their year of birth.
             /// </summary>
@@ -85,9 +143,13 @@ namespace GiftServer
             /// <summary>
             /// The user's preferences
             /// </summary>
-            public Preferences Preferences;
+            public Preferences Preferences
+            {
+                get;
+                private set;
+            }
             /// <summary>
-            /// The UserURL
+            /// The User's URL
             /// </summary>
             /// <remarks>
             /// The URL is a Unique Identifier that, without access to the database, cannot be "reinterpreted" into anything about the user.
@@ -97,7 +159,7 @@ namespace GiftServer
             /// By definition, any character within this URL does not need to be escaped in any known HTML protocol. Furthermore, it 
             /// is gauranteed to be unique among all users.
             /// </remarks>
-            public string UserUrl
+            public string Url
             {
                 get;
                 private set;
@@ -127,7 +189,7 @@ namespace GiftServer
                 }
                 set
                 {
-                    googleId = String.IsNullOrEmpty(value) ? null : value;
+                    googleId = String.IsNullOrWhiteSpace(value) ? null : value;
                 }
             }
             private string facebookId = null;
@@ -147,7 +209,7 @@ namespace GiftServer
                 }
                 set
                 {
-                    facebookId = String.IsNullOrEmpty(value) ? null : value;
+                    facebookId = String.IsNullOrWhiteSpace(value) ? null : value;
                 }
             }
             /// <summary>
@@ -541,7 +603,7 @@ namespace GiftServer
                                 BirthMonth = Convert.ToInt32(Reader["UserBirthMonth"]);
                                 DateJoined = (DateTime)(Reader["TimeCreated"]);
                                 Bio = Convert.ToString(Reader["UserBio"]);
-                                UserUrl = Convert.ToString(Reader["UserURL"]);
+                                Url = Convert.ToString(Reader["UserURL"]);
                                 GoogleId = Convert.ToString(Reader["UserGoogleID"]);
                                 FacebookId = Convert.ToString(Reader["UserFacebookID"]);
 
@@ -590,12 +652,12 @@ namespace GiftServer
                     while (!isUnique)
                     {
                         Password url = new Password(Email.Address);
-                        UserUrl = url.Hash.Replace("+", "0").Replace("/", "A").Replace("=", "R");
+                        Url = url.Hash.Replace("+", "0").Replace("/", "A").Replace("=", "R");
                         using (MySqlCommand cmd = new MySqlCommand())
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "SELECT users.UserID FROM users WHERE users.UserURL = @url;";
-                            cmd.Parameters.AddWithValue("@url", UserUrl);
+                            cmd.Parameters.AddWithValue("@url", Url);
                             cmd.Prepare();
                             using (MySqlDataReader Reader = cmd.ExecuteReader())
                             {
@@ -614,7 +676,7 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@bmonth", BirthMonth);
                         cmd.Parameters.AddWithValue("@bday", BirthDay);
                         cmd.Parameters.AddWithValue("@bio", Bio);
-                        cmd.Parameters.AddWithValue("@url", UserUrl);
+                        cmd.Parameters.AddWithValue("@url", Url);
                         cmd.Parameters.AddWithValue("@gid", GoogleId);
                         cmd.Parameters.AddWithValue("@fid", FacebookId);
                         cmd.Prepare();

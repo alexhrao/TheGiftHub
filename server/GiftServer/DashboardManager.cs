@@ -78,7 +78,7 @@ namespace GiftServer
                         eventNode.AddClass("event-record");
                         /* REPLACE WITH STRING MANAGER */
                         HtmlNode eventLink = HtmlNode.CreateNode("<a></a>");
-                        eventLink.Attributes.Add("href", Constants.URL + "/?dest=list&user=" + o.Event.User.UserUrl);
+                        eventLink.Attributes.Add("href", Constants.URL + "/?dest=list&user=" + o.Event.User.Url);
                         eventLink.InnerHtml = HttpUtility.HtmlEncode(o.Event.User.Name);
                         HtmlNode eventDesc = HtmlNode.CreateNode("<p></p>");
                         eventDesc.InnerHtml = " is celebrating " + HttpUtility.HtmlEncode(o.Event.Name) + " on " + HttpUtility.HtmlEncode(o.Date.ToString("M"));

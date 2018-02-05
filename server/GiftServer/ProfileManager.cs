@@ -52,7 +52,7 @@ namespace GiftServer
                 HtmlNode timeMember = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" timeMember \")]");
                 timeMember.InnerHtml = HttpUtility.HtmlEncode("Member since " + target.DateJoined.Value.ToString("m") + ", " + target.DateJoined.Value.ToString("yyyy"));
                 HtmlNode listLink = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" listLink \")]");
-                listLink.SetAttributeValue("href", Constants.URL + "?dest=list&user=" + target.UserUrl);
+                listLink.SetAttributeValue("href", Constants.URL + "?dest=list&user=" + target.Url);
                 HtmlNode email = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" email \")]");
                 email.InnerHtml = HttpUtility.HtmlEncode("Email: " + target.Email);
                 if (viewer.BirthMonth != 0)

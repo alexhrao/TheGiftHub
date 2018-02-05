@@ -49,7 +49,7 @@ namespace GiftServer
                 userId.SetAttributeValue("data-user-id", viewer.ID.ToString());
                 List<Gift> gifts = viewer.GetGifts(target);
                 HtmlNode userName = list.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
-                userName.InnerHtml = "<a href=\"" + Constants.URL + "/?dest=user&user=" + target.UserUrl + "\">" + HttpUtility.HtmlEncode(target.Name) + "</a>'s " + StringManager.GetString("giftList");
+                userName.InnerHtml = "<a href=\"" + Constants.URL + "/?dest=user&user=" + target.Url + "\">" + HttpUtility.HtmlEncode(target.Name) + "</a>'s " + StringManager.GetString("giftList");
                 HtmlNode title = list.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" title \")]");
                 title.InnerHtml = target.Name + "'s " + StringManager.GetString("giftList");
                 HtmlNode giftTable = list.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" giftHolder \")]");
@@ -206,7 +206,7 @@ namespace GiftServer
                     groupsEdit.AppendChild(HtmlNode.CreateNode("<div class=\"col-xs-1\"></div>"));
                 }
                 HtmlNode userName = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
-                userName.InnerHtml = "<a href=\"" + Constants.URL + "/?dest=user&user=" + target.UserUrl + "\">" + HttpUtility.HtmlEncode(target.Name) + "</a>'s " + StringManager.GetString("giftList");
+                userName.InnerHtml = "<a href=\"" + Constants.URL + "/?dest=user&user=" + target.Url + "\">" + HttpUtility.HtmlEncode(target.Name) + "</a>'s " + StringManager.GetString("giftList");
                 HtmlNode giftTable = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" giftHolder \")]");
                 HtmlNode giftTableMicro = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" xsGiftHolder \")]");
                 List<Gift> gifts = target.Gifts;
