@@ -59,7 +59,7 @@ namespace GiftServer
                 }
                 set
                 {
-                    if (String.IsNullOrWhiteSpace(value))
+                    if (!String.IsNullOrWhiteSpace(value))
                     {
                         name = value;
                     }
