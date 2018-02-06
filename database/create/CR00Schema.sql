@@ -1,1 +1,0 @@
-CREATE DATABASE gift_registry_db;
