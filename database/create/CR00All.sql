@@ -14,29 +14,6 @@ CREATE TABLE gift_registry_db.categories (
     CategoryDescription VARCHAR(4096) NULL
 );
 
-/*
-CREATE TABLE gift_registry_db.default_events (
-    EventID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    EventDay INT NOT NULL,
-    EventMonth INT NOT NULL,
-    EventYear INT NOT NULL,
-    EventRecurs BOOLEAN NOT NULL DEFAULT TRUE,
-    EventName VARCHAR(255) NOT NULL,
-    EventDescription VARCHAR(4095) NULL
-);
-
-CREATE TABLE gift_registry_db.default_events_futures (
-    EventFutureID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    EventID INT NOT NULL,
-    EventYear INT NOT NULL,
-    EventMonth INT NOT NULL,
-    EventDay INT NOT NULL
-);
-ALTER TABLE gift_registry_db.default_events_futures
-    ADD CONSTRAINT FK_DefaultEventsFuture FOREIGN KEY (EventID)
-        REFERENCES gift_registry_db.default_events(EventID);
-
-*/
 CREATE TABLE gift_registry_db.users (
     UserID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     UserName VARCHAR(255) NOT NULL,
@@ -108,7 +85,7 @@ CREATE TABLE gift_registry_db.exact_events (
 	ExactEventID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     EventID INT NOT NULL UNIQUE,
     EventTimeInterval CHAR(1) NOT NULL,
-    EventSkipEvery INT NOT NULL # ONLY POSITIVE
+    EventSkipEvery INT NOT NULL
 );
 ALTER TABLE gift_registry_db.exact_events
 	ADD CONSTRAINT FK_ExactEvents FOREIGN KEY (EventID)

@@ -36,6 +36,7 @@ namespace GiftServer
             /// </summary>
             /// <remarks>
             /// If this is 0, this is a "dead" user - an invalid user. No operations should be made on such a user,
+            /// with the notable exception of Create();
             /// though an operation will NOT throw an exception if the ID is 0.
             /// </remarks>
             public ulong ID
@@ -58,17 +59,17 @@ namespace GiftServer
                 }
                 set
                 {
-                    if (!String.IsNullOrWhiteSpace(value))
+                    if (String.IsNullOrWhiteSpace(value))
                     {
                         name = value;
                     }
                     else if (value == null)
                     {
-                        throw new ArgumentNullException("Null user name");
+                        throw new ArgumentNullException("Null User Name");
                     }
                     else
                     {
-                        throw new ArgumentException("Invalid user name");
+                        throw new ArgumentException("Non-Visible User Name given");
                     }
                 }
             }
@@ -133,13 +134,31 @@ namespace GiftServer
             /// The birth day - we don't store their year of birth.
             /// </summary>
             public int BirthDay = 0;
+            private string bio = "";
             /// <summary>
             /// The user's "bio"
             /// </summary>
             /// <remarks>
-            /// This field accepts any non-null value.
+            /// This field accepts any value.
             /// </remarks>
-            public string Bio = "";
+            public string Bio
+            {
+                get
+                {
+                    return bio;
+                }
+                set
+                {
+                    if (value != null)
+                    {
+                        bio = value;
+                    }
+                    else
+                    {
+                        bio = "";
+                    }
+                }
+            }
             /// <summary>
             /// The user's preferences
             /// </summary>
@@ -167,6 +186,10 @@ namespace GiftServer
             /// <summary>
             /// The date this user created his or her account.
             /// </summary>
+            /// <remarks>
+            /// In general, this field should not be null. There exists only one case where this will not be true - 
+            /// when the user has yet to be created
+            /// </remarks>
             public DateTime? DateJoined
             {
                 get;
