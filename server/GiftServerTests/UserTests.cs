@@ -208,16 +208,18 @@ namespace GiftServerTests
         [ExpectedException(typeof(DuplicateUserException))]
         public void UserCreate_DuplicateGoogleID_ExceptionThrown()
         {
-            User user = new User(new MailAddress("alexhrao@gmail.com"));
+            User user = new User(new MailAddress("alexhrao@thegifthub.org"));
             user.GoogleId = "12345";
+            user.Create();
         }
         [TestCategory("User"), TestCategory("Create"), TestCategory("ExceptionThrown")]
         [TestMethod]
         [ExpectedException(typeof(DuplicateUserException))]
         public void UserCreate_DuplicateFacebookID_ExceptionThrown()
         {
-            User user = new User(new MailAddress("alexhrao@gmail.com"));
+            User user = new User(new MailAddress("alexhrao@thegifthub.org"));
             user.FacebookId = "12345";
+            user.Create();
         }
 
 
@@ -298,7 +300,23 @@ namespace GiftServerTests
             user.BirthDay = 1;
             user.Update();
         }
-
+        [TestCategory("User"), TestCategory("Update"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(DuplicateUserException))]
+        public void UserUpdate_DuplicateGoogleID_ExceptionThrown()
+        {
+            User user = new User(new MailAddress("alexhrao@gatech.edu"));
+            user.GoogleId = "12345";
+            user.Update();
+        }
+        [TestCategory("User"), TestCategory("Create"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(DuplicateUserException))]
+        public void UserUpdate_DuplicateFacebookID_ExceptionThrown()
+        {
+            User user = new User(new MailAddress("alexhrao@gatech.edu"));
+            user.FacebookId = "12345";
+        }
 
 
         [TestCategory("User"), TestCategory("Delete"), TestCategory("Successful")]
