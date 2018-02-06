@@ -292,7 +292,8 @@ BEGIN
 			(3, 1),
 			(3, 2),
 			(4, 2),
-			(4, 3);
+			(4, 3),
+            (4, 6);
 
 	-- Add gift to group
 	INSERT INTO gift_registry_db_test.groups_gifts (GroupID, GiftID)

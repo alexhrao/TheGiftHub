@@ -19,7 +19,7 @@ namespace GiftServerTests
         [ExpectedException(typeof(UserNotFoundException))]
         public void UserInstantiate_ZeroID_ExceptionThrown()
         {
-            User user = new User(0);
+            User user = new User(0UL);
         }
         [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
         [TestMethod]
@@ -27,7 +27,7 @@ namespace GiftServerTests
         public void UserInstantiate_InvalidID_ExceptionThrown()
         {
             // User should not exist
-            User user = new User(10);
+            User user = new User(10UL);
         }
         [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
         [TestMethod]
@@ -169,7 +169,7 @@ namespace GiftServerTests
         }
         [TestCategory("User"), TestCategory("Property"), TestCategory("ExceptionThrown")]
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [ExpectedException(typeof(ArgumentException))]
         public void UserProperty_SpaceName_ExceptionThrown()
         {
             User user = new User(new MailAddress("alexhrao@gmail.com"))
@@ -203,7 +203,7 @@ namespace GiftServerTests
         [TestMethod]
         public void UserCreate_ValidData_NewUser()
         {
-            User user = new User(new MailAddress("alexhrao@hotmail.com"), new Password("HelloWorld123"))
+            User user = new User(new MailAddress("alexhrao@gatech.com"), new Password("HelloWorld123"))
             {
                 Name = "Alejandro"
             };
@@ -217,9 +217,10 @@ namespace GiftServerTests
         [ExpectedException(typeof(DuplicateUserException))]
         public void UserCreate_DuplicateGoogleID_ExceptionThrown()
         {
-            User user = new User(new MailAddress("alexhrao@thegifthub.org"))
+            User user = new User(new MailAddress("alexhrao@thegifthub.org"), new Password("Helllllllo"))
             {
-                GoogleId = "12345"
+                GoogleId = "12345",
+                Name = "tester"
             };
             user.Create();
         }
@@ -228,9 +229,10 @@ namespace GiftServerTests
         [ExpectedException(typeof(DuplicateUserException))]
         public void UserCreate_DuplicateFacebookID_ExceptionThrown()
         {
-            User user = new User(new MailAddress("alexhrao@thegifthub.org"))
+            User user = new User(new MailAddress("alexhrao@thegifthub.org"), new Password("Helllllllo"))
             {
-                FacebookId = "12345"
+                FacebookId = "12345",
+                Name = "tester"
             };
             user.Create();
         }
@@ -332,7 +334,7 @@ namespace GiftServerTests
         [ExpectedException(typeof(DuplicateUserException))]
         public void UserUpdate_DuplicateGoogleID_ExceptionThrown()
         {
-            User user = new User(new MailAddress("alexhrao@gatech.edu"))
+            User user = new User(new MailAddress("alexhrao@github.edu"))
             {
                 GoogleId = "12345"
             };
@@ -343,7 +345,7 @@ namespace GiftServerTests
         [ExpectedException(typeof(DuplicateUserException))]
         public void UserUpdate_DuplicateFacebookID_ExceptionThrown()
         {
-            User user = new User(new MailAddress("alexhrao@gatech.edu"))
+            User user = new User(new MailAddress("alexhrao@github.edu"))
             {
                 FacebookId = "12345"
             };
@@ -381,19 +383,19 @@ namespace GiftServerTests
                     }
                 }
             }
-            Assert.AreEqual<ulong>(user.ID, 0L, "UserID was not reset to 0");
+            Assert.AreEqual(user.ID, 0UL, "UserID was not reset to 0");
         }
         [TestCategory("User"), TestCategory("Method"), TestCategory("Delete"), TestCategory("Successful")]
         [TestMethod]
         public void UserDelete_DeleteTwice_NoUser()
         {
-            User user = new User(new MailAddress("alexhrao@yahoo.com"), new Password("HelloWorld123"))
+            User user = new User(new MailAddress("alexhrao@yahoo.edu"), new Password("HelloWorld123"))
             {
                 Name = "Hello World"
             };
-            Assert.AreEqual<ulong>(user.ID, 0L, "UserID was not set to 0");
             user.Create();
             user.Delete();
+            Assert.AreEqual(user.ID, 0UL, "UserID was not set to 0");
         }
 
 
@@ -414,12 +416,14 @@ namespace GiftServerTests
             List<Group> groups = user.GetGroups(target);
             // The following groups SHOULD be present:
             // GroupID 1
+            // GroupID 2
             // GroupID 3
-            Assert.IsTrue(groups.FindAll(g => g.ID == 1).Count == 1, "Unable to find Group with ID 1");
-            Assert.IsTrue(groups.FindAll(g => g.ID == 3).Count == 1, "Unable to find Group with ID 3");
+            Assert.IsTrue(groups.FindAll(g => g.ID == 1UL).Count == 1, "Unable to find Group with ID 1");
+            Assert.IsTrue(groups.FindAll(g => g.ID == 2UL).Count == 1, "Unable to find Group with ID 2");
+            Assert.IsTrue(groups.FindAll(g => g.ID == 3UL).Count == 1, "Unable to find Group with ID 3");
             foreach (Group g in groups)
             {
-                Assert.IsTrue(g.ID == 1 || g.ID == 3, "Group with ID " + g.ID + " was fetched");
+                Assert.IsTrue(g.ID == 1UL || g.ID == 2UL || g.ID == 3UL, "Group with ID " + g.ID + " was fetched");
             }
         }
         [TestCategory("User"), TestCategory("Method"), TestCategory("GetGroups"), TestCategory("Successful")]
@@ -427,7 +431,7 @@ namespace GiftServerTests
         public void GetGroups_ValidCombination_NoGroupsFound()
         {
             User user = new User(new MailAddress("alexhrao@gmail.com"));
-            User target = new User(4L);
+            User target = new User(6UL);
             List<Group> groups = user.GetGroups(target);
             // groups should be empty
             foreach (Group g in groups)
@@ -454,14 +458,14 @@ namespace GiftServerTests
             List<Gift> gifts = user.GetGifts(target);
             // gifts should contain 1 element and it's ID is 2
             Assert.IsTrue(gifts.Count == 1, "Fetched " + gifts.Count + " Gifts; Should only fetch 1");
-            Assert.AreEqual(gifts[0].ID, 2L, "Incorrect ID of " + gifts[0].ID + " was fetched instead");
+            Assert.AreEqual(gifts[0].ID, 2UL, "Incorrect ID of " + gifts[0].ID + " was fetched instead");
         }
         [TestCategory("User"), TestCategory("Method"), TestCategory("GetGifts"), TestCategory("Successful")]
         [TestMethod]
         public void GetGifts_ValidCombination_NoGifts()
         {
             User user = new User(new MailAddress("alexhrao@gmail.com"));
-            User target = new User(4L);
+            User target = new User(4UL);
             List<Gift> gifts = user.GetGifts(target);
             // gifts should contain no elements
             Assert.IsTrue(gifts.Count == 0, gifts.Count + " Gifts fetched; expected 0");
@@ -489,7 +493,7 @@ namespace GiftServerTests
         [TestMethod]
         public void SaveImage_NullInput_ImageRemoved()
         {
-            User user = new User(4L);
+            User user = new User(4UL);
             user.SaveImage(Image);
             user.SaveImage(null);
             Assert.IsFalse(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User" + user.ID + ".png"), "User Image not deleted");
@@ -498,7 +502,7 @@ namespace GiftServerTests
         [TestMethod]
         public void SaveImage_EmptyInput_ImageRemoved()
         {
-            User user = new User(3L);
+            User user = new User(3UL);
             user.SaveImage(Image);
             byte[] arr = new byte[0];
             user.SaveImage(arr);
@@ -508,7 +512,7 @@ namespace GiftServerTests
         [TestMethod]
         public void SaveImage_ByteInput_ImageSaved()
         {
-            User user = new User(2L);
+            User user = new User(2UL);
             user.SaveImage(Image);
             Assert.IsTrue(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User" + user.ID + ".png"), "User Image not saved");
         }
@@ -519,7 +523,7 @@ namespace GiftServerTests
         [TestMethod]
         public void RemoveImage_NoSavedImage_NoException()
         {
-            User user = new User(6L);
+            User user = new User(6UL);
             user.RemoveImage();
             Assert.IsFalse(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User" + user.ID + ".png"), "User Image not deleted");
         }
@@ -527,7 +531,7 @@ namespace GiftServerTests
         [TestMethod]
         public void RemoveImage_SavedImage_ImageRemoved()
         {
-            User user = new User(7L);
+            User user = new User(7UL);
             user.RemoveImage();
             Assert.IsFalse(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User" + user.ID + ".png"), "User Image not deleted");
         }

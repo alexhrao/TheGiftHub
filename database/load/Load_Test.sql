@@ -74,11 +74,12 @@ INSERT INTO gift_registry_db_test.groups_users (GroupID, UserID)
 		(2, 3),
 		(1, 1),
 		(2, 1),
-		(2, 5),
+		(2, 6),
 		(3, 1),
 		(3, 2),
 		(4, 2),
-		(4, 3);
+		(4, 3),
+        (4, 5);
 
 -- Add gift to group
 INSERT INTO gift_registry_db_test.groups_gifts (GroupID, GiftID)

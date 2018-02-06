@@ -364,6 +364,10 @@ namespace GiftServer
             /// </remarks>
             public User(MailAddress email)
             {
+                if (email == null)
+                {
+                    throw new ArgumentNullException("Email was null");
+                }
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -396,6 +400,14 @@ namespace GiftServer
             /// </remarks>
             public User(string hash)
             {
+                if (hash == null)
+                {
+                    throw new ArgumentNullException("Hash was null");
+                }
+                else if (String.IsNullOrWhiteSpace(hash))
+                {
+                    throw new ArgumentException("Hash was clear");
+                }
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -523,6 +535,14 @@ namespace GiftServer
             {
                 // If this is called, the user already exists in DB; fetch. If it can't find it, throw UserNotFoundException. 
                 // If found, but password mismatch, throw InvalidPasswordException.
+                if (password == null)
+                {
+                    throw new ArgumentNullException("Password is null");
+                }
+                else if (password.Length == 0)
+                {
+                    throw new ArgumentException("Password is 0 length");
+                }
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -652,6 +672,8 @@ namespace GiftServer
                 {
                     throw new ArgumentException("Birth Month is " + BirthMonth.ToString() + " But Birth Day is " + BirthDay.ToString());
                 }
+                // Validate Name
+                Name = name;
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -915,10 +937,20 @@ namespace GiftServer
             /// Saves an image for this user.
             /// </summary>
             /// <param name="contents">The new image, regardless of original format</param>
+            /// <remarks>
+            /// If the contents are null or empty, this is identical to calling RemoveImage()
+            /// </remarks>
             public void SaveImage(byte[] contents)
             {
-                ImageProcessor processor = new ImageProcessor(contents);
-                File.WriteAllBytes(Directory.GetCurrentDirectory() + "/resources/images/users/User" + ID + Constants.ImageFormat, processor.Data);
+                if (contents == null || contents.Length == 0)
+                {
+                    RemoveImage();
+                }
+                else
+                {
+                    ImageProcessor processor = new ImageProcessor(contents);
+                    File.WriteAllBytes(Directory.GetCurrentDirectory() + "/resources/images/users/User" + ID + Constants.ImageFormat, processor.Data);
+                }
             }
             /// <summary>
             /// Removes an associated image
@@ -1073,6 +1105,10 @@ namespace GiftServer
             /// </remarks>
             public List<Gift> GetGifts(User target)
             {
+                if (target == null)
+                {
+                    throw new ArgumentNullException("Target in GetGifts was null");
+                }
                 // For each gift owned by target, iterate over its groups until we find one in common with ours!
                 List<Gift> gifts = new List<Gift>();
                 foreach (Gift gift in target.Gifts)
@@ -1101,6 +1137,10 @@ namespace GiftServer
             /// </remarks>
             public List<Group> GetGroups(User target)
             {
+                if (target == null)
+                {
+                    throw new ArgumentNullException("Target in GetGroups was null");
+                }
                 List<Group> groups = new List<Group>();
                 // For each group in target, see if GroupID is found in ours
                 foreach (Group g in target.Groups)
@@ -1126,6 +1166,10 @@ namespace GiftServer
             /// </remarks>
             public List<Event> GetEvents(User target)
             {
+                if (target == null)
+                {
+                    throw new ArgumentNullException("Target in GetEvents was null");
+                }
                 // For each event owned by target, see shared groups. If ANY of those shared groups are common with us, add!
                 List<Event> events = new List<Event>();
                 foreach (Event e in target.Events)
@@ -1150,6 +1194,10 @@ namespace GiftServer
             /// <returns>A list of viewable events</returns>
             public List<Event> GetEvents(Group group)
             {
+                if (group == null)
+                {
+                    throw new ArgumentNullException("Group in GetEvents was null");
+                }
                 List<Event> events = new List<Event>();
                 foreach (Event e in Events)
                 {
