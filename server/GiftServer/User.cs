@@ -659,8 +659,10 @@ namespace GiftServer
                     {
                         // Check if email present:
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT UserID FROM users WHERE UserEmail = @email;";
+                        cmd.CommandText = "SELECT UserID FROM users WHERE UserEmail = @email OR UserFacebookID = @fid OR UserGoogleID = @gid;";
                         cmd.Parameters.AddWithValue("@email", Email.Address);
+                        cmd.Parameters.AddWithValue("@fid", FacebookId);
+                        cmd.Parameters.AddWithValue("@gid", GoogleId);
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
@@ -785,13 +787,15 @@ namespace GiftServer
                     {
                         // Check if email present:
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT UserID FROM users WHERE UserEmail = @email AND UserID <> @id;";
-                        cmd.Parameters.AddWithValue("@email", Email);
-                        cmd.Parameters.AddWithValue("@id", ID);
+                        cmd.CommandText = "SELECT UserID FROM users WHERE UserID <> @uid AND (UserEmail = @email OR UserFacebookID = @fid OR UserGoogleID = @gid);";
+                        cmd.Parameters.AddWithValue("@uid", ID);
+                        cmd.Parameters.AddWithValue("@email", Email.Address);
+                        cmd.Parameters.AddWithValue("@fid", FacebookId);
+                        cmd.Parameters.AddWithValue("@gid", GoogleId);
                         cmd.Prepare();
-                        using (MySqlDataReader Reader = cmd.ExecuteReader())
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            if (Reader.Read())
+                            if (reader.Read())
                             {
                                 // User already exists; throw exception:
                                 throw new DuplicateUserException(Email);

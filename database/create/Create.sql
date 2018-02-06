@@ -1,4 +1,3 @@
-DROP DATABASE gift_registry_db;
 CREATE DATABASE gift_registry_db;
 
 CREATE TABLE gift_registry_db.cultures (

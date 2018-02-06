@@ -5,15 +5,20 @@ INSERT INTO gift_registry_db_test.categories (CategoryID, CategoryName, Category
     VALUES (2, 'Electronics', 'Electronic Devices');
 
 -- Create users:
-INSERT INTO gift_registry_db_test.users (UserID, UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL)
-    VALUES (1, 'Alex Rao', 'alexhrao@gmail.com', 7, 3, "I LOVE to have fun!", "UJIOl8xUU7ccIQH5Ofs0Awfdsa00");
+INSERT INTO gift_registry_db_test.users (UserID, UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL, UserFacebookID, UserGoogleID)
+    VALUES (1, 'Alex Rao', 'alexhrao@gmail.com', 7, 3, "I LOVE to have fun!", "UJIOl8xUU7ccIQH5Ofs0Awfdsa00", "12345", "12345");
 INSERT INTO gift_registry_db_test.users (UserID, UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL)
     VALUES (2, 'Raeedah Choudhury', 'raeedah.choudhury@gmail.com', 11, 19, "I love my boyfriend", "UJIOl8xUU7ccIQH5Ofs0Awfdsa11");
 INSERT INTO gift_registry_db_test.users (UserID, UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL)
-    VALUES (3, 'Alex Tes', 'alexhrao@gatech.edu', 7, 3, "fdsafdsa", "UJIOl7xUU7ccIQH5Ofs0Awfdsa00");
+    VALUES (3, 'Alex Tes', 'alexhrao@gatech.edu', 7, 3, "fdsafdsa", "UJIOl7xUU7ccIdH5Ofs0Awfdsa00");
 INSERT INTO gift_registry_db_test.users (UserID, UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL)
-    VALUES (4, 'Alex Tes', 'arao81@gatech.edu', 7, 3, "fdsafdsa", "UJIOl7xfU7ccIQH5Ofs0Awfdsa00");
-    
+    VALUES (4, 'Alex Tes', 'arao81@gatech.edu', 7, 3, "fdsafdsa", "UqIOl7xfU7ccIQH5Ofs0Awfdsa00");
+INSERT INTO gift_registry_db_test.users (UserID, UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL, UserFacebookID, UserGoogleID)
+    VALUES (5, 'ToDelete', 'alexhrao@hotmail.com', 7, 3, "fdsafdsa", "UaIOl0xfU7ccIQH5Ofs0Awfd8765", "54321", "54321");
+INSERT INTO gift_registry_db_test.users (UserID, UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL, UserFacebookID, UserGoogleID)
+    VALUES (6, 'NoImage', 'alexhrao@github.edu', 7, 3, "fdsafdsa", "UaIOl0xfU7ccIQH5Ofs0Awfd1234", "43215", "43215");
+INSERT INTO gift_registry_db_test.users (UserID, UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL, UserFacebookID, UserGoogleID)
+    VALUES (7, 'HasImage', 'alexhrao@google.com', 7, 3, "fdsafdsa", "UaIOl0xfU7ccIQH5Ofs0Awfd2222", "12312", "12312");
 -- Create preferences:
 INSERT INTO gift_registry_db_test.preferences (UserID, UserCulture, UserTheme)
     VALUES (1, 'en-US', 0);
@@ -50,6 +55,10 @@ INSERT INTO gift_registry_db_test.groups (GroupID, GroupName, AdminID)
     VALUES (1, 'The Rao''s', 1);
 INSERT INTO gift_registry_db_test.groups (GroupID, GroupName, AdminID)
 	VALUES (2, 'Test Group 2', 2);
+INSERT INTO gift_registry_db_test.groups (GroupID, GroupName, AdminID)
+	VALUES (3, 'Test Group 3', 4);
+INSERT INTO gift_registry_db_test.groups (GroupID, GroupName, AdminID)
+	VALUES (4, 'Test Group 1 is out', 4);
     
 -- Create gift
 INSERT INTO gift_registry_db_test.gifts (GiftID, UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating)
@@ -58,10 +67,18 @@ INSERT INTO gift_registry_db_test.gifts (GiftID, UserID, GiftName, GiftDescripti
     VALUES (2, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1000, '000000', 'black', 'BIG', 1, 5.0);
 
 -- Add user to group
-INSERT INTO gift_registry_db_test.groups_users (GroupID, UserID)
-    VALUES (1, 1);
 INSERT INTO gift_registry_db_test.groups_users (GroupID, UserID, IsChild)
     VALUES (1, 2, TRUE);
+INSERT INTO gift_registry_db_test.groups_users (GroupID, UserID)
+	VALUES 
+		(2, 3),
+		(1, 1),
+		(2, 1),
+		(2, 5),
+		(3, 1),
+		(3, 2),
+		(4, 2),
+		(4, 3);
 
 -- Add gift to group
 INSERT INTO gift_registry_db_test.groups_gifts (GroupID, GiftID)
