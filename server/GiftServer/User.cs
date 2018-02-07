@@ -1125,6 +1125,20 @@ namespace GiftServer
                 }
                 return gifts;
             }
+
+            /// <summary>
+            /// Get all gifts viewable by this group and owned by this user
+            /// </summary>
+            /// <param name="viewer">The group that is viewing the gifts of this user</param>
+            /// <returns>A list of gifts</returns>
+            public List<Gift> GetGifts(Group viewer)
+            {
+                if (viewer == null)
+                {
+                    throw new ArgumentNullException("Viewer in GetGifts was null");
+                }
+                return Gifts.Where(gift => gift.Groups.Exists(group => group.ID == viewer.ID)).ToList();
+            }
             /// <summary>
             /// Get all groups viewable by this user
             /// </summary>
@@ -1190,30 +1204,15 @@ namespace GiftServer
             /// <summary>
             /// Get all events owned by this user and visible to the given group
             /// </summary>
-            /// <param name="group">The group that wants to view events from this user</param>
+            /// <param name="viewer">The group that wants to view events from this user</param>
             /// <returns>A list of viewable events</returns>
-            public List<Event> GetEvents(Group group)
+            public List<Event> GetEvents(Group viewer)
             {
-                if (group == null)
+                if (viewer == null)
                 {
                     throw new ArgumentNullException("Group in GetEvents was null");
                 }
-                List<Event> events = new List<Event>();
-                foreach (Event e in Events)
-                {
-                    // See if groupIds match
-                    foreach (Group g in e.Groups)
-                    {
-                        // See if GroupIDs match:
-                        if (g.ID == group.ID)
-                        {
-                            events.Add(e);
-                            // We found a match, no need to keep looking
-                            break;
-                        }
-                    }
-                }
-                return events;
+                return Events.Where(e => e.Groups.Exists(g => g.ID == viewer.ID)).ToList();
             }
             /// <summary>
             /// Add an OAuth token for this user

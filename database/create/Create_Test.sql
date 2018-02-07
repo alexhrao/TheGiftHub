@@ -333,7 +333,7 @@ BEGIN
 			(1, 5),
 			(2, 6),
 			(2, 7),
-			(2, 8);
+			(4, 8);
 		
 	-- Add Cultures
 	INSERT INTO gift_registry_db_test.cultures (CultureID, CultureLanguage, CultureLocation, CultureDesc)
