@@ -80,6 +80,7 @@ namespace GiftServer
             /// <remarks>
             /// This address MUST be unique, since it's used as the Unique identifier (aside from the UserID, of course)
             /// </remarks>
+            /// <exception cref="ArgumentNullException">The email must not be null</exception>
             public MailAddress Email
             {
                 get
@@ -108,6 +109,7 @@ namespace GiftServer
             /// CAN access the Salt, Hash, and number of iterations used via the Password, and can 
             /// validate a given password against this property.
             /// </remarks>
+            /// <exception cref="ArgumentNullException">The password cannot be null</exception>
             public Password Password
             {
                 get
@@ -268,6 +270,10 @@ namespace GiftServer
                             }
                         }
                     }
+                    else
+                    {
+                        throw new InvalidOperationException("Cannot get gifts for ID-less user");
+                    }
                     return _gifts;
                 }
             }
@@ -302,6 +308,10 @@ namespace GiftServer
                                 }
                             }
                         }
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Cannot get groups of ID-less user");
                     }
                     _groups.Sort((a, b) => a.Name.CompareTo(b.Name));
                     return _groups;
@@ -339,11 +349,15 @@ namespace GiftServer
                             }
                         }
                     }
+                    else
+                    {
+                        throw new InvalidOperationException("Cannot get events of ID-less user");
+                    }
                     return _events;
                 }
             }
             /// <summary>
-            /// Initializes a new User
+            /// Fetches an existing user
             /// </summary>
             /// <param name="id">The UserID</param>
             /// <remarks>
@@ -392,7 +406,7 @@ namespace GiftServer
                 }
             }
             /// <summary>
-            /// Initializes a new User
+            /// Fetches an existing User
             /// </summary>
             /// <param name="hash">The UserURL</param>
             /// <remarks>
@@ -402,11 +416,11 @@ namespace GiftServer
             {
                 if (hash == null)
                 {
-                    throw new ArgumentNullException("Hash was null");
+                    throw new ArgumentNullException(nameof(hash));
                 }
                 else if (String.IsNullOrWhiteSpace(hash))
                 {
-                    throw new ArgumentException("Hash was clear");
+                    throw new ArgumentException("Hash was clear", nameof(hash));
                 }
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -438,6 +452,10 @@ namespace GiftServer
             /// <param name="sender">A function that will send the reset email to a specified MailAddress</param>
             public User(OAuthUser user, Action<MailAddress> sender)
             {
+                if (user == null)
+                {
+                    throw new ArgumentNullException(nameof(user));
+                }
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -473,7 +491,7 @@ namespace GiftServer
                                     // We have a new user; copy over information and CREATE()
                                     Create(user);
                                     // Send password reset email
-                                    sender(Email);
+                                    sender?.Invoke(Email);
                                 }
                             }
                         }
@@ -535,6 +553,10 @@ namespace GiftServer
             {
                 // If this is called, the user already exists in DB; fetch. If it can't find it, throw UserNotFoundException. 
                 // If found, but password mismatch, throw InvalidPasswordException.
+                if (email == null)
+                {
+                    throw new ArgumentNullException(nameof(email));
+                }
                 if (password == null)
                 {
                     throw new ArgumentNullException("Password is null");
@@ -1130,7 +1152,8 @@ namespace GiftServer
             /// </summary>
             /// <param name="gift">The gift to purchase</param>
             /// <param name="amount">The number of gifts to purchase</param>
-            public void Purchase(Gift gift, int amount)
+            /// <returns>The number of gifts successfully purchased</returns>
+            public int Purchase(Gift gift, int amount)
             {
                 if (gift == null)
                 {
@@ -1140,10 +1163,17 @@ namespace GiftServer
                 {
                     Return(gift, -amount);
                 }
-                for (int i = 0; i < amount; i++)
+                int counter = 0;
+                foreach (Reservation res in gift.Reservations.FindAll(r => r.User.ID == ID && !r.IsPurchased))
                 {
                     Purchase(gift);
+                    counter++;
+                    if (counter >= amount)
+                    {
+                        break;
+                    }
                 }
+                return counter;
             }
 
             /// <summary>
@@ -1152,6 +1182,10 @@ namespace GiftServer
             /// <param name="gift">The gift to be returned</param>
             public void Return(Gift gift)
             {
+                if (gift == null)
+                {
+                    throw new ArgumentNullException(nameof(gift));
+                }
                 Reservation res = null;
                 List<Reservation> reservations = gift.Reservations.FindAll(r => r.User.ID == ID && r.IsPurchased).OrderBy(r => r.PurchaseDate).ToList();
                 if (reservations.Count > 0)
@@ -1166,7 +1200,7 @@ namespace GiftServer
             /// </summary>
             /// <param name="gift">The gift to return</param>
             /// <param name="amount">The number of gifts to return</param>
-            public void Return(Gift gift, int amount)
+            public int Return(Gift gift, int amount)
             {
                 if (gift == null)
                 {
@@ -1176,10 +1210,17 @@ namespace GiftServer
                 {
                     Purchase(gift, -amount);
                 }
-                for (int i = 0; i < amount; i++)
+                int counter = 0;
+                foreach (Reservation res in gift.Reservations.FindAll(r => r.User.ID == ID && r.IsPurchased))
                 {
                     Return(gift);
+                    counter++;
+                    if (counter >= amount)
+                    {
+                        break;
+                    }
                 }
+                return counter;
             }
 
             // NOTE: In all Get*, this is viewer!
@@ -1275,7 +1316,7 @@ namespace GiftServer
             {
                 if (target == null)
                 {
-                    throw new ArgumentNullException("Target in GetEvents was null");
+                    throw new ArgumentNullException(nameof(target));
                 }
                 // For each event owned by target, see shared groups. If ANY of those shared groups are common with us, add!
                 List<Event> events = new List<Event>();
@@ -1303,7 +1344,7 @@ namespace GiftServer
             {
                 if (viewer == null)
                 {
-                    throw new ArgumentNullException("Group in GetEvents was null");
+                    throw new ArgumentNullException(nameof(viewer));
                 }
                 return Events.Where(e => e.Groups.Exists(g => g.ID == viewer.ID)).ToList();
             }
@@ -1440,6 +1481,10 @@ namespace GiftServer
             /// </remarks>
             public XmlDocument Fetch()
             {
+                if (ID == 0)
+                {
+                    throw new InvalidOperationException("Cannot fetch ID-less user");
+                }
                 XmlDocument info = new XmlDocument();
                 XmlElement container = info.CreateElement("user");
                 info.AppendChild(container);

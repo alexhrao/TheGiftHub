@@ -84,7 +84,7 @@ CREATE TABLE gift_registry_db.exact_events (
 	ExactEventID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     EventID INT NOT NULL UNIQUE,
     EventTimeInterval CHAR(1) NOT NULL,
-    EventSkipEvery INT NOT NULL
+    EventSkipEvery INT NOT NULL # ONLY POSITIVE
 );
 ALTER TABLE gift_registry_db.exact_events
 	ADD CONSTRAINT FK_ExactEvents FOREIGN KEY (EventID)
@@ -186,6 +186,7 @@ CREATE TABLE gift_registry_db.reservations (
     ReservationID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     GiftID INT NOT NULL,
     UserID INT NOT NULL,
+    PurchaseStamp TIMESTAMP NULL,
     ReserveStamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 ALTER TABLE gift_registry_db.reservations
@@ -194,12 +195,3 @@ ALTER TABLE gift_registry_db.reservations
 ALTER TABLE gift_registry_db.reservations
     ADD CONSTRAINT FK_ReservationsUsers FOREIGN KEY (UserID)
         REFERENCES gift_registry_db.users(UserID);
-        
-CREATE TABLE gift_registry_db.purchases (
-    PurchaseID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    ReservationID INT NOT NULL,
-    PurchaseStamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-ALTER TABLE gift_registry_db.purchases
-    ADD CONSTRAINT FK_PurchasesReservations FOREIGN KEY (ReservationID)
-        REFERENCES gift_registry_db.reservations(ReservationID);

@@ -140,7 +140,8 @@ namespace GiftServerTests
         {
             // Need valid (fake) FacebookUserID
         }
-
+        /*
+         * This should be handled in GoogleUser, FacebookUser tests, respectively
         [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown"), TestCategory("OAuth")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
@@ -156,6 +157,18 @@ namespace GiftServerTests
         {
             FacebookUser user = new FacebookUser("12345");
         }
+        */
+
+        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown"), TestCategory("OAuth")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void UserInstantiate_NullOAuth_ExceptionThrown()
+        {
+            User user = new User((OAuthUser)null, null);
+        }
+
+
+
 
 
 
@@ -180,8 +193,6 @@ namespace GiftServerTests
             };
             Assert.AreEqual("alex.rao@southernco.edu", user.Email.Address, "Email was not changed!");
         }
-
-
 
         [TestCategory("User"), TestCategory("Property"), TestCategory("ExceptionThrown")]
         [TestMethod]
@@ -238,11 +249,24 @@ namespace GiftServerTests
         }
 
         [TestCategory("User"), TestCategory("Property"), TestCategory("Successful")]
+        [TestMethod]
         public void UserProperty_Gifts_NoGifts()
         {
             User user = new User(3);
             List<Gift> gifts = user.Gifts;
             Assert.IsTrue(gifts.Count == 0, "Gifts returned when none should have been");
+        }
+
+        [TestCategory("User"), TestCategory("Property"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void UserProperty_GiftsNoID_ExceptionThrown()
+        {
+            User user = new User(new MailAddress("hellofdsa@gmail.com"), new Password("Hello"))
+            {
+                Name = "fdsa"
+            };
+            List<Gift> g = user.Gifts;
         }
 
         [TestCategory("User"), TestCategory("Property"), TestCategory("Successful")]
@@ -258,10 +282,23 @@ namespace GiftServerTests
         }
 
         [TestCategory("User"), TestCategory("Property"), TestCategory("Successful")]
+        [TestMethod]
         public void UserProperty_Groupts_NoGroups()
         {
             User user = new User(7);
             Assert.IsTrue(user.Groups.Count == 0, "Groups fetched when none should have been");
+        }
+
+        [TestCategory("User"), TestCategory("Property"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void UserProperty_GroupsNoID_ExceptionThrown()
+        {
+            User user = new User(new MailAddress("hellofdsa@gmail.com"), new Password("Hello"))
+            {
+                Name = "fdsa"
+            };
+            List<Group> g = user.Groups;
         }
 
         [TestCategory("User"), TestCategory("Property"), TestCategory("Successful")]
@@ -278,11 +315,26 @@ namespace GiftServerTests
         }
 
         [TestCategory("User"), TestCategory("Property"), TestCategory("Successful")]
+        [TestMethod]
         public void UserProperty_Events_NoEvents()
         {
             User user = new User(6);
             Assert.IsTrue(user.Events.Count == 0, "Events fetched when none should have");
         }
+
+        [TestCategory("User"), TestCategory("Property"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void UserProperty_EventsNoID_ExceptionThrown()
+        {
+            User user = new User(new MailAddress("hellofdsa@gmail.com"), new Password("Hello"))
+            {
+                Name = "fdsa"
+            };
+            List<Event> e = user.Events;
+        }
+
+
 
         [TestCategory("User"), TestCategory("Method"), TestCategory("Create"), TestCategory("ExceptionThrown")]
         [TestMethod]
@@ -780,6 +832,101 @@ namespace GiftServerTests
             Gift gift = new Gift(8);
             int released = user.Release(gift, 10);
             Assert.AreEqual(0, released, "Expected no releases, got " + released);
+        }
+
+
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Purchase"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void PurchaseOne_NullGift_ExceptionThrown()
+        {
+            User user = new User(1);
+            user.Purchase(null);
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Purchase"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void PurchaseMany_NullGift_ExceptionThrown()
+        {
+            User user = new User(1);
+            user.Purchase(null, 3);
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Purchase"), TestCategory("Successful")]
+        [TestMethod]
+        public void PurchaseOne_ValidGift_OnePurchase()
+        {
+            User user = new User(6);
+            user.Purchase(new Gift(7));
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Purchase"), TestCategory("Successful")]
+        [TestMethod]
+        public void PurchaseMany_ValidGift_FullPurchase()
+        {
+            User user = new User(3);
+            int purchased = user.Purchase(new Gift(2), 3);
+            Assert.AreEqual(3, purchased, "Did not purchase enough gifts");
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Purchase"), TestCategory("Successful")]
+        [TestMethod]
+        public void PurchaseMany_ValidGift_PartialPurchase()
+        {
+            User user = new User(1);
+            int purchased = user.Purchase(new Gift(6), 5);
+            Assert.AreEqual(1, purchased, "Purchased " + purchased + " When one was expected");
+        }
+
+
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Return"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ReturnOne_NullGift_ExceptionThrown()
+        {
+            User user = new User(1);
+            user.Return(null);
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Return"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ReturnMany_NullGift_ExceptionThrown()
+        {
+            User user = new User(1);
+            user.Return(null, 10);
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Return"), TestCategory("Successful")]
+        [TestMethod]
+        public void ReturnOne_ValidGift_OneReturn()
+        {
+            User user = new User(2);
+            Gift gift = new Gift(8);
+            user.Return(gift);
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Return"), TestCategory("Successful")]
+        [TestMethod]
+        public void ReturnMany_ValidGift_FullReturn()
+        {
+            User user = new User(2);
+            Gift gift = new Gift(7);
+            int returned = user.Return(gift, 4);
+            Assert.AreEqual(4, returned, "Expected to return 4, returned " + returned);
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Return"), TestCategory("Successful")]
+        [TestMethod]
+        public void ReturnMany_ValidGift_PartialReturn()
+        {
+            User user = new User(1);
+            Gift gift = new Gift(2);
+            int returned = user.Return(gift, 7);
+            Assert.AreEqual(3, returned, "Expected to return 3, returned " + returned);
         }
 
 

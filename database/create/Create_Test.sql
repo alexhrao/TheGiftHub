@@ -369,7 +369,19 @@ BEGIN
             ( 8, 5, 4, NULL),
             ( 9, 5, 4, NULL),
             (10, 5, 4, NULL),
-            (11, 5, 4, NULL);
+            (11, 5, 4, NULL),
+            (12, 7, 6, NULL),
+            (13, 2, 3, NULL),
+            (14, 2, 3, NULL),
+            (15, 2, 3, NULL),
+            (16, 2, 7, NULL),
+            (17, 7, 2, '2017-08-09'),
+            (18, 7, 2, '2017-08-10'),
+            (19, 7, 2, '2017-08-09'),
+            (20, 7, 2, '2017-08-14'),
+            (21, 2, 1, '2017-02-02'),
+            (22, 2, 1, '2017-06-02'),
+            (23, 2, 1, '2017-04-02');
             
 	-- Add Cultures
 	INSERT INTO gift_registry_db_test.cultures (CultureID, CultureLanguage, CultureLocation, CultureDesc)
