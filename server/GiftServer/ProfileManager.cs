@@ -141,13 +141,13 @@ namespace GiftServer
                         cmd.CommandText = "SELECT * FROM cultures ORDER BY CultureDesc ASC;";
                         cmd.Prepare();
                         bool isFound = false;
-                        using (MySqlDataReader Reader = cmd.ExecuteReader())
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            while (Reader.Read())
+                            while (reader.Read())
                             {
                                 // Create option node
                                 HtmlNode culture;
-                                string cultureCode = Convert.ToString(Reader["CultureLanguage"]) + "-" + Convert.ToString(Reader["CultureLocation"]);
+                                string cultureCode = Convert.ToString(reader["CultureLanguage"]) + "-" + Convert.ToString(reader["CultureLocation"]);
                                 if (!isFound && cultureCode.ToLower().Equals(user.Preferences.Culture.ToLower()))
                                 {
                                     culture = HtmlNode.CreateNode("<option></option>");
@@ -160,7 +160,7 @@ namespace GiftServer
                                     culture = HtmlNode.CreateNode("<option></option>");
                                     culture.Attributes.Add("value", cultureCode);
                                 }
-                                culture.InnerHtml = HttpUtility.HtmlEncode(Convert.ToString(Reader["CultureDesc"]));
+                                culture.InnerHtml = HttpUtility.HtmlEncode(Convert.ToString(reader["CultureDesc"]));
                                 cultures.AppendChild(culture);
                             }
                         }

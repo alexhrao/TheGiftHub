@@ -65,13 +65,13 @@ namespace GiftServer
                         cmd.CommandText = "SELECT * FROM preferences WHERE preferences.UserID = @uid;";
                         cmd.Parameters.AddWithValue("@uid", user.ID);
                         cmd.Prepare();
-                        using (MySqlDataReader Reader = cmd.ExecuteReader())
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            if (Reader.Read())
+                            if (reader.Read())
                             {
                                 // We have data!
-                                ID = Convert.ToUInt64(Reader["PreferenceID"]);
-                                culture = Convert.ToString(Reader["UserCulture"]);
+                                ID = Convert.ToUInt64(reader["PreferenceID"]);
+                                culture = Convert.ToString(reader["UserCulture"]);
                             }
                         }
                     }
@@ -102,12 +102,12 @@ namespace GiftServer
                         cmd.CommandText = "SELECT UserID FROM preferences WHERE preferences.PreferenceID = @pid;";
                         cmd.Parameters.AddWithValue("@pid", preferenceId);
                         cmd.Prepare();
-                        using (MySqlDataReader Reader = cmd.ExecuteReader())
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            if (Reader.Read())
+                            if (reader.Read())
                             {
                                 // We have data!
-                                User = new User(Convert.ToUInt64(Reader["UserID"]));
+                                User = new User(Convert.ToUInt64(reader["UserID"]));
                                 ID = User.Preferences.ID;
                                 culture = User.Preferences.Culture;
                             }

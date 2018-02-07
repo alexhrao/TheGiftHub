@@ -137,11 +137,11 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@gid", ID);
                         cmd.Parameters.AddWithValue("@aid", Admin.ID);
                         cmd.Prepare();
-                        using (MySqlDataReader Reader = cmd.ExecuteReader())
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            while (Reader.Read())
+                            while (reader.Read())
                             {
-                                users.Add(new User(Convert.ToUInt64(Reader["UserID"])));
+                                users.Add(new User(Convert.ToUInt64(reader["UserID"])));
                             }
                         }
                     }

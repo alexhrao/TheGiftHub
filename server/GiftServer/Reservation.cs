@@ -29,14 +29,46 @@ namespace GiftServer
             /// The gift itself
             /// </summary>
             public Gift Gift;
+            private bool isPurchased = false;
             /// <summary>
             /// Whether or not this has been marked as purchased
             /// </summary>
-            public bool IsPurchased = false;
+            public bool IsPurchased
+            {
+                get
+                {
+                    return isPurchased;
+                }
+                set
+                {
+                    if (value)
+                    {
+                        PurchaseDate = DateTime.Now;
+                        isPurchased = true;
+                    }
+                    else
+                    {
+                        PurchaseDate = null;
+                        isPurchased = false;
+                    }
+                }
+            }
             /// <summary>
             /// The date this reservation was marked as purchased
             /// </summary>
-            public readonly DateTime PurchaseDate;
+            public DateTime? PurchaseDate
+            {
+                get;
+                private set;
+            }
+            /// <summary>
+            /// The date this reservation was made
+            /// </summary>
+            public DateTime? ReserveDate
+            {
+                get;
+                private set;
+            }
             /// <summary>
             /// Fetch an existing reservation record from the database
             /// </summary>
@@ -49,7 +81,7 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT UserID, GiftID FROM reservations WHERE ReservationID = @rid;";
+                        cmd.CommandText = "SELECT UserID, GiftID, PurchaseStamp, ReserveStamp FROM reservations WHERE ReservationID = @rid;";
                         cmd.Parameters.AddWithValue("@rid", reservationId);
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
@@ -58,7 +90,16 @@ namespace GiftServer
                             {
                                 User = new User(Convert.ToUInt64(reader["UserID"]));
                                 Gift = new Gift(Convert.ToUInt64(reader["GiftID"]));
-                                // IsPurchased = Convert.ToBoolean(reader["IsPurchased"]);
+                                ReserveDate = (DateTime)(reader["ReserveStamp"]);
+                                if (reader["PurchaseStamp"] == DBNull.Value)
+                                {
+                                    PurchaseDate = null;
+                                }
+                                else
+                                {
+                                    PurchaseDate = (DateTime)reader["PurchaseStamp"];
+                                }
+                                isPurchased = PurchaseDate.HasValue;
                                 ID = reservationId;
                             }
                         }
@@ -83,6 +124,7 @@ namespace GiftServer
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
+                    con.Open();
                     bool left = false;
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
@@ -101,11 +143,13 @@ namespace GiftServer
                         {
                             cmd.Connection = con;
                             // Add to reserved:
-                            cmd.CommandText = "INSERT INTO reservations (GiftID, UserID) VALUES (@gid, @uid);";
+                            cmd.CommandText = "INSERT INTO reservations (GiftID, UserID, PurchaseStamp) VALUES (@gid, @uid, @pst);";
                             cmd.Parameters.AddWithValue("@gid", Gift.ID);
                             cmd.Parameters.AddWithValue("@uid", User.ID);
+                            cmd.Parameters.AddWithValue("@pst", PurchaseDate);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
+                            ID = Convert.ToUInt64(cmd.LastInsertedId);
                         }
                     }
                     else

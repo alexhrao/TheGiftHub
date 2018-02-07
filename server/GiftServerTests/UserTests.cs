@@ -224,10 +224,65 @@ namespace GiftServerTests
             {
                 Name = "Ale-Alejandro"
             };
-            Assert.AreEqual("Ale-Alejandro", user.Name, "Name was not changed");
+            Assert.AreEqual(user.Name, "Ale-Alejandro", "Name was not changed");
         }
 
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserProperty_Gifts_GiftReturned()
+        {
+            User user = new User(7);
+            List<Gift> gifts = user.Gifts;
+            Assert.IsTrue(gifts.Count == 1, "Fetched too many gifts; 1 expected, got " + gifts.Count);
+            Assert.AreEqual(4UL, gifts[0].ID, "Wrong gift fetched");
+        }
 
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Successful")]
+        public void UserProperty_Gifts_NoGifts()
+        {
+            User user = new User(3);
+            List<Gift> gifts = user.Gifts;
+            Assert.IsTrue(gifts.Count == 0, "Gifts returned when none should have been");
+        }
+
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserProperty_Groups_GroupsReturned()
+        {
+            User user = new User(1);
+            List<Group> groups = user.Groups;
+            Assert.IsTrue(groups.Count == 3, "Expected 3 groups, got " + groups.Count);
+            Assert.IsTrue(groups.Exists(g => g.ID == 1), "Group 1 was not fetched");
+            Assert.IsTrue(groups.Exists(g => g.ID == 2), "Group 2 was not fetched");
+            Assert.IsTrue(groups.Exists(g => g.ID == 3), "Group 3 was not fetched");
+        }
+
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Successful")]
+        public void UserProperty_Groupts_NoGroups()
+        {
+            User user = new User(7);
+            Assert.IsTrue(user.Groups.Count == 0, "Groups fetched when none should have been");
+        }
+
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserProperty_Events_EventsReturned()
+        {
+            User user = new User(1);
+            List<Event> events = user.Events;
+            Assert.IsTrue(events.Count == 4, "Incorrect number of events fetched; expected 4, got " + events.Count);
+            Assert.IsTrue(events.Exists(e => e.ID == 1), "Event 1 was not fetched");
+            Assert.IsTrue(events.Exists(e => e.ID == 2), "Event 2 was not fetched");
+            Assert.IsTrue(events.Exists(e => e.ID == 3), "Event 3 was not fetched");
+            Assert.IsTrue(events.Exists(e => e.ID == 4), "Event 4 was not fetched");
+        }
+
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Successful")]
+        public void UserProperty_Events_NoEvents()
+        {
+            User user = new User(6);
+            Assert.IsTrue(user.Events.Count == 0, "Events fetched when none should have");
+        }
 
         [TestCategory("User"), TestCategory("Method"), TestCategory("Create"), TestCategory("ExceptionThrown")]
         [TestMethod]
@@ -260,7 +315,7 @@ namespace GiftServerTests
             };
             Assert.IsFalse(user.DateJoined.HasValue);
             user.Create();
-            Assert.AreNotEqual(user.ID, 0L, "UserID was not updated after creation");
+            Assert.AreNotEqual(0L, user.ID, "UserID was not updated after creation");
             Assert.IsTrue(user.DateJoined.HasValue, "User Timestamp not updated");
         }
 
@@ -416,6 +471,14 @@ namespace GiftServerTests
         }
 
 
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Delete"), TestCategory("Exception Thrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void UserDelete_Admin_ExceptionThrown()
+        {
+            User user = new User(1);
+            user.Delete();
+        }
 
         [TestCategory("User"), TestCategory("Method"), TestCategory("Delete"), TestCategory("Successful")]
         [TestMethod]
@@ -445,7 +508,7 @@ namespace GiftServerTests
                     }
                 }
             }
-            Assert.AreEqual(user.ID, 0UL, "UserID was not reset to 0");
+            Assert.AreEqual(0UL, user.ID, "UserID was not reset to 0");
         }
 
         [TestCategory("User"), TestCategory("Method"), TestCategory("Delete"), TestCategory("Successful")]
@@ -458,8 +521,265 @@ namespace GiftServerTests
             };
             user.Create();
             user.Delete();
-            Assert.AreEqual(user.ID, 0UL, "UserID was not set to 0");
+            Assert.AreEqual(0UL, user.ID, "UserID was not set to 0");
             user.Delete();
+        }
+
+
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("SaveImage"), TestCategory("Successful")]
+        [TestMethod]
+        public void SaveImage_NullInput_ImageRemoved()
+        {
+            User user = new User(4);
+            user.SaveImage(Image);
+            user.SaveImage(null);
+            Assert.IsFalse(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User" + user.ID + ".png"), "User Image not deleted");
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("SaveImage"), TestCategory("Successful")]
+        [TestMethod]
+        public void SaveImage_EmptyInput_ImageRemoved()
+        {
+            User user = new User(3);
+            user.SaveImage(Image);
+            byte[] arr = new byte[0];
+            user.SaveImage(arr);
+            Assert.IsFalse(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User" + user.ID + ".png"), "User Image not deleted");
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("SaveImage"), TestCategory("Successful")]
+        [TestMethod]
+        public void SaveImage_ByteInput_ImageSaved()
+        {
+            User user = new User(2);
+            user.SaveImage(Image);
+            Assert.IsTrue(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User" + user.ID + ".png"), "User Image not saved");
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("SaveImage"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void SaveImage_DeletedUser_ExceptionThrown()
+        {
+            User user = new User(new MailAddress("alexhrao@code.com"), new Password("Hello World"));
+            user.SaveImage(Image);
+        }
+
+
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveImage"), TestCategory("Successful")]
+        [TestMethod]
+        public void RemoveImage_NoSavedImage_NoException()
+        {
+            User user = new User(6);
+            user.RemoveImage();
+            Assert.IsFalse(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User" + user.ID + ".png"), "User Image not deleted");
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveImage"), TestCategory("Successful")]
+        [TestMethod]
+        public void RemoveImage_SavedImage_ImageRemoved()
+        {
+            User user = new User(7);
+            user.RemoveImage();
+            Assert.IsFalse(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User" + user.ID + ".png"), "User Image not deleted");
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveImage"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void RemoveImage_DeletedUser_ExceptionThrown()
+        {
+            User user = new User(new MailAddress("alexhrao@code.com"), new Password("Hello World"));
+            user.RemoveImage();
+        }
+
+
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetImage"), TestCategory("Successful")]
+        [TestMethod]
+        public void GetImage_ValidUser_CustomImage()
+        {
+            User user = new User(6);
+            user.SaveImage(Image);
+            string path = user.GetImage();
+            Assert.AreEqual(Path.GetFileNameWithoutExtension(path), "User6", "Expected custom image, got " + Path.GetFileNameWithoutExtension(path));
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetImage"), TestCategory("Successful")]
+        [TestMethod]
+        public void GetImage_ValidUser_DefaultImage()
+        {
+            User user = new User(7);
+            user.RemoveImage();
+            string path = user.GetImage();
+            Assert.AreEqual("default", Path.GetFileNameWithoutExtension(path), "Expected default image, got " + Path.GetFileNameWithoutExtension(path));
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetImage"), TestCategory("Successful")]
+        [TestMethod]
+        public void GetImage_ValidID_CustomImage()
+        {
+            User user = new User(1);
+            user.SaveImage(Image);
+            string path = User.GetImage(1);
+            Assert.AreEqual("User1", Path.GetFileNameWithoutExtension(path), "Expected custom image, got " + Path.GetFileNameWithoutExtension(path));
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetImage"), TestCategory("Successful")]
+        [TestMethod]
+        public void GetImage_ValidID_DefaultImage()
+        {
+            User user = new User(2);
+            user.RemoveImage();
+            string path = User.GetImage(2);
+            Assert.AreEqual("default", Path.GetFileNameWithoutExtension(path), "Expected default image, got " + Path.GetFileNameWithoutExtension(path));
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetImage"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void GetImage_ZeroID_ExceptionThrown()
+        {
+            User.GetImage(0);
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetImage"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void GetImage_DeletedUser_ExceptionThrown()
+        {
+            User user = new User(new MailAddress("fdsa@asdf.edu"), new Password("Hello World!"))
+            {
+                Name = "hello world"
+            };
+            user.Create();
+            user.Delete();
+            user.GetImage();
+        }
+
+
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Reserve"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ReserveOne_NullGift_ExceptionThrown()
+        {
+            User user = new User(1);
+            user.Reserve(null);
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Reserve"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ReserveMany_NullGift_ExceptionThrown()
+        {
+            User user = new User(1);
+            user.Reserve(null, 10);
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Reserve"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(ReservationOverflowException))]
+        public void ReserveOne_FullReservations_ExceptionThrown()
+        {
+            User user = new User(3);
+            user.Reserve(new Gift(6));
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Reserve"), TestCategory("Successful")]
+        [TestMethod]
+        public void ReserveMany_FullReservations_ZeroReturned()
+        {
+            User user = new User(3);
+            int res = user.Reserve(new Gift(6), 5);
+            Assert.AreEqual(0, res, "Expected no reservations, " + res + " made");
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Reserve"), TestCategory("Successful")]
+        [TestMethod]
+        public void ReserveOne_ValidGift_GiftReserved()
+        {
+            User user = new User(4);
+            user.Reserve(new Gift(7));
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Reserve"), TestCategory("Successful")]
+        [TestMethod]
+        public void ReserveThree_ValidGift_GiftReserved()
+        {
+            User user = new User(1);
+            int numReserve = user.Reserve(new Gift(7), 3);
+            Assert.AreEqual(3, numReserve, "Expected 3 gifts; " + numReserve + " were reserved");
+        }
+
+
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Release"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ReleaseOne_NullGift_ExceptionThrown()
+        {
+            User user = new User(1);
+            user.Release(null);
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Release"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void ReleaseMany_NullGift_ExceptionThrown()
+        {
+            User user = new User(1);
+            user.Release(null, 10);
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Release"), TestCategory("Successful")]
+        [TestMethod]
+        public void ReleaseOne_ValidGift_NoReservation()
+        {
+            User user = new User(1);
+            Gift gift = new Gift(7);
+            user.Release(gift);
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Release"), TestCategory("Successful")]
+        [TestMethod]
+        public void ReleaseOne_NoReservations_NoChange()
+        {
+            User user = new User(1);
+            Gift gift = new Gift(8);
+            user.Release(gift);
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Release"), TestCategory("Successful")]
+        [TestMethod]
+        public void ReleaseMany_ValidGift_AllReleased()
+        {
+            User user = new User(4);
+            Gift gift = new Gift(5);
+            int released = user.Release(gift, 5);
+            Assert.AreEqual(5, released, "Expected release of 5 gifts; only released " + released);
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Release"), TestCategory("Successful")]
+        [TestMethod]
+        public void ReleaseMany_ValidGift_PartialReleased()
+        {
+            User user = new User(1);
+            Gift gift = new Gift(3);
+            int released = user.Release(gift, 5);
+            Assert.AreEqual(3, released, "Expected release of 3 gifts; got " + released);
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Release"), TestCategory("Successful")]
+        [TestMethod]
+        public void ReleaseMany_NoReservations_NoChange()
+        {
+            User user = new User(1);
+            Gift gift = new Gift(8);
+            int released = user.Release(gift, 10);
+            Assert.AreEqual(0, released, "Expected no releases, got " + released);
         }
 
 
@@ -536,7 +856,7 @@ namespace GiftServerTests
             List<Gift> gifts = user.GetGifts(target);
             // gifts should contain 1 element and it's ID is 2
             Assert.IsTrue(gifts.Count == 1, "Fetched " + gifts.Count + " Gifts; Should only fetch 1");
-            Assert.AreEqual(gifts[0].ID, 2UL, "Incorrect ID of " + gifts[0].ID + " was fetched instead");
+            Assert.AreEqual(2UL, gifts[0].ID, "Incorrect ID of " + gifts[0].ID + " was fetched instead");
         }
 
         [TestCategory("User"), TestCategory("Method"), TestCategory("GetGifts"), TestCategory("Successful")]
@@ -595,7 +915,7 @@ namespace GiftServerTests
             Assert.IsTrue(events.FindAll(e => e.ID == 5UL).Count == 1, "Event 5 was not fetched");
             Assert.IsTrue(events.FindAll(e => e.ID == 6UL).Count == 1, "Event 6 was not fetched");
             Assert.IsTrue(events.FindAll(e => e.ID == 7UL).Count == 1, "Event 7 was not fetched");
-            Assert.AreEqual(events.Count, 3, events.Count + " events were fetched; 3 expected");
+            Assert.AreEqual(3, events.Count, events.Count + " events were fetched; 3 expected");
         }
 
         [TestCategory("User"), TestCategory("Method"), TestCategory("GetEvents"), TestCategory("Successful")]
@@ -605,7 +925,7 @@ namespace GiftServerTests
             User user = new User(1);
             User target = new User(6);
             List<Event> events = user.GetEvents(target);
-            Assert.AreEqual(events.Count, 0, "Events were fetched");
+            Assert.AreEqual(0, events.Count, "Events were fetched");
         }
 
         [TestCategory("User"), TestCategory("Method"), TestCategory("GetEvents"), TestCategory("ExceptionThrown")]
@@ -642,58 +962,6 @@ namespace GiftServerTests
 
 
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("SaveImage"), TestCategory("Successful")]
-        [TestMethod]
-        public void SaveImage_NullInput_ImageRemoved()
-        {
-            User user = new User(4UL);
-            user.SaveImage(Image);
-            user.SaveImage(null);
-            Assert.IsFalse(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User" + user.ID + ".png"), "User Image not deleted");
-        }
-
-        [TestCategory("User"), TestCategory("Method"), TestCategory("SaveImage"), TestCategory("Successful")]
-        [TestMethod]
-        public void SaveImage_EmptyInput_ImageRemoved()
-        {
-            User user = new User(3UL);
-            user.SaveImage(Image);
-            byte[] arr = new byte[0];
-            user.SaveImage(arr);
-            Assert.IsFalse(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User" + user.ID + ".png"), "User Image not deleted");
-        }
-
-        [TestCategory("User"), TestCategory("Method"), TestCategory("SaveImage"), TestCategory("Successful")]
-        [TestMethod]
-        public void SaveImage_ByteInput_ImageSaved()
-        {
-            User user = new User(2UL);
-            user.SaveImage(Image);
-            Assert.IsTrue(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User" + user.ID + ".png"), "User Image not saved");
-        }
-
-
-
-        [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveImage"), TestCategory("Successful")]
-        [TestMethod]
-        public void RemoveImage_NoSavedImage_NoException()
-        {
-            User user = new User(6UL);
-            user.RemoveImage();
-            Assert.IsFalse(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User" + user.ID + ".png"), "User Image not deleted");
-        }
-
-        [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveImage"), TestCategory("Successful")]
-        [TestMethod]
-        public void RemoveImage_SavedImage_ImageRemoved()
-        {
-            User user = new User(7UL);
-            user.RemoveImage();
-            Assert.IsFalse(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User" + user.ID + ".png"), "User Image not deleted");
-        }
-
-
-
         [ClassCleanup]
         public static void UserCleanup()
         {
@@ -715,14 +983,7 @@ namespace GiftServerTests
                 using (MySqlCommand cmd = new MySqlCommand())
                 {
                     cmd.Connection = con;
-                    cmd.CommandText = "CALL gift_registry_db_test.delete();";
-                    cmd.Prepare();
-                    cmd.ExecuteNonQuery();
-                }
-                using (MySqlCommand cmd = new MySqlCommand())
-                {
-                    cmd.Connection = con;
-                    cmd.CommandText = "CALL gift_registry_db_test.load();";
+                    cmd.CommandText = "CALL gift_registry_db_test.setup();";
                     cmd.Prepare();
                     cmd.ExecuteNonQuery();
                 }

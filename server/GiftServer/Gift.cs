@@ -71,6 +71,10 @@ namespace GiftServer
                     {
                         quantity = 1;
                     }
+                    else
+                    {
+                        quantity = value;
+                    }
                 }
             }
             private uint quantity = 1;
@@ -109,17 +113,21 @@ namespace GiftServer
                     {
                         rating = 0.0;
                     }
+                    else
+                    {
+                        rating = value;
+                    }
                 }
             }
             private double rating = 0.00;
             /// <summary>
             /// The time this gift was created
             /// </summary>
-            public DateTime TimeStamp = DateTime.MinValue;
+            public DateTime? TimeStamp = null;
             /// <summary>
             /// The time this gift was received
             /// </summary>
-            public DateTime DateReceived = DateTime.MinValue;
+            public DateTime? DateReceived = null;
             /// <summary>
             /// A List of reservations for this gift
             /// </summary>
@@ -211,13 +219,13 @@ namespace GiftServer
                                 Category = new Category(Convert.ToUInt64(reader["CategoryID"]));
                                 Rating = Convert.ToDouble(reader["GiftRating"]);
                                 TimeStamp = (DateTime)(reader["GiftAddStamp"]);
-                                try
+                                if (DBNull.Value == reader["GiftReceivedDate"])
+                                {
+                                    DateReceived = null;
+                                }
+                                else
                                 {
                                     DateReceived = (DateTime)(reader["GiftReceivedDate"]);
-                                }
-                                catch (InvalidCastException)
-                                {
-                                    DateReceived = DateTime.MinValue;
                                 }
                             }
                         }
@@ -257,7 +265,7 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@size", Size);
                         cmd.Parameters.AddWithValue("@category", Category.CategoryId);
                         cmd.Parameters.AddWithValue("@rating", Rating);
-                        cmd.Parameters.AddWithValue("@rec", DateReceived.ToString("yyyy-MM-dd"));
+                        cmd.Parameters.AddWithValue("@rec", DateReceived.HasValue ? "" : DateReceived.Value.ToString("yyyy-MM-dd"));
                         cmd.Prepare();
                         if (cmd.ExecuteNonQuery() == 1)
                         {
@@ -323,14 +331,7 @@ namespace GiftServer
                             cmd.Parameters.AddWithValue("@cid", Category.CategoryId);
                             cmd.Parameters.AddWithValue("@rating", Rating);
                             cmd.Parameters.AddWithValue("@gid", ID);
-                            if (DateReceived == DateTime.MinValue)
-                            {
-                                cmd.Parameters.AddWithValue("@rec", null);
-                            }
-                            else
-                            {
-                                cmd.Parameters.AddWithValue("@rec", DateReceived.ToString("yyyy-MM-dd"));
-                            }
+                            cmd.Parameters.AddWithValue("@rec", DateReceived.HasValue ? null : DateReceived.Value.ToString("yyyy-MM-dd"));
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -376,14 +377,14 @@ namespace GiftServer
             public void SaveImage(byte[] contents)
             {
                 ImageProcessor processor = new ImageProcessor(contents);
-                File.WriteAllBytes(Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + this.ID + Constants.ImageFormat, processor.Data);
+                File.WriteAllBytes(Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + ID + Constants.ImageFormat, processor.Data);
             }
             /// <summary>
             /// Remove the associated image
             /// </summary>
             public void RemoveImage()
             {
-                File.Delete(Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + this.ID + Constants.ImageFormat);
+                File.Delete(Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + ID + Constants.ImageFormat);
             }
             /// <summary>
             /// Get the image associated with this gift

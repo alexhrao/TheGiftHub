@@ -186,6 +186,7 @@ CREATE TABLE gift_registry_db_test.reservations (
     ReservationID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     GiftID INT NOT NULL,
     UserID INT NOT NULL,
+    PurchaseStamp TIMESTAMP NULL,
     ReserveStamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 ALTER TABLE gift_registry_db_test.reservations
@@ -194,15 +195,6 @@ ALTER TABLE gift_registry_db_test.reservations
 ALTER TABLE gift_registry_db_test.reservations
     ADD CONSTRAINT FK_ReservationsUsers FOREIGN KEY (UserID)
         REFERENCES gift_registry_db_test.users(UserID);
-        
-CREATE TABLE gift_registry_db_test.purchases (
-    PurchaseID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    ReservationID INT NOT NULL,
-    PurchaseStamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-ALTER TABLE gift_registry_db_test.purchases
-    ADD CONSTRAINT FK_PurchasesReservations FOREIGN KEY (ReservationID)
-        REFERENCES gift_registry_db_test.reservations(ReservationID);
 
 
 
@@ -210,8 +202,25 @@ ALTER TABLE gift_registry_db_test.purchases
 
 DELIMITER $$
 USE `gift_registry_db_test`$$
-CREATE PROCEDURE `load` ()
+CREATE PROCEDURE `setup` ()
 BEGIN
+	-- Delete old values
+	DELETE FROM gift_registry_db_test.reservations;
+	DELETE FROM gift_registry_db_test.groups_gifts;
+	DELETE FROM gift_registry_db_test.groups_events;
+	DELETE FROM gift_registry_db_test.groups_users;
+	DELETE FROM gift_registry_db_test.event_blackouts;
+	DELETE FROM gift_registry_db_test.relative_events;
+	DELETE FROM gift_registry_db_test.exact_events;
+	DELETE FROM gift_registry_db_test.user_events;
+	DELETE FROM gift_registry_db_test.groups;
+	DELETE FROM gift_registry_db_test.gifts;
+	DELETE FROM gift_registry_db_test.passwordresets;
+	DELETE FROM gift_registry_db_test.passwords;
+	DELETE FROM gift_registry_db_test.cultures;
+	DELETE FROM gift_registry_db_test.categories;
+	DELETE FROM gift_registry_db_test.preferences;
+	DELETE FROM gift_registry_db_test.users;
 	-- Create categories:
 	INSERT INTO gift_registry_db_test.categories (CategoryID, CategoryName, CategoryDescription)
 		VALUES (1, 'Clothing', 'Clothing');
@@ -279,6 +288,18 @@ BEGIN
 		VALUES (1, 1, 'Webcam', 'Logitech BRIO webcam', 'https://www.google.com', 100.00, 'Logitech, Target', 1, 'FFFFFF', 'White', 'N/A', 2, 5.0);
 	INSERT INTO gift_registry_db_test.gifts (GiftID, UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating)
 		VALUES (2, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1000, '000000', 'black', 'BIG', 1, 5.0);
+	INSERT INTO gift_registry_db_test.gifts (GiftID, UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating)
+		VALUES (3, 1, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 3, '000000', 'black', 'BIG', 1, 5.0);
+	INSERT INTO gift_registry_db_test.gifts (GiftID, UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating)
+		VALUES (4, 7, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 5, '000000', 'black', 'BIG', 1, 5.0);
+	INSERT INTO gift_registry_db_test.gifts (GiftID, UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating)
+		VALUES (5, 2, 'Wafdsav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1, '000000', 'black', 'BIG', 1, 5.0);
+	INSERT INTO gift_registry_db_test.gifts (GiftID, UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating)
+		VALUES (6, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1, '000000', 'black', 'BIG', 1, 5.0);
+	INSERT INTO gift_registry_db_test.gifts (GiftID, UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating)
+		VALUES (7, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 5600, '000000', 'black', 'BIG', 1, 5.0);
+	INSERT INTO gift_registry_db_test.gifts (GiftID, UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating)
+		VALUES (8, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1, '000000', 'black', 'BIG', 1, 5.0);
 
 	-- Add user to group
 	INSERT INTO gift_registry_db_test.groups_users (GroupID, UserID, IsChild)
@@ -335,6 +356,21 @@ BEGIN
 			(2, 7),
 			(4, 8);
 		
+	-- Add Reservations
+    INSERT INTO gift_registry_db_test.reservations (ReservationID, GiftID, UserID, PurchaseStamp)
+		VALUES
+			( 1, 6, 1, NULL),
+            ( 2, 3, 1, '2017-03-09'),
+            ( 3, 3, 1, NULL),
+            ( 4, 3, 1, NULL),
+            ( 5, 8, 2, '2017-08-09'),
+            ( 6, 7, 1, NULL),
+            ( 7, 5, 4, NULL),
+            ( 8, 5, 4, NULL),
+            ( 9, 5, 4, NULL),
+            (10, 5, 4, NULL),
+            (11, 5, 4, NULL);
+            
 	-- Add Cultures
 	INSERT INTO gift_registry_db_test.cultures (CultureID, CultureLanguage, CultureLocation, CultureDesc)
 		VALUES
@@ -342,29 +378,6 @@ BEGIN
 		(2, 'fr', 'FR', 'French'),
 		(3, 'en', 'GB', 'English (United Kingdom)');
 END$$
-
 DELIMITER ;
 
-DELIMITER $$
-CREATE PROCEDURE `delete` ()
-BEGIN
-	DELETE FROM gift_registry_db_test.reservations;
-	DELETE FROM gift_registry_db_test.groups_gifts;
-	DELETE FROM gift_registry_db_test.groups_events;
-	DELETE FROM gift_registry_db_test.groups_users;
-	DELETE FROM gift_registry_db_test.event_blackouts;
-	DELETE FROM gift_registry_db_test.relative_events;
-	DELETE FROM gift_registry_db_test.exact_events;
-	DELETE FROM gift_registry_db_test.user_events;
-	DELETE FROM gift_registry_db_test.groups;
-	DELETE FROM gift_registry_db_test.gifts;
-	DELETE FROM gift_registry_db_test.passwordresets;
-	DELETE FROM gift_registry_db_test.passwords;
-	DELETE FROM gift_registry_db_test.cultures;
-	DELETE FROM gift_registry_db_test.categories;
-	DELETE FROM gift_registry_db_test.preferences;
-	DELETE FROM gift_registry_db_test.users;
-END$$
-
-DELIMITER ;
-
+CALL gift_registry_db_test.setup();

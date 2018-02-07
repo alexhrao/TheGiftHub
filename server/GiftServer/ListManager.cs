@@ -177,12 +177,12 @@ namespace GiftServer
                         cmd.Connection = con;
                         cmd.CommandText = "SELECT categories.CategoryName FROM categories ORDER BY CategoryName ASC;";
                         cmd.Prepare();
-                        using (MySqlDataReader Reader = cmd.ExecuteReader())
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            while (Reader.Read())
+                            while (reader.Read())
                             {
                                 // WHY OH WHY CAN I NOT PREPEND THIS ELEMENT TO BOTH LISTS??????
-                                string catName = Convert.ToString(Reader["CategoryName"]);
+                                string catName = Convert.ToString(reader["CategoryName"]);
                                 HtmlNode entry = HtmlNode.CreateNode("<option value=\"" + HttpUtility.HtmlEncode(catName) + "\"></option>");
                                 entry.InnerHtml = HttpUtility.HtmlEncode(catName);
                                 categoryEdit.PrependChild(entry);

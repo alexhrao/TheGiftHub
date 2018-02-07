@@ -222,7 +222,7 @@ namespace GiftServer
             /// <remarks>
             /// If the user has never signed in with Facebook, this will be null.
             /// 
-            /// See GoogleUser for more information
+            /// See FacebookUser for more information
             /// </remarks>
             public string FacebookId
             {
@@ -257,12 +257,12 @@ namespace GiftServer
                                 cmd.CommandText = "SELECT GiftID FROM gifts WHERE UserID = @id ORDER BY GiftRating DESC;";
                                 cmd.Parameters.AddWithValue("@id", ID);
                                 cmd.Prepare();
-                                using (MySqlDataReader Reader = cmd.ExecuteReader())
+                                using (MySqlDataReader reader = cmd.ExecuteReader())
                                 {
                                     // add a new gift for each id:
-                                    while (Reader.Read())
+                                    while (reader.Read())
                                     {
-                                        _gifts.Add(new Gift(Convert.ToUInt64(Reader["GiftID"])));
+                                        _gifts.Add(new Gift(Convert.ToUInt64(reader["GiftID"])));
                                     }
                                 }
                             }
@@ -293,11 +293,11 @@ namespace GiftServer
                                 cmd.CommandText = "SELECT GroupID FROM groups_users WHERE UserID = @id UNION SELECT GroupID FROM groups WHERE AdminID = @id;";
                                 cmd.Parameters.AddWithValue("@id", ID);
                                 cmd.Prepare();
-                                using (MySqlDataReader Reader = cmd.ExecuteReader())
+                                using (MySqlDataReader reader = cmd.ExecuteReader())
                                 {
-                                    while (Reader.Read())
+                                    while (reader.Read())
                                     {
-                                        _groups.Add(new Group(Convert.ToUInt64(Reader["GroupID"])));
+                                        _groups.Add(new Group(Convert.ToUInt64(reader["GroupID"])));
                                     }
                                 }
                             }
@@ -329,11 +329,11 @@ namespace GiftServer
                                 cmd.CommandText = "SELECT EventID FROM user_events WHERE UserID = @uid;";
                                 cmd.Parameters.AddWithValue("@uid", ID);
                                 cmd.Prepare();
-                                using (MySqlDataReader Reader = cmd.ExecuteReader())
+                                using (MySqlDataReader reader = cmd.ExecuteReader())
                                 {
-                                    while (Reader.Read())
+                                    while (reader.Read())
                                     {
-                                        _events.Add(new Event(Convert.ToUInt64(Reader["EventID"])));
+                                        _events.Add(new Event(Convert.ToUInt64(reader["EventID"])));
                                     }
                                 }
                             }
@@ -377,11 +377,11 @@ namespace GiftServer
                         cmd.CommandText = "SELECT users.UserID FROM users WHERE UserEmail = @eml;";
                         cmd.Parameters.AddWithValue("@eml", email.Address);
                         cmd.Prepare();
-                        using (MySqlDataReader Reader = cmd.ExecuteReader())
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            if (Reader.Read())
+                            if (reader.Read())
                             {
-                                Synchronize(Convert.ToUInt64(Reader["UserID"]));
+                                Synchronize(Convert.ToUInt64(reader["UserID"]));
                             }
                             else
                             {
@@ -417,11 +417,11 @@ namespace GiftServer
                         cmd.CommandText = "SELECT users.UserID FROM users WHERE UserURL = @url;";
                         cmd.Parameters.AddWithValue("@url", hash);
                         cmd.Prepare();
-                        using (MySqlDataReader Reader = cmd.ExecuteReader())
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            if (Reader.Read())
+                            if (reader.Read())
                             {
-                                Synchronize(Convert.ToUInt64(Reader["UserID"]));
+                                Synchronize(Convert.ToUInt64(reader["UserID"]));
                             }
                             else
                             {
@@ -453,7 +453,7 @@ namespace GiftServer
                                 cmd.CommandText = "SELECT users.UserID FROM users WHERE users.UserFacebookID = @oid;";
                                 break;
                             default:
-                                throw new ArgumentException("Unkown OAuth type: " + nameof(user));
+                                throw new ArgumentException("Unkown OAuth type: " + user.GetType().Name);
                         }
                         cmd.Parameters.AddWithValue("@oid", user.OAuthId);
                         cmd.Prepare();
@@ -508,7 +508,7 @@ namespace GiftServer
                                         FacebookId = f.OAuthId;
                                         break;
                                     default:
-                                        throw new ArgumentException("Unkown OAuth type: " + nameof(user));
+                                        throw new ArgumentException("Unkown OAuth type: " + user.GetType().Name);
                                 }
                                 Update();
                                 return true;
@@ -629,26 +629,26 @@ namespace GiftServer
                                         + "WHERE users.UserID = @id;";
                         cmd.Parameters.AddWithValue("@id", id);
                         cmd.Prepare();
-                        using (MySqlDataReader Reader = cmd.ExecuteReader())
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
-                            if (Reader.Read())
+                            if (reader.Read())
                             {
                                 ID = id;
-                                Name = Convert.ToString(Reader["UserName"]);
-                                Email = new MailAddress(Convert.ToString(Reader["UserEmail"]));
-                                if (!String.IsNullOrEmpty(Convert.ToString(Reader["PasswordHash"])))
+                                Name = Convert.ToString(reader["UserName"]);
+                                Email = new MailAddress(Convert.ToString(reader["UserEmail"]));
+                                if (!String.IsNullOrEmpty(Convert.ToString(reader["PasswordHash"])))
                                 {
-                                    Password = new Password(Convert.ToString(Reader["PasswordHash"]),
-                                                        Convert.ToString(Reader["PasswordSalt"]),
-                                                        Convert.ToInt32(Reader["PasswordIter"]));
+                                    Password = new Password(Convert.ToString(reader["PasswordHash"]),
+                                                        Convert.ToString(reader["PasswordSalt"]),
+                                                        Convert.ToInt32(reader["PasswordIter"]));
                                 }
-                                BirthDay = Convert.ToInt32(Reader["UserBirthDay"]);
-                                BirthMonth = Convert.ToInt32(Reader["UserBirthMonth"]);
-                                DateJoined = (DateTime)(Reader["TimeCreated"]);
-                                Bio = Convert.ToString(Reader["UserBio"]);
-                                Url = Convert.ToString(Reader["UserURL"]);
-                                GoogleId = Convert.ToString(Reader["UserGoogleID"]);
-                                FacebookId = Convert.ToString(Reader["UserFacebookID"]);
+                                BirthDay = Convert.ToInt32(reader["UserBirthDay"]);
+                                BirthMonth = Convert.ToInt32(reader["UserBirthMonth"]);
+                                DateJoined = (DateTime)(reader["TimeCreated"]);
+                                Bio = Convert.ToString(reader["UserBio"]);
+                                Url = Convert.ToString(reader["UserURL"]);
+                                GoogleId = Convert.ToString(reader["UserGoogleID"]);
+                                FacebookId = Convert.ToString(reader["UserFacebookID"]);
 
                                 Preferences = new Preferences(this);
                             }
@@ -706,9 +706,9 @@ namespace GiftServer
                             cmd.CommandText = "SELECT users.UserID FROM users WHERE users.UserURL = @url;";
                             cmd.Parameters.AddWithValue("@url", Url);
                             cmd.Prepare();
-                            using (MySqlDataReader Reader = cmd.ExecuteReader())
+                            using (MySqlDataReader reader = cmd.ExecuteReader())
                             {
-                                isUnique = !Reader.HasRows;
+                                isUnique = !reader.HasRows;
                             }
                         }
                     }
@@ -773,7 +773,7 @@ namespace GiftServer
                         FacebookId = f.OAuthId;
                         break;
                     default:
-                        throw new ArgumentException("Unkown OAuth type: " + nameof(info));
+                        throw new ArgumentException("Unkown OAuth type: " + info.GetType().Name);
                 }
                 Password = new Password(info.OAuthId);
                 Create();
@@ -877,9 +877,13 @@ namespace GiftServer
             /// </remarks>
             public void Delete()
             {
-                // TODO: Gauruntee not admin of any group
                 if (ID != 0)
                 {
+                    // Check if admin of any group
+                    if (Groups.Exists(g => g.Admin.ID == ID))
+                    {
+                        throw new InvalidOperationException("User is still an admin of one or more groups");
+                    }
                     RemoveImage();
                     using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                     {
@@ -942,6 +946,10 @@ namespace GiftServer
             /// </remarks>
             public void SaveImage(byte[] contents)
             {
+                if (ID == 0)
+                {
+                    throw new InvalidOperationException("Cannot save image of ID-less user");
+                }
                 if (contents == null || contents.Length == 0)
                 {
                     RemoveImage();
@@ -960,6 +968,10 @@ namespace GiftServer
             /// </remarks>
             public void RemoveImage()
             {
+                if (ID == 0)
+                {
+                    throw new InvalidOperationException("Cannot remove image of ID-less user");
+                }
                 if (File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User" + ID + Constants.ImageFormat))
                 {
                     File.Delete(Directory.GetCurrentDirectory() + "/resources/images/users/User" + ID + Constants.ImageFormat);
@@ -974,6 +986,10 @@ namespace GiftServer
             /// </remarks>
             public string GetImage()
             {
+                if (ID == 0)
+                {
+                    throw new InvalidOperationException("Cannot retrieve image of ID-less user");
+                }
                 return GetImage(ID);
             }
             /// <summary>
@@ -983,6 +999,10 @@ namespace GiftServer
             /// <returns>A qualified path for this user's image. See GetImage() for more information</returns>
             public static string GetImage(ulong userID)
             {
+                if (userID == 0)
+                {
+                    throw new ArgumentException("Cannot retrieve image of ID-less user", nameof(userID));
+                }
                 // Build path:
                 string path = Directory.GetCurrentDirectory() + "/resources/images/users/User" + userID + Constants.ImageFormat;
                 // if file exists, return path. Otherwise, return default
@@ -1003,6 +1023,10 @@ namespace GiftServer
             /// <param name="gift">The gift to reserve</param>
             public void Reserve(Gift gift)
             {
+                if (gift == null)
+                {
+                    throw new ArgumentNullException(nameof(gift));
+                }
                 Reservation res = new Reservation(this, gift);
                 res.Create();
             }
@@ -1015,6 +1039,14 @@ namespace GiftServer
             /// <returns>Number of successfully reserved gifts</returns>
             public int Reserve(Gift gift, int amount)
             {
+                if (gift == null)
+                {
+                    throw new ArgumentNullException(nameof(gift));
+                }
+                if (amount < 0)
+                {
+                    return Release(gift, -amount);
+                }
                 for (int c = 0; c < amount; c++)
                 {
                     try
@@ -1031,11 +1063,14 @@ namespace GiftServer
 
             /// <summary>
             /// Release ONE of the gifts (if multiple are reserved)
-            /// Does NOT release purchased gifts.
             /// </summary>
             /// <param name="gift">The gift to release</param>
             public void Release(Gift gift)
             {
+                if (gift == null)
+                {
+                    throw new ArgumentNullException(nameof(gift));
+                }
                 Reservation res = null;
                 if (gift.Reservations.FindAll(r => r.User.ID == ID).Count > 0)
                 {
@@ -1051,11 +1086,25 @@ namespace GiftServer
             /// <returns>The actual number of releases successfully performed</returns>
             public int Release(Gift gift, int amount)
             {
-                for (int c = 0; c < amount; c++)
+                if (gift == null)
+                {
+                    throw new ArgumentNullException(nameof(gift));
+                }
+                if (amount < 0)
+                {
+                    return Reserve(gift, -amount);
+                }
+                int counter = 0;
+                foreach (Reservation res in gift.Reservations.FindAll(r => r.User.ID == ID))
                 {
                     Release(gift);
+                    counter++;
+                    if (counter >= amount)
+                    {
+                        break;
+                    }
                 }
-                return amount;
+                return counter;
             }
 
             /// <summary>
@@ -1064,12 +1113,36 @@ namespace GiftServer
             /// <param name="gift">The gift to purchase</param>
             public void Purchase(Gift gift)
             {
+                if (gift == null)
+                {
+                    throw new ArgumentNullException(nameof(gift));
+                }
                 Reservation res = null;
                 if (gift.Reservations.FindAll(r => r.User.ID == ID && !r.IsPurchased).Count > 0)
                 {
                     res = gift.Reservations.FindAll(r => r.User.ID == ID && !r.IsPurchased)[0];
                     res.IsPurchased = true;
                     res.Update();
+                }
+            }
+            /// <summary>
+            /// Purchase a given number of gifts
+            /// </summary>
+            /// <param name="gift">The gift to purchase</param>
+            /// <param name="amount">The number of gifts to purchase</param>
+            public void Purchase(Gift gift, int amount)
+            {
+                if (gift == null)
+                {
+                    throw new ArgumentNullException(nameof(gift));
+                }
+                if (amount < 0)
+                {
+                    Return(gift, -amount);
+                }
+                for (int i = 0; i < amount; i++)
+                {
+                    Purchase(gift);
                 }
             }
 
@@ -1086,6 +1159,26 @@ namespace GiftServer
                     res = reservations[0];
                     res.IsPurchased = false;
                     res.Update();
+                }
+            }
+            /// <summary>
+            /// Return the specified number of gifts
+            /// </summary>
+            /// <param name="gift">The gift to return</param>
+            /// <param name="amount">The number of gifts to return</param>
+            public void Return(Gift gift, int amount)
+            {
+                if (gift == null)
+                {
+                    throw new ArgumentNullException(nameof(gift));
+                }
+                if (amount < 0)
+                {
+                    Purchase(gift, -amount);
+                }
+                for (int i = 0; i < amount; i++)
+                {
+                    Return(gift);
                 }
             }
 
