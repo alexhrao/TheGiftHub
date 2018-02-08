@@ -4,6 +4,7 @@ CREATE TABLE gift_registry_db.cultures (
     CultureID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     CultureLanguage CHAR(2) NOT NULL,
     CultureLocation CHAR(2) NOT NULL,
+    CultureName VARCHAR(63) NULL,
     CultureDesc VARCHAR(255) NULL
 );
 

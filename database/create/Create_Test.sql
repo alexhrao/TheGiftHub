@@ -4,6 +4,7 @@ CREATE TABLE gift_registry_db_test.cultures (
     CultureID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     CultureLanguage CHAR(2) NOT NULL,
     CultureLocation CHAR(2) NOT NULL,
+    CultureName VARCHAR(63) NULL,
     CultureDesc VARCHAR(255) NULL
 );
 
@@ -384,11 +385,11 @@ BEGIN
             (23, 2, 1, '2017-04-02');
             
 	-- Add Cultures
-	INSERT INTO gift_registry_db_test.cultures (CultureID, CultureLanguage, CultureLocation, CultureDesc)
+	INSERT INTO gift_registry_db_test.cultures (CultureID, CultureLanguage, CultureLocation, CultureName, CultureDesc)
 		VALUES
-		(1, 'en', 'US', 'English (United States)'),
-		(2, 'fr', 'FR', 'French'),
-		(3, 'en', 'GB', 'English (United Kingdom)');
+		(1, 'en', 'US', 'English (US)', 'English (United States)'),
+		(2, 'fr', 'FR', 'French (FR)', 'French'),
+		(3, 'en', 'GB', 'English (UK)', 'English (United Kingdom)');
 END$$
 DELIMITER ;
 

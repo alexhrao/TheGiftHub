@@ -4,6 +4,9 @@ using System.Resources;
 using System.Threading;
 using GiftServer.Server;
 using GiftServer.Exceptions;
+using MySql.Data.MySqlClient;
+using System.Configuration;
+using System.Web;
 
 namespace GiftServer
 {
@@ -45,7 +48,55 @@ namespace GiftServer
             /// <returns>The HTML for standard login</returns>
             public string Login()
             {
-                return HtmlManager.GetString("header") + HtmlManager.GetString("login");
+                HtmlDocument login = new HtmlDocument();
+                login.LoadHtml(HtmlManager.GetString("header") + HtmlManager.GetString("login"));
+                return AddCulture(login).DocumentNode.OuterHtml;
+            }
+            /// <summary>
+            /// Add culture to the login page
+            /// </summary>
+            /// <param name="doc">The document to manipulate</param>
+            /// <returns>A culture-specific login page</returns>
+            private HtmlDocument AddCulture(HtmlDocument doc)
+            {
+                HtmlNode cultures = doc.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" cultureSelector \")]");
+                HtmlNode cultureIcon = doc.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" cultureIcon \")]");
+                // Add our culture first, then all others in alphabetical order:
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT CultureLanguage, CultureLocation, CultureName, CultureDesc FROM cultures ORDER BY CultureName ASC;";
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            // Append unless ours, then prepend
+                            while (reader.Read())
+                            {
+                                string culture = Convert.ToString(reader["CultureLanguage"]) + "-" + Convert.ToString(reader["CultureLocation"]);
+                                HtmlNode option = HtmlNode.CreateNode("<option></option>");
+                                option.AddClass("culture-selector");
+                                option.Attributes.Add("value", culture);
+                                option.InnerHtml = HttpUtility.HtmlEncode(reader["CultureName"]);
+                                if (Thread.CurrentThread.CurrentUICulture.ToString() == culture)
+                                {
+                                    // This is us. Prepend
+                                    cultures.PrependChild(option);
+                                    // Also, set ICO:
+                                    cultureIcon.Attributes.Add("src", culture.Substring(4) + ".ico");
+                                }
+                                else
+                                {
+                                    // Append
+                                    cultures.AppendChild(option);
+                                }
+                            }
+                        }
+                    }
+                }
+                return doc;
             }
             /// <summary>
             /// The login page, with the specified failure reason
@@ -56,6 +107,7 @@ namespace GiftServer
             {
                 HtmlDocument login = new HtmlDocument();
                 login.LoadHtml(HtmlManager.GetString("header") + HtmlManager.GetString("login"));
+                login = AddCulture(login);
                 HtmlNode alert = login.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@class), \" \"), \" alert \")]");
                 alert.AddClass("alert-danger in");
                 alert.RemoveClass("hidden");
@@ -83,6 +135,7 @@ namespace GiftServer
             {
                 HtmlDocument login = new HtmlDocument();
                 login.LoadHtml(HtmlManager.GetString("header") + HtmlManager.GetString("login"));
+                login = AddCulture(login);
                 HtmlNode alert = login.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@class), \" \"), \" alert \")]");
                 alert.AddClass("alert-success in");
                 alert.RemoveClass("hidden");
