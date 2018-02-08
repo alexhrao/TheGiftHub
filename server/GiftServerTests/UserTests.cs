@@ -1138,6 +1138,154 @@ namespace GiftServerTests
 
 
 
+        [TestCategory("User"), TestCategory("Method"), TestCategory("AddOAuth"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void AddOAuth_NullToken_ExceptionThrown()
+        {
+            User user = new User(9);
+            user.AddOAuth(null);
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("AddOAuth"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void AddOAuth_ZeroID_ExceptionThrown()
+        {
+            User user = new User(new MailAddress("wasssup"), new Password("hello world"))
+            {
+                Name = "hello"
+            };
+            // Find way to get valid OAuth Token
+            user.AddOAuth(null);
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("AddOAuth"), TestCategory("Successful")]
+        [TestMethod]
+        public void AddOAuth_ValidOAuth_OAuthAdded()
+        {
+            User user = new User(9);
+            // user.AddOAuth(new GoogleUser(TOKEN));
+        }
+
+
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("removeOAuth"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void RemoveOAuth_NullToken_ExceptionThrown()
+        {
+            User user = new User(9);
+            user.RemoveOAuth(null);
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveOAuth"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void RemoveOAuth_ZeroID_ExceptionThrown()
+        {
+            User user = new User(new MailAddress("wasssup"), new Password("hello world"))
+            {
+                Name = "hello"
+            };
+            // Find way to get valid OAuth Token
+            user.RemoveOAuth(null);
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveOAuth"), TestCategory("Successful")]
+        [TestMethod]
+        public void RemoveOAuth_ValidOAuth_OAuthAdded()
+        {
+            User user = new User(9);
+            // user.RemoveOAuth(new GoogleUser(TOKEN));
+        }
+
+
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserEquals_NullObject_False()
+        {
+            User user = new User(1);
+            Assert.IsFalse(user.Equals((object)null), "Null Object reported equal to User");
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserEquals_NonUser_False()
+        {
+            User user = new User(1);
+            Assert.IsFalse(user.Equals(1), "Non-User reported equal to User");
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserEquals_NullUser_False()
+        {
+            User user = new User(1);
+            Assert.IsFalse(user.Equals((User)null), "Null User reported equal to User");
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserEquals_DifferentUser_False()
+        {
+            User user = new User(1);
+            User target = new User(2);
+            Assert.IsFalse(user.Equals(target), "Different Users reported equal");
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserEquals_SameUser_True()
+        {
+            User user = new User(1);
+            Assert.IsTrue(user.Equals(user), "User is not equal to itself");
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserEquals_IdenticalUsers_True()
+        {
+            User user = new User(1);
+            User target = new User(1);
+            Assert.IsTrue(user.Equals(target), "User is not equal to copy of itself");
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserEquals_ThisZeroTargetValid_False()
+        {
+            User user = new User(0);
+            User target = new User(1);
+            Assert.IsFalse(user.Equals(target), "Zero user equals non-zero user");
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserEquals_ThisValidTargetZero_False()
+        {
+            User user = new User(1);
+            User target = new User(0);
+            Assert.IsFalse(user.Equals(target), "Non-zero user equals zero user");
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserEquals_ThisZeroTargetZero_False()
+        {
+            User user = new User(0);
+            User target = new User(0);
+            Assert.IsFalse(user.Equals(target), "Zero users are reported equal");
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetHashCode"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserHash_
+
+
+
+
         [ClassCleanup]
         public static void UserCleanup()
         {

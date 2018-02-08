@@ -1397,6 +1397,14 @@ namespace GiftServer
             /// <param name="token">The OAuth token to add</param>
             public void AddOAuth(OAuthUser token)
             {
+                if (ID == 0)
+                {
+                    throw new InvalidOperationException("Cannot add OAuth to ID-less user");
+                }
+                else if (token == null)
+                {
+                    throw new ArgumentNullException(nameof(token));
+                }
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -1447,6 +1455,14 @@ namespace GiftServer
             /// <param name="token">The OAuth token to remove</param>
             public void RemoveOAuth(OAuthUser token)
             {
+                if (ID == 0)
+                {
+                    throw new InvalidOperationException("Cannot add OAuth to ID-less user");
+                }
+                else if (token == null)
+                {
+                    throw new ArgumentNullException(nameof(token));
+                }
                 switch (token)
                 {
                     case GoogleUser g:
@@ -1478,10 +1494,10 @@ namespace GiftServer
             /// Checks if this user is equal to the given user
             /// </summary>
             /// <param name="user"></param>
-            /// <returns></returns>
+            /// <returns>True if the two users are equal and non-zero</returns>
             public bool Equals(User user)
             {
-                return user != null && ID == user.ID;
+                return user != null && ID != 0 && user.ID != 0 && ID == user.ID;
             }
             /// <summary>
             /// Overrides the hash code operator
@@ -1489,6 +1505,7 @@ namespace GiftServer
             /// <returns>The hash for this user</returns>
             public override int GetHashCode()
             {
+
                 return ID.GetHashCode();
             }
             /// <summary>
