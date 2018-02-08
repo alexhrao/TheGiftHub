@@ -1495,6 +1495,13 @@ namespace GiftServer
             /// </summary>
             /// <param name="user"></param>
             /// <returns>True if the two users are equal and non-zero</returns>
+            /// <remarks>
+            /// This method works as expected, except if the user compares to "zeroed" Users - users with an ID of 0.
+            /// 
+            /// If this happens, no matter what, the two users will _always_ show as unequal.
+            /// 
+            /// As such, if a user with 0 ID is compared to itself, it will return 0, similar in the way that NaN != NaN
+            /// </remarks>
             public bool Equals(User user)
             {
                 return user != null && ID != 0 && user.ID != 0 && ID == user.ID;

@@ -1279,9 +1279,24 @@ namespace GiftServerTests
             Assert.IsFalse(user.Equals(target), "Zero users are reported equal");
         }
 
+
+
         [TestCategory("User"), TestCategory("Method"), TestCategory("GetHashCode"), TestCategory("Successful")]
         [TestMethod]
-        public void UserHash_
+        public void UserHash_IdenticalUsers_SameHash()
+        {
+            User user1 = new User(1);
+            User user2 = new User(2);
+            Assert.AreEqual(user1.GetHashCode(), user2.GetHashCode(), "Identical users have different hash codes");
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetHashCode"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserHash_SameUser_SameHash()
+        {
+            User user = new User(1);
+            Assert.AreEqual(user.GetHashCode(), user.GetHashCode(), "Same user gives different hash codes");
+        }
 
 
 
