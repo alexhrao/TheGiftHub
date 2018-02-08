@@ -230,19 +230,16 @@ BEGIN
 
 	-- Create users:
 	INSERT INTO gift_registry_db_test.users (UserID, UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL, UserFacebookID, UserGoogleID)
-		VALUES (1, 'Alex Rao', 'alexhrao@gmail.com', 7, 3, "I LOVE to have fun!", "UJIOl8xUU7ccIQH5Ofs0Awfdsa00", "12345", "12345");
-	INSERT INTO gift_registry_db_test.users (UserID, UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL)
-		VALUES (2, 'Raeedah Choudhury', 'raeedah.choudhury@gmail.com', 11, 19, "I love my boyfriend", "UJIOl8xUU7ccIQH5Ofs0Awfdsa11");
-	INSERT INTO gift_registry_db_test.users (UserID, UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL)
-		VALUES (3, 'Alex Tes', 'alexhrao@gatech.edu', 7, 3, "fdsafdsa", "UJIOl7xUU7ccIdH5Ofs0Awfdsa00");
-	INSERT INTO gift_registry_db_test.users (UserID, UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL)
-		VALUES (4, 'Alex Tes', 'arao81@gatech.edu', 7, 3, "fdsafdsa", "UqIOl7xfU7ccIQH5Ofs0Awfdsa00");
-	INSERT INTO gift_registry_db_test.users (UserID, UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL, UserFacebookID, UserGoogleID)
-		VALUES (5, 'ToDelete', 'alexhrao@hotmail.com', 7, 3, "fdsafdsa", "UaIOl0xfU7ccIQH5Ofs0Awfd8765", "54321", "54321");
-	INSERT INTO gift_registry_db_test.users (UserID, UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL, UserFacebookID, UserGoogleID)
-		VALUES (6, 'NoImage', 'alexhrao@github.edu', 7, 3, "fdsafdsa", "UaIOl0xfU7ccIQH5Ofs0Awfd1234", "43215", "43215");
-	INSERT INTO gift_registry_db_test.users (UserID, UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL, UserFacebookID, UserGoogleID)
-		VALUES (7, 'HasImage', 'alexhrao@google.com', 7, 3, "fdsafdsa", "UaIOl0xfU7ccIQH5Ofs0Awfd2222", "12312", "12312");
+		VALUES 
+            (1, 'Alex Rao', 'alexhrao@gmail.com', 7, 3, "I LOVE to have fun!", "UJIOl8xUU7ccIQH5Ofs0Awfdsa00", "12345", "12345"),
+            (2, 'Raeedah Choudhury', 'raeedah.choudhury@gmail.com', 11, 19, "I love my boyfriend", "UJIOl8xUU7ccIQH5Ofs0Awfdsa11", NULL, NULL),
+            (3, 'Alex Tes', 'alexhrao@gatech.edu', 7, 3, "fdsafdsa", "UJIOl7xUU7ccIdH5Ofs0Awfdsa00", NULL, NULL),
+            (4, 'Alex Tes', 'arao81@gatech.edu', 7, 3, "fdsafdsa", "UqIOl7xfU7ccIQH5Ofs0Awfdsa00", NULL, NULL),
+            (5, 'ToDelete', 'alexhrao@hotmail.com', 7, 3, "fdsafdsa", "UaIOl0xfU7ccIQH5Ofs0Awfd8765", "54321", "54321"),
+            (6, 'NoImage', 'alexhrao@github.edu', 7, 3, "fdsafdsa", "UaIOl0xfU7ccIQH5Ofs0Awfd1234", "43215", "43215"),
+            (7, 'HasImage', 'alexhrao@google.com', 7, 3, "fdsafdsa", "UaIOl0xfU7ccIQH5Ofs0Awfd2222", "12312", "12312"),
+            (8, 'reservations', 'asdf@google.com', 7, 3, "fdsafdsa", "UaIOl0xfU7ccIQH5OfdfAwfd2222", "55555", "55555"),
+            (9, 'reservationsHas', 'asdffdsasadf@google.com', 7, 3, "fdsafdsa", "UaIOl0xfU7ccIQH5OfdfAw555222", "66", "1234");
 	-- Create preferences:
 	INSERT INTO gift_registry_db_test.preferences (UserID, UserCulture, UserTheme)
 		VALUES (1, 'en-US', 0);
@@ -382,7 +379,8 @@ BEGIN
             (20, 7, 2, '2017-08-14'),
             (21, 2, 1, '2017-02-02'),
             (22, 2, 1, '2017-06-02'),
-            (23, 2, 1, '2017-04-02');
+            (23, 2, 1, '2017-04-02'),
+            (24, 7, 9, NULL);
             
 	-- Add Cultures
 	INSERT INTO gift_registry_db_test.cultures (CultureID, CultureLanguage, CultureLocation, CultureName, CultureDesc)

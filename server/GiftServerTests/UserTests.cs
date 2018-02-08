@@ -34,7 +34,7 @@ namespace GiftServerTests
         [ExpectedException(typeof(UserNotFoundException))]
         public void UserInstantiate_ZeroID_ExceptionThrown()
         {
-            User user = new User(0UL);
+            User user = new User(0);
         }
 
         [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
@@ -43,7 +43,7 @@ namespace GiftServerTests
         public void UserInstantiate_InvalidID_ExceptionThrown()
         {
             // User should not exist
-            User user = new User(10UL);
+            User user = new User(1000);
         }
 
         [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
@@ -332,6 +332,35 @@ namespace GiftServerTests
                 Name = "fdsa"
             };
             List<Event> e = user.Events;
+        }
+
+        [TestCategory("User"), TestCategory("Property"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void UserProperty_ReservationsNoID_ExceptionThrown()
+        {
+            User user = new User(new MailAddress("fdsafdsa@fdsafda.fdsa"), new Password("hfdsa"))
+            {
+                Name = "Fdaasdf"
+            };
+            List<Reservation> res = user.Reservations;
+        }
+
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserProperty_Reservations_NoReservations()
+        {
+            User user = new User(8);
+            List<Reservation> res = user.Reservations;
+            Assert.IsTrue(res.Count == 0, "Fetched non-existent reservations");
+        }
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserProperty_Reservations_Reservations()
+        {
+            User user = new User(9);
+            List<Reservation> res = user.Reservations;
+            Assert.AreEqual(1, res.Count, "Fetched a different number of records; expected 1, got " + res.Count);
         }
 
 

@@ -91,6 +91,13 @@ img {
     overflow: hidden;
 }
 
+table:not(.table-reserved) .gift-reserved {
+    background-color: #FFC776;
+}
+
+table:not(.table-reserved) .gift-full {
+    background-color: #F78C84;
+}
 .minimized {
     font-size: 75%;
     text-align: left;

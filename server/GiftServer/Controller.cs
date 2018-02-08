@@ -446,6 +446,8 @@ namespace GiftServer
                         return DashboardManager.Dashboard(_user);
                     case "profile":
                         return ProfileManager.ProfilePage(_user);
+                    case "reservations":
+                        return ListManager.GiftReservations(_user);
                     case "myList":
                         return ListManager.GiftList(_user);
                     case "user":

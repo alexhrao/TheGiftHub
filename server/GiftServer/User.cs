@@ -357,6 +357,46 @@ namespace GiftServer
                 }
             }
             /// <summary>
+            /// The user's reservations
+            /// </summary>
+            /// <remarks>
+            /// This is a lazy operator; it will only populate when called upon. This ensures the latest data is fetched.
+            /// </remarks>
+            public List<Reservation> Reservations
+            {
+                get
+                {
+                    List<Reservation> _reservations = new List<Reservation>();
+                    if (ID != 0)
+                    {
+                        using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                        {
+                            con.Open();
+                            using (MySqlCommand cmd = new MySqlCommand())
+                            {
+                                cmd.Connection = con;
+                                cmd.CommandText = "SELECT ReservationID FROM reservations WHERE UserID = @uid;";
+                                cmd.Parameters.AddWithValue("@uid", ID);
+                                cmd.Prepare();
+                                using (MySqlDataReader reader = cmd.ExecuteReader())
+                                {
+                                    while (reader.Read())
+                                    {
+                                        // add to list
+                                        _reservations.Add(new Reservation(Convert.ToUInt64(reader["ReservationID"])));
+                                    }
+                                }
+                            }
+                        }
+                        return _reservations;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Cannot get reservations of ID-less user");
+                    }
+                }
+            }
+            /// <summary>
             /// Fetches an existing user
             /// </summary>
             /// <param name="id">The UserID</param>

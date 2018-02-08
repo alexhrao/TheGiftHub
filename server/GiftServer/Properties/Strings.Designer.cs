@@ -142,6 +142,15 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reservations.
+        /// </summary>
+        internal static string reservations {
+            get {
+                return ResourceManager.GetString("reservations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;p&gt;&lt;strong&gt;Success!&lt;/strong&gt; Please login below&lt;/p&gt;.
         /// </summary>
         internal static string signupSuccess {

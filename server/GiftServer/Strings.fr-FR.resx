@@ -144,6 +144,9 @@
   <data name="recoveryEmailSent" xml:space="preserve">
     <value>&lt;p&gt;&lt;strong&gt;Recovery email sent&lt;/strong&gt; - check your inbox&lt;/p&gt;</value>
   </data>
+  <data name="reservations" xml:space="preserve">
+    <value>Reservations</value>
+  </data>
   <data name="signupSuccess" xml:space="preserve">
     <value>&lt;p&gt;&lt;strong&gt;Success!&lt;/strong&gt; Please login below&lt;/p&gt;</value>
   </data>
