@@ -1138,7 +1138,7 @@ namespace GiftServerTests
 
 
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("AddOAuth"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("AddOAuth"), TestCategory("OAuth"), TestCategory("ExceptionThrown")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void AddOAuth_NullToken_ExceptionThrown()
@@ -1147,12 +1147,12 @@ namespace GiftServerTests
             user.AddOAuth(null);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("AddOAuth"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("AddOAuth"), TestCategory("OAuth"), TestCategory("ExceptionThrown")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void AddOAuth_ZeroID_ExceptionThrown()
         {
-            User user = new User(new MailAddress("wasssup"), new Password("hello world"))
+            User user = new User(new MailAddress("wasssup@gmail.com"), new Password("hello world"))
             {
                 Name = "hello"
             };
@@ -1160,7 +1160,7 @@ namespace GiftServerTests
             user.AddOAuth(null);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("AddOAuth"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("AddOAuth"), TestCategory("OAuth"), TestCategory("Successful")]
         [TestMethod]
         public void AddOAuth_ValidOAuth_OAuthAdded()
         {
@@ -1170,7 +1170,7 @@ namespace GiftServerTests
 
 
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("removeOAuth"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveOAuth"), TestCategory("OAuth"), TestCategory("ExceptionThrown")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void RemoveOAuth_NullToken_ExceptionThrown()
@@ -1179,12 +1179,12 @@ namespace GiftServerTests
             user.RemoveOAuth(null);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveOAuth"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveOAuth"), TestCategory("OAuth"), TestCategory("ExceptionThrown")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void RemoveOAuth_ZeroID_ExceptionThrown()
         {
-            User user = new User(new MailAddress("wasssup"), new Password("hello world"))
+            User user = new User(new MailAddress("wasssup@gmail.com"), new Password("hello world"))
             {
                 Name = "hello"
             };
@@ -1192,7 +1192,7 @@ namespace GiftServerTests
             user.RemoveOAuth(null);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveOAuth"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveOAuth"), TestCategory("OAuth"), TestCategory("Successful")]
         [TestMethod]
         public void RemoveOAuth_ValidOAuth_OAuthAdded()
         {
@@ -1256,7 +1256,10 @@ namespace GiftServerTests
         [TestMethod]
         public void UserEquals_ThisZeroTargetValid_False()
         {
-            User user = new User(0);
+            User user = new User(new MailAddress("alexhrao@thewinners.com"), new Password("Hello World"))
+            {
+                Name = "fdsa"
+            };
             User target = new User(1);
             Assert.IsFalse(user.Equals(target), "Zero user equals non-zero user");
         }
@@ -1266,7 +1269,10 @@ namespace GiftServerTests
         public void UserEquals_ThisValidTargetZero_False()
         {
             User user = new User(1);
-            User target = new User(0);
+            User target = new User(new MailAddress("alexhrao@thewinners.com"), new Password("Hello World"))
+            {
+                Name = "fdsa"
+            };
             Assert.IsFalse(user.Equals(target), "Non-zero user equals zero user");
         }
 
@@ -1274,9 +1280,26 @@ namespace GiftServerTests
         [TestMethod]
         public void UserEquals_ThisZeroTargetZero_False()
         {
-            User user = new User(0);
-            User target = new User(0);
+            User user = new User(new MailAddress("alexhrao@thewinners.com"), new Password("Hello World"))
+            {
+                Name = "fdsa"
+            };
+            User target = new User(new MailAddress("alexhrao@thewinners.com"), new Password("Hello World"))
+            {
+                Name = "fdsa"
+            };
             Assert.IsFalse(user.Equals(target), "Zero users are reported equal");
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserEquals_SameZeroUser_False()
+        {
+            User user = new User(new MailAddress("alexhrao@thewinners.com"), new Password("Hello World"))
+            {
+                Name = "fdsa"
+            };
+            Assert.IsFalse(user.Equals(user), "Same 0 user reported as equal to itself");
         }
 
 
@@ -1286,7 +1309,7 @@ namespace GiftServerTests
         public void UserHash_IdenticalUsers_SameHash()
         {
             User user1 = new User(1);
-            User user2 = new User(2);
+            User user2 = new User(1);
             Assert.AreEqual(user1.GetHashCode(), user2.GetHashCode(), "Identical users have different hash codes");
         }
 

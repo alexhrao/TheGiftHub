@@ -70,6 +70,65 @@ namespace GiftServer
                 }
                 return bar.DocumentNode.OuterHtml;
             }
+            /// <summary>
+            /// Create the sidebar navigator for the user
+            /// </summary>
+            /// <param name="navigator">The navigator node</param>
+            /// <param name="user">The user viewing it</param>
+            /// <returns>The modified HtmlNode</returns>
+            public HtmlNode Navigator(HtmlNode navigator, User user)
+            {
+                navigator.RemoveAll();
+                navigator.AddClass("panel");
+
+                HtmlNode heading = HtmlNode.CreateNode("<div></div>");
+                heading.AddClass("text-center panel-heading");
+                heading.InnerHtml = "Quick Links";
+                navigator.AppendChild(heading);
+
+                HtmlNode body = HtmlNode.CreateNode("<div></div>");
+                body.AddClass("panel-body");
+
+                HtmlNode nav = HtmlNode.CreateNode("<ul></ul>");
+                nav.AddClass("nav nav-pills nav-stacked");
+
+                HtmlNode dash = HtmlNode.CreateNode("<li></li>");
+                HtmlNode dashLink = HtmlNode.CreateNode("<a></a>");
+                dashLink.Attributes.Add("href", ".?dest=dashboard");
+                dashLink.Id = "dashboardLink";
+                dashLink.InnerHtml = "Dashboard";
+                dash.AppendChild(dashLink);
+                nav.AppendChild(dash);
+
+                HtmlNode profile = HtmlNode.CreateNode("<li></li>");
+                HtmlNode profileLink = HtmlNode.CreateNode("<a></a>");
+                profileLink.Attributes.Add("href", ".?dest=profile");
+                profileLink.Id = "profileLink";
+                profileLink.InnerHtml = "My Account";
+                profile.AppendChild(profileLink);
+                nav.AppendChild(profile);
+
+                HtmlNode list = HtmlNode.CreateNode("<li></li>");
+                HtmlNode listLink = HtmlNode.CreateNode("<a></a>");
+                listLink.Attributes.Add("href", "?.dest=myList");
+                listLink.InnerHtml = "My List";
+                listLink.Id = "listLink";
+                list.AppendChild(listLink);
+                nav.AppendChild(list);
+
+                HtmlNode res = HtmlNode.CreateNode("<li></li>");
+                HtmlNode resLink = HtmlNode.CreateNode("<a></a>");
+                resLink.Attributes.Add("href", ".?dest=reservations");
+                resLink.InnerHtml = "My Reservations";
+                resLink.Id = "reservationsLink";
+                res.AppendChild(resLink);
+                nav.AppendChild(res);
+
+                // Groups ?
+                body.AppendChild(nav);
+                navigator.AppendChild(body);
+                return navigator;
+            }
         }
     }
 }

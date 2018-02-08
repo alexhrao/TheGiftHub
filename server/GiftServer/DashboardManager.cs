@@ -171,7 +171,11 @@ namespace GiftServer
             /// <returns>Complete dashboard HTML</returns>
             public string Dashboard(User user)
             {
-                return UpdateMyEvents(user, UpdateEvents(user));
+                HtmlDocument dash = new HtmlDocument();
+                dash.Load(UpdateMyEvents(user, UpdateEvents(user)));
+                HtmlNode dashLink = dash.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" dashboardLink \")]");
+                dashLink.ParentNode.AddClass("active");
+                return dash.DocumentNode.OuterHtml;
             }
         }
     }

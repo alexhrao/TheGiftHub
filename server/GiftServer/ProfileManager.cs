@@ -96,6 +96,9 @@ namespace GiftServer
                     groupRow.AppendChild(groupName);
                     groups.AppendChild(groupRow);
                 }
+
+                HtmlNode navigator = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" navigator \")]");
+                navigator = NavigationManager.Navigator(navigator, viewer);
                 return profile.DocumentNode.OuterHtml;
             }
             /// <summary>
@@ -297,6 +300,12 @@ namespace GiftServer
                     addRow.AppendChild(HtmlNode.CreateNode("<td></td>"));
                     groups.AppendChild(addRow);
                 }
+                HtmlNode navigator = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" navigator \")]");
+                navigator = NavigationManager.Navigator(navigator, user);
+
+                // Activate us
+                HtmlNode profileLink = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" profileLink \")]");
+                profileLink.ParentNode.AddClass("active");
                 return profile.DocumentNode.OuterHtml;
             }
         }
