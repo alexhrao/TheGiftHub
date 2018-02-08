@@ -55,6 +55,21 @@
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ImageProcessorTests.cs" />
+    <Compile Include="GoogleUserTests.cs" />
+    <Compile Include="FacebookUserTests.cs" />
+    <Compile Include="OAuthUserTests.cs" />
+    <Compile Include="RulesEngineTests.cs" />
+    <Compile Include="PreferenceTests.cs" />
+    <Compile Include="CategoryTests.cs" />
+    <Compile Include="OccurrenceTests.cs" />
+    <Compile Include="PasswordTests.cs" />
+    <Compile Include="BlackoutTests.cs" />
+    <Compile Include="ReservationTests.cs" />
+    <Compile Include="GiftTests.cs" />
+    <Compile Include="GroupTests.cs" />
+    <Compile Include="RelativeEventTests.cs" />
+    <Compile Include="ExactEventTests.cs" />
     <Compile Include="EventTests.cs" />
     <Compile Include="UserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
