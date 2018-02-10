@@ -222,7 +222,6 @@ namespace GiftServer
             /// <summary>
             /// Create a record of this ruleset in the database
             /// </summary>
-            /// <returns>A status flag</returns>
             /// <remarks>
             /// Note that, since Event already creates this, it is unlikely the end user will need this method
             /// </remarks>
@@ -276,7 +275,7 @@ namespace GiftServer
                 }
             }
             /// <summary>
-            /// Deletethe record of this ruleset in the database
+            /// Delete the record of this ruleset in the database
             /// </summary>
             /// <remarks>
             /// Note that, since Event already deletes this, it is unlikely the end user will need this method

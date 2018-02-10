@@ -110,7 +110,7 @@ namespace GiftServer
 
                 HtmlNode list = HtmlNode.CreateNode("<li></li>");
                 HtmlNode listLink = HtmlNode.CreateNode("<a></a>");
-                listLink.Attributes.Add("href", "?.dest=myList");
+                listLink.Attributes.Add("href", ".?dest=myList");
                 listLink.InnerHtml = "My List";
                 listLink.Id = "listLink";
                 list.AppendChild(listLink);

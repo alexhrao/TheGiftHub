@@ -71,7 +71,7 @@ namespace GiftServer
                 foreach (Gift gift in gifts)
                 {
                     // Print gift information
-                    if (gift.DateReceived == DateTime.MinValue)
+                    if (!gift.DateReceived.HasValue)
                     {
                         // If a reservation is by my, color orange
                         
@@ -168,9 +168,16 @@ namespace GiftServer
                         HtmlNode microRow = HtmlNode.CreateNode("<tr></tr>");
                         microRow.Attributes.Add("data-gift-id", gift.ID.ToString());
                         microRow.AddClass("gift-row");
+                        HtmlNode microPic = HtmlNode.CreateNode("<td></td>");
+                        // Two rows, first pic, then rating
+                        HtmlNode microPicParent = pictParent.Clone();
+                        microPicParent.AddClass("row text-center");
+                        microPic.AppendChild(microPicParent);
+                        HtmlNode microRateParent = rateParent.Clone();
+                        microRateParent.AddClass("row text-center");
+                        microPic.AppendChild(microRateParent);
 
-                        microRow.AppendChild(pictCell.Clone());
-                        microRow.AppendChild(rateCell.Clone());
+                        microRow.AppendChild(microPic);
                         microRow.AppendChild(nameCell.Clone());
 
                         giftTableMicro.AppendChild(microRow);
@@ -281,7 +288,7 @@ namespace GiftServer
                 foreach (Gift gift in gifts)
                 {
                     // Print gift information
-                    if (gift.DateReceived == DateTime.MinValue)
+                    if (!gift.DateReceived.HasValue)
                     {
                         // If a reservation is by my, color orange
                         HtmlNode giftRow = HtmlNode.CreateNode("<tr></tr>");
@@ -369,9 +376,16 @@ namespace GiftServer
                         HtmlNode microRow = HtmlNode.CreateNode("<tr></tr>");
                         microRow.Attributes.Add("data-gift-id", gift.ID.ToString());
                         microRow.AddClass("gift-row");
+                        HtmlNode microPic = HtmlNode.CreateNode("<td></td>");
+                        // Two rows, first pic, then rating
+                        HtmlNode microPicParent = pictParent.Clone();
+                        microPicParent.AddClass("row text-center");
+                        microPic.AppendChild(microPicParent);
+                        HtmlNode microRateParent = rateParent.Clone();
+                        microRateParent.AddClass("row text-center");
+                        microPic.AppendChild(microRateParent);
 
-                        microRow.AppendChild(pictCell.Clone());
-                        microRow.AppendChild(rateCell.Clone());
+                        microRow.AppendChild(microPic);
                         microRow.AppendChild(nameCell.Clone());
 
                         giftTableMicro.AppendChild(microRow);

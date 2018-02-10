@@ -77,3 +77,7 @@ table {
 .modal-body {
     color: black;
 }
+.panel-heading {
+    font-size: 150%;
+    color: black;
+}

@@ -135,7 +135,7 @@ table:not(.table-reserved) .gift-full {
     border-radius: 0 10px 0 0;
     border-left-width: 1px;
     border-left-style: solid;
-    border-left-color: white;
+    border-left-color: transparent;
 }
 .table-rounded tbody tr:last-child td:first-child {
     border-radius: 0 0 0 10px;
@@ -144,12 +144,9 @@ table:not(.table-reserved) .gift-full {
     border-radius: 0 0 10px 0;
     border-left-width: 1px;
     border-left-style: solid;
-    border-left-color: white;
+    border-left-color: transparent;
 }
 #userName {
     text-align: center;
     color: white;
-}
-#userName a {
-    color: lightgreen;
 }

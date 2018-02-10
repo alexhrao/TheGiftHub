@@ -18,8 +18,7 @@ $(document).ready(function ($) {
 
     $('.gift-row').click(function () {
         // Get ID of this
-        var id = this.id;
-        id = parseInt(id);
+        var id = $(this).attr('data-gift-id');
         $.post(".", {
             action: "Fetch",
             type: "Gift",
