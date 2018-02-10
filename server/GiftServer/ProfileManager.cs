@@ -202,48 +202,68 @@ namespace GiftServer
 
 
                 // Fill groups:
-                HtmlNode newEventGroupLeft = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" newEventGroups \")]").FirstChild;
-                HtmlNode newEventGroupRight = newEventGroupLeft.NextSibling;
+                HtmlNode newEventHolder = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" newEventGroups \")]");
+                HtmlNode newEventGroupLeft = HtmlNode.CreateNode("<div></div>");
+                newEventGroupLeft.AddClass("col-md-6");
+
+                HtmlNode newEventGroupRight = HtmlNode.CreateNode("<div></div>");
+                newEventGroupRight.AddClass("col-md-6");
                 bool alt = true;
                 foreach (Group group in user.Groups)
                 {
                     // Left
-                    HtmlNode groupCheck = HtmlNode.CreateNode("<label></label>");
-                    groupCheck.AddClass("checkbox-inline");
-                    groupCheck.Attributes.Add("data-group-id", HttpUtility.HtmlEncode(group.ID));
-                    HtmlNode check = HtmlNode.CreateNode("<input />");
-                    check.AddClass("group-check");
-                    check.Attributes.Add("type", "checkbox");
-                    check.Attributes.Add("value", "");
-                    check.Attributes.Add("data-group-id", HttpUtility.HtmlEncode(group.ID));
-                    check.Attributes.Add("data-group-name", HttpUtility.HtmlEncode(group.Name));
-                    groupCheck.AppendChild(check);
+                    HtmlNode groupRow = HtmlNode.CreateNode("<div></div>");
+                    groupRow.AddClass("row");
+
+                    HtmlNode groupCheckCol = HtmlNode.CreateNode("<div></div>");
+                    groupCheckCol.AddClass("col-md-1");
+
+                    HtmlNode groupCheck = HtmlNode.CreateNode("<input />");
+                    groupCheck.AddClass("group-check text-left");
+                    groupCheck.Attributes.Add("type", "checkbox");
+                    groupCheck.Attributes.Add("value", "");
+                    groupCheck.Attributes.Add("data-group-id", group.ID.ToString());
+                    groupCheck.Attributes.Add("data-group-name", HttpUtility.HtmlAttributeEncode(group.Name));
+
+                    HtmlNode groupNameCol = HtmlNode.CreateNode("<div></div>");
+                    groupNameCol.AddClass("col-md-10");
+
                     HtmlNode groupName = HtmlNode.CreateNode("<p></p>");
                     groupName.InnerHtml = HttpUtility.HtmlEncode(group.Name);
-                    groupCheck.AppendChild(groupName);
+
+                    groupNameCol.AppendChild(groupName);
+                    groupCheckCol.AppendChild(groupCheck);
+                    groupRow.AppendChild(groupCheckCol);
+                    groupRow.AppendChild(groupNameCol);
+                   
                     // Alternate
                     if (alt)
                     {
-                        newEventGroupLeft.AppendChild(groupCheck);
+                        newEventGroupLeft.AppendChild(groupRow);
                     }
                     else
                     {
-                        // Right
-                        newEventGroupRight.AppendChild(groupCheck);
+                        newEventGroupRight.AppendChild(groupRow);
                     }
                     alt = !alt;
                 }
+                newEventHolder.AppendChild(newEventGroupLeft);
+                newEventHolder.AppendChild(newEventGroupRight);
 
                 HtmlNode events = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" events \")]");
                 foreach (Event evnt in user.Events)
                 {
                     HtmlNode eventRow = HtmlNode.CreateNode("<tr></tr>");
                     eventRow.Attributes.Add("data-event-id", evnt.ID.ToString());
+                    HtmlNode eventCloserWrapper = HtmlNode.CreateNode("<div></div>");
+                    eventCloserWrapper.AddClass("event-closer");
+                    eventCloserWrapper.Attributes.Add("data-event-id", evnt.ID.ToString());
                     HtmlNode eventCloser = HtmlNode.CreateNode("<i></i>");
                     eventCloser.AddClass("event-closer fas fa-times");
                     eventCloser.Attributes.Add("data-event-id", evnt.ID.ToString());
                     HtmlNode eventCloserTd = HtmlNode.CreateNode("<td></td>");
-                    eventCloserTd.AppendChild(eventCloser);
+                    eventCloserWrapper.AppendChild(eventCloser);
+                    eventCloserTd.AppendChild(eventCloserWrapper);
                     HtmlNode eventName = HtmlNode.CreateNode("<td></td>");
                     eventName.Attributes.Add("data-event-id", evnt.ID.ToString());
                     eventName.AddClass("event-name");
@@ -273,11 +293,15 @@ namespace GiftServer
                 {
                     HtmlNode groupRow = HtmlNode.CreateNode("<tr></tr>");
                     groupRow.Attributes.Add("data-group-id", group.ID.ToString());
+                    HtmlNode groupCloserWrapper = HtmlNode.CreateNode("<div></div>");
+                    groupCloserWrapper.AddClass("group-closer");
+                    groupCloserWrapper.Attributes.Add("data-group-id", group.ID.ToString());
                     HtmlNode groupCloser = HtmlNode.CreateNode("<i></i>");
-                    groupCloser.AddClass("group-closer fas fa-times");
+                    groupCloser.AddClass("fas fa-times");
                     groupCloser.Attributes.Add("data-group-id", group.ID.ToString());
                     HtmlNode groupCloserTd = HtmlNode.CreateNode("<td></td>");
-                    groupCloserTd.AppendChild(groupCloser);
+                    groupCloserWrapper.AppendChild(groupCloser);
+                    groupCloserTd.AppendChild(groupCloserWrapper);
                     HtmlNode groupName = HtmlNode.CreateNode("<td></td>");
                     groupName.AddClass("group-name");
                     groupName.Attributes.Add("data-group-id", group.ID.ToString());

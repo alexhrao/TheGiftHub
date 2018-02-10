@@ -164,7 +164,7 @@ namespace GiftServerTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void UserInstantiate_NullOAuth_ExceptionThrown()
         {
-            User user = new User((OAuthUser)null, null);
+            User user = new User((OAuthUser)null, (Action<MailAddress>)null);
         }
 
 

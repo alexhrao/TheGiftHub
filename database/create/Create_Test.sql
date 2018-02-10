@@ -224,9 +224,9 @@ BEGIN
 	DELETE FROM gift_registry_db_test.users;
 	-- Create categories:
 	INSERT INTO gift_registry_db_test.categories (CategoryID, CategoryName, CategoryDescription)
-		VALUES (1, 'Clothing', 'Clothing');
-	INSERT INTO gift_registry_db_test.categories (CategoryID, CategoryName, CategoryDescription)
-		VALUES (2, 'Electronics', 'Electronic Devices');
+		VALUES 
+            (1, 'Clothing', 'Clothing'),
+            (2, 'Electronics', 'Electronic Devices');
 
 	-- Create users:
 	INSERT INTO gift_registry_db_test.users (UserID, UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL, UserFacebookID, UserGoogleID)
@@ -242,62 +242,47 @@ BEGIN
             (9, 'reservationsHas', 'asdffdsasadf@google.com', 7, 3, "fdsafdsa", "UaIOl0xfU7ccIQH5OfdfAw555222", "66", "1234");
 	-- Create preferences:
 	INSERT INTO gift_registry_db_test.preferences (UserID, UserCulture, UserTheme)
-		VALUES (1, 'en-US', 0);
-	INSERT INTO gift_registry_db_test.preferences (UserID, UserCulture, UserTheme)
-		VALUES (2, 'fr-FR', 1);
+		VALUES 
+            (1, 'en-US', 0),
+            (2, 'fr-FR', 1);
 		
 	-- Create Password:
 	INSERT INTO gift_registry_db_test.passwords (UserID, PasswordHash, PasswordSalt, PasswordIter)
-		VALUES (1, 'xITVQ4AJ9eLfuzeG+cxeajH3QRw=', 'lN6ivSpluwewZWZCVXFNBw==', 10000);
-
-	INSERT INTO gift_registry_db_test.passwords (UserID, PasswordHash, PasswordSalt, PasswordIter)
-		VALUES (2, '12345678901234567890', '1234567890123567', 10000);
+		VALUES 
+            (1, 'xITVQ4AJ9eLfuzeG+cxeajH3QRw=', 'lN6ivSpluwewZWZCVXFNBw==', 10000),
+            (2, '12345678901234567890', '1234567890123567', 10000);
 
 	-- Create Events
 	INSERT INTO gift_registry_db_test.user_events (EventID, UserID, EventStartDate, EventEndDate, EventName)
-		VALUES (1, 1, '2017-01-10', NULL, 'Exact Event Test');
-	INSERT INTO gift_registry_db_test.user_events (EventID, UserID, EventStartDate, EventEndDate, EventName)
-		VALUES (2, 1, '2017-01-7', '2020-01-01', 'Relative Event Test');
-	INSERT INTO gift_registry_db_test.user_events (EventID, UserID, EventStartDate, EventEndDate, EventName)
-		VALUES (3, 1, '2017-08-04', '2017-08-04', 'One Off Event Test');
-	INSERT INTO gift_registry_db_test.user_events (EventID, UserID, EventStartDate, EventEndDate, EventName)
-		VALUES (4, 1, '2017-01-05', NULL, 'Blackout Date Test');
-	INSERT INTO gift_registry_db_test.user_events (EventID, UserID, EventStartDate, EventEndDate, EventName)
-		VALUES (5, 2, '2017-01-10', NULL, 'Exact Event Test 2');
-	INSERT INTO gift_registry_db_test.user_events (EventID, UserID, EventStartDate, EventEndDate, EventName)
-		VALUES (6, 2, '2017-01-7', '2020-01-01', 'Relative Event Test 2');
-	INSERT INTO gift_registry_db_test.user_events (EventID, UserID, EventStartDate, EventEndDate, EventName)
-		VALUES (7, 2, '2017-08-04', '2017-08-04', 'One Off Event Test 2');
-	INSERT INTO gift_registry_db_test.user_events (EventID, UserID, EventStartDate, EventEndDate, EventName)
-		VALUES (8, 2, '2017-04-04', NULL, 'Blackout Date Test 2');
+        VALUES 
+            (1, 1, '2017-01-10', NULL, 'Exact Event Test'),
+            (2, 1, '2017-01-7', '2020-01-01', 'Relative Event Test'),
+            (3, 1, '2017-08-04', '2017-08-04', 'One Off Event Test'),
+            (4, 1, '2017-01-05', NULL, 'Blackout Date Test'),
+            (5, 2, '2017-01-10', NULL, 'Exact Event Test 2'),
+            (6, 2, '2017-01-7', '2020-01-01', 'Relative Event Test 2'),
+            (7, 2, '2017-08-04', '2017-08-04', 'One Off Event Test 2'),
+            (8, 2, '2017-04-04', NULL, 'Blackout Date Test 2');
 
 	-- Create groups
 	INSERT INTO gift_registry_db_test.groups (GroupID, GroupName, AdminID)
-		VALUES (1, 'The Rao''s', 1);
-	INSERT INTO gift_registry_db_test.groups (GroupID, GroupName, AdminID)
-		VALUES (2, 'Test Group 2', 2);
-	INSERT INTO gift_registry_db_test.groups (GroupID, GroupName, AdminID)
-		VALUES (3, 'Test Group 3', 4);
-	INSERT INTO gift_registry_db_test.groups (GroupID, GroupName, AdminID)
-		VALUES (4, 'Test Group 1 is out', 4);
+		VALUES
+            (1, 'The Rao''s', 1),
+            (2, 'Test Group 2', 2),
+            (3, 'Test Group 3', 4),
+            (4, 'Test Group 1 is out', 4);
 		
 	-- Create gift
 	INSERT INTO gift_registry_db_test.gifts (GiftID, UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating)
-		VALUES (1, 1, 'Webcam', 'Logitech BRIO webcam', 'https://www.google.com', 100.00, 'Logitech, Target', 1, 'FFFFFF', 'White', 'N/A', 2, 5.0);
-	INSERT INTO gift_registry_db_test.gifts (GiftID, UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating)
-		VALUES (2, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1000, '000000', 'black', 'BIG', 1, 5.0);
-	INSERT INTO gift_registry_db_test.gifts (GiftID, UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating)
-		VALUES (3, 1, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 3, '000000', 'black', 'BIG', 1, 5.0);
-	INSERT INTO gift_registry_db_test.gifts (GiftID, UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating)
-		VALUES (4, 7, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 5, '000000', 'black', 'BIG', 1, 5.0);
-	INSERT INTO gift_registry_db_test.gifts (GiftID, UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating)
-		VALUES (5, 2, 'Wafdsav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1, '000000', 'black', 'BIG', 1, 5.0);
-	INSERT INTO gift_registry_db_test.gifts (GiftID, UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating)
-		VALUES (6, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1, '000000', 'black', 'BIG', 1, 5.0);
-	INSERT INTO gift_registry_db_test.gifts (GiftID, UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating)
-		VALUES (7, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 5600, '000000', 'black', 'BIG', 1, 5.0);
-	INSERT INTO gift_registry_db_test.gifts (GiftID, UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating)
-		VALUES (8, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1, '000000', 'black', 'BIG', 1, 5.0);
+		VALUES 
+            (1, 1, 'Webcam', 'Logitech BRIO webcam', 'https://www.google.com', 100.00, 'Logitech, Target', 1, 'FFFFFF', 'White', 'N/A', 2, 5.0),
+            (2, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1000, '000000', 'black', 'BIG', 1, 5.0),
+            (3, 1, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 3, '000000', 'black', 'BIG', 1, 5.0),
+            (4, 7, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 5, '000000', 'black', 'BIG', 1, 5.0),
+            (5, 2, 'Wafdsav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1, '000000', 'black', 'BIG', 1, 5.0),
+            (6, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1, '000000', 'black', 'BIG', 1, 5.0),
+            (7, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 5600, '000000', 'black', 'BIG', 1, 5.0),
+            (8, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1, '000000', 'black', 'BIG', 1, 5.0);
 
 	-- Add user to group
 	INSERT INTO gift_registry_db_test.groups_users (GroupID, UserID, IsChild)
@@ -316,31 +301,29 @@ BEGIN
 
 	-- Add gift to group
 	INSERT INTO gift_registry_db_test.groups_gifts (GroupID, GiftID)
-		VALUES (1, 1);
-	INSERT INTO gift_registry_db_test.groups_gifts (GroupID, GiftID)
-		VALUES (1, 2);
+		VALUES 
+            (1, 1),
+            (1, 2);
 
 	-- Create the Exact Event Rule
 	INSERT INTO gift_registry_db_test.exact_events (EventID, EventTimeInterval, EventSkipEvery)
-		VALUES (1, 'M', 1);
-	INSERT INTO gift_registry_db_test.exact_events (EventID, EventTimeInterval, EventSkipEvery)
-		VALUES (5, 'W', 3);
-	INSERT INTO gift_registry_db_test.exact_events (EventID, EventTimeInterval, EventSkipEvery)
-		VALUES (4, 'M', 1);
+		VALUES
+            (1, 'M', 1),
+            (5, 'W', 3),
+            (4, 'M', 1);
 		
 	-- Create the Relative Event Rule
 	INSERT INTO gift_registry_db_test.relative_events (EventID, EventTimeInterval, EventSkipEvery, EventDayOfWeek, EventPosn)
-		VALUES (2, 'MAR', 1, 'M', 2);
-	INSERT INTO gift_registry_db_test.relative_events (EventID, EventTimeInterval, EventSkipEvery, EventDayOfWeek, EventPosn)
-		VALUES (6, NULL, 2, 'S', 3);
-	INSERT INTO gift_registry_db_test.relative_events (EventID, EventTimeInterval, EventSkipEvery, EventDayOfWeek, EventPosn)
-		VALUES (8, NULL, 1, 'T', 5);
+		VALUES 
+            (2, 'MAR', 1, 'M', 2),
+            (6, NULL, 2, 'S', 3),
+            (8, NULL, 1, 'T', 5);
 
 	-- Create Blackout Dates
 	INSERT INTO gift_registry_db_test.event_blackouts (EventID, EventBlackoutDate)
-		VALUES (4, '2017-02-05');
-	INSERT INTO gift_registry_db_test.event_blackouts (EventID, EventBlackoutDate)
-		VALUES (8, '2017-06-27');
+		VALUES
+            (4, '2017-02-05'),
+            (8, '2017-06-27');
 
 	-- Add events to groups
 	INSERT INTO gift_registry_db_test.groups_events (GroupID, EventID)
@@ -385,9 +368,9 @@ BEGIN
 	-- Add Cultures
 	INSERT INTO gift_registry_db_test.cultures (CultureID, CultureLanguage, CultureLocation, CultureName, CultureDesc)
 		VALUES
-		(1, 'en', 'US', 'English (US)', 'English (United States)'),
-		(2, 'fr', 'FR', 'French (FR)', 'French'),
-		(3, 'en', 'GB', 'English (UK)', 'English (United Kingdom)');
+            (1, 'en', 'US', 'English (US)', 'English (United States)'),
+            (2, 'fr', 'FR', 'French (FR)', 'French'),
+            (3, 'en', 'GB', 'English (UK)', 'English (United Kingdom)');
 END$$
 DELIMITER ;
 

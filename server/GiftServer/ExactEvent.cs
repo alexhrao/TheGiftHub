@@ -139,21 +139,27 @@ namespace GiftServer
             /// Fetch an existing ExactEvent from the database
             /// </summary>
             /// <param name="id">The ID for this exact event</param>
-            public ExactEvent(ulong id)
+            /// <param name="e">The event this ruleset is tied to</param>
+            public ExactEvent(ulong id, Event e)
             {
+                Event = e;
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT ExactEventID, EventTimeInterval, EventSkipEvery FROM exact_events WHERE ExactEventID = @eid;";
+                        cmd.CommandText = "SELECT ExactEventID, EventID, EventTimeInterval, EventSkipEvery FROM exact_events WHERE ExactEventID = @eid;";
                         cmd.Parameters.AddWithValue("@eid", id);
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
                             if (reader.Read())
                             {
+                                if (Event.ID != Convert.ToUInt64(reader["EventID"]))
+                                {
+                                    throw new InvalidOperationException("EventIDs do not match!");
+                                }
                                 ID = id;
                                 TimeInterval = Convert.ToString(reader["EventTimeInterval"]);
                                 SkipEvery = Convert.ToInt32(reader["EventSkipEvery"]);

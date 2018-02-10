@@ -262,15 +262,17 @@ namespace GiftServer
             /// Fetch an existing RelativeEvent from the database
             /// </summary>
             /// <param name="id">The ID for this relative event</param>
-            public RelativeEvent(ulong id)
+            /// <param name="e">The Event this rule is tied to</param>
+            public RelativeEvent(ulong id, Event e)
             {
+                Event = e;
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT RelativeEventID, EventTimeInterval, EventSkipEvery, EventDayOfWeek, "
+                        cmd.CommandText = "SELECT RelativeEventID, EventID, EventTimeInterval, EventSkipEvery, EventDayOfWeek, "
                                         + "EventPosn FROM relative_events WHERE RelativeEventID = @rid;";
                         cmd.Parameters.AddWithValue("@rid", id);
                         cmd.Prepare();
@@ -279,6 +281,10 @@ namespace GiftServer
                             if (reader.Read())
                             {
                                 ID = id;
+                                if (Event.ID != Convert.ToUInt64(reader["EventID"]))
+                                {
+                                    throw new InvalidOperationException("EventIDs do not match!");
+                                }
                                 TimeInterval = Convert.ToString(reader["EventTimeInterval"]);
                                 SkipEvery = Convert.ToInt32(reader["EventSkipEvery"]);
                                 DayOfWeek = Convert.ToString(reader["EventDayOfWeek"]);

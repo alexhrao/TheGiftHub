@@ -533,6 +533,51 @@ namespace GiftServer
                                     // Send password reset email
                                     sender?.Invoke(Email);
                                 }
+                                else
+                                {
+                                    throw new NewOAuthForUserException();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            /// <summary>
+            /// Force fetching of user AND updating of user account.
+            /// </summary>
+            /// <param name="user">The OAuth User to add to the existing user</param>
+            /// <param name="password">The password for this user</param>
+            public User(OAuthUser user, string password)
+            {
+                // If the passwords match, then add it
+                // Get the email from user, and synchronize
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT UserID FROM users WHERE UserEmail = @eml;";
+                        cmd.Parameters.AddWithValue("@eml", user.Email.Address);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                Synchronize(Convert.ToUInt64(reader["UserID"]), password);
+                                // Add our user
+                                switch (user)
+                                {
+                                    case GoogleUser g:
+                                        GoogleId = g.OAuthId;
+                                        break;
+                                    case FacebookUser f:
+                                        FacebookId = f.OAuthId;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                Update();
                             }
                         }
                     }
@@ -555,20 +600,7 @@ namespace GiftServer
                             // If found, get id:
                             if (reader.Read())
                             {
-                                ulong uid = Convert.ToUInt64(reader["UserID"]);
-                                Synchronize(uid);
-                                switch (user)
-                                {
-                                    case GoogleUser g:
-                                        GoogleId = g.OAuthId;
-                                        break;
-                                    case FacebookUser f:
-                                        FacebookId = f.OAuthId;
-                                        break;
-                                    default:
-                                        throw new ArgumentException("Unkown OAuth type: " + user.GetType().Name);
-                                }
-                                Update();
+                                // Update();
                                 return true;
                             }
                             else

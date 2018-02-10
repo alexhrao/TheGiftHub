@@ -6,7 +6,7 @@ $(document).ready(function () {
 });
 $(document).ready(function () {
     $('#events .event-closer').click(function () {
-        eNumber = $(this).attr('data-event-id');
+        var eNumber = $(this).attr('data-event-id');
         $.post(".",
             {
                 action: "Change",
@@ -25,8 +25,7 @@ $(document).ready(function () {
 });
 $(document).ready(function () {
     $('#groups .group-closer').click(function () {
-        var gNumber = this.id;
-        gNumber = $(this).attr('data-group-id');
+        var gNumber = $(this).attr('data-group-id');
         $.post(".",
             {
                 action: "Change",
@@ -455,7 +454,7 @@ $(document).ready(function () {
                 dispatch(9);
                 $('#newEventNext').addClass('hidden');
                 // unhide button
-                addNewGroups();
+                addGroups();
                 fillDescription();
                 $('#newEventSubmit').removeClass("hidden");
                 break;
@@ -818,7 +817,7 @@ $(document).ready(function () {
                 var intro = $("<p>Additionally, this event will <em><strong>not</strong></em> occur on any of the following dates:</p>");
                 var blackouts = $("<ul></ul>");
                 for (var i = 0; i < newEventBlackouts.length - 1; i++) {
-                    blackouts.append($("<li>" + escapeHtml(newEventBlackouts[i]) + "</li>"));
+                    blackouts.append($("<li class=\"text-left\">" + escapeHtml(newEventBlackouts[i]) + "</li>"));
                 }
                 desc.append(intro);
                 desc.append(blackouts);
@@ -830,8 +829,8 @@ $(document).ready(function () {
         }
         desc.append($("<br /><p>It's viewable by the following groups:</p>"));
         var groups = $("<ul></ul>");
-        for (var i = 0; i < newEventGroupNames; i++) {
-            groups.append("<li>" + escapeHtml(newEventGroupNames[i]) + "</li>");
+        for (var i = 0; i < newEventGroupNames.length; i++) {
+            groups.append($("<li class=\"text-left\">" + escapeHtml(newEventGroupNames[i]) + "</li>"));
         }
         desc.append(groups);
     }

@@ -69,6 +69,17 @@ namespace GiftServer
             public DuplicateUserException(OAuthUser user) : base(user.OAuthId) { }
         }
         /// <summary>
+        /// If a user tries to tie oauth with email when signing in
+        /// </summary>
+        [Serializable]
+        public class NewOAuthForUserException : UserException
+        {
+            /// <summary>
+            /// A user signs in with OAuth, but already exists with email
+            /// </summary>
+            public NewOAuthForUserException() : base("Ask for user's permission!") { }
+        }
+        /// <summary>
         /// Base class for password exceptions
         /// </summary>
         [Serializable]

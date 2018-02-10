@@ -12,6 +12,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Threading;
 using System.Web;
+using System.Xml;
 
 namespace GiftServer
 {
@@ -162,12 +163,37 @@ namespace GiftServer
                                             case "Google":
                                                 try
                                                 {
-                                                    _user = new User(new GoogleUser(_dict["token"]), new Action<MailAddress>((MailAddress email) => PasswordReset.SendRecoveryEmail(email, ResetManager)));
-                                                    string hash = AddConnection(_user.ID, _request.RemoteEndPoint);
-                                                    Cookie logger = new Cookie("UserHash", hash);
-                                                    _response.Cookies.Add(logger);
-                                                    _response.AppendHeader("dest", "dashboard");
-                                                    return "success";
+                                                    if (String.IsNullOrEmpty(_dict["password"]))
+                                                    {
+                                                            try
+                                                            {
+                                                                _user = new User(new GoogleUser(_dict["token"]), new Action<MailAddress>((MailAddress email) => PasswordReset.SendRecoveryEmail(email, ResetManager)));
+                                                            }
+                                                            catch (NewOAuthForUserException)
+                                                            {
+                                                                // Send failure, request password
+                                                                return "confirm";
+                                                            }
+                                                            string hash = AddConnection(_user.ID, _request.RemoteEndPoint);
+                                                            Cookie logger = new Cookie("UserHash", hash);
+                                                            _response.Cookies.Add(logger);
+                                                            _response.AppendHeader("dest", "dashboard");
+                                                            return "success";
+                                                    }
+                                                    else
+                                                    {
+                                                        // We have password, now we are sure
+                                                        try
+                                                        {
+                                                            _user = new User(new GoogleUser(_dict["token"]), _dict["password"]);
+                                                            return ParseQuery();
+                                                        }
+                                                        catch (InvalidPasswordException p)
+                                                        {
+                                                            return LoginManager.FailLogin(p);
+                                                        }
+
+                                                    }
                                                 }
                                                 catch (Exception e)
                                                 {
@@ -285,7 +311,7 @@ namespace GiftServer
                                                     Event e = null;
                                                     RulesEngine rules = null;
                                                     // If not recurring, then RulesEngine is null:
-                                                    if (_dict["recurType"] != "")
+                                                    if (!String.IsNullOrEmpty(_dict["recurType"]))
                                                     {
                                                         // Figure out type of recur:
                                                         if (_dict["recurType"] == "exact")

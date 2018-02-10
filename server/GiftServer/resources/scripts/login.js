@@ -105,20 +105,28 @@ function loadingLogin(btn) {
 function onSuccess(googleUser) {
     // Show spinner
     // remove google login
+    var googleToken = googleUser.getAuthResponse().id_token;
     loadingLogin("#googleLogin");
     loadingLogin("#googleSignup");
     $.post(".", {
         action: "Login",
         type: "Google",
-        token: googleUser.getAuthResponse().id_token
+        token: googleToken
     }, function (data, status, xhr) {
         // Parse data - if error message, populate red alert; otherwise, reload to dashboard:
         var resp = xhr.responseText;
-        if (resp == "success") {
+        if (resp === "success") {
             var auth2 = gapi.auth2.getAuthInstance();
             auth2.signOut().then(function () {
                 location.replace(".?dest=dashboard");
             });
+        } else if (resp === "confirm") {
+            // Ask for password, prep to resubmit
+            $('#oauthToken').val(googleToken);
+            $('#oauthType').val("Google");
+            $('#oauthTypeName').text("Google");
+            // Show the password prompt
+            $('#oauthPassword').modal();
         } else {
             // We need to die gracefully
             $('#loginAlert').addClass('alert-danger').removeClass("hidden").addClass("in");
@@ -182,7 +190,7 @@ function fbLoginStatusChange(response) {
             token: response.authResponse.accessToken
         }, function (data, status, xhr) {
             var resp = xhr.responseText;
-            if (resp == "success") {
+            if (resp === "success") {
                 location.replace(".?dest=dashboard");
             } else {
                 // We need to die gracefully

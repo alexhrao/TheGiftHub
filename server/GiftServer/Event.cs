@@ -70,7 +70,7 @@ namespace GiftServer
                             {
                                 while (reader.Read())
                                 {
-                                    blackouts.Add(new Blackout(Convert.ToUInt64(reader["EventBlackoutID"])));
+                                    blackouts.Add(new Blackout(Convert.ToUInt64(reader["EventBlackoutID"]), this));
                                 }
                             }
                         }
@@ -150,10 +150,7 @@ namespace GiftServer
                         {
                             if (reader.Read())
                             {
-                                Rules = new ExactEvent(Convert.ToUInt64(reader["ExactEventID"]))
-                                {
-                                    Event = this
-                                };
+                                Rules = new ExactEvent(Convert.ToUInt64(reader["ExactEventID"]), this);
                             }
                         }
                     }
@@ -169,10 +166,7 @@ namespace GiftServer
                             {
                                 if (reader.Read())
                                 {
-                                    Rules = new RelativeEvent(Convert.ToUInt64(reader["RelativeEventID"]))
-                                    {
-                                        Event = this
-                                    };
+                                    Rules = new RelativeEvent(Convert.ToUInt64(reader["RelativeEventID"]), this);
                                 }
                             }
                         }
@@ -282,7 +276,10 @@ namespace GiftServer
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                         ID = Convert.ToUInt64(cmd.LastInsertedId);
-                        Rules.Create();
+                        if (Rules != null)
+                        {
+                            Rules.Create();
+                        }
                     }
                 }
             }
@@ -464,10 +461,70 @@ namespace GiftServer
             /// <summary>
             /// Serialize this Event as an XML document.
             /// </summary>
-            /// <returns></returns>
+            /// <returns>The seri</returns>
+            /// <remarks>
+            /// Like all Fetch() methods, this returns a serialized form of this event.
+            /// 
+            /// This has the following fields:
+            ///     - eventId: The ID for this event
+            ///     - name: The name for this event
+            ///     - startDate: The date this starts, serialized as yyyy-MM-dd
+            ///     - endDate: The end date, if it exists, is serialized as yyyy-MM-dd.
+            ///         - Note that if there is no end date, this node *will* exist, but with no information
+            ///     - userId: The UserID of the owner of this event
+            ///     - rulesEngine: A serialized form of the rules engine
+            ///     - blackoutDates: A serialized form of all the blackout dates
+            ///     
+            /// This is all wrapped in an "event" container
+            /// </remarks>
             public XmlDocument Fetch()
             {
-                return new XmlDocument();
+                XmlDocument info = new XmlDocument();
+                XmlElement container = info.CreateElement("event");
+                info.AppendChild(container);
+
+                XmlElement eventId = info.CreateElement("eventId");
+                eventId.InnerText = ID.ToString();
+                XmlElement eName = info.CreateElement("name");
+                eName.InnerText = Name;
+                XmlElement startDate = info.CreateElement("startDate");
+                startDate.InnerText = StartDate.ToString("yyyy-MM-dd");
+                XmlElement endDate = info.CreateElement("endDate");
+                endDate.InnerText = EndDate.HasValue ? EndDate.Value.ToString("yyyy-MM-dd") : "";
+                XmlElement userId = info.CreateElement("userId");
+                userId.InnerText = User.ID.ToString();
+                XmlElement rulesElem = info.CreateElement("rulesEngine");
+                if (Rules == null)
+                {
+                    rulesElem.InnerText = "";
+                }
+                else
+                {
+                    rulesElem.AppendChild(info.ImportNode(Rules.Fetch().DocumentElement, true));
+                }
+                XmlElement boDates = info.CreateElement("blackoutDates");
+                foreach (Blackout b in Blackouts)
+                {
+                    boDates.AppendChild(info.ImportNode(b.Fetch().DocumentElement, true));
+                }
+                XmlElement groups = info.CreateElement("groups");
+                foreach (Group g in Groups)
+                {
+                    XmlElement groupId = info.CreateElement("groupId");
+                    groupId.InnerText = g.ID.ToString();
+                    groups.AppendChild(groupId);
+                }
+
+                container.AppendChild(eventId);
+                container.AppendChild(eName);
+                container.AppendChild(startDate);
+                container.AppendChild(endDate);
+                container.AppendChild(userId);
+                container.AppendChild(rulesElem);
+                container.AppendChild(boDates);
+                container.AppendChild(groups);
+
+                return info;
             }
         }
     }

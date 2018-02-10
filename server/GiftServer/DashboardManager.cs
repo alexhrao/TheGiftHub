@@ -172,7 +172,9 @@ namespace GiftServer
             public string Dashboard(User user)
             {
                 HtmlDocument dash = new HtmlDocument();
-                dash.Load(UpdateMyEvents(user, UpdateEvents(user)));
+                dash.LoadHtml(UpdateMyEvents(user, UpdateEvents(user)));
+                HtmlNode navigator = dash.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" navigator \")]");
+                navigator = NavigationManager.Navigator(navigator, user);
                 HtmlNode dashLink = dash.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" dashboardLink \")]");
                 dashLink.ParentNode.AddClass("active");
                 return dash.DocumentNode.OuterHtml;

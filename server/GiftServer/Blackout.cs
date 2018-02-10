@@ -53,7 +53,8 @@ namespace GiftServer
             /// Fetch an existing Blackout from the database
             /// </summary>
             /// <param name="blackoutId">The blackout ID</param>
-            public Blackout(ulong blackoutId)
+            /// <param name="e">The Event tied to this blackout event</param>
+            public Blackout(ulong blackoutId, Event e)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -61,7 +62,7 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT EventBlackoutID, EventBlackoutDate FROM event_blackouts WHERE EventBlackoutID = @eid;";
+                        cmd.CommandText = "SELECT EventBlackoutID, EventID, EventBlackoutDate FROM event_blackouts WHERE EventBlackoutID = @bid;";
                         cmd.Parameters.AddWithValue("@bid", blackoutId);
                         cmd.Prepare();
                         using (MySqlDataReader reader = cmd.ExecuteReader())
@@ -69,6 +70,11 @@ namespace GiftServer
                             if (reader.Read())
                             {
                                 ID = blackoutId;
+                                Event = e;
+                                if (e.ID != Convert.ToUInt64(reader["EventID"]))
+                                {
+                                    throw new InvalidOperationException("EventIDs do not match!");
+                                }
                                 BlackoutDate = (DateTime)(reader["EventBlackoutDate"]);
                             }
                         }
