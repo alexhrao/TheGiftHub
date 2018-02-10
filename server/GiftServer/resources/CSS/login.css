@@ -20,10 +20,10 @@
     }
 }
 
-.input-group,
-.form-group,
-.spaced {
-    margin: 10px;
+#login > .row {
+    display: inline-block;
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
 
 #userName {
@@ -42,7 +42,6 @@ a {
     padding: 5px;
     float: right;
     margin: 10px;
-    z-index: 999;
 }
 
 #location {
