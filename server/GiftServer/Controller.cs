@@ -986,7 +986,6 @@ namespace GiftServer
                         gift.Stores = _dict["stores"];
                         gift.Size = _dict["size"];
                         gift.Category = new Category(_dict["category"]);
-                        // gift.DateReceived = DateTime.Parse(_dict["dateReceived"]);
                         gift.Color = _dict["color"]; // as a hex
                         gift.Update();
                         return "200";
