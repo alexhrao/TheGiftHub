@@ -255,8 +255,6 @@ $(document).ready(function () {
     })
 });
 function getImagePortion(imgObj) {
-
-    /* use the sourceCanvas to duplicate the entire image. This step was crucial for iOS4 and under devices. Follow the link at the end of this post to see what happens when you don’t do this */
     var bufferCanvas = document.createElement('canvas');
     var bufferContext = bufferCanvas.getContext('2d');
     bufferCanvas.width = imgObj.width;
