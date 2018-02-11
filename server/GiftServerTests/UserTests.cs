@@ -8,6 +8,7 @@ using MySql.Data.MySqlClient;
 using System.Configuration;
 using System.Collections.Generic;
 using System.IO;
+using System.Xml;
 
 namespace GiftServerTests
 {
@@ -167,8 +168,30 @@ namespace GiftServerTests
             User user = new User((OAuthUser)null, (Action<MailAddress>)null);
         }
 
+        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown"), TestCategory("OAuth")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void UserInstantiate_NullOAuthValidPass_ExceptionThrown()
+        {
+            new User((OAuthUser)null, "HelloWorld123");
+        }
 
+        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown"), TestCategory("OAuth")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void UserInstantiate_NullOAuthNullPass_ExceptionThrown()
+        {
+            new User((OAuthUser)null, (string)null);
+        }
 
+        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown"), TestCategory("OAuth")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void UserInstantiate_ValidOAuthNullPass_ExceptionThrown()
+        {
+            // Construct valid GoogleOAuthToken?
+            new User((OAuthUser)null, (string)null);
+        }
 
 
 
@@ -1321,7 +1344,103 @@ namespace GiftServerTests
             Assert.AreEqual(user.GetHashCode(), user.GetHashCode(), "Same user gives different hash codes");
         }
 
+        
 
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void UserFetch_ZeroID_ExceptionThrown()
+        {
+            User user = new User(new MailAddress("alexhrao@thedailywtf.com"), new Password("hello world"))
+            {
+                Name = "hello"
+            };
+            XmlDocument doc = user.Fetch();
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void UserFetch_ViewerZeroID_ExceptionThrown()
+        {
+            User target = new User(1);
+            User user = new User(new MailAddress("alexhrao@thedailywtf.com"), new Password("hello world"))
+            {
+                Name = "hello"
+            };
+            XmlDocument doc = target.Fetch(user);
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void UserFetch_NullViewer_ExceptionThrown()
+        {
+            User user = new User(new MailAddress("alexhrao@thedailywtf.com"), new Password("hello world"))
+            {
+                Name = "hello"
+            };
+            XmlDocument doc = user.Fetch(null);
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserFetch_ValidUser_DataPresent()
+        {
+            // Test that all fields are present and correct - except for iterated fields, which will be tested in other Tests
+            User target = new User(1)
+            {
+                Name = "Alex Rao"
+            };
+            XmlDocument doc = target.Fetch();
+
+            // Make sure has following fields:
+            /// This method returns an XML Document with the following fields:
+            ///     - userId: The user's ID
+            ///     - userName: The user's name
+            ///     - email: The User's email
+            ///     - birthMonth: The User's birth month
+            ///     - birthYear: The User's birth year
+            ///     - bio: The User's biography
+            ///     - dateJoined: The date this user joined, encoded as "yyyy-MM-dd"
+            ///     - image: The qualified path for this user's image
+            ///     - groups: An expanded list of all this user's groups.
+            ///         - Note that each child of _groups_ is a _group_ element.
+            ///     - gifts: An expanded list of all this user's gifts.
+            ///         - Note that each child of _gifts_ is a _gift_ element.
+            ///     - events: An expanded list of all this user's events.
+            ///         - Note that each child of _events_ is an _event_ element.
+            ///     - preferences: This user's preferences
+            ///     
+            /// This is all contained within a _user_ container.
+            /// 
+            XmlElement id = (XmlElement)doc.GetElementsByTagName("userId")[0];
+            Assert.AreEqual("1", id.InnerText, "ID mismatch");
+            XmlElement name = (XmlElement)doc.GetElementsByTagName("userName")[0];
+            Assert.AreEqual("Alex Rao", name.InnerText, "Name mismatch");
+            XmlElement email = (XmlElement)doc.GetElementsByTagName("email")[0];
+            Assert.AreEqual("alexhrao@gmail.com", email.InnerText, "Email mismatch");
+            XmlElement birthMonth = (XmlElement)doc.GetElementsByTagName("birthMonth")[0];
+            Assert.AreEqual("7", birthMonth.InnerText, "Month mismatch");
+            XmlElement birthDay = (XmlElement)doc.GetElementsByTagName("birthDay")[0];
+            Assert.AreEqual("3", birthDay.InnerText, "Day mismatch");
+            XmlElement bio = (XmlElement)doc.GetElementsByTagName("bio")[0];
+            Assert.AreEqual("I LOVE to have fun!", bio.InnerText, "Bio Mismatch");
+            XmlElement dateJoined = (XmlElement)doc.GetElementsByTagName("dateJoined")[0];
+            Assert.AreEqual(DateTime.Today.ToString("yyyy-MM-dd"), dateJoined.InnerText, "Date Joined mismatch");
+            XmlElement img = (XmlElement)doc.GetElementsByTagName("image")[0];
+            Assert.AreEqual(target.GetImage(), img.InnerText, "Image path mismatch");
+            // Just check for group element and count; checking of group element is done by GroupTests
+            XmlElement groups = (XmlElement)doc.GetElementsByTagName("groups")[0];
+            // There should be same num of groups as target thinks
+            Assert.AreEqual(target.Groups.Count, groups.ChildNodes.Count, "Group count mismatch");
+            XmlElement events = (XmlElement)doc.GetElementsByTagName("events")[0];
+            Assert.AreEqual(target.Events.Count, events.ChildNodes.Count, "EVent count mismatch");
+            XmlElement gifts = (XmlElement)doc.GetElementsByTagName("gifts")[0];
+            Assert.AreEqual(target.Gifts.Count, gifts.ChildNodes.Count, "Gift count mismatch");
+            XmlElement pref = (XmlElement)doc.GetElementsByTagName("preferences")[0];
+            Assert.AreEqual(1, pref.ChildNodes.Count, "Preference count mismatch");
+        }
 
         [ClassCleanup]
         public static void UserCleanup()
