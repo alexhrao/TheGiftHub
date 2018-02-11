@@ -1591,7 +1591,6 @@ namespace GiftServer
                 userName.InnerText = (Name);
                 XmlElement email = info.CreateElement("email");
                 email.InnerText = Email.Address;
-                // XmlElement password = Password.Fetch().DocumentElement;
                 XmlElement birthMonth = info.CreateElement("birthMonth");
                 birthMonth.InnerText = BirthMonth.ToString();
                 XmlElement birthDay = info.CreateElement("birthDay");
@@ -1630,6 +1629,76 @@ namespace GiftServer
                 container.AppendChild(gifts);
                 container.AppendChild(events);
                 container.AppendChild(info.ImportNode(Preferences.Fetch().DocumentElement, true));
+
+                return info;
+            }
+            /// <summary>
+            /// Fetch all information about this user visible to the viewer
+            /// </summary>
+            /// <param name="viewer">The viewer</param>
+            /// <returns>A filtered serialization of this user</returns>
+            public XmlDocument Fetch(User viewer)
+            {
+                if (ID == 0)
+                {
+                    throw new InvalidOperationException("Cannot fetch ID-less user");
+                }
+                else if (viewer == null)
+                {
+                    throw new ArgumentNullException(nameof(viewer));
+                }
+                else if (viewer.ID == 0)
+                {
+                    throw new InvalidOperationException("Cannot fetch ID-less user");
+                }
+                XmlDocument info = new XmlDocument();
+                XmlElement container = info.CreateElement("user");
+                info.AppendChild(container);
+
+                XmlElement id = info.CreateElement("userId");
+                id.InnerText = ID.ToString();
+                XmlElement userName = info.CreateElement("userName");
+                userName.InnerText = (Name);
+                XmlElement email = info.CreateElement("email");
+                email.InnerText = Email.Address;
+                XmlElement birthMonth = info.CreateElement("birthMonth");
+                birthMonth.InnerText = BirthMonth.ToString();
+                XmlElement birthDay = info.CreateElement("birthDay");
+                birthDay.InnerText = BirthDay.ToString();
+                XmlElement bio = info.CreateElement("bio");
+                bio.InnerText = Bio;
+                XmlElement dateJoined = info.CreateElement("dateJoined");
+                dateJoined.InnerText = (DateJoined.Value.ToString("yyyy-MM-dd"));
+                XmlElement image = info.CreateElement("image");
+                image.InnerText = GetImage();
+                XmlElement groups = info.CreateElement("groups");
+                foreach (Group group in Groups)
+                {
+                    groups.AppendChild(info.ImportNode(group.Fetch(viewer).DocumentElement, true));
+                }
+                XmlElement events = info.CreateElement("events");
+                foreach (Event evnt in Events)
+                {
+                    events.AppendChild(info.ImportNode(evnt.Fetch(viewer).DocumentElement, true));
+                }
+                XmlElement gifts = info.CreateElement("gifts");
+                foreach (Gift gift in Gifts)
+                {
+                    gifts.AppendChild(info.ImportNode(gift.Fetch(viewer).DocumentElement, true));
+                }
+
+                container.AppendChild(id);
+                container.AppendChild(userName);
+                container.AppendChild(email);
+                container.AppendChild(birthMonth);
+                container.AppendChild(birthDay);
+                container.AppendChild(bio);
+                container.AppendChild(dateJoined);
+                container.AppendChild(image);
+                container.AppendChild(groups);
+                container.AppendChild(gifts);
+                container.AppendChild(events);
+                container.AppendChild(info.ImportNode(Preferences.Fetch(viewer).DocumentElement, true));
 
                 return info;
             }

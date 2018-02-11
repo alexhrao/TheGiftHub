@@ -541,7 +541,7 @@ namespace GiftServer
                 XmlElement container = info.CreateElement("event");
                 info.AppendChild(container);
                 // First check event is shared in group common to user
-                if (Groups.Exists(group => viewer.Groups.Exists(g => g.ID == group.ID)))
+                if (User.GetEvents(viewer).Exists(e => e.ID == ID))
                 {
                     XmlElement eventId = info.CreateElement("eventId");
                     eventId.InnerText = ID.ToString();
@@ -560,12 +560,12 @@ namespace GiftServer
                     }
                     else
                     {
-                        rulesElem.AppendChild(info.ImportNode(Rules.Fetch().DocumentElement, true));
+                        rulesElem.AppendChild(info.ImportNode(Rules.Fetch(viewer).DocumentElement, true));
                     }
                     XmlElement boDates = info.CreateElement("blackoutDates");
                     foreach (Blackout b in Blackouts)
                     {
-                        boDates.AppendChild(info.ImportNode(b.Fetch().DocumentElement, true));
+                        boDates.AppendChild(info.ImportNode(b.Fetch(viewer).DocumentElement, true));
                     }
                     XmlElement groups = info.CreateElement("groups");
                     foreach (Group g in Groups.FindAll(group => viewer.Groups.Exists(vGroup => vGroup.ID == group.ID)))

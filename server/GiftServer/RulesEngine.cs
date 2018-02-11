@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
+using System.Globalization;
 
 namespace GiftServer
 {
@@ -64,6 +65,28 @@ namespace GiftServer
             /// </remarks>
             /// <returns>A Serialized XmlDocument</returns>
             public abstract XmlDocument Fetch();
+            /// <summary>
+            /// Serialize this RuleEngine
+            /// </summary>
+            /// <param name="viewer">The viewer</param>
+            /// <returns>A serialization viewable to the viewer</returns>
+            public XmlDocument Fetch(User viewer)
+            {
+                if (Event.User.GetEvents(viewer).Exists(e => e.ID == ID))
+                {
+                    return Fetch();
+                }
+                else
+                {
+                    XmlDocument info = new XmlDocument();
+                    TextInfo converter = new CultureInfo("en-US", false).TextInfo;
+                    string converted = converter.ToTitleCase(GetType().ToString());
+                    converted = converted.Substring(0, 1).ToLower() + converted.Substring(1);
+                    XmlElement container = info.CreateElement(converted);
+                    info.AppendChild(container);
+                    return info;
+                }
+            }
         }
     }
 }

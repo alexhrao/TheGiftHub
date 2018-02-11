@@ -582,6 +582,90 @@ namespace GiftServer
 
                 return info;
             }
+
+            /// <summary>
+            /// Fetch a gift, as visible by the viewer
+            /// </summary>
+            /// <param name="viewer">The viewer</param>
+            /// <returns>All information about this gift the viewer can see</returns>
+            public XmlDocument Fetch(User viewer)
+            {
+                // First make sure gifts are in common
+                if (User.GetGifts(viewer).Exists(g => g.ID == ID))
+                {
+                    XmlDocument info = new XmlDocument();
+                    XmlElement container = info.CreateElement("gift");
+                    info.AppendChild(container);
+                    XmlElement id = info.CreateElement("giftId");
+                    id.InnerText = ID.ToString();
+                    XmlElement user = info.CreateElement("user");
+                    user.InnerText = User.ID.ToString();
+                    XmlElement name = info.CreateElement("name");
+                    name.InnerText = Name;
+                    XmlElement description = info.CreateElement("description");
+                    description.InnerText = Description;
+                    XmlElement url = info.CreateElement("url");
+                    url.InnerText = Url;
+                    XmlElement cost = info.CreateElement("cost");
+                    cost.InnerText = Cost.ToString("#.##");
+                    XmlElement stores = info.CreateElement("stores");
+                    stores.InnerText = Stores;
+                    XmlElement quantity = info.CreateElement("quantity");
+                    quantity.InnerText = Quantity.ToString();
+                    XmlElement color = info.CreateElement("color");
+                    color.InnerText = "#" + Color;
+                    XmlElement colorText = info.CreateElement("colorText");
+                    colorText.InnerText = ColorText;
+                    XmlElement size = info.CreateElement("size");
+                    size.InnerText = Size;
+                    XmlElement category = info.CreateElement("category");
+                    category.InnerText = Category.Name;
+                    XmlElement rating = info.CreateElement("rating");
+                    rating.InnerText = Rating.ToString();
+                    XmlElement image = info.CreateElement("image");
+                    image.InnerText = GetImage();
+                    XmlElement groups = info.CreateElement("groups");
+                    // only attach group if viewer is also in that group
+                    foreach (Group group in Groups.FindAll(group => group.Users.Exists(u => u.ID == ID)))
+                    {
+                        XmlElement groupElem = info.CreateElement("group");
+                        groupElem.InnerText = group.ID.ToString();
+                        groups.AppendChild(groupElem);
+                    }
+                    XmlElement reservations = info.CreateElement("reservations");
+                    foreach (Reservation reservation in Reservations)
+                    {
+                        reservations.AppendChild(info.ImportNode(reservation.Fetch(viewer).DocumentElement, true));
+                    }
+
+                    container.AppendChild(id);
+                    container.AppendChild(user);
+                    container.AppendChild(name);
+                    container.AppendChild(description);
+                    container.AppendChild(url);
+                    container.AppendChild(cost);
+                    container.AppendChild(stores);
+                    container.AppendChild(quantity);
+                    container.AppendChild(color);
+                    container.AppendChild(colorText);
+                    container.AppendChild(size);
+                    container.AppendChild(category);
+                    container.AppendChild(rating);
+                    container.AppendChild(image);
+                    container.AppendChild(groups);
+                    container.AppendChild(reservations);
+
+                    return info;
+                }
+                else
+                {
+                    XmlDocument info = new XmlDocument();
+                    XmlElement container = info.CreateElement("gift");
+                    info.AppendChild(container);
+
+                    return info;
+                }
+            }
         }
     }
 }

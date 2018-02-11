@@ -409,7 +409,9 @@ namespace GiftServer
                                                 _response.StatusCode = 404;
                                                 return "Specified information not found";
                                         }
-                                        return item.Fetch().OuterXml;
+                                        // Convert to:
+                                        // return item.Fetch(_user).OuterXml;
+                                        return item.Fetch(_user).OuterXml;
                                     default:
                                         return LoginManager.Login();
                                 }

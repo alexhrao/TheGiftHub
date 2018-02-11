@@ -14,7 +14,7 @@ namespace GiftServer
         /// <remarks>
         /// Note that we never store the actual text of a password, only its hash! Also note that this can NOT be fetched from the database via this class.
         /// </remarks>
-        public sealed class Password : IFetchable
+        public sealed class Password
         {
             /// <summary>
             /// Size of salt
@@ -103,35 +103,6 @@ namespace GiftServer
                     }
                 }
                 return true;
-            }
-            /// <summary>
-            /// Fetch the contents of this Password. _Do not use this - it will return an empty document._
-            /// </summary>
-            /// <remarks>
-            /// This is deprecated - the user should never have a need to request any user's password.
-            /// </remarks>
-            /// <returns>An XmlDocument with no information.</returns>
-            public XmlDocument Fetch()
-            {
-                XmlDocument info = new XmlDocument();
-                return info;
-                /*
-                XmlElement container = info.CreateElement("password");
-                info.AppendChild(container);
-
-                XmlElement hash = info.CreateElement("hash");
-                hash.InnerText = Hash;
-                XmlElement salt = info.CreateElement("salt");
-                salt.InnerText = Salt;
-                XmlElement iterations = info.CreateElement("iterations");
-                iterations.InnerText = Iterations.ToString() ;
-
-                container.AppendChild(hash);
-                container.AppendChild(salt);
-                container.AppendChild(iterations);
-
-                return info;
-                */
             }
         }
     }

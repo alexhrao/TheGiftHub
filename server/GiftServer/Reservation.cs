@@ -265,6 +265,26 @@ namespace GiftServer
                 container.AppendChild(purchased);
                 return info;
             }
+            /// <summary>
+            /// Get this reservation serialized (only if visible to viewer)
+            /// </summary>
+            /// <param name="viewer">The viewer</param>
+            /// <returns>A serialized version of this reservation</returns>
+            public XmlDocument Fetch(User viewer)
+            {
+                // See if gift is viewable
+                if (Gift.User.GetGifts(viewer).Exists(g => g.ID == Gift.ID))
+                {
+                    return Fetch();
+                }
+                else
+                {
+                    XmlDocument info = new XmlDocument();
+                    XmlElement container = info.CreateElement("reservation");
+                    info.AppendChild(container);
+                    return info;
+                }
+            }
         }
     }
 }
