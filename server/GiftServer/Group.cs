@@ -483,6 +483,28 @@ namespace GiftServer
 
                 return info;
             }
+            /// <summary>
+            /// Fetch this group
+            /// </summary>
+            /// <param name="viewer">The viewer</param>
+            /// <returns>Serialization of this group</returns>
+            public XmlDocument Fetch(User viewer)
+            {
+                // First see if in groups
+                // if viewer is in this group, good to go
+                if (viewer.Groups.Exists(g => g.ID == ID))
+                {
+                    return Fetch();
+                }
+                else
+                {
+                    XmlDocument info = new XmlDocument();
+                    XmlElement container = info.CreateElement("group");
+                    info.AppendChild(container);
+
+                    return info;
+                }
+            }
         }
     }
 }

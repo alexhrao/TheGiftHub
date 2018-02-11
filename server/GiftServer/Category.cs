@@ -2,7 +2,6 @@
 using MySql.Data.MySqlClient;
 using System;
 using System.Configuration;
-using System.Web;
 using System.Xml;
 
 namespace GiftServer
@@ -185,6 +184,16 @@ namespace GiftServer
                 container.AppendChild(description);
 
                 return info;
+            }
+            /// <summary>
+            /// Fetch the category visible to this user
+            /// </summary>
+            /// <param name="viewer">The viewer</param>
+            /// <returns>The category serialization</returns>
+            public XmlDocument Fetch(User viewer)
+            {
+                // Since a category is always viewable, just return Fetch()
+                return Fetch();
             }
         }
     }

@@ -235,6 +235,26 @@ namespace GiftServer
 
                 return info;
             }
+            /// <summary>
+            /// Serialize the preferences
+            /// </summary>
+            /// <param name="viewer">The viewer - must be equal to this user</param>
+            /// <returns>The serialization</returns>
+            public XmlDocument Fetch(User viewer)
+            {
+                // Will never happen
+                if (viewer.Equals(User))
+                {
+                    return Fetch();
+                }
+                else
+                {
+                    XmlDocument info = new XmlDocument();
+                    XmlElement container = info.CreateElement("preferences");
+                    info.AppendChild(container);
+                    return info;
+                }
+            }
         }
     }
 }

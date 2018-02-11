@@ -12,7 +12,6 @@ using System.Net;
 using System.Net.Mail;
 using System.Threading;
 using System.Web;
-using System.Xml;
 
 namespace GiftServer
 {
@@ -333,6 +332,24 @@ namespace GiftServer
                                                         e.EndDate = null;
                                                     }
                                                     e.Create();
+                                                    // For each group, add it to event
+                                                    if (!String.IsNullOrWhiteSpace(_dict["groups[]"]))
+                                                    {
+                                                        foreach (string group in _dict["groups[]"].Split(','))
+                                                        {
+                                                            Group g = new Group(Convert.ToUInt64(group));
+                                                            g.Add(e);
+                                                        }
+                                                    }
+                                                    if (!String.IsNullOrWhiteSpace(_dict["blackouts[]"]))
+                                                    {
+                                                        foreach (string blackout in _dict["blackouts[]"].Split(','))
+                                                        {
+                                                            Blackout b = new Blackout(e, DateTime.Parse(blackout));
+                                                            b.Create();
+                                                        }
+                                                    }
+                                                    // For each blackout, add it to event
                                                     return e.ID.ToString();
                                                 }
                                                 catch (Exception e)
@@ -409,7 +426,9 @@ namespace GiftServer
                                                 _response.StatusCode = 404;
                                                 return "Specified information not found";
                                         }
-                                        return item.Fetch().OuterXml;
+                                        // Convert to:
+                                        // return item.Fetch(_user).OuterXml;
+                                        return item.Fetch(_user).OuterXml;
                                     default:
                                         return LoginManager.Login();
                                 }
@@ -954,6 +973,26 @@ namespace GiftServer
                             // Unreserve and report back
                         }
                         return "200";
+                    case "release":
+                        int toRelease = Convert.ToInt32(_dict["numRelease"]);
+                        int released = _user.Release(gift, toRelease);
+                        return released.ToString();
+                    case "receive":
+                        // Receive this gift (unless already received; then undo)
+                        if (gift.DateReceived.HasValue)
+                        {
+                            gift.DateReceived = null;
+                        } else
+                        {
+                            gift.DateReceived = DateTime.Now;
+                            foreach (var res in gift.Reservations)
+                            {
+                                res.Delete();
+                            }
+                        }
+                        gift.Update();
+                        // Remove all reservations?
+                        return "200";
                     case "update":
                         gift.Name = _dict["name"];
                         gift.Description = _dict["description"];
@@ -965,7 +1004,6 @@ namespace GiftServer
                         gift.Stores = _dict["stores"];
                         gift.Size = _dict["size"];
                         gift.Category = new Category(_dict["category"]);
-                        // gift.DateReceived = DateTime.Parse(_dict["dateReceived"]);
                         gift.Color = _dict["color"]; // as a hex
                         gift.Update();
                         return "200";

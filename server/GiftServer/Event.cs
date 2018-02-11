@@ -526,6 +526,66 @@ namespace GiftServer
 
                 return info;
             }
+            /// <summary>
+            /// Fetches all information viewable to the given user
+            /// </summary>
+            /// <param name="viewer">The viewer</param>
+            /// <returns>An event document</returns>
+            /// <remarks>
+            /// See Fetch() documentation for a complete layout of the returned information
+            /// </remarks>
+            public XmlDocument Fetch(User viewer)
+            {
+                // Only show groups that both have in common
+                XmlDocument info = new XmlDocument();
+                XmlElement container = info.CreateElement("event");
+                info.AppendChild(container);
+                // First check event is shared in group common to user
+                if (User.GetEvents(viewer).Exists(e => e.ID == ID))
+                {
+                    XmlElement eventId = info.CreateElement("eventId");
+                    eventId.InnerText = ID.ToString();
+                    XmlElement eName = info.CreateElement("name");
+                    eName.InnerText = Name;
+                    XmlElement startDate = info.CreateElement("startDate");
+                    startDate.InnerText = StartDate.ToString("yyyy-MM-dd");
+                    XmlElement endDate = info.CreateElement("endDate");
+                    endDate.InnerText = EndDate.HasValue ? EndDate.Value.ToString("yyyy-MM-dd") : "";
+                    XmlElement userId = info.CreateElement("userId");
+                    userId.InnerText = User.ID.ToString();
+                    XmlElement rulesElem = info.CreateElement("rulesEngine");
+                    if (Rules == null)
+                    {
+                        rulesElem.InnerText = "";
+                    }
+                    else
+                    {
+                        rulesElem.AppendChild(info.ImportNode(Rules.Fetch(viewer).DocumentElement, true));
+                    }
+                    XmlElement boDates = info.CreateElement("blackoutDates");
+                    foreach (Blackout b in Blackouts)
+                    {
+                        boDates.AppendChild(info.ImportNode(b.Fetch(viewer).DocumentElement, true));
+                    }
+                    XmlElement groups = info.CreateElement("groups");
+                    foreach (Group g in Groups.FindAll(group => viewer.Groups.Exists(vGroup => vGroup.ID == group.ID)))
+                    {
+                        XmlElement groupId = info.CreateElement("groupId");
+                        groupId.InnerText = g.ID.ToString();
+                        groups.AppendChild(groupId);
+                    }
+
+                    container.AppendChild(eventId);
+                    container.AppendChild(eName);
+                    container.AppendChild(startDate);
+                    container.AppendChild(endDate);
+                    container.AppendChild(userId);
+                    container.AppendChild(rulesElem);
+                    container.AppendChild(boDates);
+                    container.AppendChild(groups);
+                }
+                return info;
+            }
         }
     }
 }

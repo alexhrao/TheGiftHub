@@ -122,6 +122,27 @@ namespace GiftServer
 
                 return info;
             }
+            /// <summary>
+            /// Get an occurrence viewable by this user
+            /// </summary>
+            /// <param name="viewer">The viewer of this event</param>
+            /// <returns>A serialized version of this occurrence</returns>
+            public XmlDocument Fetch(User viewer)
+            {
+                XmlDocument info = new XmlDocument();
+                XmlElement container = info.CreateElement("occurrence");
+                info.AppendChild(container);
+                // Check that events and viewer are in sync
+                if (Event.User.GetEvents(viewer).Exists(e => e.ID == Event.ID))
+                {
+                    // good to go, just return Fetch();
+                    return Fetch();
+                }
+                else
+                {
+                    return info;
+                }
+            }
         }
     }
 }

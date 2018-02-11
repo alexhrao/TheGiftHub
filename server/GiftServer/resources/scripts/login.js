@@ -184,17 +184,25 @@ function fbLoginStatusChange(response) {
     loadingLogin(".fb-login-button");
     if (response.status === 'connected') {
         // logged into app, send access token
+        var fbToken = response.authResponse.accessToken;
         $.post(".", {
             action: "Login",
             type: "Facebook",
-            token: response.authResponse.accessToken
+            token: fbToken
         }, function (data, status, xhr) {
             var resp = xhr.responseText;
             if (resp === "success") {
                 location.replace(".?dest=dashboard");
+            } else if (resp === "confirm") {
+                // Ask for password, prep to resubmit
+                $('#oauthToken').val(fbToken);
+                $('#oauthType').val("Facebook");
+                $('#oauthTypeName').text("Facebook");
+                // Show the password prompt
+                $('#oauthPassword').modal();
             } else {
                 // We need to die gracefully
-                $('#loginAlert').addClass('alert-danger').removeClass("hidden");
+                $('#loginAlert').addClass('alert-danger').removeClass("hidden").addClass("in");
                 $('#loginAlert').prepend(resp);
             }
         });

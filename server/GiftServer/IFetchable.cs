@@ -17,6 +17,15 @@ namespace GiftServer
             /// </summary>
             /// <returns>An XML Document with information "serialized" for this object</returns>
             XmlDocument Fetch();
+            /// <summary>
+            /// Fetch all information for this object
+            /// </summary>
+            /// <param name="viewer">The viewer</param>
+            /// <returns>An XML Document with information "serialized"</returns>
+            /// <remarks>
+            /// This is idential to Fetch() except that it will only fetch information about the object to the viewer
+            /// </remarks>
+            XmlDocument Fetch(User viewer);
         }
     }
 }

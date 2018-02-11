@@ -178,6 +178,26 @@ namespace GiftServer
                 container.AppendChild(blackoutDate);
                 return info;
             }
+            /// <summary>
+            /// Get the blackout date visible to this user
+            /// </summary>
+            /// <param name="viewer">The viewer</param>
+            /// <returns>The same as Fetch()</returns>
+            public XmlDocument Fetch(User viewer)
+            {
+                if (Event.User.GetEvents(viewer).Exists(e => e.ID == Event.ID))
+                {
+                    // return Fetch
+                    return Fetch();
+                }
+                else
+                {
+                    XmlDocument info = new XmlDocument();
+                    XmlElement container = info.CreateElement("blackout");
+                    info.AppendChild(container);
+                    return info;
+                }
+            }
         }
     }
 }
