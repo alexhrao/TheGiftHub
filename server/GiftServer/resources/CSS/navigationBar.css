@@ -28,3 +28,8 @@ body > div {
 nav a {
     color: white;
 }
+
+#logoutForm {
+    margin-left: 5px;
+    margin-right: 0px;
+}

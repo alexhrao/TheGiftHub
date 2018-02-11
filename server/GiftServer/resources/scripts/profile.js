@@ -436,7 +436,7 @@ $(document).ready(function () {
                 if (newEventSkip == 'n') {
                     newEventSkip = $('#newRelativeSkipEvery').val();
                 }
-                newEventDayOfWeek = $('#newRelativeDayOfWeek').val();
+                newEventDayOfWeek = $('#newRelativeDay').val();
                 newEventPosn = $('#newRelativePosn').val();
                 dispatch(6);
                 break;
@@ -622,6 +622,7 @@ $(document).ready(function () {
     }
     function createEvent() {
         // Post to the serve all the date details:
+        // Create array of groups;
         if (!newEventRecurs) {
             // no recurrence, so just send:
             // Name
@@ -631,8 +632,9 @@ $(document).ready(function () {
                 action: "Create",
                 type: "Event",
                 name: newEventName,
-                startDate: newEventStartDate
-            }, createGroups);
+                startDate: newEventStartDate,
+                groups: newEventGroupIds
+            }, location.reload(true));
         } else {
             // figure out type of recurrence and engage:
             if (newEventRecurType == "exact") {
@@ -650,8 +652,10 @@ $(document).ready(function () {
                     endDate: newEventEndDate,
                     recurType: newEventRecurType,
                     skipEvery: newEventSkip,
-                    interval: newEventInterval
-                }, createBlackouts);
+                    interval: newEventInterval,
+                    groups: newEventGroupIds,
+                    blackouts: newEventBlackouts
+                }, location.reload(true));
             } else {
                 $.post(".", {
                     action: "Create",
@@ -663,8 +667,10 @@ $(document).ready(function () {
                     skipEvery: newEventSkip,
                     interval: newEventInterval,
                     posn: newEventPosn,
-                    dayOfWeek: newEventDayOfWeek
-                }, createBlackouts);
+                    dayOfWeek: newEventDayOfWeek,
+                    groups: newEventGroupIds,
+                    blackouts: newEventBlackouts
+                }, location.reload(true));
             }
         }
     }

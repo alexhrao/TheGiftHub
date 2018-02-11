@@ -332,6 +332,24 @@ namespace GiftServer
                                                         e.EndDate = null;
                                                     }
                                                     e.Create();
+                                                    // For each group, add it to event
+                                                    if (!String.IsNullOrWhiteSpace(_dict["groups[]"]))
+                                                    {
+                                                        foreach (string group in _dict["groups[]"].Split(','))
+                                                        {
+                                                            Group g = new Group(Convert.ToUInt64(group));
+                                                            g.Add(e);
+                                                        }
+                                                    }
+                                                    if (!String.IsNullOrWhiteSpace(_dict["blackouts[]"]))
+                                                    {
+                                                        foreach (string blackout in _dict["blackouts[]"].Split(','))
+                                                        {
+                                                            Blackout b = new Blackout(e, DateTime.Parse(blackout));
+                                                            b.Create();
+                                                        }
+                                                    }
+                                                    // For each blackout, add it to event
                                                     return e.ID.ToString();
                                                 }
                                                 catch (Exception e)
