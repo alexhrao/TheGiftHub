@@ -12,7 +12,6 @@ using System.Net;
 using System.Net.Mail;
 using System.Threading;
 using System.Web;
-using System.Xml;
 
 namespace GiftServer
 {
@@ -955,6 +954,26 @@ namespace GiftServer
                             return "0";
                             // Unreserve and report back
                         }
+                        return "200";
+                    case "release":
+                        int toRelease = Convert.ToInt32(_dict["numRelease"]);
+                        int released = _user.Release(gift, toRelease);
+                        return released.ToString();
+                    case "receive":
+                        // Receive this gift (unless already received; then undo)
+                        if (gift.DateReceived.HasValue)
+                        {
+                            gift.DateReceived = null;
+                        } else
+                        {
+                            gift.DateReceived = DateTime.Now;
+                            foreach (var res in gift.Reservations)
+                            {
+                                res.Delete();
+                            }
+                        }
+                        gift.Update();
+                        // Remove all reservations?
                         return "200";
                     case "update":
                         gift.Name = _dict["name"];

@@ -331,7 +331,7 @@ namespace GiftServer
                             cmd.Parameters.AddWithValue("@cid", Category.CategoryId);
                             cmd.Parameters.AddWithValue("@rating", Rating);
                             cmd.Parameters.AddWithValue("@gid", ID);
-                            cmd.Parameters.AddWithValue("@rec", DateReceived.HasValue ? null : DateReceived.Value.ToString("yyyy-MM-dd"));
+                            cmd.Parameters.AddWithValue("@rec", DateReceived.HasValue ? DateReceived.Value.ToString("yyyy-MM-dd") : null);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -509,6 +509,7 @@ namespace GiftServer
             ///     - category: The name of the gift category
             ///     - rating: The rating for this gift
             ///     - image: The qualified path for this gift's image
+            ///     - dateReceived: The day this was received; otherwise ""
             ///     - groups: The groups that can view this gift
             ///         - Note that each child element of _groups_ is a _group_ element
             ///     - reservations: The reservations currently held for this gift
@@ -550,6 +551,8 @@ namespace GiftServer
                 rating.InnerText = Rating.ToString();
                 XmlElement image = info.CreateElement("image");
                 image.InnerText = GetImage();
+                XmlElement dateReceived = info.CreateElement("dateReceived");
+                dateReceived.InnerText = DateReceived.HasValue ? DateReceived.Value.ToString("yyyy-MM-dd") : "";
                 XmlElement groups = info.CreateElement("groups");
                 foreach (Group group in Groups)
                 {
@@ -577,6 +580,7 @@ namespace GiftServer
                 container.AppendChild(category);
                 container.AppendChild(rating);
                 container.AppendChild(image);
+                container.AppendChild(dateReceived);
                 container.AppendChild(groups);
                 container.AppendChild(reservations);
 
@@ -624,6 +628,8 @@ namespace GiftServer
                     rating.InnerText = Rating.ToString();
                     XmlElement image = info.CreateElement("image");
                     image.InnerText = GetImage();
+                    XmlElement dateReceived = info.CreateElement("dateReceived");
+                    dateReceived.InnerText = DateReceived.HasValue ? DateReceived.Value.ToString("yyyy-MM-dd") : "";
                     XmlElement groups = info.CreateElement("groups");
                     // only attach group if viewer is also in that group
                     foreach (Group group in Groups.FindAll(group => group.Users.Exists(u => u.ID == ID)))
@@ -652,6 +658,7 @@ namespace GiftServer
                     container.AppendChild(category);
                     container.AppendChild(rating);
                     container.AppendChild(image);
+                    container.AppendChild(dateReceived);
                     container.AppendChild(groups);
                     container.AppendChild(reservations);
 

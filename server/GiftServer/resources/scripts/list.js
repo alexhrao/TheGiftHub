@@ -96,6 +96,14 @@ $(document).ready(function ($) {
                     for (var i = 0; i < dom.getElementsByTagName("groups")[0].children.length; i++) {
                         $('#editGiftItem #editSharedGroups input[data-group-id=' + dom.getElementsByTagName("groups")[0].children[i].innerHTML + ']')[0].checked = true;
                     }
+                    // if received is null, then show I have Received, otherwise opposite
+                    if (dom.getElementsByTagName("dateReceived")[0].innerHTML == "") {
+                        $('#receivedGiftLabel').removeClass("hidden");
+                        $('#notReceivedGiftLabel').addClass("hidden");
+                    } else {
+                        $('#receivedGiftLabel').addClass("hidden");
+                        $('#notReceivedGiftLabel').removeClass("hidden");
+                    }
                     $('#editGiftItem').modal();
                 }
             });
@@ -154,6 +162,17 @@ $(document).ready(function ($) {
     $('#editGiftDelete').click(function () {
         $('#editGiftItem').modal('hide');
         $('#deleteGiftWarning').modal();
+    });
+
+    $('#editGiftReceived').click(function () {
+        $.post(".", {
+            action: "Change",
+            type: "Gift",
+            item: "receive",
+            itemId: $('#editGiftId').val()
+        }, function (data, status, xhr) {
+            location.reload(true);
+        });
     });
 });
 $(document).ready(function () {

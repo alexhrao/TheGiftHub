@@ -132,6 +132,16 @@
                                 <div class="row">
                                     <div class="form-group">
                                         <div class="col-xs-12">
+                                            <button id="editGiftReceived" name="receivedGift" type="button" class="text-center form-control btn btn-primary">
+                                                <p id="receivedGiftLabel" class="hidden">I Got This</p>
+                                                <p id="notReceivedGiftLabel" class="hidden">I Want This</p>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <div class="col-xs-12">
                                             <button id="editGiftDelete" name="deleteGift" type="button" class="text-center form-control btn btn-danger" value="delete" style="margin-top: 5px;">
                                                 <p id="deleteGiftLabel">Delete this Gift</p>
                                             </button>
@@ -335,44 +345,86 @@
         <div class="row text-center">
             <button id="addNew" href="#newGiftItem" data-toggle="modal" class="btn btn-success text-center">Add New Gift</button>
         </div>
-        <table id="fullList" class="table hidden-xs table-hover table-responsive table-rounded">
-            <thead>
-                <tr>
-                    <th>
-                        <p>Picture</p>
-                    </th>
-                    <th id="ratingHeader">
-                        <p>Rating</p>
-                    </th>
-                    <th>
-                        <p>Name</p>
-                    </th>
-                    <th id="quantHeader">
-                        <p>Quantity</p>
-                    </th>
-                    <th id="costHeader">
-                        <p>Cost</p>
-                    </th>
-                    <th id="descHeader">
-                        <p>Description</p>
-                    </th>
-                </tr>
-            </thead>
-            <tbody id="giftHolder"></tbody>
-        </table>
-        <table id="minList" class="table visible-xs table-hover table-responsive table-rounded">
-            <thead>
-                <tr>
-                    <th>
-                        <p id="smallPicHeader">Picture</p>
-                    </th>
-                    <th>
-                        <p id="smallNameHeader">Name</p>
-                    </th>
-                </tr>
-            </thead>
-            <tbody id="xsGiftHolder"></tbody>
-        </table>
+        <div class="row">
+            <table id="fullList" class="table hidden-xs table-hover table-responsive table-rounded">
+                <thead>
+                    <tr>
+                        <th>
+                            <p>Picture</p>
+                        </th>
+                        <th class="rating-header">
+                            <p>Rating</p>
+                        </th>
+                        <th>
+                            <p>Name</p>
+                        </th>
+                        <th class="quant-header">
+                            <p>Quantity</p>
+                        </th>
+                        <th class="cost-header">
+                            <p>Cost</p>
+                        </th>
+                        <th class="desc-header">
+                            <p>Description</p>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="giftHolder"></tbody>
+            </table>
+            <table id="minList" class="table visible-xs table-hover table-responsive table-rounded">
+                <thead>
+                    <tr>
+                        <th>
+                            <p class="small-pic-header">Picture</p>
+                        </th>
+                        <th>
+                            <p class="small-name-header">Name</p>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="xsGiftHolder"></tbody>
+            </table>
+        </div>
+        <div class="row">
+            <table id="fullListReceived" class="table hidden-xs table-hover table-responsive table-rounded">
+                <thead>
+                    <tr>
+                        <th>
+                            <p>Picture</p>
+                        </th>
+                        <th class="rating-header">
+                            <p>Rating</p>
+                        </th>
+                        <th>
+                            <p>Name</p>
+                        </th>
+                        <th class="quant-header">
+                            <p>Quantity</p>
+                        </th>
+                        <th class="cost-header">
+                            <p>Cost</p>
+                        </th>
+                        <th class="desc-header">
+                            <p>Description</p>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="receivedGiftHolder"></tbody>
+            </table>
+            <table id="minListReceived" class="table visible-xs table-hover table-responsive table-rounded">
+                <thead>
+                    <tr>
+                        <th>
+                            <p class="small-pic-header">Picture</p>
+                        </th>
+                        <th>
+                            <p class="small-name-header">Name</p>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="xsReceivedGiftHolder"></tbody>
+            </table>
+        </div>
     </div>
 </body>
 </html>
