@@ -1376,10 +1376,7 @@ namespace GiftServerTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void UserFetch_NullViewer_ExceptionThrown()
         {
-            User user = new User(new MailAddress("alexhrao@thedailywtf.com"), new Password("hello world"))
-            {
-                Name = "hello"
-            };
+            User user = new User(1);
             XmlDocument doc = user.Fetch(null);
         }
 
@@ -1415,17 +1412,17 @@ namespace GiftServerTests
             /// This is all contained within a _user_ container.
             /// 
             XmlElement id = (XmlElement)doc.GetElementsByTagName("userId")[0];
-            Assert.AreEqual("1", id.InnerText, "ID mismatch");
+            Assert.AreEqual(target.ID.ToString(), id.InnerText, "ID mismatch");
             XmlElement name = (XmlElement)doc.GetElementsByTagName("userName")[0];
-            Assert.AreEqual("Alex Rao", name.InnerText, "Name mismatch");
+            Assert.AreEqual(target.Name, name.InnerText, "Name mismatch");
             XmlElement email = (XmlElement)doc.GetElementsByTagName("email")[0];
-            Assert.AreEqual("alexhrao@gmail.com", email.InnerText, "Email mismatch");
+            Assert.AreEqual(target.Email.Address, email.InnerText, "Email mismatch");
             XmlElement birthMonth = (XmlElement)doc.GetElementsByTagName("birthMonth")[0];
-            Assert.AreEqual("7", birthMonth.InnerText, "Month mismatch");
+            Assert.AreEqual(target.BirthMonth.ToString(), birthMonth.InnerText, "Month mismatch");
             XmlElement birthDay = (XmlElement)doc.GetElementsByTagName("birthDay")[0];
-            Assert.AreEqual("3", birthDay.InnerText, "Day mismatch");
+            Assert.AreEqual(target.BirthDay.ToString(), birthDay.InnerText, "Day mismatch");
             XmlElement bio = (XmlElement)doc.GetElementsByTagName("bio")[0];
-            Assert.AreEqual("I LOVE to have fun!", bio.InnerText, "Bio Mismatch");
+            Assert.AreEqual(target.Bio, bio.InnerText, "Bio Mismatch");
             XmlElement dateJoined = (XmlElement)doc.GetElementsByTagName("dateJoined")[0];
             Assert.AreEqual(DateTime.Today.ToString("yyyy-MM-dd"), dateJoined.InnerText, "Date Joined mismatch");
             XmlElement img = (XmlElement)doc.GetElementsByTagName("image")[0];
@@ -1439,7 +1436,7 @@ namespace GiftServerTests
             XmlElement gifts = (XmlElement)doc.GetElementsByTagName("gifts")[0];
             Assert.AreEqual(target.Gifts.Count, gifts.ChildNodes.Count, "Gift count mismatch");
             XmlElement pref = (XmlElement)doc.GetElementsByTagName("preferences")[0];
-            Assert.AreEqual(1, pref.ChildNodes.Count, "Preference count mismatch");
+            Assert.IsNotNull(pref, "Preferences were null");
         }
 
         [ClassCleanup]

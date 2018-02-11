@@ -549,6 +549,14 @@ namespace GiftServer
             /// <param name="password">The password for this user</param>
             public User(OAuthUser user, string password)
             {
+                if (user == null)
+                {
+                    throw new ArgumentNullException(nameof(user));
+                }
+                else if (password == null)
+                {
+                    throw new ArgumentNullException(nameof(password));
+                }
                 // If the passwords match, then add it
                 // Get the email from user, and synchronize
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
