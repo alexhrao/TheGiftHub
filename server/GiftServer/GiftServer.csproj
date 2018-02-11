@@ -339,7 +339,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>RMDIR "$(TargetDir)resources\scripts\" /S /Q
+    <PostBuildEvent>del "$(TargetDir).gitignore"
+del "$(TargetDir)api\.gitignore"
+RMDIR "$(TargetDir)resources\scripts\" /S /Q
 RMDIR "$(TargetDir)resources\CSS\" /S /Q
 ROBOCOPY "$(ProjectDir)resources\scripts" "$(TargetDir)resources\scripts" *.* /E /IT /IS
 ROBOCOPY "$(ProjectDir)resources\CSS" "$(TargetDir)resources\CSS" *.* /E /IT /IS
