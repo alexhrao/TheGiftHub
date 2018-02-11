@@ -2,6 +2,10 @@
     margin-bottom: 200px;
 }
 
+#navBar .fa-bars {
+    color: white;
+}
+
 body > div {
     padding-top: 70px;
 }
