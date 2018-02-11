@@ -1,7 +1,6 @@
 ﻿using GiftServer.Properties;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Mail;
