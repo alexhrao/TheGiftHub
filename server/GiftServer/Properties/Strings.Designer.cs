@@ -106,6 +106,15 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Joined.
+        /// </summary>
+        internal static string joined {
+            get {
+                return ResourceManager.GetString("joined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;p&gt;&lt;strong&gt;Password Reset&lt;/strong&gt; Please login below with your new password&lt;/p&gt;.
         /// </summary>
         internal static string newLogin {

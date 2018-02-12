@@ -18,8 +18,9 @@ namespace GiftServer
         /// </summary>
         public class ProfileManager
         {
-            private ResourceManager ResourceManager;
-            private NavigationManager NavigationManager;
+            private ResourceManager _htmlManager;
+            private ResourceManager _stringManager;
+            private NavigationManager _navigationManager;
             /// <summary>
             /// Instantiate a new ProfileManager
             /// </summary>
@@ -28,8 +29,9 @@ namespace GiftServer
             {
                 Thread.CurrentThread.CurrentUICulture = controller.Culture;
                 Thread.CurrentThread.CurrentCulture = controller.Culture;
-                ResourceManager = new ResourceManager("GiftServer.HtmlTemplates", typeof(ProfileManager).Assembly);
-                NavigationManager = controller.NavigationManager;
+                _htmlManager = new ResourceManager("GiftServer.HtmlTemplates", typeof(ProfileManager).Assembly);
+                _stringManager = new ResourceManager("GiftServer.Strings", typeof(ProfileManager).Assembly);
+                _navigationManager = controller.NavigationManager;
             }
             /// <summary>
             /// Create a profile page for a user to be viewable by another
@@ -43,34 +45,46 @@ namespace GiftServer
             public string ProfilePage(User viewer, User target)
             {
                 HtmlDocument profile = new HtmlDocument();
-                profile.LoadHtml(NavigationManager.NavigationBar(viewer) + ResourceManager.GetString("publicProfile"));
+                profile.LoadHtml(_navigationManager.NavigationBar(viewer) + _htmlManager.GetString("publicProfile"));
                 // Set src of image:
-                HtmlNode img = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userImage \")]");
+                HtmlNode img = profile.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userImage \")]");
                 img.Attributes["src"].Value = target.GetImage();
-                HtmlNode name = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
+                HtmlNode name = profile.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
                 name.InnerHtml = HttpUtility.HtmlEncode(target.Name);
-                HtmlNode timeMember = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" timeMember \")]");
-                timeMember.InnerHtml = HttpUtility.HtmlEncode("Member since " + target.DateJoined.Value.ToString("m") + ", " + target.DateJoined.Value.ToString("yyyy"));
-                HtmlNode listLink = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" listLink \")]");
+                HtmlNode timeMember = profile.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" timeMember \")]");
+                timeMember.InnerHtml = HttpUtility.HtmlEncode(
+                    _stringManager.GetString("joined") + " " +
+                    target.DateJoined.Value.ToString("m") + ", " + 
+                    target.DateJoined.Value.ToString("yyyy"));
+                HtmlNode listLink = profile.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" listLink \")]");
                 listLink.SetAttributeValue("href", Constants.URL + "?dest=list&user=" + target.Url);
-                HtmlNode email = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" email \")]");
+                HtmlNode email = profile.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" email \")]");
                 email.InnerHtml = HttpUtility.HtmlEncode("Email: " + target.Email);
                 if (viewer.BirthMonth != 0)
                 {
                     DateTime dob = new DateTime(2004, target.BirthMonth, target.BirthDay);
-                    HtmlNode birthday = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" birthday \")]");
+                    HtmlNode birthday = profile.DocumentNode.
+                        SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" birthday \")]");
                     birthday.InnerHtml = HttpUtility.HtmlEncode("Birthday: " + dob.ToString("m"));
                 }
                 else
                 {
-                    HtmlNode birthday = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" birthday \")]");
+                    HtmlNode birthday = profile.DocumentNode.
+                        SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" birthday \")]");
                     birthday.InnerHtml = HttpUtility.HtmlEncode("Birthday: " + "Not Set");
                 }
 
-                HtmlNode bio = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" bio \")]");
+                HtmlNode bio = profile.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" bio \")]");
                 bio.InnerHtml = HttpUtility.HtmlEncode(target.Bio);
 
-                HtmlNode events = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" events \")]");
+                HtmlNode events = profile.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" events \")]");
                 foreach (Event evnt in viewer.GetEvents(target))
                 {
                     HtmlNode eventRow = HtmlNode.CreateNode("<tr></tr>");
@@ -84,7 +98,8 @@ namespace GiftServer
                     events.AppendChild(eventRow);
                 }
 
-                HtmlNode groups = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" groups \")]");
+                HtmlNode groups = profile.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" groups \")]");
                 foreach (Group group in viewer.GetGroups(target))
                 {
                     HtmlNode groupRow = HtmlNode.CreateNode("<tr></tr>");
@@ -97,8 +112,9 @@ namespace GiftServer
                     groups.AppendChild(groupRow);
                 }
 
-                HtmlNode navigator = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" navigator \")]");
-                navigator = NavigationManager.Navigator(navigator, viewer);
+                HtmlNode navigator = profile.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" navigator \")]");
+                navigator = _navigationManager.Navigator(navigator, viewer);
                 return profile.DocumentNode.OuterHtml;
             }
             /// <summary>
@@ -110,31 +126,42 @@ namespace GiftServer
             {
                 // Add Side Navigation Bar (From Dashboard)
                 HtmlDocument profile = new HtmlDocument();
-                profile.LoadHtml(NavigationManager.NavigationBar(user) + ResourceManager.GetString("profile"));
+                profile.LoadHtml(_navigationManager.NavigationBar(user) + _htmlManager.GetString("profile"));
                 // Set src of image:
-                HtmlNode img = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userImage \")]");
+                HtmlNode img = profile.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userImage \")]");
                 img.Attributes["src"].Value = user.GetImage();
-                HtmlNode name = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
+                HtmlNode name = profile.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
                 name.InnerHtml = HttpUtility.HtmlEncode(user.Name);
-                HtmlNode timeMember = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" timeMember \")]");
-                timeMember.InnerHtml = HttpUtility.HtmlEncode("Member since " + user.DateJoined.Value.ToString("m") + ", " + user.DateJoined.Value.ToString("yyyy"));
-                HtmlNode email = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" email \")]");
+                HtmlNode timeMember = profile.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" timeMember \")]");
+                timeMember.InnerHtml = HttpUtility.HtmlEncode(
+                    _stringManager.GetString("joined") + " " +
+                    user.DateJoined.Value.ToString("m") + ", " + 
+                    user.DateJoined.Value.ToString("yyyy"));
+                HtmlNode email = profile.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" email \")]");
                 email.InnerHtml = HttpUtility.HtmlEncode("Email: " + user.Email.Address);
                 email.Attributes.Add("data-user-email", user.Email.Address);
-                HtmlNode id = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@name), \" \"), \" userID \")]");
+                HtmlNode id = profile.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@name), \" \"), \" userID \")]");
                 id.Attributes["value"].Value = user.ID.ToString();
                 if (user.BirthMonth != 0)
                 {
                     DateTime dob = new DateTime(2004, user.BirthMonth, user.BirthDay);
-                    HtmlNode birthday = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" birthday \")]");
+                    HtmlNode birthday = profile.DocumentNode.
+                        SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" birthday \")]");
                     birthday.InnerHtml = HttpUtility.HtmlEncode("Birthday: " + dob.ToString("m"));
                 }
                 else
                 {
-                    HtmlNode birthday = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" birthday \")]");
+                    HtmlNode birthday = profile.DocumentNode.
+                        SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" birthday \")]");
                     birthday.InnerHtml = HttpUtility.HtmlEncode("Birthday: " + "Not Set");
                 }
-                HtmlNode cultures = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userCulture \")]");
+                HtmlNode cultures = profile.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userCulture \")]");
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -150,7 +177,7 @@ namespace GiftServer
                             {
                                 // Create option node
                                 HtmlNode culture;
-                                string cultureCode = Convert.ToString(reader["CultureLanguage"]) + "-" + Convert.ToString(reader["CultureLocation"]);
+                                string cultureCode = reader["CultureLanguage"] + "-" + reader["CultureLocation"];
                                 if (!isFound && cultureCode.ToLower().Equals(user.Preferences.Culture.ToLower()))
                                 {
                                     culture = HtmlNode.CreateNode("<option></option>");
@@ -170,12 +197,15 @@ namespace GiftServer
                     }
                 }
 
-                HtmlNode bio = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" bio \")]");
+                HtmlNode bio = profile.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" bio \")]");
                 bio.InnerHtml = HttpUtility.HtmlEncode(user.Bio);
-                HtmlNode bioChange = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userBioChange \")]");
+                HtmlNode bioChange = profile.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userBioChange \")]");
                 bioChange.InnerHtml = HttpUtility.HtmlEncode(user.Bio);
 
-                HtmlNode facebookLoginStatus = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" facebookLoginStatus \")]");
+                HtmlNode facebookLoginStatus = profile.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" facebookLoginStatus \")]");
                 if (user.FacebookId != null)
                 {
                     // Checkmark
@@ -187,7 +217,8 @@ namespace GiftServer
                     facebookLoginStatus.AppendChild(checkMark);
                 }
 
-                HtmlNode googleLoginStatus = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" googleLoginStatus \")]");
+                HtmlNode googleLoginStatus = profile.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" googleLoginStatus \")]");
                 if (user.GoogleId != null)
                 {
                     // Checkmark
@@ -202,7 +233,8 @@ namespace GiftServer
 
 
                 // Fill groups:
-                HtmlNode newEventHolder = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" newEventGroups \")]");
+                HtmlNode newEventHolder = profile.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" newEventGroups \")]");
                 HtmlNode newEventGroupLeft = HtmlNode.CreateNode("<div></div>");
                 newEventGroupLeft.AddClass("col-md-6");
 
@@ -250,7 +282,8 @@ namespace GiftServer
                 newEventHolder.AppendChild(newEventGroupLeft);
                 newEventHolder.AppendChild(newEventGroupRight);
 
-                HtmlNode events = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" events \")]");
+                HtmlNode events = profile.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" events \")]");
                 foreach (Event evnt in user.Events)
                 {
                     HtmlNode eventRow = HtmlNode.CreateNode("<tr></tr>");
@@ -288,7 +321,8 @@ namespace GiftServer
                     events.AppendChild(addRow);
                 }
 
-                HtmlNode groups = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" groups \")]");
+                HtmlNode groups = profile.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" groups \")]");
                 foreach (Group group in user.Groups)
                 {
                     HtmlNode groupRow = HtmlNode.CreateNode("<tr></tr>");
@@ -324,11 +358,13 @@ namespace GiftServer
                     addRow.AppendChild(HtmlNode.CreateNode("<td></td>"));
                     groups.AppendChild(addRow);
                 }
-                HtmlNode navigator = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" navigator \")]");
-                navigator = NavigationManager.Navigator(navigator, user);
+                HtmlNode navigator = profile.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" navigator \")]");
+                navigator = _navigationManager.Navigator(navigator, user);
 
                 // Activate us
-                HtmlNode profileLink = profile.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" profileLink \")]");
+                HtmlNode profileLink = profile.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" profileLink \")]");
                 profileLink.ParentNode.AddClass("active");
                 return profile.DocumentNode.OuterHtml;
             }

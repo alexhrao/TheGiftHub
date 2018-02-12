@@ -183,7 +183,6 @@ $(document).ready(function () {
         // get group information:
         // Get ID of this
         var id = $(this).attr('data-group-id');
-        id = parseInt(id);
         $.post(".", {
             action: "Fetch",
             type: "Group",
@@ -360,6 +359,204 @@ $(document).ready(function () {
             $('#resetSubmit').hide();
         }
     });
+});
+// View Event
+$(document).ready(function () {
+    var eventStartDate = "";
+    var eventEndDate = "";
+    var eventName = null;
+    var eventRecurs = null;
+    var eventRecurType = null;
+    var eventInterval = null;
+    var eventSkip = null;
+    var eventDayOfWeek = null;
+    var eventPosn = null;
+    var eventGroupIds = [];
+    var eventGroupNames = [];
+    var eventBlackouts = [];
+    $('.event-name').click(function () {
+        eventStartDate = "";
+        eventEndDate = "";
+        eventName = null;
+        eventRecurs = null;
+        eventRecurType = null;
+        eventInterval = null;
+        eventSkip = null;
+        eventDayOfWeek = null;
+        eventPosn = null;
+        eventGroupIds = [];
+        eventGroupNames = [];
+        eventBlackouts = [];
+        $('#viewEvent').modal('show');
+        // Add spinner
+        $('#viewEventDescription').addClass("hidden");
+        $('#viewEventLoader').removeClass("hidden");
+        var eid = $(this).attr('data-event-id');
+        // Get info
+        $.post(".", {
+            action: "Fetch",
+            type: "Event",
+            itemId: eid
+        }, function (data, status, xhr) {
+            var data = xhr.responseText;
+            var dom = $.parseXML(data);
+            eventName = dom.getElementsByTagName("name")[0].innerHTML;
+            eventStartDate = dom.getElementsByTagName("startDate")[0].innerHTML;
+            var groups = dom.getElementsByTagName("groups")[0].children;
+            for (var i = 0; i < groups.length; i++) {
+                var id = groups[i].children[0].innerHTML;
+                var name = groups[i].children[1].innerHTML;
+                eventGroupIds.push(id);
+                eventGroupNames.push(name);
+            }
+            eventRecurs = dom.getElementsByTagName("rulesEngine")[0].innerHTML;
+            if (eventRecurs == "") {
+                // Does not recur
+                eventRecurs = false;
+            } else {
+                eventRecurs = true;
+                // Get info - first child will be rule type
+                var eventRecurInfo = dom.getElementsByTagName("rulesEngine")[0].children;
+                eventRecurType = eventRecurInfo[0].tagName;
+                if (eventRecurType == "relativeEvent") {
+                    // Relative info
+                    eventInterval = eventRecurInfo[0].children[1].innerHTML;
+                    eventSkip = eventRecurInfo[0].children[2].innerHTML;
+                    eventDayOfWeek = eventRecurInfo[0].children[3].innerHTML;
+                    eventPosn = eventRecurInfo[0].children[4].innerHTML;
+                } else {
+                    eventInterval = eventRecurInfo[0].children[1].innerHTML;
+                    eventSkip = eventRecurInfo[0].children[2].innerHTML;
+                }
+                // Get blackout date info;
+                var boDates = dom.getElementsByTagName("blackouts")[0].children;
+                for (var i = 0; i < boDates.length; i++) {
+                    eventBlackouts.push(boDates[i].children[2].innerHTML);
+                }
+                // done!
+                fillDescription();
+            }
+            // Create description
+        });
+    });
+    function fillDescription() {
+        // Fill Description div:
+        var desc = $('#viewEventDescription');
+        desc.empty();
+        var str;
+        if (eventRecurs) {
+            // see if exact or relative:
+            if (eventRecurType == "exactEvent") {
+                str = "<p>" + escapeHtml(eventName) + " starts on " + escapeHtml(eventStartDate) + ", and occurs every ";
+                if (eventSkip == 2) {
+                    var str = str + "other ";
+                } else if (eventSkip > 2) {
+                    var str = str + eventSkip + " ";
+                }
+                if (eventInterval == 'D') {
+                    str = str + "Day";
+                } else if (eventInterval == 'W') {
+                    str = str + "Week";
+                } else if (eventInterval == 'M') {
+                    str = str + "Month";
+                } else {
+                    str = str + "Year";
+                }
+            } else {
+                // Relative event
+                str = "<p>" + escapeHtml(eventName) + " starts on " + escapeHtml(eventStartDate) + ", and occurs on the ";
+                if (eventPosn == 1) {
+                    str = str + "First ";
+                } else if (eventPosn == 2) {
+                    str = str + "Second ";
+                } else if (eventPosn == 3) {
+                    str = str + "Third ";
+                } else if (eventPosn == 4) {
+                    str = str + "Fourth ";
+                } else {
+                    str = str + "Last ";
+                }
+                if (eventDayOfWeek == "N") {
+                    str = str + "Sunday";
+                } else if (eventDayOfWeek == "M") {
+                    str = str + "Monday";
+                } else if (eventDayOfWeek == "T") {
+                    str = str + "Tuesday";
+                } else if (eventDayOfWeek == "W") {
+                    str = str + "Wednesday";
+                } else if (eventDayOfWeek == "R") {
+                    str = str + "Thursday";
+                } else if (eventDayOfWeek == "F") {
+                    str = str + "Friday";
+                } else if (eventDayOfWeek == "S") {
+                    str = str + "Saturday";
+                }
+                str = str + " of every ";
+                if (eventSkip == 2) {
+                    str = str + "other ";
+                } else if (eventSkip > 2) {
+                    str = str + eventSkip;
+                }
+                if (eventInterval == "JAN") {
+                    str += "January";
+                } else if (eventInterval == "FEB") {
+                    str += "February";
+                } else if (eventInterval == "MAR") {
+                    str += "March";
+                } else if (eventInterval == "APR") {
+                    str += "April";
+                } else if (eventInterval == "MAY") {
+                    str += "May";
+                } else if (eventInterval == "JUN") {
+                    str += "June";
+                } else if (eventInterval == "JUL") {
+                    str += "July";
+                } else if (eventInterval == "AUG") {
+                    str += "August";
+                } else if (eventInterval == "SEP") {
+                    str += "September";
+                } else if (eventInterval == "OCT") {
+                    str += "October";
+                } else if (eventInterval == "NOV") {
+                    str += "November";
+                } else if (eventInterval == "DEC") {
+                    str += "December";
+                } else {
+                    str += "Month";
+                }
+            }
+            if (eventEndDate != "") {
+                str = str + ". It stops on " + escapeHtml(eventEndDate) + ".";
+            } else {
+                str = str + ".";
+            }
+            str = str + "</p>";
+            str = $(str);
+            desc.append(str);
+
+            if (eventBlackouts.length > 0) {
+                var intro = $("<p>Additionally, this event will <em><strong>not</strong></em> occur on any of the following dates:</p>");
+                var blackouts = $("<ul></ul>");
+                for (var i = 0; i < eventBlackouts.length; i++) {
+                    blackouts.append($("<li class=\"text-left\">" + escapeHtml(eventBlackouts[i]) + "</li>"));
+                }
+                desc.append(intro);
+                desc.append(blackouts);
+            }
+        } else {
+            // Single date:
+            str = $("<p>" + escapeHtml(eventName) + " occurs on " + escapeHtml(eventStartDate) + ".</p>");
+            desc.append(str);
+        }
+        desc.append($("<br /><p>It's viewable by the following groups:</p>"));
+        var groups = $("<ul></ul>");
+        for (var i = 0; i < eventGroupNames.length; i++) {
+            groups.append($("<li class=\"text-left\">" + escapeHtml(eventGroupNames[i]) + "</li>"));
+        }
+        desc.append(groups);
+        $('#viewEventLoader').addClass("hidden");
+        desc.removeClass("hidden");
+    }
 });
 // New Event
 $(document).ready(function () {

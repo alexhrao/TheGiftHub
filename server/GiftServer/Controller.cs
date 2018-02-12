@@ -346,7 +346,15 @@ namespace GiftServer
                                                         foreach (string blackout in _dict["blackouts[]"].Split(','))
                                                         {
                                                             Blackout b = new Blackout(e, DateTime.Parse(blackout));
-                                                            b.Create();
+                                                            try
+                                                            {
+                                                                b.Create();
+                                                            }
+                                                            catch (InvalidOperationException)
+                                                            {
+                                                                // continue on to next one
+                                                                continue;
+                                                            }
                                                         }
                                                     }
                                                     // For each blackout, add it to event

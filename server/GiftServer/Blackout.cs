@@ -92,6 +92,21 @@ namespace GiftServer
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
+                    // First check that no bo already exists with same date
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT EventBlackoutID FROM event_blackouts WHERE EventBlackoutDate = @dt;";
+                        cmd.Parameters.AddWithValue("@dt", BlackoutDate);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                            {
+                                throw new InvalidOperationException("Event Blackout for date already exists");
+                            }
+                        }
+                    }
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
@@ -115,6 +130,21 @@ namespace GiftServer
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
+                    // First check that no bo already exists with same date
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT EventBlackoutID FROM event_blackouts WHERE EventBlackoutDate = @dt;";
+                        cmd.Parameters.AddWithValue("@dt", BlackoutDate);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read() && Convert.ToUInt64(reader["EventBlackoutID"]) != ID)
+                            {
+                                throw new InvalidOperationException("Event Blackout for date already exists");
+                            }
+                        }
+                    }
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;

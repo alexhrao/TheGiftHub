@@ -112,3 +112,6 @@ table {
     font-size: 150%;
     color: black;
 }
+#viewEventLoader * {
+    color: black;
+}
