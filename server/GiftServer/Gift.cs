@@ -78,10 +78,32 @@ namespace GiftServer
                 }
             }
             private uint quantity = 1;
+            private string color = "000000";
             /// <summary>
             /// The color, as HEX (without the #)
             /// </summary>
-            public string Color = "000000";
+            public string Color
+            {
+                get
+                {
+                    return color;
+                }
+                set
+                {
+                    if (value.Substring(0, 1) == "#")
+                    {
+                        value = value.Substring(1);
+                    }
+                    if (value.Length != 6)
+                    {
+                        throw new ArgumentException("Invalid value for Color!", nameof(value));
+                    }
+                    else
+                    {
+                        color = value;
+                    }
+                }
+            }
             /// <summary>
             /// A description text for this color
             /// </summary>
@@ -265,7 +287,7 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@size", Size);
                         cmd.Parameters.AddWithValue("@category", Category.CategoryId);
                         cmd.Parameters.AddWithValue("@rating", Rating);
-                        cmd.Parameters.AddWithValue("@rec", DateReceived.HasValue ? "" : DateReceived.Value.ToString("yyyy-MM-dd"));
+                        cmd.Parameters.AddWithValue("@rec", DateReceived.HasValue ? DateReceived.Value.ToString("yyyy-MM-dd") : null);
                         cmd.Prepare();
                         if (cmd.ExecuteNonQuery() == 1)
                         {
@@ -632,7 +654,7 @@ namespace GiftServer
                     dateReceived.InnerText = DateReceived.HasValue ? DateReceived.Value.ToString("yyyy-MM-dd") : "";
                     XmlElement groups = info.CreateElement("groups");
                     // only attach group if viewer is also in that group
-                    foreach (Group group in Groups.FindAll(group => group.Users.Exists(u => u.ID == ID)))
+                    foreach (Group group in Groups.FindAll(group => group.Users.Exists(u => u.ID == viewer.ID)))
                     {
                         XmlElement groupElem = info.CreateElement("group");
                         groupElem.InnerText = group.ID.ToString();

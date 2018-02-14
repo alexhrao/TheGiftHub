@@ -1324,6 +1324,11 @@ namespace GiftServer
                 {
                     throw new ArgumentNullException("Target in GetGifts was null");
                 }
+                if (Equals(target))
+                {
+                    // Same user, just return our gifts
+                    return Gifts;
+                }
                 // For each gift owned by target, iterate over its groups until we find one in common with ours!
                 List<Gift> gifts = new List<Gift>();
                 foreach (Gift gift in target.Gifts)
@@ -1370,6 +1375,10 @@ namespace GiftServer
                 {
                     throw new ArgumentNullException("Target in GetGroups was null");
                 }
+                if (Equals(target))
+                {
+                    return Groups;
+                }
                 List<Group> groups = new List<Group>();
                 // For each group in target, see if GroupID is found in ours
                 foreach (Group g in target.Groups)
@@ -1398,6 +1407,10 @@ namespace GiftServer
                 if (target == null)
                 {
                     throw new ArgumentNullException(nameof(target));
+                }
+                if (Equals(target))
+                {
+                    return Events;
                 }
                 // For each event owned by target, see shared groups. If ANY of those shared groups are common with us, add!
                 List<Event> events = new List<Event>();
