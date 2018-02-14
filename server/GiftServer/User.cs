@@ -842,6 +842,7 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@slt", Password.Salt);
                         cmd.Parameters.AddWithValue("@itr", Password.Iterations);
                         cmd.Prepare();
+                        cmd.ExecuteNonQuery();
                     }
                     using (MySqlCommand cmd = new MySqlCommand())
                     {

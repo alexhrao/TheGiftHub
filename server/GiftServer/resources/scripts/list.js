@@ -87,9 +87,8 @@ $(document).ready(function ($) {
                     $('#editGiftQuantity').val(dom.getElementsByTagName("quantity")[0].innerHTML);
                     $('#editGiftColorPicker').colorpicker({
                         "useAlpha": false,
-                        "color": dom.getElementsByTagName("color")[0].innerHTML
+                        "color": '#' + dom.getElementsByTagName("color")[0].innerHTML
                     });
-                    $('#editGiftColor').css("background-color", dom.getElementsByTagName("color")[0].innerHTML);
                     $('#editGiftColorText').val(dom.getElementsByTagName("colorText")[0].innerHTML);
                     $('#editGiftSize').val(dom.getElementsByTagName("size")[0].innerHTML);
                     $('#editGiftCategory').val(dom.getElementsByTagName("category")[0].innerHTML);
