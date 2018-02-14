@@ -50,7 +50,7 @@ namespace GiftServer
             private string GiftList(User viewer, User target, List<Gift> gifts)
             {
                 HtmlDocument list = new HtmlDocument();
-                list.LoadHtml(NavigationManager.NavigationBar(target) + HtmlManager.GetString("publicList"));
+                list.LoadHtml(NavigationManager.NavigationBar(viewer) + HtmlManager.GetString("publicList"));
                 // Get all gifts that are visible to THIS USER
                 HtmlNode userId = list.DocumentNode.
                     SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" thisUserId \")]");
@@ -197,7 +197,7 @@ namespace GiftServer
             /// Get a list of gift reservations for this user
             /// </summary>
             /// <param name="target">The user who is viewing their own reservations </param>
-            /// <returns></returns>
+            /// <returns>The HTML markup for a reservations table</returns>
             public string GiftReservations(User target)
             {
                 List<Gift> gifts = new List<Gift>();

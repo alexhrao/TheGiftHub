@@ -119,11 +119,13 @@ namespace GiftServer
             {
                 try
                 {
+                    /*
                     if (!_request.Url.OriginalString.Contains("https://"))
                     {
                         _response.Redirect(Constants.URL);
                         return null;
                     }
+                    */
                     string path = ParsePath();
                     if (_request.HasEntityBody)
                     {
