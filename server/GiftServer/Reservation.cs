@@ -273,7 +273,7 @@ namespace GiftServer
             public XmlDocument Fetch(User viewer)
             {
                 // See if gift is viewable
-                if (Gift.User.GetGifts(viewer).Exists(g => g.ID == Gift.ID))
+                if (Gift.Owner.GetGifts(viewer).Exists(g => g.ID == Gift.ID))
                 {
                     return Fetch();
                 }

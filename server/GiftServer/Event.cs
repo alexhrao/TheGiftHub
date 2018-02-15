@@ -502,7 +502,7 @@ namespace GiftServer
                 {
                     rulesElem.AppendChild(info.ImportNode(Rules.Fetch().DocumentElement, true));
                 }
-                XmlElement boDates = info.CreateElement("blackoutDates");
+                XmlElement boDates = info.CreateElement("blackouts");
                 foreach (Blackout b in Blackouts)
                 {
                     boDates.AppendChild(info.ImportNode(b.Fetch().DocumentElement, true));
@@ -510,9 +510,14 @@ namespace GiftServer
                 XmlElement groups = info.CreateElement("groups");
                 foreach (Group g in Groups)
                 {
+                    XmlElement group = info.CreateElement("group");
+                    XmlElement groupName = info.CreateElement("groupName");
                     XmlElement groupId = info.CreateElement("groupId");
                     groupId.InnerText = g.ID.ToString();
-                    groups.AppendChild(groupId);
+                    groupName.InnerText = g.Name;
+                    group.AppendChild(groupId);
+                    group.AppendChild(groupName);
+                    groups.AppendChild(group);
                 }
 
                 container.AppendChild(eventId);
@@ -562,7 +567,7 @@ namespace GiftServer
                     {
                         rulesElem.AppendChild(info.ImportNode(Rules.Fetch(viewer).DocumentElement, true));
                     }
-                    XmlElement boDates = info.CreateElement("blackoutDates");
+                    XmlElement boDates = info.CreateElement("blackouts");
                     foreach (Blackout b in Blackouts)
                     {
                         boDates.AppendChild(info.ImportNode(b.Fetch(viewer).DocumentElement, true));
@@ -570,9 +575,14 @@ namespace GiftServer
                     XmlElement groups = info.CreateElement("groups");
                     foreach (Group g in Groups.FindAll(group => viewer.Groups.Exists(vGroup => vGroup.ID == group.ID)))
                     {
+                        XmlElement group = info.CreateElement("group");
+                        XmlElement groupName = info.CreateElement("groupName");
                         XmlElement groupId = info.CreateElement("groupId");
                         groupId.InnerText = g.ID.ToString();
-                        groups.AppendChild(groupId);
+                        groupName.InnerText = g.Name;
+                        group.AppendChild(groupId);
+                        group.AppendChild(groupName);
+                        groups.AppendChild(group);
                     }
 
                     container.AppendChild(eventId);

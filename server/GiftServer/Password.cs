@@ -1,8 +1,5 @@
-﻿using GiftServer.Data;
-using GiftServer.Exceptions;
-using System;
+﻿using System;
 using System.Security.Cryptography;
-using System.Xml;
 
 namespace GiftServer
 {
@@ -59,6 +56,26 @@ namespace GiftServer
             /// <param name="iterations">The number of iterations used to generate the password</param>
             public Password(string hash, string salt, int iterations)
             {
+                if (hash == null)
+                {
+                    throw new ArgumentNullException(nameof(hash));
+                }
+                else if (salt == null)
+                {
+                    throw new ArgumentNullException(nameof(salt));
+                }
+                else if (iterations <= 0)
+                {
+                    throw new ArgumentException("Iterations must be positive");
+                }
+                else if (String.IsNullOrEmpty(hash))
+                {
+                    throw new ArgumentException("Hash must be non-null");
+                }
+                else if (String.IsNullOrEmpty(salt))
+                {
+                    throw new ArgumentException("Salt must be non-null");
+                }
                 _hash = Convert.FromBase64String(hash);
                 _salt = Convert.FromBase64String(salt);
                 Iterations = iterations;
@@ -75,11 +92,19 @@ namespace GiftServer
             /// <param name="iterations">The number of iterations to use</param>
             public Password(string password, int iterations)
             {
-                this.Iterations = iterations;
                 if (password == null)
                 {
-                    throw new InvalidPasswordException();
+                    throw new ArgumentNullException(nameof(password));
                 }
+                else if (String.IsNullOrEmpty(password))
+                {
+                    throw new ArgumentException("0-Length Password");
+                }
+                else if (iterations <= 0)
+                {
+                    throw new ArgumentException("Invalid iteration input");
+                }
+                Iterations = iterations;
                 _salt = new byte[SaltSize];
                 using (RNGCryptoServiceProvider crypt = new RNGCryptoServiceProvider())
                 {
@@ -94,6 +119,14 @@ namespace GiftServer
             /// <returns>True if the password matches</returns>
             public bool Verify(string password)
             {
+                if (password == null)
+                {
+                    throw new ArgumentNullException(nameof(password));
+                }
+                else if (String.IsNullOrEmpty(password))
+                {
+                    throw new ArgumentException("0-Length password given");
+                }
                 byte[] hash = new Rfc2898DeriveBytes(password, _salt, Iterations).GetBytes(HashSize);
                 for (int i = 0; i < HashSize; i++)
                 {

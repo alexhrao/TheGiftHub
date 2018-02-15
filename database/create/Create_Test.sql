@@ -303,6 +303,7 @@ BEGIN
 	INSERT INTO gift_registry_db_test.groups_gifts (GroupID, GiftID)
 		VALUES 
             (1, 1),
+            (2, 1),
             (1, 2);
 
 	-- Create the Exact Event Rule

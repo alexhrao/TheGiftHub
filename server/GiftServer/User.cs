@@ -51,6 +51,8 @@ namespace GiftServer
             /// <remarks>
             /// Can contain any character, including emojis. There is no "First, Last" fields, to aid localization
             /// </remarks>
+            /// <exception cref="ArgumentNullException"></exception>
+            /// <exception cref="ArgumentException"></exception>
             public string Name
             {
                 get
@@ -65,11 +67,11 @@ namespace GiftServer
                     }
                     else if (value == null)
                     {
-                        throw new ArgumentNullException("Null User Name");
+                        throw new ArgumentNullException(nameof(value),"Null User Name");
                     }
                     else
                     {
-                        throw new ArgumentException("Non-Visible User Name given");
+                        throw new ArgumentException("Non-Visible User Name given", nameof(value));
                     }
                 }
             }
@@ -95,7 +97,7 @@ namespace GiftServer
                     }
                     else
                     {
-                        throw new ArgumentNullException("Null Email");
+                        throw new ArgumentNullException(nameof(value), "Null Email");
                     }
                 }
             }
@@ -124,7 +126,7 @@ namespace GiftServer
                     }
                     else
                     {
-                        throw new ArgumentNullException("Null Password");
+                        throw new ArgumentNullException(nameof(password), "Null Password");
                     }
                 }
             }
@@ -243,6 +245,7 @@ namespace GiftServer
             /// <remarks>
             /// This is a lazy operator; it will only populate when called upon. This ensures the latest data is fetched.
             /// </remarks>
+            /// <exception cref="InvalidOperationException"></exception>
             public List<Gift> Gifts
             {
                 get
@@ -283,6 +286,7 @@ namespace GiftServer
             /// <remarks>
             /// This is a lazy operator; it will only populate when called upon. This ensures the latest data is fetched.
             /// </remarks>
+            /// <exception cref="InvalidOperationException"></exception>
             public List<Group> Groups
             {
                 get
@@ -323,6 +327,7 @@ namespace GiftServer
             /// <remarks>
             /// This is a lazy operator; it will only populate when called upon. This ensures the latest data is fetched.
             /// </remarks>
+            /// <exception cref="InvalidOperationException"></exception>
             public List<Event> Events
             {
                 get
@@ -362,6 +367,7 @@ namespace GiftServer
             /// <remarks>
             /// This is a lazy operator; it will only populate when called upon. This ensures the latest data is fetched.
             /// </remarks>
+            /// <exception cref="InvalidOperationException"></exception>
             public List<Reservation> Reservations
             {
                 get
@@ -416,6 +422,8 @@ namespace GiftServer
             /// <remarks>
             /// This assumes a user with this email already exists; failure to find one results in a UserNotFoundException
             /// </remarks>
+            /// <exception cref="ArgumentNullException"></exception>
+            /// <exception cref="UserNotFoundException"></exception>
             public User(MailAddress email)
             {
                 if (email == null)
@@ -452,6 +460,9 @@ namespace GiftServer
             /// <remarks>
             /// The URL for this user, if this URL isn't found, a UserNotFoundException is thrown
             /// </remarks>
+            /// <exception cref="ArgumentNullException"></exception>
+            /// <exception cref="ArgumentException"></exception>
+            /// <exception cref="UserNotFoundException"></exception>
             public User(string hash)
             {
                 if (hash == null)
@@ -490,11 +501,14 @@ namespace GiftServer
             /// </summary>
             /// <param name="user">The OAuthUser (created from the authentication token)</param>
             /// <param name="sender">A function that will send the reset email to a specified MailAddress</param>
+            /// <exception cref="ArgumentNullException"></exception>
+            /// <exception cref="ArgumentException"></exception>
+            /// <exception cref="NewOAuthForUserException"></exception>
             public User(OAuthUser user, Action<MailAddress> sender)
             {
                 if (user == null)
                 {
-                    throw new ArgumentNullException(nameof(user));
+                    throw new ArgumentNullException(nameof(user), "User is null");
                 }
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -511,7 +525,7 @@ namespace GiftServer
                                 cmd.CommandText = "SELECT users.UserID FROM users WHERE users.UserFacebookID = @oid;";
                                 break;
                             default:
-                                throw new ArgumentException("Unkown OAuth type: " + user.GetType().Name);
+                                throw new ArgumentException("Unkown OAuth type: " + user.GetType().Name, nameof(user));
                         }
                         cmd.Parameters.AddWithValue("@oid", user.OAuthId);
                         cmd.Prepare();
@@ -549,6 +563,14 @@ namespace GiftServer
             /// <param name="password">The password for this user</param>
             public User(OAuthUser user, string password)
             {
+                if (user == null)
+                {
+                    throw new ArgumentNullException(nameof(user), "User is null");
+                }
+                else if (password == null)
+                {
+                    throw new ArgumentNullException(nameof(password), "Password is null");
+                }
                 // If the passwords match, then add it
                 // Get the email from user, and synchronize
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -627,15 +649,15 @@ namespace GiftServer
                 // If found, but password mismatch, throw InvalidPasswordException.
                 if (email == null)
                 {
-                    throw new ArgumentNullException(nameof(email));
+                    throw new ArgumentNullException(nameof(email), "Email is null");
                 }
                 if (password == null)
                 {
-                    throw new ArgumentNullException("Password is null");
+                    throw new ArgumentNullException(nameof(password), "Password is null");
                 }
                 else if (password.Length == 0)
                 {
-                    throw new ArgumentException("Password is 0 length");
+                    throw new ArgumentException("Password is 0 length", nameof(password));
                 }
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -665,22 +687,31 @@ namespace GiftServer
             /// </summary>
             /// <param name="email">The user's email</param>
             /// <param name="password">The user's password, *_hashed_*</param>
-            public User(MailAddress email, Password password)
+            /// <param name="name">The user's name</param>
+            public User(MailAddress email, Password password, string name)
             {
                 Email = email;
                 Password = password;
+                Name = name;
             }
             /// <summary>
             /// Resets their password
             /// </summary>
             /// <param name="password">The new password</param>
             /// <param name="sender">A sender that will generate the notification for this user.</param>
-            /// <returns>A status of whether or not it successfully reset the user's password</returns>
-            public bool UpdatePassword(string password, Action<MailAddress, User> sender)
+            public void UpdatePassword(string password, Action<MailAddress, User> sender)
             {
                 if (ID == 0)
                 {
-                    return false;
+                    throw new InvalidOperationException("Cannot change password of ID-less user!");
+                }
+                else if (password == null)
+                {
+                    throw new ArgumentNullException(nameof(password), "Password cannot be null");
+                }
+                else if (String.IsNullOrEmpty(password))
+                {
+                    throw new ArgumentException("Password must be non-zero length", nameof(password));
                 }
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -698,17 +729,22 @@ namespace GiftServer
                         cmd.ExecuteNonQuery();
                     }
                 }
-                sender(Email, this);
-                return true;
+                sender?.Invoke(Email, this);
             }
             private void Synchronize(ulong id, string password)
             {
                 Synchronize(id);
-                if (!Password.Verify(password))
+                if (Password == null || !Password.Verify(password))
                 {
                     throw new InvalidPasswordException();
                 }
             }
+            /// <summary>
+            /// Sync this user with the database
+            /// </summary>
+            /// <param name="id">The User's ID</param>
+            /// <exception cref="UserNotFoundException">Thrown if user can't be found</exception>
+            /// <exception cref="InvalidPasswordException">Thrown if given password is invalid</exception>
             private void Synchronize(ulong id)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -834,6 +870,7 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@slt", Password.Salt);
                         cmd.Parameters.AddWithValue("@itr", Password.Iterations);
                         cmd.Prepare();
+                        cmd.ExecuteNonQuery();
                     }
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
@@ -867,7 +904,7 @@ namespace GiftServer
                         FacebookId = f.OAuthId;
                         break;
                     default:
-                        throw new ArgumentException("Unkown OAuth type: " + info.GetType().Name);
+                        throw new ArgumentException("Unkown OAuth type: " + info.GetType().Name, nameof(info));
                 }
                 Password = new Password(info.OAuthId);
                 Create();
@@ -1115,11 +1152,12 @@ namespace GiftServer
             /// Reserve ONE of a given gift;
             /// </summary>
             /// <param name="gift">The gift to reserve</param>
+            /// <exception cref="ReservationOverflowException"></exception>
             public void Reserve(Gift gift)
             {
                 if (gift == null)
                 {
-                    throw new ArgumentNullException(nameof(gift));
+                    throw new ArgumentNullException(nameof(gift), "Gift cannot be null");
                 }
                 Reservation res = new Reservation(this, gift);
                 res.Create();
@@ -1135,7 +1173,7 @@ namespace GiftServer
             {
                 if (gift == null)
                 {
-                    throw new ArgumentNullException(nameof(gift));
+                    throw new ArgumentNullException(nameof(gift), "Gift cannot be null");
                 }
                 if (amount < 0)
                 {
@@ -1163,7 +1201,7 @@ namespace GiftServer
             {
                 if (gift == null)
                 {
-                    throw new ArgumentNullException(nameof(gift));
+                    throw new ArgumentNullException(nameof(gift), "Gift cannot be null");
                 }
                 Reservation res = null;
                 if (gift.Reservations.FindAll(r => r.User.ID == ID).Count > 0)
@@ -1182,7 +1220,7 @@ namespace GiftServer
             {
                 if (gift == null)
                 {
-                    throw new ArgumentNullException(nameof(gift));
+                    throw new ArgumentNullException(nameof(gift), "Gift cannot be null");
                 }
                 if (amount < 0)
                 {
@@ -1209,7 +1247,7 @@ namespace GiftServer
             {
                 if (gift == null)
                 {
-                    throw new ArgumentNullException(nameof(gift));
+                    throw new ArgumentNullException(nameof(gift), "Gift cannot be null");
                 }
                 Reservation res = null;
                 if (gift.Reservations.FindAll(r => r.User.ID == ID && !r.IsPurchased).Count > 0)
@@ -1229,7 +1267,7 @@ namespace GiftServer
             {
                 if (gift == null)
                 {
-                    throw new ArgumentNullException(nameof(gift));
+                    throw new ArgumentNullException(nameof(gift), "Gift cannot be null");
                 }
                 if (amount < 0)
                 {
@@ -1256,7 +1294,7 @@ namespace GiftServer
             {
                 if (gift == null)
                 {
-                    throw new ArgumentNullException(nameof(gift));
+                    throw new ArgumentNullException(nameof(gift), "Gift cannot be null");
                 }
                 Reservation res = null;
                 List<Reservation> reservations = gift.Reservations.FindAll(r => r.User.ID == ID && r.IsPurchased).OrderBy(r => r.PurchaseDate).ToList();
@@ -1276,7 +1314,7 @@ namespace GiftServer
             {
                 if (gift == null)
                 {
-                    throw new ArgumentNullException(nameof(gift));
+                    throw new ArgumentNullException(nameof(gift), "Gift cannot be null");
                 }
                 if (amount < 0)
                 {
@@ -1313,7 +1351,12 @@ namespace GiftServer
             {
                 if (target == null)
                 {
-                    throw new ArgumentNullException("Target in GetGifts was null");
+                    throw new ArgumentNullException(nameof(target), "Target in GetGifts was null");
+                }
+                if (Equals(target))
+                {
+                    // Same user, just return our gifts
+                    return Gifts;
                 }
                 // For each gift owned by target, iterate over its groups until we find one in common with ours!
                 List<Gift> gifts = new List<Gift>();
@@ -1341,7 +1384,7 @@ namespace GiftServer
             {
                 if (viewer == null)
                 {
-                    throw new ArgumentNullException("Viewer in GetGifts was null");
+                    throw new ArgumentNullException(nameof(viewer), "Viewer in GetGifts was null");
                 }
                 return Gifts.Where(gift => gift.Groups.Exists(group => group.ID == viewer.ID)).ToList();
             }
@@ -1359,7 +1402,11 @@ namespace GiftServer
             {
                 if (target == null)
                 {
-                    throw new ArgumentNullException("Target in GetGroups was null");
+                    throw new ArgumentNullException(nameof(target), "Target in GetGroups was null");
+                }
+                if (Equals(target))
+                {
+                    return Groups;
                 }
                 List<Group> groups = new List<Group>();
                 // For each group in target, see if GroupID is found in ours
@@ -1388,7 +1435,11 @@ namespace GiftServer
             {
                 if (target == null)
                 {
-                    throw new ArgumentNullException(nameof(target));
+                    throw new ArgumentNullException(nameof(target), "Target cannot be null");
+                }
+                if (Equals(target))
+                {
+                    return Events;
                 }
                 // For each event owned by target, see shared groups. If ANY of those shared groups are common with us, add!
                 List<Event> events = new List<Event>();
@@ -1416,7 +1467,7 @@ namespace GiftServer
             {
                 if (viewer == null)
                 {
-                    throw new ArgumentNullException(nameof(viewer));
+                    throw new ArgumentNullException(nameof(viewer), "Viewer cannot be null");
                 }
                 return Events.Where(e => e.Groups.Exists(g => g.ID == viewer.ID)).ToList();
             }
@@ -1435,7 +1486,7 @@ namespace GiftServer
                 }
                 else if (token == null)
                 {
-                    throw new ArgumentNullException(nameof(token));
+                    throw new ArgumentNullException(nameof(token), "Token must not be null");
                 }
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -1493,7 +1544,7 @@ namespace GiftServer
                 }
                 else if (token == null)
                 {
-                    throw new ArgumentNullException(nameof(token));
+                    throw new ArgumentNullException(nameof(token), "Token must not be null");
                 }
                 switch (token)
                 {
@@ -1645,11 +1696,15 @@ namespace GiftServer
                 }
                 else if (viewer == null)
                 {
-                    throw new ArgumentNullException(nameof(viewer));
+                    throw new ArgumentNullException(nameof(viewer), "Viewer must not be null");
                 }
                 else if (viewer.ID == 0)
                 {
                     throw new InvalidOperationException("Cannot fetch ID-less user");
+                }
+                else if (Equals(viewer))
+                {
+                    return Fetch();
                 }
                 XmlDocument info = new XmlDocument();
                 XmlElement container = info.CreateElement("user");

@@ -96,6 +96,22 @@ namespace GiftServer
                         }
                     }
                 }
+                return AddMeta(doc);
+            }
+            /// <summary>
+            /// Add any meta tags
+            /// </summary>
+            /// <param name="doc">The existing HTML document</param>
+            /// <returns>The modified HTML document</returns>
+            private HtmlDocument AddMeta(HtmlDocument doc)
+            {
+                // Add meta
+                HtmlNode head = doc.DocumentNode.SelectSingleNode("/html/head");
+
+                HtmlNode oauthFail = HtmlNode.CreateNode("<meta />");
+                oauthFail.Attributes.Add("name", "oauth-fail-alert");
+                oauthFail.Attributes.Add("content", HttpUtility.HtmlAttributeEncode(StringManager.GetString("oAuthFailure")));
+                head.AppendChild(oauthFail);
                 return doc;
             }
             /// <summary>

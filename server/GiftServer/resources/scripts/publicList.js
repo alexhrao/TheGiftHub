@@ -60,43 +60,74 @@ $(document).ready(function ($) {
                 }
             });
     });
-    $(document).ready(function () {
-        $('#viewGiftReserve').click(function () {
-            $('#viewGiftItem').modal('hide');
-            $('#reserveGift').modal();
-        });
-        $('#reserveGiftAmount').keyup(function () {
-            if (!$(this).val() || $(this).val() <= 0 || $(this).val() > (totalGifts - numReserved)) {
-                $('#reserveGiftSubmit').addClass("hidden");
-            } else {
-                $('#reserveGiftSubmit').removeClass("hidden");
+});
+
+$(document).ready(function () {
+    $('#viewGiftReserve').click(function () {
+        $('#viewGiftItem').modal('hide');
+        $('#reserveGift').modal();
+    });
+    $('#reserveGiftAmount').keyup(function () {
+        if (!$(this).val() || $(this).val() <= 0 || $(this).val() > (totalGifts - numReserved)) {
+            $('#reserveGiftSubmit').addClass("hidden");
+        } else {
+            $('#reserveGiftSubmit').removeClass("hidden");
+        }
+    });
+    $('#reserveGiftSubmit').click(function () {
+        $.post(".", {
+            action: "Change",
+            type: "Gift",
+            item: "reserve",
+            itemId: $('#viewGiftId').val(),
+            numReserve: $('#reserveGiftAmount').val()
+        }, function (data, status) {
+            if (data == "0") {
+                // Do the right thing
             }
-        });
-        $('#reserveGiftSubmit').click(function () {
-            $.post(".", {
-                action: "Change",
-                type: "Gift",
-                item: "reserve",
-                itemId: $('#viewGiftId').val(),
-                numReserve: $('#reserveGiftAmount').val()
-            }, function (data, status) {
-                if (data == "0") {
-                    // Do the right thing
-                }
-                location.reload(true);
-            });
-        });
-        $('#reserveGiftCancel').click(function () {
-            $('#reserveGiftAmount').val("");
-            $('#reserveGift').modal("hide");
-            $('#viewGiftItem').modal();
+            location.reload(true);
         });
     });
-    function rgb2hex(rgb) {
-        rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
-        return (rgb && rgb.length === 4) ? "#" +
-            ("0" + parseInt(rgb[1], 10).toString(16)).slice(-2) +
-            ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
-            ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
-    }
+    $('#reserveGiftCancel').click(function () {
+        $('#reserveGiftAmount').val("");
+        $('#reserveGift').modal("hide");
+        $('#viewGiftItem').modal();
+    });
 });
+
+$(document).ready(function () {
+    $('#viewGiftRelease').click(function () {
+        $('#viewGiftItem').modal('hide');
+        $('#releaseGift').modal();
+    });
+    $('#releaseGiftAmount').keyup(function () {
+        if (!$(this).val() || $(this).val() <= 0 || $(this).val() > numReserved) {
+            $('#releaseGiftSubmit').addClass("hidden");
+        } else {
+            $('#releaseGiftSubmit').removeClass("hidden");
+        }
+    });
+    $('#releaseGiftSubmit').click(function () {
+        $.post(".", {
+            action: "Change",
+            type: "Gift",
+            item: "release",
+            itemId: $('#viewGiftId').val(),
+            numRelease: $('#releaseGiftAmount').val()
+        }, function (data, status) {
+            location.reload(true);
+        });
+    });
+    $('#releaseGiftCancel').click(function () {
+        $('#releaseGiftAmount').val("");
+        $('#releaseGift').modal('hide');
+        $('#viewGiftItem').modal();
+    });
+});
+function rgb2hex(rgb) {
+    rgb = rgb.match(/^rgba?[\s+]?\([\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i);
+    return (rgb && rgb.length === 4) ? "#" +
+        ("0" + parseInt(rgb[1], 10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
+}

@@ -119,11 +119,13 @@ namespace GiftServer
             {
                 try
                 {
+                    /*
                     if (!_request.Url.OriginalString.Contains("https://"))
                     {
                         _response.Redirect(Constants.URL);
                         return null;
                     }
+                    */
                     string path = ParsePath();
                     if (_request.HasEntityBody)
                     {
@@ -281,10 +283,7 @@ namespace GiftServer
                                             case "User":
                                                 try
                                                 {
-                                                    _user = new User(new MailAddress(_dict["email"]), new Password(_dict["password"]))
-                                                    {
-                                                        Name = _dict["userName"]
-                                                    };
+                                                    _user = new User(new MailAddress(_dict["email"]), new Password(_dict["password"]), _dict["userName"]);
                                                     _user.Create();
                                                     return LoginManager.SuccessSignup();
                                                 }
@@ -346,7 +345,15 @@ namespace GiftServer
                                                         foreach (string blackout in _dict["blackouts[]"].Split(','))
                                                         {
                                                             Blackout b = new Blackout(e, DateTime.Parse(blackout));
-                                                            b.Create();
+                                                            try
+                                                            {
+                                                                b.Create();
+                                                            }
+                                                            catch (InvalidOperationException)
+                                                            {
+                                                                // continue on to next one
+                                                                continue;
+                                                            }
                                                         }
                                                     }
                                                     // For each blackout, add it to event
@@ -360,7 +367,7 @@ namespace GiftServer
                                             case "Gift":
                                                 try
                                                 {
-                                                    Gift gift = new Gift(_dict["name"])
+                                                    Gift gift = new Gift(_dict["name"], _user)
                                                     {
                                                         Description = _dict["description"],
                                                         Cost = Convert.ToDouble(_dict["cost"].Length == 0 ? "0" : _dict["cost"]),
@@ -369,12 +376,20 @@ namespace GiftServer
                                                         Size = _dict["size"],
                                                         Url = _dict["url"],
                                                         Stores = _dict["stores"],
-                                                        User = _user,
                                                         ColorText = _dict["colorText"],
                                                         Category = new Category(_dict["category"]),
                                                         Color = _dict["color"]
                                                     };
                                                     gift.Create();
+                                                    if (!String.IsNullOrWhiteSpace(_dict["groups"]))
+                                                    {
+                                                        string[] groups = _dict["groups[]"].Split(',');
+                                                        foreach (string g in groups)
+                                                        {
+                                                            Group group = new Group(Convert.ToUInt64(g));
+                                                            group.Add(gift);
+                                                        }
+                                                    }
                                                     return gift.ID.ToString();
                                                 }
                                                 catch (Exception e)
@@ -992,6 +1007,27 @@ namespace GiftServer
                         }
                         gift.Update();
                         // Remove all reservations?
+                        return "200";
+                    case "groups":
+                        if (!String.IsNullOrWhiteSpace(_dict["groupsAdded[]"]))
+                        {
+                            string[] groupsAdded = _dict["groupsAdded[]"].Split(',');
+                            foreach (string addedGroup in groupsAdded)
+                            {
+                                // Add gift to group
+                                Group group = new Group(Convert.ToUInt64(addedGroup));
+                                group.Add(gift);
+                            }
+                        }
+                        if (!String.IsNullOrWhiteSpace(_dict["groupsRemoved[]"]))
+                        {
+                            string[] groupsRemoved = _dict["groupsRemoved[]"].Split(',');
+                            foreach (string removedGroup in groupsRemoved)
+                            {
+                                Group group = new Group(Convert.ToUInt64(removedGroup));
+                                group.Remove(gift);
+                            }
+                        }
                         return "200";
                     case "update":
                         gift.Name = _dict["name"];

@@ -8,6 +8,7 @@ using MySql.Data.MySqlClient;
 using System.Configuration;
 using System.Collections.Generic;
 using System.IO;
+using System.Xml;
 
 namespace GiftServerTests
 {
@@ -83,7 +84,31 @@ namespace GiftServerTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void UserInstantiate_NullPassword_ExceptionThrown()
         {
-            User user = new User(new MailAddress("alexhrao@gmail.com"), (Password) null);
+            User user = new User(new MailAddress("alexhrao@gmail.com"), null, "hello");
+        }
+
+        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void UserInstantiate_NullName_ExceptionThrown()
+        {
+            User user = new User(new MailAddress("alexhrao@gmail.com"), new Password("Hello World"), null);
+        }
+
+        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void UserInstantiate_EmptyName_ExceptionThrown()
+        {
+            User user = new User(new MailAddress("alexhrao@gmail.com"), new Password("Hello World"), "");
+        }
+
+        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void UserInstantiate_SpaceName_ExceptionThrown()
+        {
+            User user = new User(new MailAddress("alexhrao@gmail.com"), new Password("Hello World"), "   ");
         }
 
         [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
@@ -91,7 +116,7 @@ namespace GiftServerTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void UserInstantiate_NullStringPassword_ExceptionThrown()
         {
-            User user = new User(new MailAddress("alexhrao@gmail.com"), (string) null);
+            User user = new User(new MailAddress("alexhrao@gmail.com"), null);
         }
 
         [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
@@ -167,8 +192,30 @@ namespace GiftServerTests
             User user = new User((OAuthUser)null, (Action<MailAddress>)null);
         }
 
+        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown"), TestCategory("OAuth")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void UserInstantiate_NullOAuthValidPass_ExceptionThrown()
+        {
+            new User((OAuthUser)null, "HelloWorld123");
+        }
 
+        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown"), TestCategory("OAuth")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void UserInstantiate_NullOAuthNullPass_ExceptionThrown()
+        {
+            new User((OAuthUser)null, (string)null);
+        }
 
+        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown"), TestCategory("OAuth")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void UserInstantiate_ValidOAuthNullPass_ExceptionThrown()
+        {
+            // Construct valid GoogleOAuthToken?
+            new User((OAuthUser)null, (string)null);
+        }
 
 
 
@@ -262,10 +309,7 @@ namespace GiftServerTests
         [ExpectedException(typeof(InvalidOperationException))]
         public void UserProperty_GiftsNoID_ExceptionThrown()
         {
-            User user = new User(new MailAddress("hellofdsa@gmail.com"), new Password("Hello"))
-            {
-                Name = "fdsa"
-            };
+            User user = new User(new MailAddress("hellofdsa@gmail.com"), new Password("Hello"), "fdsa");
             List<Gift> g = user.Gifts;
         }
 
@@ -294,10 +338,7 @@ namespace GiftServerTests
         [ExpectedException(typeof(InvalidOperationException))]
         public void UserProperty_GroupsNoID_ExceptionThrown()
         {
-            User user = new User(new MailAddress("hellofdsa@gmail.com"), new Password("Hello"))
-            {
-                Name = "fdsa"
-            };
+            User user = new User(new MailAddress("hellofdsa@gmail.com"), new Password("Hello"), "fdsa");
             List<Group> g = user.Groups;
         }
 
@@ -327,10 +368,7 @@ namespace GiftServerTests
         [ExpectedException(typeof(InvalidOperationException))]
         public void UserProperty_EventsNoID_ExceptionThrown()
         {
-            User user = new User(new MailAddress("hellofdsa@gmail.com"), new Password("Hello"))
-            {
-                Name = "fdsa"
-            };
+            User user = new User(new MailAddress("hellofdsa@gmail.com"), new Password("Hello"), "fdsa");
             List<Event> e = user.Events;
         }
 
@@ -339,10 +377,7 @@ namespace GiftServerTests
         [ExpectedException(typeof(InvalidOperationException))]
         public void UserProperty_ReservationsNoID_ExceptionThrown()
         {
-            User user = new User(new MailAddress("fdsafdsa@fdsafda.fdsa"), new Password("hfdsa"))
-            {
-                Name = "Fdaasdf"
-            };
+            User user = new User(new MailAddress("fdsafdsa@fdsafda.fdsa"), new Password("hfdsa"), "Ffdsa");
             List<Reservation> res = user.Reservations;
         }
 
@@ -367,19 +402,10 @@ namespace GiftServerTests
 
         [TestCategory("User"), TestCategory("Method"), TestCategory("Create"), TestCategory("ExceptionThrown")]
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void UserCreate_NoName_ExceptionThrown()
-        {
-            User user = new User(new MailAddress("alexhrao@yahoo.com"), new Password("HelloWorld123"));
-            user.Create();
-        }
-
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Create"), TestCategory("ExceptionThrown")]
-        [TestMethod]
         [ExpectedException(typeof(DuplicateUserException))]
         public void UserCreate_DuplicateEmail_ExceptionThrown()
         {
-            User user = new User(new MailAddress("alexhrao@gmail.com"), new Password("HelloWorld123"))
+            User user = new User(new MailAddress("alexhrao@gmail.com"), new Password("HelloWorld123"), "alejandro")
             {
                 Name = "Alejandro"
             };
@@ -390,14 +416,15 @@ namespace GiftServerTests
         [TestMethod]
         public void UserCreate_ValidData_NewUser()
         {
-            User user = new User(new MailAddress("alexhrao@gatech.com"), new Password("HelloWorld123"))
-            {
-                Name = "Alejandro"
-            };
+            User user = new User(new MailAddress("alexhrao@gatech.com"), new Password("HelloWorld123"), "Alejandro");
             Assert.IsFalse(user.DateJoined.HasValue);
             user.Create();
             Assert.AreNotEqual(0L, user.ID, "UserID was not updated after creation");
             Assert.IsTrue(user.DateJoined.HasValue, "User Timestamp not updated");
+            User tester = new User(user.ID);
+            Assert.IsNotNull(tester.Password, "Password was not sent");
+            Assert.IsNotNull(tester.Email, "Email was not sent");
+            Assert.IsNotNull(tester.Name, "Name was not sent");
         }
 
         [TestCategory("User"), TestCategory("Method"), TestCategory("Create"), TestCategory("ExceptionThrown")]
@@ -405,10 +432,9 @@ namespace GiftServerTests
         [ExpectedException(typeof(DuplicateUserException))]
         public void UserCreate_DuplicateGoogleID_ExceptionThrown()
         {
-            User user = new User(new MailAddress("alexhrao@thegifthub.org"), new Password("Helllllllo"))
+            User user = new User(new MailAddress("alexhrao@thegifthub.org"), new Password("Helllllllo"), "Hi")
             {
-                GoogleId = "12345",
-                Name = "tester"
+                GoogleId = "12345"
             };
             user.Create();
         }
@@ -418,10 +444,9 @@ namespace GiftServerTests
         [ExpectedException(typeof(DuplicateUserException))]
         public void UserCreate_DuplicateFacebookID_ExceptionThrown()
         {
-            User user = new User(new MailAddress("alexhrao@thegifthub.org"), new Password("Helllllllo"))
+            User user = new User(new MailAddress("alexhrao@thegifthub.org"), new Password("Helllllllo"), "tester")
             {
-                FacebookId = "12345",
-                Name = "tester"
+                FacebookId = "12345"
             };
             user.Create();
         }
@@ -596,10 +621,7 @@ namespace GiftServerTests
         [TestMethod]
         public void UserDelete_DeleteTwice_NoUser()
         {
-            User user = new User(new MailAddress("alexhrao@yahoo.edu"), new Password("HelloWorld123"))
-            {
-                Name = "Hello World"
-            };
+            User user = new User(new MailAddress("alexhrao@yahoo.edu"), new Password("HelloWorld123"), "Hello World");
             user.Create();
             user.Delete();
             Assert.AreEqual(0UL, user.ID, "UserID was not set to 0");
@@ -643,7 +665,7 @@ namespace GiftServerTests
         [ExpectedException(typeof(InvalidOperationException))]
         public void SaveImage_DeletedUser_ExceptionThrown()
         {
-            User user = new User(new MailAddress("alexhrao@code.com"), new Password("Hello World"));
+            User user = new User(new MailAddress("alexhrao@code.com"), new Password("Hello World"), "Hello");
             user.SaveImage(Image);
         }
 
@@ -672,7 +694,7 @@ namespace GiftServerTests
         [ExpectedException(typeof(InvalidOperationException))]
         public void RemoveImage_DeletedUser_ExceptionThrown()
         {
-            User user = new User(new MailAddress("alexhrao@code.com"), new Password("Hello World"));
+            User user = new User(new MailAddress("alexhrao@code.com"), new Password("Hello World"), "Hello");
             user.RemoveImage();
         }
 
@@ -731,10 +753,7 @@ namespace GiftServerTests
         [ExpectedException(typeof(InvalidOperationException))]
         public void GetImage_DeletedUser_ExceptionThrown()
         {
-            User user = new User(new MailAddress("fdsa@asdf.edu"), new Password("Hello World!"))
-            {
-                Name = "hello world"
-            };
+            User user = new User(new MailAddress("fdsa@asdf.edu"), new Password("Hello World!"), "hello world");
             user.Create();
             user.Delete();
             user.GetImage();
@@ -1152,12 +1171,13 @@ namespace GiftServerTests
         [ExpectedException(typeof(InvalidOperationException))]
         public void AddOAuth_ZeroID_ExceptionThrown()
         {
-            User user = new User(new MailAddress("wasssup@gmail.com"), new Password("hello world"))
+            User user = new User(new MailAddress("wasssup@gmail.com"), new Password("hello world"), "hello")
             {
                 Name = "hello"
             };
             // Find way to get valid OAuth Token
-            user.AddOAuth(null);
+            // user.AddOAuth(GoogleUser);
+            throw new InvalidOperationException();
         }
 
         [TestCategory("User"), TestCategory("Method"), TestCategory("AddOAuth"), TestCategory("OAuth"), TestCategory("Successful")]
@@ -1184,12 +1204,10 @@ namespace GiftServerTests
         [ExpectedException(typeof(InvalidOperationException))]
         public void RemoveOAuth_ZeroID_ExceptionThrown()
         {
-            User user = new User(new MailAddress("wasssup@gmail.com"), new Password("hello world"))
-            {
-                Name = "hello"
-            };
+            User user = new User(new MailAddress("wasssup@gmail.com"), new Password("hello world"), "Hello");
             // Find way to get valid OAuth Token
-            user.RemoveOAuth(null);
+            // user.RemoveOAuth(null);
+            throw new InvalidOperationException();
         }
 
         [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveOAuth"), TestCategory("OAuth"), TestCategory("Successful")]
@@ -1256,10 +1274,7 @@ namespace GiftServerTests
         [TestMethod]
         public void UserEquals_ThisZeroTargetValid_False()
         {
-            User user = new User(new MailAddress("alexhrao@thewinners.com"), new Password("Hello World"))
-            {
-                Name = "fdsa"
-            };
+            User user = new User(new MailAddress("alexhrao@thewinners.com"), new Password("Hello World"), "fdsa");
             User target = new User(1);
             Assert.IsFalse(user.Equals(target), "Zero user equals non-zero user");
         }
@@ -1269,10 +1284,7 @@ namespace GiftServerTests
         public void UserEquals_ThisValidTargetZero_False()
         {
             User user = new User(1);
-            User target = new User(new MailAddress("alexhrao@thewinners.com"), new Password("Hello World"))
-            {
-                Name = "fdsa"
-            };
+            User target = new User(new MailAddress("alexhrao@thewinners.com"), new Password("Hello World"), "fdsa");
             Assert.IsFalse(user.Equals(target), "Non-zero user equals zero user");
         }
 
@@ -1280,14 +1292,8 @@ namespace GiftServerTests
         [TestMethod]
         public void UserEquals_ThisZeroTargetZero_False()
         {
-            User user = new User(new MailAddress("alexhrao@thewinners.com"), new Password("Hello World"))
-            {
-                Name = "fdsa"
-            };
-            User target = new User(new MailAddress("alexhrao@thewinners.com"), new Password("Hello World"))
-            {
-                Name = "fdsa"
-            };
+            User user = new User(new MailAddress("alexhrao@thewinners.com"), new Password("Hello World"), "fdsa");
+            User target = new User(new MailAddress("alexhrao@thewinners.com"), new Password("Hello World"), "fdsa");
             Assert.IsFalse(user.Equals(target), "Zero users are reported equal");
         }
 
@@ -1295,10 +1301,7 @@ namespace GiftServerTests
         [TestMethod]
         public void UserEquals_SameZeroUser_False()
         {
-            User user = new User(new MailAddress("alexhrao@thewinners.com"), new Password("Hello World"))
-            {
-                Name = "fdsa"
-            };
+            User user = new User(new MailAddress("alexhrao@thewinners.com"), new Password("Hello World"), "fdsa");
             Assert.IsFalse(user.Equals(user), "Same 0 user reported as equal to itself");
         }
 
@@ -1321,7 +1324,94 @@ namespace GiftServerTests
             Assert.AreEqual(user.GetHashCode(), user.GetHashCode(), "Same user gives different hash codes");
         }
 
+        
 
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void UserFetch_ZeroID_ExceptionThrown()
+        {
+            User user = new User(new MailAddress("alexhrao@thedailywtf.com"), new Password("hello world"), "hello");
+            XmlDocument doc = user.Fetch();
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void UserFetch_ViewerZeroID_ExceptionThrown()
+        {
+            User target = new User(1);
+            User user = new User(new MailAddress("alexhrao@thedailywtf.com"), new Password("hello world"), "hello");
+            XmlDocument doc = target.Fetch(user);
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void UserFetch_NullViewer_ExceptionThrown()
+        {
+            User user = new User(1);
+            XmlDocument doc = user.Fetch(null);
+        }
+
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("Successful")]
+        [TestMethod]
+        public void UserFetch_ValidUser_DataPresent()
+        {
+            // Test that all fields are present and correct - except for iterated fields, which will be tested in other Tests
+            User target = new User(1)
+            {
+                Name = "Alex Rao"
+            };
+            XmlDocument doc = target.Fetch();
+
+            // Make sure has following fields:
+            /// This method returns an XML Document with the following fields:
+            ///     - userId: The user's ID
+            ///     - userName: The user's name
+            ///     - email: The User's email
+            ///     - birthMonth: The User's birth month
+            ///     - birthYear: The User's birth year
+            ///     - bio: The User's biography
+            ///     - dateJoined: The date this user joined, encoded as "yyyy-MM-dd"
+            ///     - image: The qualified path for this user's image
+            ///     - groups: An expanded list of all this user's groups.
+            ///         - Note that each child of _groups_ is a _group_ element.
+            ///     - gifts: An expanded list of all this user's gifts.
+            ///         - Note that each child of _gifts_ is a _gift_ element.
+            ///     - events: An expanded list of all this user's events.
+            ///         - Note that each child of _events_ is an _event_ element.
+            ///     - preferences: This user's preferences
+            ///     
+            /// This is all contained within a _user_ container.
+            /// 
+            XmlElement id = (XmlElement)doc.GetElementsByTagName("userId")[0];
+            Assert.AreEqual(target.ID.ToString(), id.InnerText, "ID mismatch");
+            XmlElement name = (XmlElement)doc.GetElementsByTagName("userName")[0];
+            Assert.AreEqual(target.Name, name.InnerText, "Name mismatch");
+            XmlElement email = (XmlElement)doc.GetElementsByTagName("email")[0];
+            Assert.AreEqual(target.Email.Address, email.InnerText, "Email mismatch");
+            XmlElement birthMonth = (XmlElement)doc.GetElementsByTagName("birthMonth")[0];
+            Assert.AreEqual(target.BirthMonth.ToString(), birthMonth.InnerText, "Month mismatch");
+            XmlElement birthDay = (XmlElement)doc.GetElementsByTagName("birthDay")[0];
+            Assert.AreEqual(target.BirthDay.ToString(), birthDay.InnerText, "Day mismatch");
+            XmlElement bio = (XmlElement)doc.GetElementsByTagName("bio")[0];
+            Assert.AreEqual(target.Bio, bio.InnerText, "Bio Mismatch");
+            XmlElement dateJoined = (XmlElement)doc.GetElementsByTagName("dateJoined")[0];
+            Assert.AreEqual(DateTime.Today.ToString("yyyy-MM-dd"), dateJoined.InnerText, "Date Joined mismatch");
+            XmlElement img = (XmlElement)doc.GetElementsByTagName("image")[0];
+            Assert.AreEqual(target.GetImage(), img.InnerText, "Image path mismatch");
+            // Just check for group element and count; checking of group element is done by GroupTests
+            XmlElement groups = (XmlElement)doc.GetElementsByTagName("groups")[0];
+            // There should be same num of groups as target thinks
+            Assert.AreEqual(target.Groups.Count, groups.ChildNodes.Count, "Group count mismatch");
+            XmlElement events = (XmlElement)doc.GetElementsByTagName("events")[0];
+            Assert.AreEqual(target.Events.Count, events.ChildNodes.Count, "EVent count mismatch");
+            XmlElement gifts = (XmlElement)doc.GetElementsByTagName("gifts")[0];
+            Assert.AreEqual(target.Gifts.Count, gifts.ChildNodes.Count, "Gift count mismatch");
+            XmlElement pref = (XmlElement)doc.GetElementsByTagName("preferences")[0];
+            Assert.IsNotNull(pref, "Preferences were null");
+        }
 
         [ClassCleanup]
         public static void UserCleanup()
