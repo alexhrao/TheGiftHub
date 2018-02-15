@@ -39,7 +39,13 @@ function rgb2hex(rgb) {
         ("0" + parseInt(rgb[2], 10).toString(16)).slice(-2) +
         ("0" + parseInt(rgb[3], 10).toString(16)).slice(-2) : '';
 }
-$(document).ready(function ($) {
+$(document).ready(function () {
+    // Populate groups variable
+    var groups = [];
+    $('#editGiftItem #editSharedGroups input').each(function (index) {
+        // Add ourselves to groups
+        groups.push($(this).attr('data-group-id'));
+    });
     $(".clickable-row").click(function () {
         window.location = $(this).data("href");
     });
@@ -62,7 +68,22 @@ $(document).ready(function ($) {
         size: 'xs',
         containerClass: 'minimized'
     });
-
+    $('#editGiftItem #editSharedGroups input').change(function () {
+        if ($(this)[0].checked) {
+            // If we are checked, that means we weren't, so add to newGiftGroups
+            newGiftGroups.push($(this).attr('data-group-id'));
+        } else {
+            // Loop through array; if found, DELETE (indexOf isn't supported everywhere)
+            for (var i = 0; i < newGiftGroups.length; i++) {
+                if (newGiftGroups[i] == $(this).attr('data-group-id')) {
+                    newGiftGroups.splice(i, 1);
+                    break;
+                }
+            }
+        }
+    });
+    var currentGiftGroups = [];
+    var newGiftGroups = [];
     $('.gift-row').click(function () {
         // Get ID of this
         var id = $(this).attr('data-gift-id');
@@ -92,8 +113,12 @@ $(document).ready(function ($) {
                     $('#editGiftColorText').val(dom.getElementsByTagName("colorText")[0].innerHTML);
                     $('#editGiftSize').val(dom.getElementsByTagName("size")[0].innerHTML);
                     $('#editGiftCategory').val(dom.getElementsByTagName("category")[0].innerHTML);
+                    currentGiftGroups = [];
+                    newGiftGroups = [];
                     for (var i = 0; i < dom.getElementsByTagName("groups")[0].children.length; i++) {
                         $('#editGiftItem #editSharedGroups input[data-group-id=' + dom.getElementsByTagName("groups")[0].children[i].innerHTML + ']')[0].checked = true;
+                        currentGiftGroups.push(dom.getElementsByTagName("groups")[0].children[i].innerHTML);
+                        newGiftGroups.push(dom.getElementsByTagName("groups")[0].children[i].innerHTML);
                     }
                     // if received is null, then show I have Received, otherwise opposite
                     if (dom.getElementsByTagName("dateReceived")[0].innerHTML == "") {
@@ -127,31 +152,50 @@ $(document).ready(function ($) {
             colorText: $('#editGiftColorText').val()
         }, function (data, status) {
             if (data == 200) {
-                // Add gifts to the group
-                $('#editSharedGroups input').each(function () {
-                    // post each of these
-                    if ($(this)[0].checked) {
-                        $.post(".",
-                            {
-                                action: "Change",
-                                type: "Group",
-                                item: "addGift",
-                                itemId: $(this).attr('data-group-id'),
-                                giftId: $('#editGiftId').val()
-                            });
-                    } else {
-                        $.post(".",
-                            {
-                                action: "Change",
-                                type: "Group",
-                                item: "removeGift",
-                                itemId: $(this).attr('data-group-id'),
-                                giftId: $('#editGiftId').val()
-                            });
+                // Get groups
+                // for each group in groups, if:
+                    // both present in curr and new, no change
+                    // both NOT present in curr and new, no change
+                    // present in curr, not in new: REMOVE
+                    // present in new, not in curr: ADD
+                var addGroups = [];
+                var remGroups = [];
+                for (var i = 0; i < groups.length; i++) {
+                    // Check if in curr and in new
+                    var groupID = groups[i];
+                    var inCurr = false;
+                    var inNew = false;
+                    for (var j = 0; j < currentGiftGroups.length; j++) {
+                        if (currentGiftGroups[j] == groups[i]) {
+                            inCurr = true;
+                            break;
+                        }
+                    }
+                    for (var j = 0; j < newGiftGroups.length; j++) {
+                        if (newGiftGroups[j] == groups[i]) {
+                            inNew = true;
+                            break;
+                        }
                     }
 
+                    // 4 conditions
+                    if (inCurr && !inNew) {
+                        remGroups.push(groups[i]);
+                    } else if (!inCurr && inNew) {
+                        addGroups.push(groups[i]);
+                    }
+                }
+                // Add and remove groups
+                $.post(".", {
+                    action: "Change",
+                    type: "Gift",
+                    item: "groups",
+                    itemId: $('#editGiftId').val(),
+                    groupsAdded: addGroups,
+                    groupsRemoved: remGroups
+                }, function (data, status, xhr) {
+                    location.reload(true);
                 });
-                window.location.reload(true);
             } else {
                 $('#editGiftItem').modal('hide');
             }
@@ -193,6 +237,21 @@ $(document).ready(function () {
     });
 });
 $(document).ready(function () {
+    var newGiftGroups = [];
+    $('#newSharedGroups input').change(function () {
+        if ($(this)[0].checked) {
+            // If we are checked, that means we weren't, so add to newGiftGroups
+            newGiftGroups.push($(this).attr('data-group-id'));
+        } else {
+            // Loop through array; if found, DELETE (indexOf isn't supported everywhere)
+            for (var i = 0; i < newGiftGroups.length; i++) {
+                if (newGiftGroups[i] == $(this).attr('data-group-id')) {
+                    newGiftGroups.splice(i, 1);
+                    break;
+                }
+            }
+        }
+    });
     $('#newGiftColorPicker').colorpicker({
         "useAlpha": false,
         "color": "#000000"
@@ -211,7 +270,8 @@ $(document).ready(function () {
             quantity: $('#newGiftQuantity').val(),
             rating: $('#newGiftRating').val(),
             color: $('#newGiftColor').val(),
-            colorText: $('#newGiftColorText').val()
+            colorText: $('#newGiftColorText').val(),
+            groups: newGiftGroups
         }, function (data, status) {
             if (data !== "0" && $('#newImageAdded').val() == 1) {
                 $('#newImageId').val(data);

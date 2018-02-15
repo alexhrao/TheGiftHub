@@ -384,6 +384,15 @@ namespace GiftServer
                                                         Color = _dict["color"]
                                                     };
                                                     gift.Create();
+                                                    if (!String.IsNullOrWhiteSpace(_dict["groups"]))
+                                                    {
+                                                        string[] groups = _dict["groups[]"].Split(',');
+                                                        foreach (string g in groups)
+                                                        {
+                                                            Group group = new Group(Convert.ToUInt64(g));
+                                                            group.Add(gift);
+                                                        }
+                                                    }
                                                     return gift.ID.ToString();
                                                 }
                                                 catch (Exception e)
@@ -1001,6 +1010,27 @@ namespace GiftServer
                         }
                         gift.Update();
                         // Remove all reservations?
+                        return "200";
+                    case "groups":
+                        if (!String.IsNullOrWhiteSpace(_dict["groupsAdded[]"]))
+                        {
+                            string[] groupsAdded = _dict["groupsAdded[]"].Split(',');
+                            foreach (string addedGroup in groupsAdded)
+                            {
+                                // Add gift to group
+                                Group group = new Group(Convert.ToUInt64(addedGroup));
+                                group.Add(gift);
+                            }
+                        }
+                        if (!String.IsNullOrWhiteSpace(_dict["groupsRemoved[]"]))
+                        {
+                            string[] groupsRemoved = _dict["groupsRemoved[]"].Split(',');
+                            foreach (string removedGroup in groupsRemoved)
+                            {
+                                Group group = new Group(Convert.ToUInt64(removedGroup));
+                                group.Remove(gift);
+                            }
+                        }
                         return "200";
                     case "update":
                         gift.Name = _dict["name"];

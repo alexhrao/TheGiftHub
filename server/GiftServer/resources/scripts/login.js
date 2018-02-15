@@ -104,9 +104,6 @@ function loadingLogin(btn) {
     btnHolder.push($(btn).detach());
     elem.append('<i class="fas fa-spinner fa-spin fa-3x fa-fw loader signup-loader"></i>');
 }
-function stopLogin() {
-
-}
 function onSuccess(googleUser) {
     // Show spinner
     // remove google login
@@ -123,7 +120,7 @@ function onSuccess(googleUser) {
         if (resp === "success") {
             var auth2 = gapi.auth2.getAuthInstance();
             auth2.signOut().then(function () {
-                location.replace(".?dest=dashboard");
+                location.reload(true);
             });
         } else if (resp === "confirm") {
             // Ask for password, prep to resubmit
