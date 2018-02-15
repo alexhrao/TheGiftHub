@@ -33,26 +33,119 @@ namespace GiftServer
             /// The owner of this gift
             /// </summary>
             public User User;
+            private string name = "";
             /// <summary>
             /// The name of this gift
             /// </summary>
-            public string Name;
+            public string Name
+            {
+                get
+                {
+                    return name;
+                }
+                set
+                {
+                    if (value == null)
+                    {
+                        throw new ArgumentNullException(nameof(value));
+                    }
+                    else if (String.IsNullOrWhiteSpace(value))
+                    {
+                        throw new ArgumentException("Invalid name " + value, nameof(value));
+                    }
+                    else
+                    {
+                        name = value;
+                    }
+                }
+            }
+            private string description = "";
             /// <summary>
             /// This gift's description
             /// </summary>
-            public string Description = "";
+            public string Description
+            {
+                get
+                {
+                    return description;
+                }
+                set
+                {
+                    if (String.IsNullOrEmpty(value))
+                    {
+                        value = "";
+                    }
+                    description = value;
+                }
+            }
+            private string url = "";
             /// <summary>
             /// The URL associated with this gift
             /// </summary>
-            public string Url = "";
+            public string Url
+            {
+                get
+                {
+                    return url;
+                }
+                set
+                {
+                    if (String.IsNullOrWhiteSpace(value))
+                    {
+                        url = "";
+                    }
+                    else
+                    {
+                        url = value;
+                    }
+                }
+            }
+            private double cost = 0.00;
             /// <summary>
             /// The Cost of this gift, as a double.
             /// </summary>
-            public double Cost = 0.00;
+            /// <exception cref="ArgumentOutOfRangeException"></exception>
+            public double Cost
+            {
+                get
+                {
+                    return cost;
+                }
+                set
+                {
+                    if (value < 0)
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(value), "Cost must be positive or 0");
+                    }
+                    else
+                    {
+                        cost = value;
+                    }
+                }
+            }
+            private string stores = "";
             /// <summary>
             /// Stores this gift is sold at
             /// </summary>
-            public string Stores = "";
+            public string Stores
+            {
+                get
+                {
+                    return stores;
+                }
+                set
+                {
+                    if (String.IsNullOrWhiteSpace(value))
+                    {
+                        stores = "";
+                    }
+                    else
+                    {
+                        stores = value;
+                    }
+                }
+            }
+            private uint quantity = 1;
             /// <summary>
             /// The number of gifts desired
             /// </summary>
@@ -69,7 +162,7 @@ namespace GiftServer
                 {
                     if (value < 1)
                     {
-                        quantity = 1;
+                        throw new ArgumentOutOfRangeException(nameof(value), value, "Quantity must be greater than 0");
                     }
                     else
                     {
@@ -77,7 +170,6 @@ namespace GiftServer
                     }
                 }
             }
-            private uint quantity = 1;
             private string color = "000000";
             /// <summary>
             /// The color, as HEX (without the #)
@@ -104,18 +196,55 @@ namespace GiftServer
                     }
                 }
             }
+            private string colorText = "";
             /// <summary>
             /// A description text for this color
             /// </summary>
-            public string ColorText = "";
+            public string ColorText
+            {
+                get
+                {
+                    return colorText;
+                }
+                set
+                {
+                    if (String.IsNullOrWhiteSpace(value))
+                    {
+                        colorText = "";
+                    }
+                    else
+                    {
+                        colorText = value;
+                    }
+                }
+            }
+            private string size = "";
             /// <summary>
             /// The size of this gift
             /// </summary>
-            public string Size = "";
+            public string Size
+            {
+                get
+                {
+                    return size;
+                }
+                set
+                {
+                    if (String.IsNullOrWhiteSpace(value))
+                    {
+                        size = "";
+                    }
+                    else
+                    {
+                        size = value;
+                    }
+                }
+            }
             /// <summary>
             /// The category this gift fits under
             /// </summary>
             public Category Category;
+            private double rating = 0.00;
             /// <summary>
             /// This gift's rating, between 0 and 5 only.
             /// </summary>
@@ -127,13 +256,9 @@ namespace GiftServer
                 }
                 set
                 {
-                    if (value > 5)
+                    if (value > 5 || value < 0)
                     {
-                        rating = 5.0;
-                    }
-                    else if (value < 0)
-                    {
-                        rating = 0.0;
+                        throw new ArgumentOutOfRangeException(nameof(value), value, "Rating must be between 0 and 5, inclusive");
                     }
                     else
                     {
@@ -141,11 +266,14 @@ namespace GiftServer
                     }
                 }
             }
-            private double rating = 0.00;
             /// <summary>
             /// The time this gift was created
             /// </summary>
-            public DateTime? TimeStamp = null;
+            public DateTime? TimeStamp
+            {
+                get;
+                private set;
+            } = null;
             /// <summary>
             /// The time this gift was received
             /// </summary>
@@ -398,15 +526,33 @@ namespace GiftServer
             /// <param name="contents">The image as a byte array</param>
             public void SaveImage(byte[] contents)
             {
-                ImageProcessor processor = new ImageProcessor(contents);
-                File.WriteAllBytes(Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + ID + Constants.ImageFormat, processor.Data);
+                if (ID == 0)
+                {
+                    throw new InvalidOperationException("Cannot save image of ID-less gift");
+                }
+                if (contents == null || contents.Length == 0)
+                {
+                    RemoveImage();
+                }
+                else
+                {
+                    ImageProcessor processor = new ImageProcessor(contents);
+                    File.WriteAllBytes(Directory.GetCurrentDirectory() + "/resources/images/gifts/Giftr" + ID + Constants.ImageFormat, processor.Data);
+                }
             }
             /// <summary>
             /// Remove the associated image
             /// </summary>
             public void RemoveImage()
             {
-                File.Delete(Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + ID + Constants.ImageFormat);
+                if (ID == 0)
+                {
+                    throw new InvalidOperationException("Cannot remove image of ID-less gift");
+                }
+                if (File.Exists(Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + ID + Constants.ImageFormat))
+                {
+                    File.Delete(Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + ID + Constants.ImageFormat);
+                }
             }
             /// <summary>
             /// Get the image associated with this gift
@@ -417,6 +563,10 @@ namespace GiftServer
             /// </remarks>
             public string GetImage()
             {
+                if (ID == 0)
+                {
+                    throw new InvalidOperationException("Cannot retrieve image of ID-less gift");
+                }
                 return GetImage(ID);
             }
             /// <summary>
@@ -426,16 +576,21 @@ namespace GiftServer
             /// <returns>The qualified path (See GetImage() for more information)</returns>
             public static string GetImage(ulong id)
             {
+                if (id == 0)
+                {
+                    throw new ArgumentException("Cannot retrieve image of ID-less gift", nameof(id));
+                }
+                // Build path:
                 string path = Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + id + Constants.ImageFormat;
                 // if file exists, return path. Otherwise, return default
                 // Race condition, but I don't know how to solve (yet)
                 if (File.Exists(path))
                 {
-                    return "/resources/images/gifts/Gift" + id + Constants.ImageFormat;
+                    return "resources/images/gifts/Gift" + id + Constants.ImageFormat;
                 }
                 else
                 {
-                    return "resources/images/gifts/default" + Constants.ImageFormat;
+                    return "resources/images/gift/Gift" + Constants.ImageFormat;
                 }
             }
             /// <summary>
@@ -444,9 +599,38 @@ namespace GiftServer
             /// <param name="group">The group that can now view this gift</param>
             public void Add(Group group)
             {
+                if (group == null)
+                {
+                    throw new ArgumentNullException(nameof(group), "Group cannot be null");
+                }
+                else if (group.ID == 0)
+                {
+                    throw new ArgumentException("Group must have valid ID", nameof(group));
+                }
+                else if (ID == 0)
+                {
+                    throw new InvalidOperationException("Cannot add ID-less gift");
+                }
+
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
+                    // Check to see not already in group!
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT GiftID FROM groups_gifts WHERE GroupID = @group AND GiftID = @gift;";
+                        cmd.Parameters.AddWithValue("@group", group.ID);
+                        cmd.Parameters.AddWithValue("@gift", ID);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                            {
+                                return;
+                            }
+                        }
+                    }
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
@@ -464,6 +648,18 @@ namespace GiftServer
             /// <param name="group">The group that will no longer be able to view this gift</param>
             public void Remove(Group group)
             {
+                if (group == null)
+                {
+                    throw new ArgumentNullException(nameof(group), "Group must not be null");
+                }
+                else if (group.ID == 0)
+                {
+                    throw new ArgumentException("Group must have valid ID", nameof(group));
+                }
+                else if (ID == 0)
+                {
+                    throw new InvalidOperationException("Cannot remove from ID-less gift");
+                }
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -542,6 +738,10 @@ namespace GiftServer
             /// <returns>An XML document with all gift information</returns>
             public XmlDocument Fetch()
             {
+                if (ID == 0)
+                {
+                    throw new InvalidOperationException("Cannot fetch ID-less gift");
+                }
                 XmlDocument info = new XmlDocument();
                 XmlElement container = info.CreateElement("gift");
                 info.AppendChild(container);
@@ -616,8 +816,23 @@ namespace GiftServer
             /// <returns>All information about this gift the viewer can see</returns>
             public XmlDocument Fetch(User viewer)
             {
-                // First make sure gifts are in common
-                if (User.GetGifts(viewer).Exists(g => g.ID == ID))
+                if (viewer == null)
+                {
+                    throw new ArgumentNullException(nameof(viewer), "Viewer must not be null");
+                }
+                else if (viewer.ID == 0)
+                {
+                    throw new ArgumentException("Viewer must have valid ID", nameof(viewer));
+                }
+                else if (ID == 0)
+                {
+                    throw new InvalidOperationException("Cannot fetch ID-less gift");
+                }
+                if (viewer.ID == User.ID)
+                {
+                    return Fetch();
+                }
+                else if (User.GetGifts(viewer).Exists(g => g.ID == ID))
                 {
                     XmlDocument info = new XmlDocument();
                     XmlElement container = info.CreateElement("gift");
