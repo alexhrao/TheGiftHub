@@ -370,7 +370,7 @@ namespace GiftServer
                                             case "Gift":
                                                 try
                                                 {
-                                                    Gift gift = new Gift(_dict["name"])
+                                                    Gift gift = new Gift(_dict["name"], _user)
                                                     {
                                                         Description = _dict["description"],
                                                         Cost = Convert.ToDouble(_dict["cost"].Length == 0 ? "0" : _dict["cost"]),
@@ -379,7 +379,6 @@ namespace GiftServer
                                                         Size = _dict["size"],
                                                         Url = _dict["url"],
                                                         Stores = _dict["stores"],
-                                                        User = _user,
                                                         ColorText = _dict["colorText"],
                                                         Category = new Category(_dict["category"]),
                                                         Color = _dict["color"]

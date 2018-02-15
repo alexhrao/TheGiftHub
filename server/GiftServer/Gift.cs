@@ -30,10 +30,28 @@ namespace GiftServer
                 get;
                 private set;
             } = 0;
+            private User user;
             /// <summary>
             /// The owner of this gift
             /// </summary>
-            public User User;
+            public User Owner
+            {
+                get
+                {
+                    return user;
+                }
+                private set
+                {
+                    if (value == null)
+                    {
+                        throw new ArgumentNullException(nameof(value), "Owner cannot be null");
+                    }
+                    else
+                    {
+                        user = value;
+                    }
+                }
+            }
             private string name = "";
             /// <summary>
             /// The name of this gift
@@ -405,7 +423,7 @@ namespace GiftServer
                             if (reader.Read())
                             {
                                 ID = id;
-                                User = new User(Convert.ToUInt64(reader["UserID"]));
+                                Owner = new User(Convert.ToUInt64(reader["UserID"]));
                                 Name = Convert.ToString(reader["GiftName"]);
                                 Description = Convert.ToString(reader["GiftDescription"]);
                                 Url = Convert.ToString(reader["GiftURL"]);
@@ -439,9 +457,11 @@ namespace GiftServer
             /// Create a new gift with the given name
             /// </summary>
             /// <param name="Name">The new gifts name</param>
-            public Gift(string Name)
+            /// <param name="owner">The owner of this gift</param>
+            public Gift(string Name, User owner)
             {
                 this.Name = Name;
+                this.Owner = owner;
             }
             /// <summary>
             /// Create the gift within the database
@@ -456,7 +476,7 @@ namespace GiftServer
                         cmd.Connection = con;
                         cmd.CommandText = "INSERT INTO gifts (UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating, GiftReceivedDate) "
                                         + "VALUES (@uid, @name, @desc, @url, @cost, @stores, @quantity, @hex, @color, @size, @category, @rating, @rec);";
-                        cmd.Parameters.AddWithValue("@uid", User.ID);
+                        cmd.Parameters.AddWithValue("@uid", Owner.ID);
                         cmd.Parameters.AddWithValue("@name", Name);
                         cmd.Parameters.AddWithValue("@desc", Description);
                         cmd.Parameters.AddWithValue("@url", Url);
@@ -643,7 +663,7 @@ namespace GiftServer
                 }
                 else
                 {
-                    return "resources/images/gift/default" + Constants.ImageFormat;
+                    return "resources/images/gifts/default" + Constants.ImageFormat;
                 }
             }
             /// <summary>
@@ -704,7 +724,7 @@ namespace GiftServer
                 {
                     throw new InvalidOperationException("ID must not be 0");
                 }
-                else if (reserver.Equals(User))
+                else if (reserver.Equals(Owner))
                 {
                     throw new InvalidOperationException("User cannot reserve own gift");
                 }
@@ -761,7 +781,7 @@ namespace GiftServer
                 {
                     throw new InvalidOperationException("ID must not be 0");
                 }
-                else if (releaser.Equals(User))
+                else if (releaser.Equals(Owner))
                 {
                     throw new InvalidOperationException("User cannot Release own gift");
                 }
@@ -867,7 +887,7 @@ namespace GiftServer
                 XmlElement id = info.CreateElement("giftId");
                 id.InnerText = ID.ToString();
                 XmlElement user = info.CreateElement("user");
-                user.InnerText = User.ID.ToString();
+                user.InnerText = Owner.ID.ToString();
                 XmlElement name = info.CreateElement("name");
                 name.InnerText = Name;
                 XmlElement description = info.CreateElement("description");
@@ -947,11 +967,11 @@ namespace GiftServer
                 {
                     throw new InvalidOperationException("Cannot fetch ID-less gift");
                 }
-                if (viewer.ID == User.ID)
+                if (viewer.ID == Owner.ID)
                 {
                     return Fetch();
                 }
-                else if (User.GetGifts(viewer).Exists(g => g.ID == ID))
+                else if (Owner.GetGifts(viewer).Exists(g => g.ID == ID))
                 {
                     XmlDocument info = new XmlDocument();
                     XmlElement container = info.CreateElement("gift");
@@ -959,7 +979,7 @@ namespace GiftServer
                     XmlElement id = info.CreateElement("giftId");
                     id.InnerText = ID.ToString();
                     XmlElement user = info.CreateElement("user");
-                    user.InnerText = User.ID.ToString();
+                    user.InnerText = Owner.ID.ToString();
                     XmlElement name = info.CreateElement("name");
                     name.InnerText = Name;
                     XmlElement description = info.CreateElement("description");

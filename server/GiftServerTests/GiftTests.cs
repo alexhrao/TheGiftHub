@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using GiftServer.Data;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -30,7 +31,7 @@ namespace GiftServerTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void GiftInstantiate_NullName_ExceptionThrown()
         {
-            Gift gift = new Gift(null);
+            Gift gift = new Gift(null, new User(1));
         }
 
         [TestCategory("Gift"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
@@ -38,7 +39,7 @@ namespace GiftServerTests
         [ExpectedException(typeof(ArgumentException))]
         public void GiftInstantiate_EmptyName_ExceptionThrown()
         {
-            Gift gift = new Gift("");
+            Gift gift = new Gift("", new User(1));
         }
 
         [TestCategory("Gift"), TestCategory("Instantiate"), TestCategory("Successful")]
@@ -49,11 +50,19 @@ namespace GiftServerTests
             Assert.AreEqual(1UL, gift.ID, "ID Mismatch");
         }
 
+        [TestCategory("Gift"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void GiftInstantiate_NullUser_ExceptionThrown()
+        {
+            Gift gift = new Gift("Hello", null);
+        }
+
         [TestCategory("Gift"), TestCategory("Instantiate"), TestCategory("Successful")]
         [TestMethod]
         public void GiftInstantiate_ValidName_NewGift()
         {
-            Gift gift = new Gift("Hello world");
+            Gift gift = new Gift("Hello world", new User(1));
             Assert.AreEqual(0UL, gift.ID, "New Gift has non-zero ID");
         }
 
@@ -536,7 +545,7 @@ namespace GiftServerTests
         [TestMethod]
         public void GiftProperty_NewGift_NullTimestamp()
         {
-            Gift gift = new Gift("Tester");
+            Gift gift = new Gift("Tester", new User(1));
             Assert.IsNull(gift.TimeStamp, "Non Null Timestamp for new gift");
         }
 
@@ -567,6 +576,44 @@ namespace GiftServerTests
             Assert.IsNotNull(gift.DateReceived, "Date Received not set");
         }
 
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Get"), TestCategory("Successful"), TestCategory("Reservation")]
+        [TestMethod]
+        public void GiftProperty_Reservations_NoReservations()
+        {
+            Gift gift = new Gift(1);
+            List<Reservation> res = gift.Reservations;
+            Assert.AreEqual(0, res.Count, "More than 0 reservations fetched");
+        }
+
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Get"), TestCategory("Successful"), TestCategory("Reservation")]
+        [TestMethod]
+        public void GiftProperty_Reservations_OneReservation()
+        {
+            Gift gift = new Gift(8);
+            List<Reservation> res = gift.Reservations;
+            Assert.AreEqual(1, res.Count, "Incorrect number of reservations");
+            Assert.AreEqual(8UL, res[0].Gift.ID, "Incorrect GiftID fetched");
+        }
+
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Get"), TestCategory("Successful"), TestCategory("Reservation")]
+        [TestMethod]
+        public void GiftProperty_Reservations_ManyReservations()
+        {
+            Gift gift = new Gift(3);
+            List<Reservation> res = gift.Reservations;
+            Assert.AreEqual(3, res.Count, "Incorrect number of reservations");
+            Assert.IsTrue(res[0].Gift.ID == 3, "Wrong reservation fetched");
+        }
+
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Get"), TestCategory("ExceptionThrown"), TestCategory("Reservation")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void GiftProperty_ZeroID_ExceptionThrown()
+        {
+            Gift gift = new Gift("Hello!", new User(1));
+            List<Reservation> res = gift.Reservations;
+
+        }
 
         [ClassInitialize]
         public static void Initialize(TestContext ctx)
