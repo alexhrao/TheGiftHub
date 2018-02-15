@@ -1150,6 +1150,7 @@ namespace GiftServer
             /// Reserve ONE of a given gift;
             /// </summary>
             /// <param name="gift">The gift to reserve</param>
+            /// <exception cref="ReservationOverflowException"></exception>
             public void Reserve(Gift gift)
             {
                 if (gift == null)

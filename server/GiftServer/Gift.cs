@@ -1,4 +1,5 @@
-﻿using GiftServer.Properties;
+﻿using GiftServer.Exceptions;
+using GiftServer.Properties;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -182,17 +183,28 @@ namespace GiftServer
                 }
                 set
                 {
+                    if (String.IsNullOrWhiteSpace(value))
+                    {
+                        color = "000000";
+                        return;
+                    }
+                    value = value.Trim();
                     if (value.Substring(0, 1) == "#")
                     {
                         value = value.Substring(1);
                     }
-                    if (value.Length != 6)
+
+                    if (value.Length == 0)
+                    {
+                        color = "000000";
+                    }
+                    else if (value.Length != 6)
                     {
                         throw new ArgumentException("Invalid value for Color!", nameof(value));
                     }
                     else
                     {
-                        color = value;
+                        color = value.ToUpper();
                     }
                 }
             }
@@ -240,10 +252,29 @@ namespace GiftServer
                     }
                 }
             }
+            private Category category;
             /// <summary>
             /// The category this gift fits under
             /// </summary>
-            public Category Category;
+            public Category Category
+            {
+                get
+                {
+                    return category;
+                }
+                set
+                {
+                    if (value == null)
+                    {
+                        // Default category
+                        category = new Category(1);
+                    }
+                    else
+                    {
+                        category = value;
+                    }
+                }
+            }
             private double rating = 0.00;
             /// <summary>
             /// This gift's rating, between 0 and 5 only.
@@ -285,26 +316,33 @@ namespace GiftServer
             {
                 get
                 {
-                    List<Reservation> _reservations = new List<Reservation>();
-                    using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                    if (ID != 0)
                     {
-                        con.Open();
-                        using (MySqlCommand cmd = new MySqlCommand())
+                        List<Reservation> _reservations = new List<Reservation>();
+                        using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                         {
-                            cmd.Connection = con;
-                            cmd.CommandText = "SELECT ReservationID FROM reservations WHERE GiftID = @gid;";
-                            cmd.Parameters.AddWithValue("@gid", ID);
-                            cmd.Prepare();
-                            using (MySqlDataReader reader = cmd.ExecuteReader())
+                            con.Open();
+                            using (MySqlCommand cmd = new MySqlCommand())
                             {
-                                while (reader.Read())
+                                cmd.Connection = con;
+                                cmd.CommandText = "SELECT ReservationID FROM reservations WHERE GiftID = @gid;";
+                                cmd.Parameters.AddWithValue("@gid", ID);
+                                cmd.Prepare();
+                                using (MySqlDataReader reader = cmd.ExecuteReader())
                                 {
-                                    _reservations.Add(new Reservation(Convert.ToUInt64(reader["ReservationID"])));
+                                    while (reader.Read())
+                                    {
+                                        _reservations.Add(new Reservation(Convert.ToUInt64(reader["ReservationID"])));
+                                    }
                                 }
                             }
                         }
+                        return _reservations;
                     }
-                    return _reservations;
+                    else
+                    {
+                        throw new InvalidOperationException("Cannot get reservations for ID-less gift");
+                    }
                 }
             }
             /// <summary>
@@ -314,25 +352,32 @@ namespace GiftServer
             {
                 get
                 {
-                    List<Group> _groups = new List<Group>();
-                    using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                    if (ID != 0)
                     {
-                        con.Open();
-                        using (MySqlCommand cmd = new MySqlCommand())
+                        List<Group> _groups = new List<Group>();
+                        using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                         {
-                            cmd.Connection = con;
-                            cmd.CommandText = "SELECT GroupID FROM groups_gifts WHERE GiftID = @gid;";
-                            cmd.Parameters.AddWithValue("@gid", ID);
-                            cmd.Prepare();
-                            using (MySqlDataReader reader = cmd.ExecuteReader())
+                            con.Open();
+                            using (MySqlCommand cmd = new MySqlCommand())
                             {
-                                while (reader.Read())
+                                cmd.Connection = con;
+                                cmd.CommandText = "SELECT GroupID FROM groups_gifts WHERE GiftID = @gid;";
+                                cmd.Parameters.AddWithValue("@gid", ID);
+                                cmd.Prepare();
+                                using (MySqlDataReader reader = cmd.ExecuteReader())
                                 {
-                                    _groups.Add(new Group(Convert.ToUInt64(reader["GroupID"])));
+                                    while (reader.Read())
+                                    {
+                                        _groups.Add(new Group(Convert.ToUInt64(reader["GroupID"])));
+                                    }
+                                    return _groups;
                                 }
-                                return _groups;
                             }
                         }
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Cannot get groups for ID-less gift");
                     }
                 }
             }
@@ -342,6 +387,10 @@ namespace GiftServer
             /// <param name="id">The existing gift</param>
             public Gift(ulong id)
             {
+                if (id == 0)
+                {
+                    throw new ArgumentException("Invalid ID for gift", nameof(id));
+                }
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -377,6 +426,10 @@ namespace GiftServer
                                 {
                                     DateReceived = (DateTime)(reader["GiftReceivedDate"]);
                                 }
+                            }
+                            else
+                            {
+                                throw new ArgumentException("Unknown ID " + id, nameof(id));
                             }
                         }
                     }
@@ -530,7 +583,7 @@ namespace GiftServer
                 {
                     throw new InvalidOperationException("Cannot save image of ID-less gift");
                 }
-                if (contents == null || contents.Length == 0)
+                else if (contents == null || contents.Length == 0)
                 {
                     RemoveImage();
                 }
@@ -549,7 +602,7 @@ namespace GiftServer
                 {
                     throw new InvalidOperationException("Cannot remove image of ID-less gift");
                 }
-                if (File.Exists(Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + ID + Constants.ImageFormat))
+                else if (File.Exists(Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + ID + Constants.ImageFormat))
                 {
                     File.Delete(Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + ID + Constants.ImageFormat);
                 }
@@ -590,7 +643,7 @@ namespace GiftServer
                 }
                 else
                 {
-                    return "resources/images/gift/Gift" + Constants.ImageFormat;
+                    return "resources/images/gift/default" + Constants.ImageFormat;
                 }
             }
             /// <summary>
@@ -611,36 +664,7 @@ namespace GiftServer
                 {
                     throw new InvalidOperationException("Cannot add ID-less gift");
                 }
-
-                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
-                {
-                    con.Open();
-                    // Check to see not already in group!
-                    using (MySqlCommand cmd = new MySqlCommand())
-                    {
-                        cmd.Connection = con;
-                        cmd.CommandText = "SELECT GiftID FROM groups_gifts WHERE GroupID = @group AND GiftID = @gift;";
-                        cmd.Parameters.AddWithValue("@group", group.ID);
-                        cmd.Parameters.AddWithValue("@gift", ID);
-                        cmd.Prepare();
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            if (reader.HasRows)
-                            {
-                                return;
-                            }
-                        }
-                    }
-                    using (MySqlCommand cmd = new MySqlCommand())
-                    {
-                        cmd.Connection = con;
-                        cmd.CommandText = "INSERT INTO groups_gifts (GroupID, GiftID) VALUES (@groupId, @giftId);";
-                        cmd.Parameters.AddWithValue("@groupId", group.ID);
-                        cmd.Parameters.AddWithValue("@giftId", ID);
-                        cmd.Prepare();
-                        cmd.ExecuteNonQuery();
-                    }
-                }
+                group.Add(this);
             }
             /// <summary>
             /// Remove this gift from a group
@@ -660,18 +684,113 @@ namespace GiftServer
                 {
                     throw new InvalidOperationException("Cannot remove from ID-less gift");
                 }
-                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                group.Remove(this);
+            }
+            /// <summary>
+            /// Reserve one of this gift for the reserver
+            /// </summary>
+            /// <param name="reserver">The reserver</param>
+            public void Reserve(User reserver)
+            {
+                if (reserver == null)
                 {
-                    con.Open();
-                    using (MySqlCommand cmd = new MySqlCommand())
+                    throw new ArgumentNullException(nameof(reserver), "Reserver must not be null");
+                }
+                else if (reserver.ID == 0)
+                {
+                    throw new ArgumentException("Reserver must have valid ID", nameof(reserver));
+                }
+                else if (ID == 0)
+                {
+                    throw new InvalidOperationException("ID must not be 0");
+                }
+                else if (reserver.Equals(User))
+                {
+                    throw new InvalidOperationException("User cannot reserve own gift");
+                }
+                else
+                {
+                    reserver.Reserve(this);
+                }
+            }
+            /// <summary>
+            /// Reserve a number of this gift
+            /// </summary>
+            /// <param name="reserver">The reserver</param>
+            /// <param name="amount">The amount to reserve</param>
+            /// <returns>The amount actually reserved</returns>
+            public int Reserve(User reserver, int amount)
+            {
+                if (amount < 0)
+                {
+                    return Release(reserver, -amount);
+                }
+                else
+                {
+                    int counter = 0;
+                    for (int i = 0; i < amount; i++)
                     {
-                        cmd.Connection = con;
-                        cmd.CommandText = "DELETE FROM groups_gifts WHERE GiftID = @giftId AND GroupID = @groupId;";
-                        cmd.Parameters.AddWithValue("@giftId", ID);
-                        cmd.Parameters.AddWithValue("@groupId", group.ID);
-                        cmd.Prepare();
-                        cmd.ExecuteNonQuery();
+                        try
+                        {
+                            Reserve(reserver);
+                            counter++;
+                        }
+                        catch (ReservationOverflowException)
+                        {
+                            return counter;
+                        }
                     }
+                    return counter;
+                }
+            }
+            /// <summary>
+            /// Release a reservation owned by the releaser
+            /// </summary>
+            /// <param name="releaser">The owner of the reservation</param>
+            public void Release(User releaser)
+            {
+                if (releaser == null)
+                {
+                    throw new ArgumentNullException(nameof(releaser), "Releaser must not be null");
+                }
+                else if (releaser.ID == 0)
+                {
+                    throw new ArgumentException("Releaser must have valid ID", nameof(releaser));
+                }
+                else if (ID == 0)
+                {
+                    throw new InvalidOperationException("ID must not be 0");
+                }
+                else if (releaser.Equals(User))
+                {
+                    throw new InvalidOperationException("User cannot Release own gift");
+                }
+                else
+                {
+                    releaser.Release(this);
+                }
+            }
+            /// <summary>
+            /// Release a given amount of the reservations for this user
+            /// </summary>
+            /// <param name="realeser">The releaser</param>
+            /// <param name="amount">The number to release</param>
+            /// <returns>How many were actually released</returns>
+            public int Release(User realeser, int amount)
+            {
+                if (amount < 0)
+                {
+                    return Reserve(realeser, -amount);
+                }
+                else
+                {
+                    int counter = 0;
+                    for (int i = 0; i < amount; i++)
+                    {
+                        Release(realeser);
+                        counter++;
+                    }
+                    return counter;
                 }
             }
             /// <summary>

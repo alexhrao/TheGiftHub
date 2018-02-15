@@ -421,6 +421,10 @@ namespace GiftServerTests
             user.Create();
             Assert.AreNotEqual(0L, user.ID, "UserID was not updated after creation");
             Assert.IsTrue(user.DateJoined.HasValue, "User Timestamp not updated");
+            User tester = new User(user.ID);
+            Assert.IsNotNull(tester.Password, "Password was not sent");
+            Assert.IsNotNull(tester.Email, "Email was not sent");
+            Assert.IsNotNull(tester.Name, "Name was not sent");
         }
 
         [TestCategory("User"), TestCategory("Method"), TestCategory("Create"), TestCategory("ExceptionThrown")]
