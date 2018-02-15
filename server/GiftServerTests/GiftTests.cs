@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Net.Mail;
 using GiftServer.Data;
+using GiftServer.Security;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MySql.Data.MySqlClient;
 
@@ -608,11 +610,106 @@ namespace GiftServerTests
         [TestCategory("Gift"), TestCategory("Property"), TestCategory("Get"), TestCategory("ExceptionThrown"), TestCategory("Reservation")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
-        public void GiftProperty_ZeroID_ExceptionThrown()
+        public void GiftProperty_ReservationsZeroID_ExceptionThrown()
         {
             Gift gift = new Gift("Hello!", new User(1));
             List<Reservation> res = gift.Reservations;
+        }
 
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Get"), TestCategory("ExceptionThrown"), TestCategory("Group")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void GiftProperty_GroupsZeroID_ExceptionThrown()
+        {
+            Gift gift = new Gift("Hello!", new User(1));
+            List<Group> groups = gift.Groups;
+        }
+
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Get"), TestCategory("Successful"), TestCategory("Group")]
+        public void GiftProperty_Groups_NoGroups()
+        {
+            Gift gift = new Gift(3);
+            List<Group> groups = gift.Groups;
+            Assert.AreEqual(0, groups.Count, "Invalid number of groups fetched");
+        }
+
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Get"), TestCategory("Successful"), TestCategory("Group")]
+        public void GiftProperty_Groups_OneGroup()
+        {
+            Gift gift = new Gift(2);
+            List<Group> groups = gift.Groups;
+            Assert.AreEqual(1, groups.Count, "Invalid number of groups fetched");
+            Assert.AreEqual(1L, groups[0].ID, "Wrong Group tie fetched");
+        }
+
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Get"), TestCategory("Successful"), TestCategory("Group")]
+        public void GiftProperty_Groups_ManyGroups()
+        {
+            Gift gift = new Gift(1);
+            List<Group> groups = gift.Groups;
+            Assert.AreEqual(2, groups.Count, "Invalid number of groups fetched");
+            Assert.AreEqual(2, groups.FindAll(g => g.ID == 1 || g.ID == 2).Count, "Wrong Groups fetched");
+            Assert.AreNotEqual(groups[0].ID, groups[1].ID, "Same group fetched twice");
+        }
+
+
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Create"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void GiftCreate_ZeroIDUser_ExceptionThrown()
+        {
+            Gift gift = new Gift("Hello", new User(new MailAddress("wassup@wassup.com"), new Password("hello"), "hello"));
+            gift.Create();
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Create"), TestCategory("Successful")]
+        [TestMethod]
+        public void GiftCreate_MinimalData_NewGift()
+        {
+            Gift gift = new Gift("What is up", new User(1));
+            gift.Create();
+            Assert.AreNotEqual(0UL, gift.ID, "Gift's ID not changed");
+            Gift tester = new Gift(gift.ID);
+            Assert.AreEqual("What is up", tester.Name, "Gift Name mismatch");
+            Assert.AreEqual(1UL, tester.Owner.ID, "Gift owner mismatch");
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Create"), TestCategory("Successful")]
+        [TestMethod]
+        public void GiftCreate_AllData_NewGift()
+        {
+            Gift gift = new Gift("Test123", new User(2))
+            {
+                Category = new Category(2),
+                Color = "123456",
+                ColorText = "Blue",
+                Cost = 5.04d,
+                DateReceived = DateTime.Today,
+                Description = "My Beautiful gift",
+                Quantity = 89,
+                Rating = 2.5,
+                Size = "Large",
+                Stores = "Target, Walmart, etc.",
+                Url = "https://www.google.com"
+            };
+            gift.Create();
+            Assert.AreNotEqual(0UL, gift.ID, "Gift ID not updated");
+            Gift tester = new Gift(gift.ID);
+            // check all info
+            Assert.AreEqual("Test123", tester.Name, "Name not added");
+            Assert.AreEqual(2UL, tester.Owner.ID, "Owner not updated");
+            Assert.AreEqual(new Category(2), tester.Category, "Category not added");
+            Assert.AreEqual("123456", tester.Color, "Color not added");
+            Assert.AreEqual("Blue", tester.ColorText, "Color Text not added");
+            Assert.AreEqual(5.04d, tester.Cost, "Cost not added");
+            Assert.AreEqual(DateTime.Today, tester.DateReceived, "Dates do not match up");
+            Assert.AreEqual("My Beautiful gift", tester.Description, "Description not added");
+            Assert.AreEqual(89U, tester.Quantity, "Quantity not added");
+            Assert.AreEqual(2.5d, tester.Rating, "Rating not added");
+            Assert.AreEqual("Large", tester.Size, "Size not added");
+            Assert.AreEqual("Target, Walmart, etc.", tester.Stores, "Stores not added");
+            Assert.AreEqual("https://www.google.com", tester.Url, "URL not added");
         }
 
         [ClassInitialize]

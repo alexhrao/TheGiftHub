@@ -283,10 +283,7 @@ namespace GiftServer
                                             case "User":
                                                 try
                                                 {
-                                                    _user = new User(new MailAddress(_dict["email"]), new Password(_dict["password"]))
-                                                    {
-                                                        Name = _dict["userName"]
-                                                    };
+                                                    _user = new User(new MailAddress(_dict["email"]), new Password(_dict["password"]), _dict["userName"]);
                                                     _user.Create();
                                                     return LoginManager.SuccessSignup();
                                                 }

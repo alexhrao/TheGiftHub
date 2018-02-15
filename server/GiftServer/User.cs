@@ -687,10 +687,12 @@ namespace GiftServer
             /// </summary>
             /// <param name="email">The user's email</param>
             /// <param name="password">The user's password, *_hashed_*</param>
-            public User(MailAddress email, Password password)
+            /// <param name="name">The user's name</param>
+            public User(MailAddress email, Password password, string name)
             {
                 Email = email;
                 Password = password;
+                Name = name;
             }
             /// <summary>
             /// Resets their password
@@ -732,7 +734,7 @@ namespace GiftServer
             private void Synchronize(ulong id, string password)
             {
                 Synchronize(id);
-                if (!Password.Verify(password))
+                if (Password == null || !Password.Verify(password))
                 {
                     throw new InvalidPasswordException();
                 }

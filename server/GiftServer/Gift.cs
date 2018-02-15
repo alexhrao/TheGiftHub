@@ -270,7 +270,7 @@ namespace GiftServer
                     }
                 }
             }
-            private Category category;
+            private Category category = new Category(1);
             /// <summary>
             /// The category this gift fits under
             /// </summary>
@@ -456,18 +456,22 @@ namespace GiftServer
             /// <summary>
             /// Create a new gift with the given name
             /// </summary>
-            /// <param name="Name">The new gifts name</param>
+            /// <param name="name">The new gifts name</param>
             /// <param name="owner">The owner of this gift</param>
-            public Gift(string Name, User owner)
+            public Gift(string name, User owner)
             {
-                this.Name = Name;
-                this.Owner = owner;
+                Name = name;
+                Owner = owner;
             }
             /// <summary>
             /// Create the gift within the database
             /// </summary>
             public void Create()
             {
+                if (Owner.ID == 0)
+                {
+                    throw new InvalidOperationException("Owner ID is 0");
+                }
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
