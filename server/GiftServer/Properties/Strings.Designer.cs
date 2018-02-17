@@ -124,7 +124,7 @@ namespace GiftServer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;p&gt;&lt;strong&gt;Oops...&lt;/strong&gt; We&apos;re having some difficulties processing your login request. Try again later?&lt;/p&gt;.
+        ///   Looks up a localized string similar to &lt;p&gt;&lt;strong&gt;Oops...&lt;/strong&gt; We&apos;re having some difficulties processing your login request. If this keeps happening, &lt;a href=&quot;mailto:support@thegifthub.org&quot;&gt;Send us an email&lt;/a&gt;&lt;/p&gt;.
         /// </summary>
         internal static string oAuthFailure {
             get {

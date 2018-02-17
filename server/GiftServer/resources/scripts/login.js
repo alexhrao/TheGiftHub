@@ -97,10 +97,12 @@ function validateSignup() {
 function validateReset() {
     return $('#resetEmail').val() !== "";
 }
+var btnHolder = [];
+
 function loadingLogin(btn) {
     var elem = $(btn).parent();
-    $(btn).remove();
-    elem.append('<i class="fas fa-spinner fa-spin fa-3x fa-fw signup-loader"></i>');
+    btnHolder.push($(btn).detach());
+    elem.append('<i class="fas fa-spinner fa-spin fa-3x fa-fw loader signup-loader"></i>');
 }
 function onSuccess(googleUser) {
     // Show spinner
@@ -118,7 +120,7 @@ function onSuccess(googleUser) {
         if (resp === "success") {
             var auth2 = gapi.auth2.getAuthInstance();
             auth2.signOut().then(function () {
-                location.replace(".?dest=dashboard");
+                location.reload(true);
             });
         } else if (resp === "confirm") {
             // Ask for password, prep to resubmit
@@ -128,15 +130,18 @@ function onSuccess(googleUser) {
             // Show the password prompt
             $('#oauthPassword').modal();
         } else {
-            // We need to die gracefully
-            $('#loginAlert').addClass('alert-danger').removeClass("hidden").addClass("in");
-            $('#loginAlert').prepend(resp);
+            // We need to die gracefully; sign out and onFailure
+            auth2.signOut();
+            onFailure();
         }
     });
 }
 function onFailure(error) {
-    $('#loginAlert').addClass('alert-danger').removeClass("hidden").addClass("in");
-    $('#loginAlert').prepend("<p>Uh Oh... Something went wrong...</p>");
+    var elem = $('#loader').parent();
+    $('#loader').remove();
+    elem.append(btnHolder.pop());
+    var msg = $($('meta[name="oauth-fail-alert"').attr('content'));
+    $('#loginAlert').empty().prepend(msg).addClass('alert-danger').addClass('in').removeClass('hidden');
 }
 function renderGoogleLogin() {
     $(document).ready(function () {
@@ -201,9 +206,7 @@ function fbLoginStatusChange(response) {
                 // Show the password prompt
                 $('#oauthPassword').modal();
             } else {
-                // We need to die gracefully
-                $('#loginAlert').addClass('alert-danger').removeClass("hidden").addClass("in");
-                $('#loginAlert').prepend(resp);
+                onFailure(null);
             }
         });
     }

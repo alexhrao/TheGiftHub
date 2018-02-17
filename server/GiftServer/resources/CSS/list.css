@@ -121,7 +121,7 @@ img {
     color: white;
 }
 
-.color-button color-swatch {
+.color-button .color-swatch {
     border-radius: 4px;
     border-left: 1px solid #ccc;
 }

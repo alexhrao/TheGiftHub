@@ -50,7 +50,7 @@ namespace GiftServer
             private string GiftList(User viewer, User target, List<Gift> gifts)
             {
                 HtmlDocument list = new HtmlDocument();
-                list.LoadHtml(NavigationManager.NavigationBar(target) + HtmlManager.GetString("publicList"));
+                list.LoadHtml(NavigationManager.NavigationBar(viewer) + HtmlManager.GetString("publicList"));
                 // Get all gifts that are visible to THIS USER
                 HtmlNode userId = list.DocumentNode.
                     SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" thisUserId \")]");
@@ -197,7 +197,7 @@ namespace GiftServer
             /// Get a list of gift reservations for this user
             /// </summary>
             /// <param name="target">The user who is viewing their own reservations </param>
-            /// <returns></returns>
+            /// <returns>The HTML markup for a reservations table</returns>
             public string GiftReservations(User target)
             {
                 List<Gift> gifts = new List<Gift>();
@@ -268,6 +268,8 @@ namespace GiftServer
                 // Add group options to new and edit:
                 HtmlNode groupsEdit = myList.DocumentNode.
                     SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" editSharedGroups \")]");
+                HtmlNode groupsNew = myList.DocumentNode.
+                    SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" newSharedGroups \")]");
                 foreach (Group group in target.Groups)
                 {
                     HtmlNode entry = HtmlNode.CreateNode("<label></label>");
@@ -283,6 +285,8 @@ namespace GiftServer
                     entry.AppendChild(node);
                     groupsEdit.AppendChild(entry);
                     groupsEdit.AppendChild(HtmlNode.CreateNode("<div class=\"col-xs-1\"></div>"));
+                    groupsNew.AppendChild(entry.Clone());
+                    groupsNew.AppendChild(HtmlNode.CreateNode("<div class=\"col-xs-1\"></div>"));
                 }
                 HtmlNode userName = myList.DocumentNode.SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
                 userName.InnerHtml = "<a href=\"" + Constants.URL + "/?dest=user&user=" + 

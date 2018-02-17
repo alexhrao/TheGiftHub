@@ -139,7 +139,7 @@
     <value>&lt;p&gt;&lt;strong&gt;Password Reset&lt;/strong&gt; Please login below with your new password&lt;/p&gt;</value>
   </data>
   <data name="oAuthFailure" xml:space="preserve">
-    <value>&lt;p&gt;&lt;strong&gt;Oops...&lt;/strong&gt; We're having some difficulties processing your login request. Try again later?&lt;/p&gt;</value>
+    <value>&lt;p&gt;&lt;strong&gt;Oops...&lt;/strong&gt; We're having some difficulties processing your login request. If this keeps happening, &lt;a href="mailto:support@thegifthub.org"&gt;Send us an email&lt;/a&gt;&lt;/p&gt;</value>
   </data>
   <data name="passwordResetNotification" xml:space="preserve">
     <value>Password Reset Notification</value>
