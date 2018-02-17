@@ -309,8 +309,6 @@ namespace GiftServer
                 {
                     HtmlNode addRow = HtmlNode.CreateNode("<tr></tr>");
                     addRow.Id = "eventAdder";
-                    addRow.Attributes.Add("data-toggle", "modal");
-                    addRow.Attributes.Add("href", "#addEvent");
                     HtmlNode adder = HtmlNode.CreateNode("<i></i>");
                     adder.AddClass("fas fa-plus");
                     HtmlNode adderTd = HtmlNode.CreateNode("<td></td>");
