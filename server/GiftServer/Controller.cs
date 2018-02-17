@@ -899,8 +899,64 @@ namespace GiftServer
                         e.Delete();
                         return "200";
                     default:
-                        _response.StatusCode = 404;
-                        return "404";
+                        // If none of these things, completely update event. Do as if create, but just update instead.
+                        // Delete the rules engine of the event
+                        e.Rules.Delete();
+                        RulesEngine rules = null;
+                        // If not recurring, then RulesEngine is null:
+                        if (!String.IsNullOrEmpty(_dict["recurType"]))
+                        {
+                            // Figure out type of recur:
+                            if (_dict["recurType"] == "exact")
+                            {
+                                rules = new ExactEvent(_dict["interval"], Convert.ToInt32(_dict["skipEvery"]));
+                            }
+                            else
+                            {
+                                rules = new RelativeEvent(_dict["interval"], Convert.ToInt32(_dict["skipEvery"]), _dict["dayOfWeek"], Convert.ToInt32(_dict["posn"]));
+                            }
+                            rules.Event = e;
+                            rules.Create();
+                        }
+                        e.Name = _dict["name"];
+                        e.StartDate = DateTime.Parse(_dict["startDate"]);
+                        e.Rules = rules;
+                        if (!String.IsNullOrWhiteSpace(_dict["endDate"]))
+                        {
+                            e.EndDate = DateTime.Parse(_dict["endDate"]);
+                        }
+                        else
+                        {
+                            e.EndDate = null;
+                        }
+                        e.Update();
+                        // For each group, add it to event
+                        if (!String.IsNullOrWhiteSpace(_dict["groups[]"]))
+                        {
+                            foreach (string group in _dict["groups[]"].Split(','))
+                            {
+                                Group g = new Group(Convert.ToUInt64(group));
+                                g.Add(e);
+                            }
+                        }
+                        if (!String.IsNullOrWhiteSpace(_dict["blackouts[]"]))
+                        {
+                            foreach (string blackout in _dict["blackouts[]"].Split(','))
+                            {
+                                Blackout b = new Blackout(e, DateTime.Parse(blackout));
+                                try
+                                {
+                                    b.Create();
+                                }
+                                catch (InvalidOperationException)
+                                {
+                                    // continue on to next one
+                                    continue;
+                                }
+                            }
+                        }
+                        // For each blackout, add it to event
+                        return e.ID.ToString();
                 }
                 e.Update();
                 return "200";

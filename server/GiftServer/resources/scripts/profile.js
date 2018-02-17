@@ -24,6 +24,32 @@ $(document).ready(function () {
     });
 });
 $(document).ready(function () {
+    $('#eventAdder').click(function () {
+        eventID = 0;
+        // Clear all information
+        clearNewEvent();
+        $('#addEvent').modal('show');
+    });
+});
+function clearNewEvent() {
+    $('#newEventName').val("");
+    $('#newEventStartDate').val("");
+    $('#newEventEndDate').val("");
+    $('#newExactInterval').val(0);
+    $('#newExactSkip').val(0);
+    $('#newExactSkipEvery').val("");
+    $('#newRelativeInterval').val(0);
+    $('#newRelativeSkip').val(0);
+    $('#newRelativeSkipEvery').val("");
+    $('#newRelativeDay').val(0);
+    $('#newRelativePosn').val(0);
+    $('#newEventEndDate').val(0);
+    // Delete all .event-blackout (except the first)
+    $('.event-blackout:not(:first)').remove();
+    $('.event-blackout').val("");
+    $('.group-check').val("");
+}
+$(document).ready(function () {
     $('#groups .group-closer').click(function () {
         var gNumber = $(this).attr('data-group-id');
         $.post(".",
@@ -374,6 +400,7 @@ $(document).ready(function () {
     var eventGroupIds = [];
     var eventGroupNames = [];
     var eventBlackouts = [];
+
     $('.event-name').click(function () {
         eventStartDate = "";
         eventEndDate = "";
@@ -391,12 +418,12 @@ $(document).ready(function () {
         // Add spinner
         $('#viewEventDescription').addClass("hidden");
         $('#viewEventLoader').removeClass("hidden");
-        var eid = $(this).attr('data-event-id');
+        eventID = $(this).attr('data-event-id');
         // Get info
         $.post(".", {
             action: "Fetch",
             type: "Event",
-            itemId: eid
+            itemId: eventID
         }, function (data, status, xhr) {
             var data = xhr.responseText;
             var dom = $.parseXML(data);
@@ -438,6 +465,46 @@ $(document).ready(function () {
             }
             // Create description
         });
+    });
+    $('#editEvent').click(function () {
+        $('#newEventName').val(eventName);
+        $('#newEventStartDate').val(eventStartDate);
+        $('#newEventEndDate').val(eventEndDate);
+        if (eventRecurs) {
+            if (eventRecurType == "exactEvent") {
+                $('#newExactInterval').val(eventInterval);
+                if (eventSkip > 2) {
+                    $('#newExactSkip').val('n');
+                    $('#newExactSkipEvery').val(eventSkip);
+                } else {
+                    $('#newExactSkip').val(eventSkip - 1);
+                }
+            } else {
+                $('#newRelativeInterval').val(eventInterval);
+                if (eventSkip > 2) {
+                    $('#newRelativeSkip').val('n');
+                    $('#newRelativeSkipEvery').val(eventSkip);
+                } else {
+                    $('#newRelativeSkip').val(eventSkip - 1);
+                }
+                $('#newRelativeDay').val(eventDayOfWeek);
+                $('#newRelativePosn').val(eventPosn);
+            }
+        }
+        // Delete all .event-blackout (except the first)
+        for (var i = 0; i < eventBlackouts.length; i++) {
+            // Fill this one and add new
+            $('.event-blackout:last').val(eventBlackouts.shift());
+            $('.event-blackout:last').parent().append($('.event-blackout:last').val("").clone());
+        }
+        for (var i = 0; i < length; i++) {
+            // Find this group id
+            var groupID = eventGroupIds.shift();
+            var check = $('.group-check[data-group-id="' + groupID + '"]');
+            check.val(true);
+        }
+        $('#viewEvent').modal('hide');
+        $('#addEvent').modal('show');
     });
     function fillDescription() {
         // Fill Description div:
@@ -559,6 +626,7 @@ $(document).ready(function () {
     }
 });
 // New Event
+var eventID = 0;
 $(document).ready(function () {
     // State Variables
     var newEventSteps = [0];
@@ -818,96 +886,116 @@ $(document).ready(function () {
         return true;
     }
     function createEvent() {
-        // Post to the serve all the date details:
-        // Create array of groups;
-        if (!newEventRecurs) {
-            // no recurrence, so just send:
-            // Name
-            // Date
-            // Groups
-            $.post(".", {
-                action: "Create",
-                type: "Event",
-                name: newEventName,
-                startDate: newEventStartDate,
-                groups: newEventGroupIds
-            }, location.reload(true));
-        } else {
-            // figure out type of recurrence and engage:
-            if (newEventRecurType == "exact") {
-                // post new exact event:
+        // First check if we are just updating an existing one. If so, eventID will != 0
+        if (eventID != 0) {
+            // Update info:
+            if (!newEventRecurs) {
+                // no recurrence, so just send:
                 // Name
-                // StartDate
-                // SkipEvery
-                // Interval
-                // Then add blackouts, etc?
+                // Date
+                // Groups
                 $.post(".", {
-                    action: "Create",
+                    action: "Update",
                     type: "Event",
+                    itemId: eventID,
                     name: newEventName,
                     startDate: newEventStartDate,
-                    endDate: newEventEndDate,
-                    recurType: newEventRecurType,
-                    skipEvery: newEventSkip,
-                    interval: newEventInterval,
-                    groups: newEventGroupIds,
-                    blackouts: newEventBlackouts
+                    groups: newEventGroupIds
                 }, location.reload(true));
             } else {
+                // figure out type of recurrence and engage:
+                if (newEventRecurType == "exact") {
+                    // post new exact event:
+                    // Name
+                    // StartDate
+                    // SkipEvery
+                    // Interval
+                    // Then add blackouts, etc?
+                    $.post(".", {
+                        action: "Update",
+                        type: "Event",
+                        itemId: eventID,
+                        name: newEventName,
+                        startDate: newEventStartDate,
+                        endDate: newEventEndDate,
+                        recurType: newEventRecurType,
+                        skipEvery: newEventSkip,
+                        interval: newEventInterval,
+                        groups: newEventGroupIds,
+                        blackouts: newEventBlackouts
+                    }, location.reload(true));
+                } else {
+                    $.post(".", {
+                        action: "Update",
+                        type: "Event",
+                        itemId: eventID,
+                        name: newEventName,
+                        startDate: newEventStartDate,
+                        endDate: newEventEndDate,
+                        recurType: newEventRecurType,
+                        skipEvery: newEventSkip,
+                        interval: newEventInterval,
+                        posn: newEventPosn,
+                        dayOfWeek: newEventDayOfWeek,
+                        groups: newEventGroupIds,
+                        blackouts: newEventBlackouts
+                    }, location.reload(true));
+                }
+            }
+        } else {
+            // Post to the serve all the date details:
+            // Create array of groups;
+            if (!newEventRecurs) {
+                // no recurrence, so just send:
+                // Name
+                // Date
+                // Groups
                 $.post(".", {
                     action: "Create",
                     type: "Event",
                     name: newEventName,
                     startDate: newEventStartDate,
-                    endDate: newEventEndDate,
-                    recurType: newEventRecurType,
-                    skipEvery: newEventSkip,
-                    interval: newEventInterval,
-                    posn: newEventPosn,
-                    dayOfWeek: newEventDayOfWeek,
-                    groups: newEventGroupIds,
-                    blackouts: newEventBlackouts
+                    groups: newEventGroupIds
                 }, location.reload(true));
+            } else {
+                // figure out type of recurrence and engage:
+                if (newEventRecurType == "exact") {
+                    // post new exact event:
+                    // Name
+                    // StartDate
+                    // SkipEvery
+                    // Interval
+                    // Then add blackouts, etc?
+                    $.post(".", {
+                        action: "Create",
+                        type: "Event",
+                        name: newEventName,
+                        startDate: newEventStartDate,
+                        endDate: newEventEndDate,
+                        recurType: newEventRecurType,
+                        skipEvery: newEventSkip,
+                        interval: newEventInterval,
+                        groups: newEventGroupIds,
+                        blackouts: newEventBlackouts
+                    }, location.reload(true));
+                } else {
+                    $.post(".", {
+                        action: "Create",
+                        type: "Event",
+                        name: newEventName,
+                        startDate: newEventStartDate,
+                        endDate: newEventEndDate,
+                        recurType: newEventRecurType,
+                        skipEvery: newEventSkip,
+                        interval: newEventInterval,
+                        posn: newEventPosn,
+                        dayOfWeek: newEventDayOfWeek,
+                        groups: newEventGroupIds,
+                        blackouts: newEventBlackouts
+                    }, location.reload(true));
+                }
             }
         }
-    }
-    function createGroups(eid) {
-        // Populate IDs:
-
-        for (var i = 0; i < newEventGroupIds.length; i++) {
-            $.post(".", {
-                action: "Change",
-                type: "Event",
-                itemId: eid,
-                item: "addGroup",
-                groupId: newEventGroupIds[i]
-            });
-        }
-        // Add record of event to event lines
-        var row = $('<tr></tr');
-        row.attr('data-event-id', eid);
-        var closer = $('<i></i>');
-        closer.addClass('event-closer fas fa-times');
-        closer.attr('data-event-id', eid);
-        row.append($('<td></td>').append(closer));
-        var eName = $('<h3></h3>');
-        eName.text(newEventName);
-        row.append($('<td></td>').append(eName));
-        $('#eventAdder').before(row);
-    }
-
-    function createBlackouts(eid) {
-        // Add blackouts
-        for (var i = 0; i < newEventBlackouts.length; i++) {
-            $.post(".", {
-                action: "Change",
-                type: "Event",
-                itemId: eid,
-                item: "addBlackout",
-                blackout: newEventBlackouts[i]
-            });
-        }
-        createGroups(eid);
     }
     function addGroups() {
         // Clear arrays
