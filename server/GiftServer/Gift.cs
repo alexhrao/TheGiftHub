@@ -596,6 +596,10 @@ namespace GiftServer
                         }
                     }
                 }
+                else
+                {
+                    throw new InvalidOperationException("ID cannot be 0!");
+                }
             }
             /// <summary>
             /// Save the specified image as the image for this gift.
@@ -710,6 +714,8 @@ namespace GiftServer
                 }
                 group.Remove(this);
             }
+            /*
+             * These methods are not necessary, but kept just in case...
             /// <summary>
             /// Reserve one of this gift for the reserver
             /// </summary>
@@ -817,6 +823,7 @@ namespace GiftServer
                     return counter;
                 }
             }
+            */
             /// <summary>
             /// See if this object is this gift
             /// </summary>

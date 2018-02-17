@@ -240,6 +240,7 @@ BEGIN
             (7, 'HasImage', 'alexhrao@google.com', 7, 3, "fdsafdsa", "UaIOl0xfU7ccIQH5Ofs0Awfd2222", "12312", "12312"),
             (8, 'reservations', 'asdf@google.com', 7, 3, "fdsafdsa", "UaIOl0xfU7ccIQH5OfdfAwfd2222", "55555", "55555"),
             (9, 'reservationsHas', 'asdffdsasadf@google.com', 7, 3, "fdsafdsa", "UaIOl0xfU7ccIQH5OfdfAw555222", "66", "1234");
+            
 	-- Create preferences:
 	INSERT INTO gift_registry_db_test.preferences (UserID, UserCulture, UserTheme)
 		VALUES 
@@ -282,7 +283,9 @@ BEGIN
             (5, 2, 'Wafdsav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1, '000000', 'black', 'BIG', 1, 5.0),
             (6, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1, '000000', 'black', 'BIG', 1, 5.0),
             (7, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 5600, '000000', 'black', 'BIG', 1, 5.0),
-            (8, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1, '000000', 'black', 'BIG', 1, 5.0);
+            (8, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1, '000000', 'black', 'BIG', 1, 5.0),
+            (9, 3, 'UpdateTest', 'Hello World!', '', 100, '', 7, '000000', 'black', 'small', 1, 4.0),
+            (10, 3, 'UpdateTest', 'Hello World!', '', 100, '', 7, '000000', 'black', 'small', 1, 4.0);
 
 	-- Add user to group
 	INSERT INTO gift_registry_db_test.groups_users (GroupID, UserID, IsChild)

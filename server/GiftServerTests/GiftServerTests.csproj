@@ -82,6 +82,7 @@
     <Compile Include="ReservationTests.cs" />
     <Compile Include="RulesEngineTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestManager.cs" />
     <Compile Include="UserTests.cs" />
   </ItemGroup>
   <ItemGroup>
