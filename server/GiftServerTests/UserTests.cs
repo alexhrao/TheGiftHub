@@ -692,7 +692,7 @@ namespace GiftServerTests
         {
             User user = new User(6);
             user.SaveImage(TestManager.Image);
-            string path = user.GetImage();
+            string path = user.Image;
             Assert.AreEqual(Path.GetFileNameWithoutExtension(path), "User6", "Expected custom image, got " + Path.GetFileNameWithoutExtension(path));
         }
 
@@ -702,7 +702,7 @@ namespace GiftServerTests
         {
             User user = new User(7);
             user.RemoveImage();
-            string path = user.GetImage();
+            string path = user.Image;
             Assert.AreEqual("default", Path.GetFileNameWithoutExtension(path), "Expected default image, got " + Path.GetFileNameWithoutExtension(path));
         }
 
@@ -742,7 +742,7 @@ namespace GiftServerTests
             User user = new User(new MailAddress("fdsa@asdf.edu"), new Password("Hello World!"), "hello world");
             user.Create();
             user.Delete();
-            user.GetImage();
+            string path = user.Image;
         }
 
 
@@ -1386,7 +1386,7 @@ namespace GiftServerTests
             XmlElement dateJoined = (XmlElement)doc.GetElementsByTagName("dateJoined")[0];
             Assert.AreEqual(DateTime.Today.ToString("yyyy-MM-dd"), dateJoined.InnerText, "Date Joined mismatch");
             XmlElement img = (XmlElement)doc.GetElementsByTagName("image")[0];
-            Assert.AreEqual(target.GetImage(), img.InnerText, "Image path mismatch");
+            Assert.AreEqual(target.Image, img.InnerText, "Image path mismatch");
             // Just check for group element and count; checking of group element is done by GroupTests
             XmlElement groups = (XmlElement)doc.GetElementsByTagName("groups")[0];
             // There should be same num of groups as target thinks

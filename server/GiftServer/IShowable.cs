@@ -24,7 +24,10 @@
             /// Get the image associated with this object
             /// </summary>
             /// <returns>A web-ready URI for this image, to be embedded in HTML</returns>
-            string GetImage();
+            string Image
+            {
+                get;
+            }
         }
     }
 }

@@ -400,6 +400,20 @@ namespace GiftServer
                 }
             }
             /// <summary>
+            /// The Qualified Path for this image
+            /// </summary>
+            public string Image
+            {
+                get
+                {
+                    if (ID == 0)
+                    {
+                        throw new InvalidOperationException("Cannot fetch image for ID-less gift");
+                    }
+                    return GetImage(ID);
+                }
+            }
+            /// <summary>
             /// Fetch an existing gift
             /// </summary>
             /// <param name="id">The existing gift</param>
@@ -634,21 +648,6 @@ namespace GiftServer
                 {
                     File.Delete(Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + ID + Constants.ImageFormat);
                 }
-            }
-            /// <summary>
-            /// Get the image associated with this gift
-            /// </summary>
-            /// <returns>A qualified path for this gift's image</returns>
-            /// <remarks>
-            /// Note that qualified means with respect to the server's root, *not* necessarily '/' or 'C:\'
-            /// </remarks>
-            public string GetImage()
-            {
-                if (ID == 0)
-                {
-                    throw new InvalidOperationException("Cannot retrieve image of ID-less gift");
-                }
-                return GetImage(ID);
             }
             /// <summary>
             /// Get the image for a specified giftID

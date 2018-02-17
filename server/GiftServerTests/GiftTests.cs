@@ -896,7 +896,7 @@ namespace GiftServerTests
         public void GiftGetImage_ZeroID_ExceptionThrown()
         {
             Gift gift = new Gift("hi", new User(1));
-            gift.GetImage();
+            string path = gift.Image;
         }
 
         [TestCategory("Gift"), TestCategory("Method"), TestCategory("GetImage"), TestCategory("ExceptionThrown")]
