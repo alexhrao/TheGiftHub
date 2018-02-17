@@ -13,6 +13,8 @@ namespace GiftServerTests
     [TestClass]
     public class GiftTests
     {
+        private static Tuple<string, byte[]>[] images;
+
         [TestCategory("Gift"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
@@ -719,6 +721,7 @@ namespace GiftServerTests
         {
             Gift gift = new Gift(9)
             {
+                Name = "Test123",
                 Category = new Category(2),
                 Color = "123456",
                 ColorText = "Blue",
@@ -736,7 +739,7 @@ namespace GiftServerTests
             Gift tester = new Gift(gift.ID);
             // check all info
             Assert.AreEqual("Test123", tester.Name, "Name not updated");
-            Assert.AreEqual(2UL, tester.Owner.ID, "Owner not updated");
+            Assert.AreEqual(4UL, tester.Owner.ID, "Owner not updated");
             Assert.AreEqual(new Category(2), tester.Category, "Category not updated");
             Assert.AreEqual("123456", tester.Color, "Color not updated");
             Assert.AreEqual("Blue", tester.ColorText, "Color Text not updated");
@@ -901,10 +904,202 @@ namespace GiftServerTests
 
         [TestCategory("Gift"), TestCategory("Method"), TestCategory("GetImage"), TestCategory("ExceptionThrown")]
         [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
+        [ExpectedException(typeof(ArgumentException))]
         public void GiftGetImage_ZeroIDInput_ExceptionThrown()
         {
             Gift.GetImage(0);
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("GetImage"), TestCategory("Successful")]
+        [TestMethod]
+        public void GiftGetImage_ValidGift_DefaultImage()
+        {
+            Gift gift = new Gift(4);
+            string path = gift.Image;
+            Assert.AreEqual("default", Path.GetFileNameWithoutExtension(path), "Default Image not fetched");
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("GetImage"), TestCategory("Successful")]
+        [TestMethod]
+        public void GiftGetImage_ValidID_DefaultImage()
+        {
+            string path = Gift.GetImage(4);
+            Assert.AreEqual("default", Path.GetFileNameWithoutExtension(path), "Default Image not fetched");
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("GetImage"), TestCategory("Successful")]
+        [TestMethod]
+        public void GiftGetImage_ValidGift_CustomImage()
+        {
+
+            Gift gift = new Gift(1);
+            string path = gift.Image;
+            Assert.AreEqual("Gift1", Path.GetFileNameWithoutExtension(path), "Gift Image not fetched");
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("GetImage"), TestCategory("Successful")]
+        [TestMethod]
+        public void GiftGetImage_ValidID_CustomImage()
+        {
+            string path = Gift.GetImage(1);
+            Assert.AreEqual("Gift1", Path.GetFileNameWithoutExtension(path), "Gift Image not fetched");
+        }
+
+
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("RemoveImage"), TestCategory("Successful")]
+        [TestMethod]
+        public void GiftRemoveImage_CustomImage_ImageGone()
+        {
+            Gift gift = new Gift(8);
+            string path = gift.Image;
+            gift.RemoveImage();
+            Assert.IsFalse(File.Exists(path), "Image not deleted");
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("RemoveImage"), TestCategory("Successful")]
+        [TestMethod]
+        public void GiftRemoveImage_DefaultImage_ImageUnchanged()
+        {
+            Gift gift = new Gift(3);
+            string path = gift.Image;
+            gift.RemoveImage();
+            Assert.IsTrue(File.Exists(path), "Default image deleted");
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("RemoveImage"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void GiftRemoveImage_ZeroID_ExceptionThrown()
+        {
+            Gift gift = new Gift("Hello", new User(1));
+            gift.RemoveImage();
+        }
+
+
+
+
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void GiftEquals_NullObject_False()
+        {
+            Gift gift = new Gift(1);
+            Assert.IsFalse(gift.Equals((object)null), "Null object shows as true");
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void GiftEquals_NullGift_False()
+        {
+            Gift gift = new Gift(1);
+            Assert.IsFalse(gift.Equals((Gift)null), "Null gift shows as true");
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void GiftEquals_ThisZeroThatZero_False()
+        {
+            Gift gift = new Gift("Hello", new User(1));
+            Assert.IsFalse(gift.Equals(gift), "Zero ID gifts shows as true");
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void GiftEquals_ThisZeroThatValid_False()
+        {
+            Gift gift = new Gift("Hello", new User(1));
+            Assert.IsFalse(gift.Equals(new Gift(1)), "Zero ID gift compares true with non-zero");
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void GiftEquals_ThisValidThatZero_False()
+        {
+            Gift gift = new Gift(1);
+            Assert.IsFalse(gift.Equals(new Gift("Hello", new User(1))), "Zero ID gift compares true with non-zero");
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void GiftEquals_ThisValidThatValidDifferentID_False()
+        {
+            Gift gift = new Gift(1);
+            Gift target = new Gift(2);
+            Assert.IsFalse(gift.Equals(target), "Different gifts show as true");
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void GiftEquals_NonGift_False()
+        {
+            Gift gift = new Gift(1);
+            Assert.IsFalse(gift.Equals(new User(1)), "Non gift shows as true");
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void GiftEquals_ThisValidThatValidObjectDifferentID_False()
+        {
+            Gift gift = new Gift(1);
+            object target = new Gift(2);
+            Assert.IsFalse(gift.Equals(target), "Object that is different gift shows as true");
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void GiftEquals_ThisValidThatValidSameID_True()
+        {
+            Gift gift = new Gift(1);
+            Gift target = new Gift(1)
+            {
+                Name = "heellllllllo"
+            };
+            Assert.IsTrue(gift.Equals(target), "Identical IDs compare false");
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void GiftEquals_ThisValidThatValidObjectSameID_True()
+        {
+            Gift gift = new Gift(1);
+            object target = new Gift(1)
+            {
+                Name = "heellllllllo"
+            };
+            Assert.IsTrue(gift.Equals(target), "Identical IDs compare false");
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void GiftEquals_IdenticalGift_True()
+        {
+            Gift gift = new Gift(1);
+            Assert.IsTrue(gift.Equals(gift), "Identical gifts compare false");
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void GiftEquals_IdenticalObject_True()
+        {
+            Gift gift = new Gift(1);
+            Assert.IsTrue(gift.Equals((object)gift), "Identical object IDs compare false");
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void GiftEquals_IdenticalZeroGift_False()
+        {
+            Gift gift = new Gift("Hi", new User(1));
+            Assert.IsFalse(gift.Equals(gift), "Identical 0 IDs compare true");
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void GiftEquals_IdenticalZeroObject_False()
+        {
+            object gift = new Gift("Hi", new User(1));
+            Assert.IsFalse(gift.Equals(gift), "Identical 0 IDs compare true");
         }
 
 
@@ -912,12 +1107,30 @@ namespace GiftServerTests
         [ClassInitialize]
         public static void Initialize(TestContext ctx)
         {
+            // Add all images to tuples
+            string[] names = Directory.GetFiles(Directory.GetCurrentDirectory() + "/resources/images/gifts/");
+            images = new Tuple<string, byte[]>[names.Length];
+            for (int i = 0; i < names.Length; i++)
+            {
+                images[i] = new Tuple<string, byte[]>(names[i],
+                    File.ReadAllBytes(names[i]));
+            }
             Reset();
         }
 
         [ClassCleanup]
         public static void Cleanup()
         {
+            string[] names = Directory.GetFiles(Directory.GetCurrentDirectory() + "/resources/images/gifts/");
+            foreach (var file in names)
+            {
+                File.Delete(file);
+            }
+            foreach (var image in images)
+            {
+                // Save the image
+                File.WriteAllBytes(image.Item1, image.Item2);
+            }
             Reset();
         }
 

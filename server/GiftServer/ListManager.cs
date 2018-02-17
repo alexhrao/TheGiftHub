@@ -100,7 +100,7 @@ namespace GiftServer
                     // Picture
                     HtmlNode pict = HtmlNode.CreateNode("<img />");
                     pict.AddClass("img-thumbnail img-gift img-responsive child");
-                    pict.Attributes.Add("src", gift.GetImage());
+                    pict.Attributes.Add("src", gift.Image);
 
                     HtmlNode pictParent = parent.Clone();
                     pictParent.AppendChild(pict);
@@ -322,7 +322,7 @@ namespace GiftServer
                     // Picture
                     HtmlNode pict = HtmlNode.CreateNode("<img />");
                     pict.AddClass("img-thumbnail img-gift img-responsive child");
-                    pict.Attributes.Add("src", gift.GetImage());
+                    pict.Attributes.Add("src", gift.Image);
 
                     HtmlNode pictParent = parent.Clone();
                     pictParent.AppendChild(pict);

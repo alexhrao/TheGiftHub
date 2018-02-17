@@ -284,8 +284,8 @@ BEGIN
             (6, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1, '000000', 'black', 'BIG', 1, 5.0),
             (7, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 5600, '000000', 'black', 'BIG', 1, 5.0),
             (8, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1, '000000', 'black', 'BIG', 1, 5.0),
-            (9, 3, 'UpdateTest', 'Hello World!', '', 100, '', 7, '000000', 'black', 'small', 1, 4.0),
-            (10, 3, 'UpdateTest', 'Hello World!', '', 100, '', 7, '000000', 'black', 'small', 1, 4.0);
+            (9, 4, 'UpdateTest', 'Hello World!', '', 100, '', 7, '000000', 'black', 'small', 1, 4.0),
+            (10, 4, 'UpdateTest', 'Hello World!', '', 100, '', 7, '000000', 'black', 'small', 1, 4.0);
 
 	-- Add user to group
 	INSERT INTO gift_registry_db_test.groups_users (GroupID, UserID, IsChild)

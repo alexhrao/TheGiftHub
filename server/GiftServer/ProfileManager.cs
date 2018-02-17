@@ -49,7 +49,7 @@ namespace GiftServer
                 // Set src of image:
                 HtmlNode img = profile.DocumentNode.
                     SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userImage \")]");
-                img.Attributes["src"].Value = target.GetImage();
+                img.Attributes["src"].Value = target.Image;
                 HtmlNode name = profile.DocumentNode.
                     SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
                 name.InnerHtml = HttpUtility.HtmlEncode(target.Name);
@@ -130,7 +130,7 @@ namespace GiftServer
                 // Set src of image:
                 HtmlNode img = profile.DocumentNode.
                     SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userImage \")]");
-                img.Attributes["src"].Value = user.GetImage();
+                img.Attributes["src"].Value = user.Image;
                 HtmlNode name = profile.DocumentNode.
                     SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" userName \")]");
                 name.InnerHtml = HttpUtility.HtmlEncode(user.Name);

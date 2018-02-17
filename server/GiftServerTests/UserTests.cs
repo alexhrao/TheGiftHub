@@ -15,7 +15,7 @@ namespace GiftServerTests
     [TestClass]
     public class UserTests
     {
-
+        private static Tuple<string, byte[]>[] images;
         [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
         [TestMethod]
         [ExpectedException(typeof(UserNotFoundException))]
@@ -1403,11 +1403,29 @@ namespace GiftServerTests
         public static void UserCleanup()
         {
             Reset();
+            // Add all images to tuples
+            string[] names = Directory.GetFiles(Directory.GetCurrentDirectory() + "/resources/images/users/");
+            images = new Tuple<string, byte[]>[names.Length];
+            for (int i = 0; i < names.Length; i++)
+            {
+                images[i] = new Tuple<string, byte[]>(names[i],
+                    File.ReadAllBytes(names[i]));
+            }
         }
 
         [ClassInitialize]
         public static void UserInitialize(TestContext ctx)
         {
+            string[] names = Directory.GetFiles(Directory.GetCurrentDirectory() + "/resources/images/users/");
+            foreach (var file in names)
+            {
+                File.Delete(file);
+            }
+            foreach (var image in images)
+            {
+                // Save the image
+                File.WriteAllBytes(image.Item1, image.Item2);
+            }
             Reset();
         }
 
