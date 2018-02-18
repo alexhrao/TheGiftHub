@@ -53,7 +53,7 @@ INSERT INTO gift_registry_db.gifts (GiftID, UserID, GiftName, GiftDescription, G
     VALUES 
         (1, 1, 'Webcam', 'Logitech BRIO webcam', 'https://www.google.com', 100.00, 'Logitech, Target', 1, 'FFFFFF', 'White', 'N/A', 2, 5.0),
         (2, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1000, '000000', 'black', 'BIG', 1, 5.0),
-        (3, 1, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 3, '000000', 'black', 'BIG', 1, 5.0),
+        (3, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 3, '000000', 'black', 'BIG', 1, 5.0),
         (4, 7, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 5, '000000', 'black', 'BIG', 1, 5.0),
         (5, 2, 'Wafdsav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1, '000000', 'black', 'BIG', 1, 5.0),
         (6, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1, '000000', 'black', 'BIG', 1, 5.0),
