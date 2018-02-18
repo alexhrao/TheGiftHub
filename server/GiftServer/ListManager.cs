@@ -46,6 +46,10 @@ namespace GiftServer
             }
             private string GiftList(User viewer, User target, List<Gift> gifts)
             {
+                return GiftList(viewer, target, gifts, false);
+            }
+            private string GiftList(User viewer, User target, List<Gift> gifts, bool isReservation)
+            {
                 HtmlDocument list = new HtmlDocument();
                 list.LoadHtml(NavigationManager.NavigationBar(viewer) + HtmlManager.GetString("publicList"));
                 // Get all gifts that are visible to THIS USER
@@ -71,7 +75,7 @@ namespace GiftServer
                 foreach (Gift gift in gifts)
                 {
                     // Print gift information
-                    // If a reservation is by my, color orange
+                    // If a reservation is by me, color orange
 
                     HtmlNode giftRow = HtmlNode.CreateNode("<tr></tr>");
 
@@ -110,12 +114,17 @@ namespace GiftServer
                     rate.Attributes.Add("data-show-clear", "false");
                     rate.Attributes.Add("data-show-caption", "false");
                     rate.Attributes.Add("value", gift.Rating.ToString("N2"));
-
                     HtmlNode rateCell = cell.Clone();
                     HtmlNode rateParent = parent.Clone();
-                    HtmlNode rateChild = child.Clone();
-                    rateChild.AppendChild(rate);
-                    rateParent.AppendChild(rateChild);
+                    rateParent.RemoveClass("parent");
+                    rateParent.AppendChild(rate);
+                    if (isReservation)
+                    {
+                        HtmlNode owner = HtmlNode.CreateNode("<div></div>");
+                        owner.AddClass("text-center row user-name");
+                        owner.InnerHtml = HttpUtility.HtmlEncode(gift.Owner.Name);
+                        rateParent.AppendChild(owner);
+                    }
                     rateCell.AppendChild(rateParent);
 
                     // Name
@@ -129,7 +138,15 @@ namespace GiftServer
 
                     // Quantity
                     HtmlNode quan = child.Clone();
-                    quan.InnerHtml = gift.Quantity.ToString();
+                    if (isReservation)
+                    {
+                        // quantity is number by viewer of target's gift:
+                        quan.InnerHtml = gift.Reservations.FindAll(r => r.User.Equals(viewer)).Count.ToString();
+                    }
+                    else
+                    {
+                        quan.InnerHtml = gift.Quantity.ToString();
+                    }
 
                     HtmlNode quanCell = cell.Clone();
                     HtmlNode quanParent = parent.Clone();
@@ -207,7 +224,7 @@ namespace GiftServer
                         gifts.Add(res.Gift);
                     }
                 }
-                string page = GiftList(target, target, gifts);
+                string page = GiftList(target, target, gifts, true);
                 HtmlDocument doc = new HtmlDocument();
                 doc.LoadHtml(page);
                 HtmlNode userName = doc.DocumentNode.
