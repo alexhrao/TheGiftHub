@@ -1,8 +1,8 @@
 -- Create categories:
-INSERT INTO gift_registry_db.categories (CategoryID, CategoryName, CategoryDescription)
+INSERT INTO gift_registry_db.categories (CategoryID, CategoryName)
     VALUES 
-        (1, 'Clothing', 'Clothing'),
-        (2, 'Electronics', 'Electronic Devices');
+        (1, 'Clothing'),
+        (2, 'Electronics');
 
 -- Create users:
 INSERT INTO gift_registry_db.users (UserID, UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL, UserFacebookID, UserGoogleID)

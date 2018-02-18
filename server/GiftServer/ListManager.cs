@@ -2,10 +2,7 @@
 using GiftServer.Properties;
 using GiftServer.Server;
 using HtmlAgilityPack;
-using MySql.Data.MySqlClient;
-using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Resources;
 using System.Threading;
 using System.Web;
@@ -243,28 +240,15 @@ namespace GiftServer
                     SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" editGiftCategory \")]");
                 HtmlNode categoryNew = myList.DocumentNode.
                     SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" newGiftCategory \")]");
-                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                foreach (Category cat in Category.Categories)
                 {
-                    con.Open();
-                    using (MySqlCommand cmd = new MySqlCommand())
-                    {
-                        cmd.Connection = con;
-                        cmd.CommandText = "SELECT categories.CategoryName FROM categories ORDER BY CategoryName ASC;";
-                        cmd.Prepare();
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                string catName = Convert.ToString(reader["CategoryName"]);
-                                HtmlNode entry = HtmlNode.CreateNode("<option></option>");
-                                entry.Attributes.Add("value", HttpUtility.HtmlAttributeEncode(catName));
-                                entry.InnerHtml = HttpUtility.HtmlEncode(catName);
-                                categoryEdit.PrependChild(entry);
-                                categoryNew.PrependChild(entry.Clone());
-                            }
-                        }
-                    }
+                    HtmlNode entry = HtmlNode.CreateNode("<option></option>");
+                    entry.Attributes.Add("value", HttpUtility.HtmlAttributeEncode(cat.Name));
+                    entry.InnerHtml = HttpUtility.HtmlEncode(cat.Name);
+                    categoryEdit.PrependChild(entry);
+                    categoryNew.PrependChild(entry.Clone());
                 }
+                
                 // Add group options to new and edit:
                 HtmlNode groupsEdit = myList.DocumentNode.
                     SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" editSharedGroups \")]");

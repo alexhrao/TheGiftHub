@@ -10,8 +10,7 @@ CREATE TABLE gift_registry_db_test.cultures (
 
 CREATE TABLE gift_registry_db_test.categories (
     CategoryID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    CategoryName VARCHAR(255) NOT NULL,
-    CategoryDescription VARCHAR(4096) NULL
+    CategoryName VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE gift_registry_db_test.users (
@@ -223,10 +222,10 @@ BEGIN
 	DELETE FROM gift_registry_db_test.preferences;
 	DELETE FROM gift_registry_db_test.users;
 	-- Create categories:
-	INSERT INTO gift_registry_db_test.categories (CategoryID, CategoryName, CategoryDescription)
+	INSERT INTO gift_registry_db_test.categories (CategoryID, CategoryName)
 		VALUES 
-            (1, 'Clothing', 'Clothing'),
-            (2, 'Electronics', 'Electronic Devices');
+            (1, 'Electronics'),
+            (2, 'Clothing');
 
 	-- Create users:
 	INSERT INTO gift_registry_db_test.users (UserID, UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL, UserFacebookID, UserGoogleID)

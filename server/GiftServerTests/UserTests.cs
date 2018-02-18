@@ -1399,8 +1399,8 @@ namespace GiftServerTests
             Assert.IsNotNull(pref, "Preferences were null");
         }
 
-        [ClassCleanup]
-        public static void UserCleanup()
+        [ClassInitialize]
+        public static void UserInitialize(TestContext ctx)
         {
             Reset();
             // Add all images to tuples
@@ -1413,8 +1413,8 @@ namespace GiftServerTests
             }
         }
 
-        [ClassInitialize]
-        public static void UserInitialize(TestContext ctx)
+        [ClassCleanup]
+        public static void UserCleanup()
         {
             string[] names = Directory.GetFiles(Directory.GetCurrentDirectory() + "/resources/images/users/");
             foreach (var file in names)

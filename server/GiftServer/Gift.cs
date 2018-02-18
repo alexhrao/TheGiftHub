@@ -505,7 +505,7 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@hex", Color);
                         cmd.Parameters.AddWithValue("@color", ColorText);
                         cmd.Parameters.AddWithValue("@size", Size);
-                        cmd.Parameters.AddWithValue("@category", Category.CategoryId);
+                        cmd.Parameters.AddWithValue("@category", Category.ID);
                         cmd.Parameters.AddWithValue("@rating", Rating);
                         cmd.Parameters.AddWithValue("@rec", DateReceived.HasValue ? DateReceived.Value.ToString("yyyy-MM-dd") : null);
                         cmd.Prepare();
@@ -570,7 +570,7 @@ namespace GiftServer
                             cmd.Parameters.AddWithValue("@color", Color);
                             cmd.Parameters.AddWithValue("@colorText", ColorText);
                             cmd.Parameters.AddWithValue("@size", Size);
-                            cmd.Parameters.AddWithValue("@cid", Category.CategoryId);
+                            cmd.Parameters.AddWithValue("@cid", Category.ID);
                             cmd.Parameters.AddWithValue("@rating", Rating);
                             cmd.Parameters.AddWithValue("@gid", ID);
                             cmd.Parameters.AddWithValue("@rec", DateReceived.HasValue ? DateReceived.Value.ToString("yyyy-MM-dd") : null);
