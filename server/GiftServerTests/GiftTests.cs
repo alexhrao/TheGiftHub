@@ -4,6 +4,7 @@ using System.Configuration;
 using System.IO;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using System.Xml;
 using GiftServer.Data;
 using GiftServer.Security;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -1105,6 +1106,116 @@ namespace GiftServerTests
 
 
 
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void GiftFetch_ZeroIDGift_ExceptionThrown()
+        {
+            Gift gift = new Gift("He", new User(1));
+            XmlDocument doc = gift.Fetch();
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void GiftFetch_ZeroIDGiftWithViewer_ExceptionThrown()
+        {
+            Gift gift = new Gift("He", new User(1));
+            XmlDocument doc = gift.Fetch(new User(1));
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void GiftFetch_ValidIDGiftWithNullViewer_ExceptionThrown()
+        {
+            Gift gift = new Gift(1);
+            XmlDocument doc = gift.Fetch(null);
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void GiftFetch_ValidIDGiftWithZeroIDViewer_ExceptionThrown()
+        {
+            Gift gift = new Gift(1);
+            XmlDocument doc = gift.Fetch(new User(new MailAddress("Hello@gmail.com"), new Password("Hi there"), "hello"));
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("Successful")]
+        [TestMethod]
+        public void GiftFetch_ValidGift_FullXml()
+        {
+            Gift gift = new Gift(1);
+            FullXmlChecker(gift, gift.Fetch());
+        }
+        private void FullXmlChecker(Gift target, XmlDocument doc)
+        {
+            XmlElement id = (XmlElement)doc.GetElementsByTagName("giftId")[0];
+            Assert.AreEqual(target.ID.ToString(), id.InnerText, "ID mismatch");
+            XmlElement uid = (XmlElement)doc.GetElementsByTagName("user")[0];
+            Assert.AreEqual(target.Owner.ID.ToString(), uid.InnerText, "Owner mismatch");
+            XmlElement name = (XmlElement)doc.GetElementsByTagName("name")[0];
+            Assert.AreEqual(target.Name, name.InnerText, "Name mismatch");
+            XmlElement desc = (XmlElement)doc.GetElementsByTagName("description")[0];
+            Assert.AreEqual(target.Description, desc.InnerText, "Description Mismatch");
+            XmlElement url = (XmlElement)doc.GetElementsByTagName("url")[0];
+            Assert.AreEqual(target.Url, url.InnerText, "URL Mismatch");
+            XmlElement cost = (XmlElement)doc.GetElementsByTagName("cost")[0];
+            Assert.AreEqual(target.Cost.ToString(), cost.InnerText, "Cost Mismatch");
+            XmlElement stores = (XmlElement)doc.GetElementsByTagName("stores")[0];
+            Assert.AreEqual(target.Stores, stores.InnerText, "Store mismatch");
+            XmlElement quant = (XmlElement)doc.GetElementsByTagName("quantity")[0];
+            Assert.AreEqual(target.Quantity.ToString(), quant.InnerText, "Quantity mismatch");
+            XmlElement color = (XmlElement)doc.GetElementsByTagName("color")[0];
+            Assert.AreEqual("#" + target.Color, color.InnerText, "Color mismatch");
+            XmlElement colorText = (XmlElement)doc.GetElementsByTagName("colorText")[0];
+            Assert.AreEqual(target.ColorText, colorText.InnerText, "Color Text Mismatch");
+            XmlElement size = (XmlElement)doc.GetElementsByTagName("size")[0];
+            Assert.AreEqual(target.Size, size.InnerText, "Size mismatch");
+            XmlElement category = (XmlElement)doc.GetElementsByTagName("category")[0];
+            Assert.AreEqual(target.Category.Name, category.InnerText, "Category mismatch");
+            XmlElement rating = (XmlElement)doc.GetElementsByTagName("rating")[0];
+            Assert.AreEqual(target.Rating.ToString(), rating.InnerText, "Rating mismatch");
+            XmlElement dateReceived = (XmlElement)doc.GetElementsByTagName("dateReceived")[0];
+            if (target.DateReceived.HasValue)
+            {
+                Assert.AreEqual(target.DateReceived.Value.ToString("yyyy-MM-dd"), dateReceived.InnerText, "Date received mismatch");
+            }
+            else
+            {
+                Assert.AreEqual(String.Empty, dateReceived.InnerText, "Date received mismatch");
+            }
+            XmlElement img = (XmlElement)doc.GetElementsByTagName("image")[0];
+            Assert.AreEqual(target.Image, img.InnerText, "Image path mismatch");
+            // Check for reservations and groups. Count should be ok
+            XmlElement reservations = (XmlElement)doc.GetElementsByTagName("reservations")[0];
+            Assert.AreEqual(target.Reservations.Count, reservations.ChildNodes.Count, "Reservation count mismatch");
+            foreach (XmlElement node in reservations.ChildNodes)
+            {
+                // Assert that has children!
+                Assert.AreNotEqual(0, node.ChildNodes.Count, "Reservation has no children, but user should be able to see");
+            }
+            XmlElement groups = (XmlElement)doc.GetElementsByTagName("groups")[0];
+            foreach (XmlElement node in groups.ChildNodes)
+            {
+                // Assert that has children!
+                Assert.AreNotEqual(0, node.ChildNodes.Count, "Group has no children, but user should be able to see");
+            }
+            Assert.AreEqual(target.Groups.Count, groups.ChildNodes.Count, "Group count mismatch");
+        }
+
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("Successful")]
+        [TestMethod]
+        public void GiftFetch_ValidGiftAndOwner_CompleteGiftXML()
+        {
+            Gift target = new Gift(2);
+            XmlDocument doc = target.Fetch(target.Owner);
+            FullXmlChecker(target, doc);
+        }
+
+
+
         [ClassInitialize]
         public static void Initialize(TestContext ctx)
         {
@@ -1135,22 +1246,6 @@ namespace GiftServerTests
                 File.WriteAllBytes(image.Item1, image.Item2);
             }
             reset.Wait();
-        }
-
-        private static void Reset()
-        {
-            // Initiate DELETE and LOAD
-            using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
-            {
-                con.Open();
-                using (MySqlCommand cmd = new MySqlCommand())
-                {
-                    cmd.Connection = con;
-                    cmd.CommandText = "CALL gift_registry_db_test.setup();";
-                    cmd.Prepare();
-                    cmd.ExecuteNonQuery();
-                }
-            }
         }
     }
 }
