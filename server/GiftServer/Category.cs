@@ -1,6 +1,7 @@
 ﻿using GiftServer.Exceptions;
 using MySql.Data.MySqlClient;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Xml;
 
@@ -21,15 +22,44 @@ namespace GiftServer
             /// <summary>
             /// The ID of this category as it appears in the database
             /// </summary>
-            public readonly ulong CategoryId = 0;
+            public readonly ulong ID = 0;
             /// <summary>
             /// The short name of this category
             /// </summary>
             public readonly string Name;
+            private static List<Category> categories = null;
             /// <summary>
-            /// A longer description of this category
+            /// A convenience method for getting all categories. Since categories are static in nature,
+            /// This will always be correct
             /// </summary>
-            public readonly string Description;
+            public static List<Category> Categories
+            {
+                get
+                {
+                    if (categories == null)
+                    {
+                        categories = new List<Category>();
+                        using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                        {
+                            con.Open();
+                            using (MySqlCommand cmd = new MySqlCommand())
+                            {
+                                cmd.Connection = con;
+                                cmd.CommandText = "SELECT CategoryID FROM categories;";
+                                cmd.Prepare();
+                                using (MySqlDataReader reader = cmd.ExecuteReader())
+                                {
+                                    while (reader.Read())
+                                    {
+                                        categories.Add(new Category(Convert.ToUInt64(reader["CategoryID"])));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return categories;
+                }
+            }
             /// <summary>
             /// Given the Category ID, this will fetch all the necessary information
             /// </summary>
@@ -49,9 +79,8 @@ namespace GiftServer
                         {
                             if (reader.Read())
                             {
-                                CategoryId = id;
+                                ID = id;
                                 Name = Convert.ToString(reader["CategoryName"]);
-                                Description = Convert.ToString(reader["CategoryDescription"]);
                             }
                             else
                             {
@@ -68,6 +97,10 @@ namespace GiftServer
             /// <param name="name">The EXACT name of the category</param>
             public Category(string name)
             {
+                if (name == null)
+                {
+                    throw new ArgumentNullException(nameof(name), "Name cannot be null");
+                }
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -81,9 +114,8 @@ namespace GiftServer
                         {
                             if (reader.Read())
                             {
-                                CategoryId = Convert.ToUInt64(reader["CategoryID"]);
+                                ID = Convert.ToUInt64(reader["CategoryID"]);
                                 Name = Convert.ToString(reader["CategoryName"]);
-                                Description = Convert.ToString(reader["CategoryDescription"]);
                             }
                             else
                             {
@@ -127,7 +159,7 @@ namespace GiftServer
             /// <returns>The hash code</returns>
             public override int GetHashCode()
             {
-                return CategoryId.GetHashCode();
+                return ID.GetHashCode();
             }
             /// <summary>
             /// See if two categories are equal
@@ -140,7 +172,7 @@ namespace GiftServer
             /// </remarks>
             public static bool operator ==(Category a, Category b)
             {
-                return ReferenceEquals(a, b) ? true : ((object)(a) != null) && ((object)(b) != null) && a.CategoryId == b.CategoryId;
+                return ReferenceEquals(a, b) ? true : ((object)(a) != null) && ((object)(b) != null) && a.ID == b.ID;
             }
             /// <summary>
             /// See if two categories are unequal
@@ -173,15 +205,12 @@ namespace GiftServer
                 XmlElement container = info.CreateElement("category");
                 info.AppendChild(container);
                 XmlElement id = info.CreateElement("categoryId");
-                id.InnerText = CategoryId.ToString();
+                id.InnerText = ID.ToString();
                 XmlElement name = info.CreateElement("name");
                 name.InnerText = Name;
-                XmlElement description = info.CreateElement("description");
-                description.InnerText = Description;
 
                 container.AppendChild(id);
                 container.AppendChild(name);
-                container.AppendChild(description);
 
                 return info;
             }

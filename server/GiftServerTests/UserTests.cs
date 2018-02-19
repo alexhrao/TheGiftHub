@@ -9,27 +9,14 @@ using System.Configuration;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using System.Threading.Tasks;
 
 namespace GiftServerTests
 {
     [TestClass]
     public class UserTests
     {
-        private static byte[] Image
-        {
-            get
-            {
-                string[] imgBytes = ("89 50 4e 47 0d 0a 1a 0a 00 00 00 0d 49 48 44 52 00 00 00 01 00 00 00 01 01 00 00 00 00 37 6e f9 24 00 00 00 10 49 44 41 54 78 " +
-                    "9c 62 60 01 00 00 00 ff ff 03 00 00 06 00 05 57 bf ab d4 00 00 00 00 49 45 4e 44 ae 42 60 82").Split(' ');
-                byte[] img = new byte[imgBytes.Length];
-                for (int i = 0; i < imgBytes.Length; i++)
-                {
-                    // Fill in corr:
-                    img[i] = Convert.ToByte(imgBytes[i], 16);
-                }
-                return img;
-            }
-        }
+        private static Tuple<string, byte[]>[] images;
         [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
         [TestMethod]
         [ExpectedException(typeof(UserNotFoundException))]
@@ -299,7 +286,7 @@ namespace GiftServerTests
         [TestMethod]
         public void UserProperty_Gifts_NoGifts()
         {
-            User user = new User(3);
+            User user = new User(10);
             List<Gift> gifts = user.Gifts;
             Assert.IsTrue(gifts.Count == 0, "Gifts returned when none should have been");
         }
@@ -327,9 +314,9 @@ namespace GiftServerTests
 
         [TestCategory("User"), TestCategory("Property"), TestCategory("Successful")]
         [TestMethod]
-        public void UserProperty_Groupts_NoGroups()
+        public void UserProperty_Groups_NoGroups()
         {
-            User user = new User(7);
+            User user = new User(10);
             Assert.IsTrue(user.Groups.Count == 0, "Groups fetched when none should have been");
         }
 
@@ -592,7 +579,7 @@ namespace GiftServerTests
         {
             User user = new User(5);
 
-            user.SaveImage(Image);
+            user.SaveImage(TestManager.Image);
             user.Delete();
             // Make sure file DNE
             Assert.IsFalse(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User5.png"), "User Image not deleted");
@@ -635,7 +622,7 @@ namespace GiftServerTests
         public void SaveImage_NullInput_ImageRemoved()
         {
             User user = new User(4);
-            user.SaveImage(Image);
+            user.SaveImage(TestManager.Image);
             user.SaveImage(null);
             Assert.IsFalse(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User" + user.ID + ".png"), "User Image not deleted");
         }
@@ -645,7 +632,7 @@ namespace GiftServerTests
         public void SaveImage_EmptyInput_ImageRemoved()
         {
             User user = new User(3);
-            user.SaveImage(Image);
+            user.SaveImage(TestManager.Image);
             byte[] arr = new byte[0];
             user.SaveImage(arr);
             Assert.IsFalse(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User" + user.ID + ".png"), "User Image not deleted");
@@ -656,7 +643,7 @@ namespace GiftServerTests
         public void SaveImage_ByteInput_ImageSaved()
         {
             User user = new User(2);
-            user.SaveImage(Image);
+            user.SaveImage(TestManager.Image);
             Assert.IsTrue(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User" + user.ID + ".png"), "User Image not saved");
         }
 
@@ -666,7 +653,7 @@ namespace GiftServerTests
         public void SaveImage_DeletedUser_ExceptionThrown()
         {
             User user = new User(new MailAddress("alexhrao@code.com"), new Password("Hello World"), "Hello");
-            user.SaveImage(Image);
+            user.SaveImage(TestManager.Image);
         }
 
 
@@ -705,8 +692,8 @@ namespace GiftServerTests
         public void GetImage_ValidUser_CustomImage()
         {
             User user = new User(6);
-            user.SaveImage(Image);
-            string path = user.GetImage();
+            user.SaveImage(TestManager.Image);
+            string path = user.Image;
             Assert.AreEqual(Path.GetFileNameWithoutExtension(path), "User6", "Expected custom image, got " + Path.GetFileNameWithoutExtension(path));
         }
 
@@ -716,7 +703,7 @@ namespace GiftServerTests
         {
             User user = new User(7);
             user.RemoveImage();
-            string path = user.GetImage();
+            string path = user.Image;
             Assert.AreEqual("default", Path.GetFileNameWithoutExtension(path), "Expected default image, got " + Path.GetFileNameWithoutExtension(path));
         }
 
@@ -725,7 +712,7 @@ namespace GiftServerTests
         public void GetImage_ValidID_CustomImage()
         {
             User user = new User(1);
-            user.SaveImage(Image);
+            user.SaveImage(TestManager.Image);
             string path = User.GetImage(1);
             Assert.AreEqual("User1", Path.GetFileNameWithoutExtension(path), "Expected custom image, got " + Path.GetFileNameWithoutExtension(path));
         }
@@ -756,7 +743,7 @@ namespace GiftServerTests
             User user = new User(new MailAddress("fdsa@asdf.edu"), new Password("Hello World!"), "hello world");
             user.Create();
             user.Delete();
-            user.GetImage();
+            string path = user.Image;
         }
 
 
@@ -1047,11 +1034,11 @@ namespace GiftServerTests
         public void GetGifts_ValidUser_GiftFound()
         {
             User user = new User(1);
-            User target = new User(2);
+            User target = new User(3);
             List<Gift> gifts = user.GetGifts(target);
             // gifts should contain 1 element and it's ID is 2
             Assert.IsTrue(gifts.Count == 1, "Fetched " + gifts.Count + " Gifts; Should only fetch 1");
-            Assert.AreEqual(2UL, gifts[0].ID, "Incorrect ID of " + gifts[0].ID + " was fetched instead");
+            Assert.AreEqual(8UL, gifts[0].ID, "Incorrect ID of " + gifts[0].ID + " was fetched instead");
         }
 
         [TestCategory("User"), TestCategory("Method"), TestCategory("GetGifts"), TestCategory("Successful")]
@@ -1081,7 +1068,7 @@ namespace GiftServerTests
         [TestMethod]
         public void GetGifts_ValidGroup_NoGifts()
         {
-            User user = new User(2);
+            User user = new User(10);
             Group viewer = new Group(4);
             List<Gift> gifts = user.GetGifts(viewer);
 
@@ -1400,7 +1387,7 @@ namespace GiftServerTests
             XmlElement dateJoined = (XmlElement)doc.GetElementsByTagName("dateJoined")[0];
             Assert.AreEqual(DateTime.Today.ToString("yyyy-MM-dd"), dateJoined.InnerText, "Date Joined mismatch");
             XmlElement img = (XmlElement)doc.GetElementsByTagName("image")[0];
-            Assert.AreEqual(target.GetImage(), img.InnerText, "Image path mismatch");
+            Assert.AreEqual(target.Image, img.InnerText, "Image path mismatch");
             // Just check for group element and count; checking of group element is done by GroupTests
             XmlElement groups = (XmlElement)doc.GetElementsByTagName("groups")[0];
             // There should be same num of groups as target thinks
@@ -1413,32 +1400,36 @@ namespace GiftServerTests
             Assert.IsNotNull(pref, "Preferences were null");
         }
 
-        [ClassCleanup]
-        public static void UserCleanup()
-        {
-            Reset();
-        }
-
         [ClassInitialize]
         public static void UserInitialize(TestContext ctx)
         {
-            Reset();
+            Task reset = TestManager.Reset();
+            // Add all images to tuples
+            string[] names = Directory.GetFiles(Directory.GetCurrentDirectory() + "/resources/images/users/");
+            images = new Tuple<string, byte[]>[names.Length];
+            for (int i = 0; i < names.Length; i++)
+            {
+                images[i] = new Tuple<string, byte[]>(names[i],
+                    File.ReadAllBytes(names[i]));
+            }
+            reset.Wait();
         }
 
-        private static void Reset()
+        [ClassCleanup]
+        public static void UserCleanup()
         {
-            // Initiate DELETE and LOAD
-            using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+            Task reset = TestManager.Reset();
+            string[] names = Directory.GetFiles(Directory.GetCurrentDirectory() + "/resources/images/users/");
+            foreach (var file in names)
             {
-                con.Open();
-                using (MySqlCommand cmd = new MySqlCommand())
-                {
-                    cmd.Connection = con;
-                    cmd.CommandText = "CALL gift_registry_db_test.setup();";
-                    cmd.Prepare();
-                    cmd.ExecuteNonQuery();
-                }
+                File.Delete(file);
             }
+            foreach (var image in images)
+            {
+                // Save the image
+                File.WriteAllBytes(image.Item1, image.Item2);
+            }
+            reset.Wait();
         }
     }
 }

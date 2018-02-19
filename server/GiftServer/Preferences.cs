@@ -73,6 +73,14 @@ namespace GiftServer
                                 ID = Convert.ToUInt64(reader["PreferenceID"]);
                                 culture = Convert.ToString(reader["UserCulture"]);
                             }
+                            else
+                            {
+                                // if UserID is 0, no worries. BUT if UserID != 0, we need to create this now!
+                                if (User.ID != 0)
+                                {
+                                    Create();
+                                }
+                            }
                         }
                     }
                 }
@@ -89,7 +97,7 @@ namespace GiftServer
             /// 
             /// In addition, all this does is fetch the *User* associated with this preference set, then extract the preferences
             /// </remarks>
-            public Preferences(ulong preferenceId)
+            private Preferences(ulong preferenceId)
             {
                 // Try and get preferences
                 ID = preferenceId;

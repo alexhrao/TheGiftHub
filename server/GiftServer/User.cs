@@ -403,6 +403,20 @@ namespace GiftServer
                 }
             }
             /// <summary>
+            /// The Qualified path for this User's Image
+            /// </summary>
+            public string Image
+            {
+                get
+                {
+                    if (ID == 0)
+                    {
+                        throw new InvalidOperationException("Cannot retrieve image of ID-less user");
+                    }
+                    return GetImage(ID);
+                }
+            }
+            /// <summary>
             /// Fetches an existing user
             /// </summary>
             /// <param name="id">The UserID</param>
@@ -1109,21 +1123,6 @@ namespace GiftServer
                 }
             }
             /// <summary>
-            /// Returns the path for this user's image
-            /// </summary>
-            /// <returns>A qualified path for this user's image</returns>
-            /// <remarks>
-            /// The qualified path is with respect to the _server's_ root directory, which is *not necessarily 'C:\' or '/'*
-            /// </remarks>
-            public string GetImage()
-            {
-                if (ID == 0)
-                {
-                    throw new InvalidOperationException("Cannot retrieve image of ID-less user");
-                }
-                return GetImage(ID);
-            }
-            /// <summary>
             /// Gets the image for any user
             /// </summary>
             /// <param name="userID">The user ID for this given user</param>
@@ -1651,7 +1650,7 @@ namespace GiftServer
                 XmlElement dateJoined = info.CreateElement("dateJoined");
                 dateJoined.InnerText = (DateJoined.Value.ToString("yyyy-MM-dd"));
                 XmlElement image = info.CreateElement("image");
-                image.InnerText = GetImage();
+                image.InnerText = Image;
                 XmlElement groups = info.CreateElement("groups");
                 foreach (Group group in Groups)
                 {
@@ -1725,7 +1724,7 @@ namespace GiftServer
                 XmlElement dateJoined = info.CreateElement("dateJoined");
                 dateJoined.InnerText = (DateJoined.Value.ToString("yyyy-MM-dd"));
                 XmlElement image = info.CreateElement("image");
-                image.InnerText = GetImage();
+                image.InnerText = Image;
                 XmlElement groups = info.CreateElement("groups");
                 foreach (Group group in Groups)
                 {

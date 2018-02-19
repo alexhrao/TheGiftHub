@@ -1,3 +1,4 @@
+DROP SCHEMA IF EXISTS gift_registry_db_test;
 CREATE DATABASE gift_registry_db_test;
 
 CREATE TABLE gift_registry_db_test.cultures (
@@ -10,8 +11,7 @@ CREATE TABLE gift_registry_db_test.cultures (
 
 CREATE TABLE gift_registry_db_test.categories (
     CategoryID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    CategoryName VARCHAR(255) NOT NULL,
-    CategoryDescription VARCHAR(4096) NULL
+    CategoryName VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE gift_registry_db_test.users (
@@ -223,10 +223,10 @@ BEGIN
 	DELETE FROM gift_registry_db_test.preferences;
 	DELETE FROM gift_registry_db_test.users;
 	-- Create categories:
-	INSERT INTO gift_registry_db_test.categories (CategoryID, CategoryName, CategoryDescription)
+	INSERT INTO gift_registry_db_test.categories (CategoryID, CategoryName)
 		VALUES 
-            (1, 'Clothing', 'Clothing'),
-            (2, 'Electronics', 'Electronic Devices');
+            (1, 'Electronics'),
+            (2, 'Clothing');
 
 	-- Create users:
 	INSERT INTO gift_registry_db_test.users (UserID, UserName, UserEmail, UserBirthMonth, UserBirthDay, UserBio, UserURL, UserFacebookID, UserGoogleID)
@@ -239,12 +239,23 @@ BEGIN
             (6, 'NoImage', 'alexhrao@github.edu', 7, 3, "fdsafdsa", "UaIOl0xfU7ccIQH5Ofs0Awfd1234", "43215", "43215"),
             (7, 'HasImage', 'alexhrao@google.com', 7, 3, "fdsafdsa", "UaIOl0xfU7ccIQH5Ofs0Awfd2222", "12312", "12312"),
             (8, 'reservations', 'asdf@google.com', 7, 3, "fdsafdsa", "UaIOl0xfU7ccIQH5OfdfAwfd2222", "55555", "55555"),
-            (9, 'reservationsHas', 'asdffdsasadf@google.com', 7, 3, "fdsafdsa", "UaIOl0xfU7ccIQH5OfdfAw555222", "66", "1234");
+            (9, 'reservationsHas', 'asdffdsasadf@google.com', 7, 3, "fdsafdsa", "UaIOl0xfU7ccIQH5OfdfAw555222", "66", "1234"),
+            (10, 'NoGifts', 'fdasdffdsasa@google.com', 0, 0, "fdsaASDf", "UaIOl0x77777IQH5OfdfAw555222", NULL, NULL);
+            
 	-- Create preferences:
 	INSERT INTO gift_registry_db_test.preferences (UserID, UserCulture, UserTheme)
 		VALUES 
             (1, 'en-US', 0),
-            (2, 'fr-FR', 1);
+            (2, 'fr-FR', 1),
+            (3, 'en-GB', 0),
+            (4, 'fr-FR', 1),
+            (5, 'en-US', 0),
+            (6, 'en-GB', 1),
+            (7, 'en-US', 0),
+            (8, 'fr-FR', 1),
+            (9, 'en-US', 0),
+            (10, 'fr-FR', 1);
+            
 		
 	-- Create Password:
 	INSERT INTO gift_registry_db_test.passwords (UserID, PasswordHash, PasswordSalt, PasswordIter)
@@ -277,12 +288,14 @@ BEGIN
 		VALUES 
             (1, 1, 'Webcam', 'Logitech BRIO webcam', 'https://www.google.com', 100.00, 'Logitech, Target', 1, 'FFFFFF', 'White', 'N/A', 2, 5.0),
             (2, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1000, '000000', 'black', 'BIG', 1, 5.0),
-            (3, 1, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 3, '000000', 'black', 'BIG', 1, 5.0),
+            (3, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 3, '000000', 'black', 'BIG', 1, 5.0),
             (4, 7, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 5, '000000', 'black', 'BIG', 1, 5.0),
             (5, 2, 'Wafdsav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1, '000000', 'black', 'BIG', 1, 5.0),
             (6, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1, '000000', 'black', 'BIG', 1, 5.0),
             (7, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 5600, '000000', 'black', 'BIG', 1, 5.0),
-            (8, 2, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1, '000000', 'black', 'BIG', 1, 5.0);
+            (8, 3, 'Wav', 'WavDeWav', 'https://www.google.com', 100000.00, 'Target, Target', 1, '000000', 'black', 'BIG', 1, 5.0),
+            (9, 4, 'UpdateTest', 'Hello World!', '', 100, '', 7, '000000', 'black', 'small', 1, 4.0),
+            (10, 4, 'UpdateTest', 'Hello World!', '', 100, '', 7, '000000', 'black', 'small', 1, 4.0);
 
 	-- Add user to group
 	INSERT INTO gift_registry_db_test.groups_users (GroupID, UserID, IsChild)
@@ -297,15 +310,27 @@ BEGIN
 			(3, 2),
 			(4, 2),
 			(4, 3),
-            (4, 6);
+            (4, 6),
+            (4, 4),
+            (1, 8),
+            (4, 9),
+            (2, 7),
+            (2, 4);
 
 	-- Add gift to group
 	INSERT INTO gift_registry_db_test.groups_gifts (GroupID, GiftID)
 		VALUES 
             (1, 1),
             (2, 1),
-            (1, 2);
-
+            (2, 2),
+            (1, 2),
+            (1, 6),
+            (1, 3),
+            (1, 7),
+            (2, 8),
+            (2, 5),
+            (4, 7);
+            
 	-- Create the Exact Event Rule
 	INSERT INTO gift_registry_db_test.exact_events (EventID, EventTimeInterval, EventSkipEvery)
 		VALUES

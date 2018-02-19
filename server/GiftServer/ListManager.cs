@@ -2,10 +2,7 @@
 using GiftServer.Properties;
 using GiftServer.Server;
 using HtmlAgilityPack;
-using MySql.Data.MySqlClient;
-using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Resources;
 using System.Threading;
 using System.Web;
@@ -49,6 +46,10 @@ namespace GiftServer
             }
             private string GiftList(User viewer, User target, List<Gift> gifts)
             {
+                return GiftList(viewer, target, gifts, false);
+            }
+            private string GiftList(User viewer, User target, List<Gift> gifts, bool isReservation)
+            {
                 HtmlDocument list = new HtmlDocument();
                 list.LoadHtml(NavigationManager.NavigationBar(viewer) + HtmlManager.GetString("publicList"));
                 // Get all gifts that are visible to THIS USER
@@ -74,7 +75,7 @@ namespace GiftServer
                 foreach (Gift gift in gifts)
                 {
                     // Print gift information
-                    // If a reservation is by my, color orange
+                    // If a reservation is by me, color orange
 
                     HtmlNode giftRow = HtmlNode.CreateNode("<tr></tr>");
 
@@ -100,7 +101,7 @@ namespace GiftServer
                     // Picture
                     HtmlNode pict = HtmlNode.CreateNode("<img />");
                     pict.AddClass("img-thumbnail img-gift img-responsive child");
-                    pict.Attributes.Add("src", gift.GetImage());
+                    pict.Attributes.Add("src", gift.Image);
 
                     HtmlNode pictParent = parent.Clone();
                     pictParent.AppendChild(pict);
@@ -113,12 +114,17 @@ namespace GiftServer
                     rate.Attributes.Add("data-show-clear", "false");
                     rate.Attributes.Add("data-show-caption", "false");
                     rate.Attributes.Add("value", gift.Rating.ToString("N2"));
-
                     HtmlNode rateCell = cell.Clone();
                     HtmlNode rateParent = parent.Clone();
-                    HtmlNode rateChild = child.Clone();
-                    rateChild.AppendChild(rate);
-                    rateParent.AppendChild(rateChild);
+                    rateParent.RemoveClass("parent");
+                    rateParent.AppendChild(rate);
+                    if (isReservation)
+                    {
+                        HtmlNode owner = HtmlNode.CreateNode("<div></div>");
+                        owner.AddClass("text-center row user-name");
+                        owner.InnerHtml = HttpUtility.HtmlEncode(gift.Owner.Name);
+                        rateParent.AppendChild(owner);
+                    }
                     rateCell.AppendChild(rateParent);
 
                     // Name
@@ -132,7 +138,15 @@ namespace GiftServer
 
                     // Quantity
                     HtmlNode quan = child.Clone();
-                    quan.InnerHtml = gift.Quantity.ToString();
+                    if (isReservation)
+                    {
+                        // quantity is number by viewer of target's gift:
+                        quan.InnerHtml = gift.Reservations.FindAll(r => r.User.Equals(viewer)).Count.ToString();
+                    }
+                    else
+                    {
+                        quan.InnerHtml = gift.Quantity.ToString();
+                    }
 
                     HtmlNode quanCell = cell.Clone();
                     HtmlNode quanParent = parent.Clone();
@@ -210,7 +224,7 @@ namespace GiftServer
                         gifts.Add(res.Gift);
                     }
                 }
-                string page = GiftList(target, target, gifts);
+                string page = GiftList(target, target, gifts, true);
                 HtmlDocument doc = new HtmlDocument();
                 doc.LoadHtml(page);
                 HtmlNode userName = doc.DocumentNode.
@@ -243,28 +257,15 @@ namespace GiftServer
                     SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" editGiftCategory \")]");
                 HtmlNode categoryNew = myList.DocumentNode.
                     SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" newGiftCategory \")]");
-                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                foreach (Category cat in Category.Categories)
                 {
-                    con.Open();
-                    using (MySqlCommand cmd = new MySqlCommand())
-                    {
-                        cmd.Connection = con;
-                        cmd.CommandText = "SELECT categories.CategoryName FROM categories ORDER BY CategoryName ASC;";
-                        cmd.Prepare();
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                string catName = Convert.ToString(reader["CategoryName"]);
-                                HtmlNode entry = HtmlNode.CreateNode("<option></option>");
-                                entry.Attributes.Add("value", HttpUtility.HtmlAttributeEncode(catName));
-                                entry.InnerHtml = HttpUtility.HtmlEncode(catName);
-                                categoryEdit.PrependChild(entry);
-                                categoryNew.PrependChild(entry.Clone());
-                            }
-                        }
-                    }
+                    HtmlNode entry = HtmlNode.CreateNode("<option></option>");
+                    entry.Attributes.Add("value", HttpUtility.HtmlAttributeEncode(cat.Name));
+                    entry.InnerHtml = HttpUtility.HtmlEncode(cat.Name);
+                    categoryEdit.PrependChild(entry);
+                    categoryNew.PrependChild(entry.Clone());
                 }
+                
                 // Add group options to new and edit:
                 HtmlNode groupsEdit = myList.DocumentNode.
                     SelectSingleNode("//*[contains(concat(\" \", normalize-space(@id), \" \"), \" editSharedGroups \")]");
@@ -322,7 +323,7 @@ namespace GiftServer
                     // Picture
                     HtmlNode pict = HtmlNode.CreateNode("<img />");
                     pict.AddClass("img-thumbnail img-gift img-responsive child");
-                    pict.Attributes.Add("src", gift.GetImage());
+                    pict.Attributes.Add("src", gift.Image);
 
                     HtmlNode pictParent = parent.Clone();
                     pictParent.AppendChild(pict);

@@ -56,6 +56,7 @@ namespace GiftServer
             /// <param name="e">The Event tied to this blackout event</param>
             public Blackout(ulong blackoutId, Event e)
             {
+                // Why can't we just create the event here? Confused...
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();

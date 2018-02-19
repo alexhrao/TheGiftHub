@@ -19,6 +19,7 @@ namespace GiftServer
         /// </remarks>
         public class Gift : ISynchronizable, IShowable, IFetchable, IEquatable<Gift>
         {
+            private static object imageKey = new object();
             /// <summary>
             /// The GiftID
             /// </summary>
@@ -400,6 +401,20 @@ namespace GiftServer
                 }
             }
             /// <summary>
+            /// The Qualified Path for this image
+            /// </summary>
+            public string Image
+            {
+                get
+                {
+                    if (ID == 0)
+                    {
+                        throw new InvalidOperationException("Cannot fetch image for ID-less gift");
+                    }
+                    return GetImage(ID);
+                }
+            }
+            /// <summary>
             /// Fetch an existing gift
             /// </summary>
             /// <param name="id">The existing gift</param>
@@ -490,7 +505,7 @@ namespace GiftServer
                         cmd.Parameters.AddWithValue("@hex", Color);
                         cmd.Parameters.AddWithValue("@color", ColorText);
                         cmd.Parameters.AddWithValue("@size", Size);
-                        cmd.Parameters.AddWithValue("@category", Category.CategoryId);
+                        cmd.Parameters.AddWithValue("@category", Category.ID);
                         cmd.Parameters.AddWithValue("@rating", Rating);
                         cmd.Parameters.AddWithValue("@rec", DateReceived.HasValue ? DateReceived.Value.ToString("yyyy-MM-dd") : null);
                         cmd.Prepare();
@@ -555,7 +570,7 @@ namespace GiftServer
                             cmd.Parameters.AddWithValue("@color", Color);
                             cmd.Parameters.AddWithValue("@colorText", ColorText);
                             cmd.Parameters.AddWithValue("@size", Size);
-                            cmd.Parameters.AddWithValue("@cid", Category.CategoryId);
+                            cmd.Parameters.AddWithValue("@cid", Category.ID);
                             cmd.Parameters.AddWithValue("@rating", Rating);
                             cmd.Parameters.AddWithValue("@gid", ID);
                             cmd.Parameters.AddWithValue("@rec", DateReceived.HasValue ? DateReceived.Value.ToString("yyyy-MM-dd") : null);
@@ -596,6 +611,10 @@ namespace GiftServer
                         }
                     }
                 }
+                else
+                {
+                    throw new InvalidOperationException("ID cannot be 0!");
+                }
             }
             /// <summary>
             /// Save the specified image as the image for this gift.
@@ -614,7 +633,7 @@ namespace GiftServer
                 else
                 {
                     ImageProcessor processor = new ImageProcessor(contents);
-                    File.WriteAllBytes(Directory.GetCurrentDirectory() + "/resources/images/gifts/Giftr" + ID + Constants.ImageFormat, processor.Data);
+                    File.WriteAllBytes(Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + ID + Constants.ImageFormat, processor.Data);
                 }
             }
             /// <summary>
@@ -630,21 +649,6 @@ namespace GiftServer
                 {
                     File.Delete(Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift" + ID + Constants.ImageFormat);
                 }
-            }
-            /// <summary>
-            /// Get the image associated with this gift
-            /// </summary>
-            /// <returns>A qualified path for this gift's image</returns>
-            /// <remarks>
-            /// Note that qualified means with respect to the server's root, *not* necessarily '/' or 'C:\'
-            /// </remarks>
-            public string GetImage()
-            {
-                if (ID == 0)
-                {
-                    throw new InvalidOperationException("Cannot retrieve image of ID-less gift");
-                }
-                return GetImage(ID);
             }
             /// <summary>
             /// Get the image for a specified giftID
@@ -670,153 +674,156 @@ namespace GiftServer
                     return "resources/images/gifts/default" + Constants.ImageFormat;
                 }
             }
-            /// <summary>
-            /// Add this gift to a group
-            /// </summary>
-            /// <param name="group">The group that can now view this gift</param>
-            public void Add(Group group)
+            /*
+ * These methods are not necessary, but kept just in case...
+/// <summary>
+/// Add this gift to a group
+/// </summary>
+/// <param name="group">The group that can now view this gift</param>
+public void Add(Group group)
+{
+    if (group == null)
+    {
+        throw new ArgumentNullException(nameof(group), "Group cannot be null");
+    }
+    else if (group.ID == 0)
+    {
+        throw new ArgumentException("Group must have valid ID", nameof(group));
+    }
+    else if (ID == 0)
+    {
+        throw new InvalidOperationException("Cannot add ID-less gift");
+    }
+    group.Add(this);
+}
+/// <summary>
+/// Remove this gift from a group
+/// </summary>
+/// <param name="group">The group that will no longer be able to view this gift</param>
+public void Remove(Group group)
+{
+    if (group == null)
+    {
+        throw new ArgumentNullException(nameof(group), "Group must not be null");
+    }
+    else if (group.ID == 0)
+    {
+        throw new ArgumentException("Group must have valid ID", nameof(group));
+    }
+    else if (ID == 0)
+    {
+        throw new InvalidOperationException("Cannot remove from ID-less gift");
+    }
+    group.Remove(this);
+}
+/// <summary>
+/// Reserve one of this gift for the reserver
+/// </summary>
+/// <param name="reserver">The reserver</param>
+public void Reserve(User reserver)
+{
+    if (reserver == null)
+    {
+        throw new ArgumentNullException(nameof(reserver), "Reserver must not be null");
+    }
+    else if (reserver.ID == 0)
+    {
+        throw new ArgumentException("Reserver must have valid ID", nameof(reserver));
+    }
+    else if (ID == 0)
+    {
+        throw new InvalidOperationException("ID must not be 0");
+    }
+    else if (reserver.Equals(Owner))
+    {
+        throw new InvalidOperationException("User cannot reserve own gift");
+    }
+    else
+    {
+        reserver.Reserve(this);
+    }
+}
+/// <summary>
+/// Reserve a number of this gift
+/// </summary>
+/// <param name="reserver">The reserver</param>
+/// <param name="amount">The amount to reserve</param>
+/// <returns>The amount actually reserved</returns>
+public int Reserve(User reserver, int amount)
+{
+    if (amount < 0)
+    {
+        return Release(reserver, -amount);
+    }
+    else
+    {
+        int counter = 0;
+        for (int i = 0; i < amount; i++)
+        {
+            try
             {
-                if (group == null)
-                {
-                    throw new ArgumentNullException(nameof(group), "Group cannot be null");
-                }
-                else if (group.ID == 0)
-                {
-                    throw new ArgumentException("Group must have valid ID", nameof(group));
-                }
-                else if (ID == 0)
-                {
-                    throw new InvalidOperationException("Cannot add ID-less gift");
-                }
-                group.Add(this);
+                Reserve(reserver);
+                counter++;
             }
-            /// <summary>
-            /// Remove this gift from a group
-            /// </summary>
-            /// <param name="group">The group that will no longer be able to view this gift</param>
-            public void Remove(Group group)
+            catch (ReservationOverflowException)
             {
-                if (group == null)
-                {
-                    throw new ArgumentNullException(nameof(group), "Group must not be null");
-                }
-                else if (group.ID == 0)
-                {
-                    throw new ArgumentException("Group must have valid ID", nameof(group));
-                }
-                else if (ID == 0)
-                {
-                    throw new InvalidOperationException("Cannot remove from ID-less gift");
-                }
-                group.Remove(this);
+                return counter;
             }
-            /// <summary>
-            /// Reserve one of this gift for the reserver
-            /// </summary>
-            /// <param name="reserver">The reserver</param>
-            public void Reserve(User reserver)
-            {
-                if (reserver == null)
-                {
-                    throw new ArgumentNullException(nameof(reserver), "Reserver must not be null");
-                }
-                else if (reserver.ID == 0)
-                {
-                    throw new ArgumentException("Reserver must have valid ID", nameof(reserver));
-                }
-                else if (ID == 0)
-                {
-                    throw new InvalidOperationException("ID must not be 0");
-                }
-                else if (reserver.Equals(Owner))
-                {
-                    throw new InvalidOperationException("User cannot reserve own gift");
-                }
-                else
-                {
-                    reserver.Reserve(this);
-                }
-            }
-            /// <summary>
-            /// Reserve a number of this gift
-            /// </summary>
-            /// <param name="reserver">The reserver</param>
-            /// <param name="amount">The amount to reserve</param>
-            /// <returns>The amount actually reserved</returns>
-            public int Reserve(User reserver, int amount)
-            {
-                if (amount < 0)
-                {
-                    return Release(reserver, -amount);
-                }
-                else
-                {
-                    int counter = 0;
-                    for (int i = 0; i < amount; i++)
-                    {
-                        try
-                        {
-                            Reserve(reserver);
-                            counter++;
-                        }
-                        catch (ReservationOverflowException)
-                        {
-                            return counter;
-                        }
-                    }
-                    return counter;
-                }
-            }
-            /// <summary>
-            /// Release a reservation owned by the releaser
-            /// </summary>
-            /// <param name="releaser">The owner of the reservation</param>
-            public void Release(User releaser)
-            {
-                if (releaser == null)
-                {
-                    throw new ArgumentNullException(nameof(releaser), "Releaser must not be null");
-                }
-                else if (releaser.ID == 0)
-                {
-                    throw new ArgumentException("Releaser must have valid ID", nameof(releaser));
-                }
-                else if (ID == 0)
-                {
-                    throw new InvalidOperationException("ID must not be 0");
-                }
-                else if (releaser.Equals(Owner))
-                {
-                    throw new InvalidOperationException("User cannot Release own gift");
-                }
-                else
-                {
-                    releaser.Release(this);
-                }
-            }
-            /// <summary>
-            /// Release a given amount of the reservations for this user
-            /// </summary>
-            /// <param name="realeser">The releaser</param>
-            /// <param name="amount">The number to release</param>
-            /// <returns>How many were actually released</returns>
-            public int Release(User realeser, int amount)
-            {
-                if (amount < 0)
-                {
-                    return Reserve(realeser, -amount);
-                }
-                else
-                {
-                    int counter = 0;
-                    for (int i = 0; i < amount; i++)
-                    {
-                        Release(realeser);
-                        counter++;
-                    }
-                    return counter;
-                }
-            }
+        }
+        return counter;
+    }
+}
+/// <summary>
+/// Release a reservation owned by the releaser
+/// </summary>
+/// <param name="releaser">The owner of the reservation</param>
+public void Release(User releaser)
+{
+    if (releaser == null)
+    {
+        throw new ArgumentNullException(nameof(releaser), "Releaser must not be null");
+    }
+    else if (releaser.ID == 0)
+    {
+        throw new ArgumentException("Releaser must have valid ID", nameof(releaser));
+    }
+    else if (ID == 0)
+    {
+        throw new InvalidOperationException("ID must not be 0");
+    }
+    else if (releaser.Equals(Owner))
+    {
+        throw new InvalidOperationException("User cannot Release own gift");
+    }
+    else
+    {
+        releaser.Release(this);
+    }
+}
+/// <summary>
+/// Release a given amount of the reservations for this user
+/// </summary>
+/// <param name="realeser">The releaser</param>
+/// <param name="amount">The number to release</param>
+/// <returns>How many were actually released</returns>
+public int Release(User realeser, int amount)
+{
+    if (amount < 0)
+    {
+        return Reserve(realeser, -amount);
+    }
+    else
+    {
+        int counter = 0;
+        for (int i = 0; i < amount; i++)
+        {
+            Release(realeser);
+            counter++;
+        }
+        return counter;
+    }
+}
+*/
             /// <summary>
             /// See if this object is this gift
             /// </summary>
@@ -840,7 +847,7 @@ namespace GiftServer
             /// <returns>If the two gifts are equal</returns>
             public bool Equals(Gift gift)
             {
-                return gift != null && gift.ID == ID;
+                return gift != null && ID != 0 && gift.ID != 0 && gift.ID == ID;
             }
             /// <summary>
             /// Get the hash code for this gift
@@ -915,7 +922,7 @@ namespace GiftServer
                 XmlElement rating = info.CreateElement("rating");
                 rating.InnerText = Rating.ToString();
                 XmlElement image = info.CreateElement("image");
-                image.InnerText = GetImage();
+                image.InnerText = Image;
                 XmlElement dateReceived = info.CreateElement("dateReceived");
                 dateReceived.InnerText = DateReceived.HasValue ? DateReceived.Value.ToString("yyyy-MM-dd") : "";
                 XmlElement groups = info.CreateElement("groups");
@@ -1007,7 +1014,7 @@ namespace GiftServer
                     XmlElement rating = info.CreateElement("rating");
                     rating.InnerText = Rating.ToString();
                     XmlElement image = info.CreateElement("image");
-                    image.InnerText = GetImage();
+                    image.InnerText = Image;
                     XmlElement dateReceived = info.CreateElement("dateReceived");
                     dateReceived.InnerText = DateReceived.HasValue ? DateReceived.Value.ToString("yyyy-MM-dd") : "";
                     XmlElement groups = info.CreateElement("groups");
