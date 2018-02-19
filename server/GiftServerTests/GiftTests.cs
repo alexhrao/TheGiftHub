@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Net.Mail;
+using System.Threading.Tasks;
 using GiftServer.Data;
 using GiftServer.Security;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -1107,6 +1108,7 @@ namespace GiftServerTests
         [ClassInitialize]
         public static void Initialize(TestContext ctx)
         {
+            Task reset = TestManager.Reset();
             // Add all images to tuples
             string[] names = Directory.GetFiles(Directory.GetCurrentDirectory() + "/resources/images/gifts/");
             images = new Tuple<string, byte[]>[names.Length];
@@ -1115,12 +1117,13 @@ namespace GiftServerTests
                 images[i] = new Tuple<string, byte[]>(names[i],
                     File.ReadAllBytes(names[i]));
             }
-            Reset();
+            reset.Wait();
         }
 
         [ClassCleanup]
         public static void Cleanup()
         {
+            Task reset = TestManager.Reset();
             string[] names = Directory.GetFiles(Directory.GetCurrentDirectory() + "/resources/images/gifts/");
             foreach (var file in names)
             {
@@ -1131,7 +1134,7 @@ namespace GiftServerTests
                 // Save the image
                 File.WriteAllBytes(image.Item1, image.Item2);
             }
-            Reset();
+            reset.Wait();
         }
 
         private static void Reset()

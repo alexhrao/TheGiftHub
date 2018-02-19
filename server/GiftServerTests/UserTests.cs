@@ -9,6 +9,7 @@ using System.Configuration;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml;
+using System.Threading.Tasks;
 
 namespace GiftServerTests
 {
@@ -1402,7 +1403,7 @@ namespace GiftServerTests
         [ClassInitialize]
         public static void UserInitialize(TestContext ctx)
         {
-            Reset();
+            Task reset = TestManager.Reset();
             // Add all images to tuples
             string[] names = Directory.GetFiles(Directory.GetCurrentDirectory() + "/resources/images/users/");
             images = new Tuple<string, byte[]>[names.Length];
@@ -1411,11 +1412,13 @@ namespace GiftServerTests
                 images[i] = new Tuple<string, byte[]>(names[i],
                     File.ReadAllBytes(names[i]));
             }
+            reset.Wait();
         }
 
         [ClassCleanup]
         public static void UserCleanup()
         {
+            Task reset = TestManager.Reset();
             string[] names = Directory.GetFiles(Directory.GetCurrentDirectory() + "/resources/images/users/");
             foreach (var file in names)
             {
@@ -1426,23 +1429,7 @@ namespace GiftServerTests
                 // Save the image
                 File.WriteAllBytes(image.Item1, image.Item2);
             }
-            Reset();
-        }
-
-        private static void Reset()
-        {
-            // Initiate DELETE and LOAD
-            using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
-            {
-                con.Open();
-                using (MySqlCommand cmd = new MySqlCommand())
-                {
-                    cmd.Connection = con;
-                    cmd.CommandText = "CALL gift_registry_db_test.setup();";
-                    cmd.Prepare();
-                    cmd.ExecuteNonQuery();
-                }
-            }
+            reset.Wait();
         }
     }
 }

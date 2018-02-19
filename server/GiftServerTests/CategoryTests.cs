@@ -228,7 +228,20 @@ namespace GiftServerTests
         public void CategoryEqualsOperator_IdenticalCategory_True()
         {
             Category cat1 = new Category(1);
-            Assert.IsTrue(cat1 == cat1, "Same Categories compare false");
+            Category cat2 = cat1;
+            Assert.IsTrue(cat1 == cat2, "Same Categories compare false");
+        }
+
+        [ClassInitialize]
+        public static void Initialize(TestContext ctx)
+        {
+            TestManager.Reset().Wait();
+        }
+
+        [ClassCleanup]
+        public static void Cleanup(TestContext ctx)
+        {
+            TestManager.Reset().Wait();
         }
     }
 }

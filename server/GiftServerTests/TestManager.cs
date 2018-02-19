@@ -1,4 +1,7 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
+using System.Configuration;
+using System.Threading.Tasks;
 
 namespace GiftServerTests
 {
@@ -18,6 +21,24 @@ namespace GiftServerTests
                 }
                 return img;
             }
+        }
+
+        async public static Task Reset()
+        {
+            await Task.Run(() =>
+            {
+                using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+                {
+                    con.Open();
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "CALL gift_registry_db_test.setup();";
+                        cmd.Prepare();
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            });
         }
     }
 }
