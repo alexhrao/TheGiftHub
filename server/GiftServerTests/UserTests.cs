@@ -285,7 +285,7 @@ namespace GiftServerTests
         [TestMethod]
         public void UserProperty_Gifts_NoGifts()
         {
-            User user = new User(3);
+            User user = new User(10);
             List<Gift> gifts = user.Gifts;
             Assert.IsTrue(gifts.Count == 0, "Gifts returned when none should have been");
         }
@@ -313,9 +313,9 @@ namespace GiftServerTests
 
         [TestCategory("User"), TestCategory("Property"), TestCategory("Successful")]
         [TestMethod]
-        public void UserProperty_Groupts_NoGroups()
+        public void UserProperty_Groups_NoGroups()
         {
-            User user = new User(7);
+            User user = new User(10);
             Assert.IsTrue(user.Groups.Count == 0, "Groups fetched when none should have been");
         }
 
@@ -1033,11 +1033,11 @@ namespace GiftServerTests
         public void GetGifts_ValidUser_GiftFound()
         {
             User user = new User(1);
-            User target = new User(2);
+            User target = new User(3);
             List<Gift> gifts = user.GetGifts(target);
             // gifts should contain 1 element and it's ID is 2
             Assert.IsTrue(gifts.Count == 1, "Fetched " + gifts.Count + " Gifts; Should only fetch 1");
-            Assert.AreEqual(2UL, gifts[0].ID, "Incorrect ID of " + gifts[0].ID + " was fetched instead");
+            Assert.AreEqual(8UL, gifts[0].ID, "Incorrect ID of " + gifts[0].ID + " was fetched instead");
         }
 
         [TestCategory("User"), TestCategory("Method"), TestCategory("GetGifts"), TestCategory("Successful")]
@@ -1067,7 +1067,7 @@ namespace GiftServerTests
         [TestMethod]
         public void GetGifts_ValidGroup_NoGifts()
         {
-            User user = new User(2);
+            User user = new User(10);
             Group viewer = new Group(4);
             List<Gift> gifts = user.GetGifts(viewer);
 
