@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Xml;
+using GiftServer.Server;
 using MySql.Data.MySqlClient;
 namespace GiftServer
 {
@@ -38,13 +39,14 @@ namespace GiftServer
                 }
                 set
                 {
-                    if (value == null || value.Length != 5)
+                    if (value == null)
                     {
-                        throw new ArgumentException("Value must be non-null, 5 letters long. Format: <lang>-<COUNTRY>");
+                        throw new ArgumentNullException(nameof(value), "Value must not be null");
                     }
                     else
                     {
-                        culture = value;
+                        // Try our best to parse the culture
+                        culture = Controller.ParseCulture(value);
                     }
                 }
             }

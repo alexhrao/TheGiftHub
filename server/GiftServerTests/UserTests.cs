@@ -1371,7 +1371,6 @@ namespace GiftServerTests
             ///     - preferences: This user's preferences
             ///     
             /// This is all contained within a _user_ container.
-            /// 
             XmlElement id = (XmlElement)doc.GetElementsByTagName("userId")[0];
             Assert.AreEqual(target.ID.ToString(), id.InnerText, "ID mismatch");
             XmlElement name = (XmlElement)doc.GetElementsByTagName("userName")[0];
