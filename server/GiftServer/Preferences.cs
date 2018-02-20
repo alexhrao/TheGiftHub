@@ -75,14 +75,6 @@ namespace GiftServer
                                 ID = Convert.ToUInt64(reader["PreferenceID"]);
                                 culture = Convert.ToString(reader["UserCulture"]);
                             }
-                            else
-                            {
-                                // if UserID is 0, no worries. BUT if UserID != 0, we need to create this now!
-                                if (User.ID != 0)
-                                {
-                                    Create();
-                                }
-                            }
                         }
                     }
                 }
@@ -131,9 +123,30 @@ namespace GiftServer
             /// </summary>
             public void Create()
             {
+                if (User.ID == 0)
+                {
+                    throw new InvalidOperationException("User must not be ID-less!");
+                }
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
+                    // Check we don't already exist - if we do, just Update instead
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT PreferenceID FROM preferences WHERE UserID = @uid;";
+                        cmd.Parameters.AddWithValue("@uid", User.ID);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                ID = Convert.ToUInt64(reader["PreferenceID"]);
+                                Update();
+                                return;
+                            }
+                        }
+                    }
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
@@ -152,9 +165,29 @@ namespace GiftServer
             /// </summary>
             public void Update()
             {
+                if (User.ID == 0)
+                {
+                    throw new InvalidOperationException("User must not be ID-less!");
+                }
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
+                    // Check we already exist - if we don't, just Create instead
+                    using (MySqlCommand cmd = new MySqlCommand())
+                    {
+                        cmd.Connection = con;
+                        cmd.CommandText = "SELECT PreferenceID FROM preferences WHERE UserID = @uid;";
+                        cmd.Parameters.AddWithValue("@uid", User.ID);
+                        cmd.Prepare();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (!reader.HasRows)
+                            {
+                                Create();
+                                return;
+                            }
+                        }
+                    }
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
@@ -173,6 +206,10 @@ namespace GiftServer
             /// </summary>
             public void Delete()
             {
+                if (User.ID == 0)
+                {
+                    throw new InvalidOperationException("User must not be ID-less!");
+                }
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();

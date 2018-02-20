@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Configuration;
 using System.Net.Mail;
 using GiftServer.Data;
 using GiftServer.Security;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MySql.Data.MySqlClient;
 
 namespace GiftServerTests
 {
@@ -72,6 +74,165 @@ namespace GiftServerTests
         }
 
 
+
+        [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Create"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void PreferencesCreate_InvalidUser_ExceptionThrown()
+        {
+            User user = new User(new MailAddress("fdsa@asdfasdf.com"), new Password("Hello"), "Hi");
+            user.Preferences.Create();
+        }
+
+        [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Create"), TestCategory("Successful")]
+        [TestMethod]
+        public void PreferencesCreate_ValidUser_PreferencesCreated()
+        {
+            User user = new User(new MailAddress("fdsa@asdfasdf.com"), new Password("Hello"), "Hi");
+            user.Preferences.Culture = "fr-FR";
+            user.Create();
+            // Assert that Preferences were created as well!
+            using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+            {
+                con.Open();
+                using (MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.Connection = con;
+                    cmd.CommandText = "SELECT * FROM preferences WHERE UserID = @uid;";
+                    cmd.Parameters.AddWithValue("@uid", user.ID);
+                    cmd.Prepare();
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        int counter = 0;
+                        while (reader.Read())
+                        {
+                            counter++;
+                            // Check data
+                            Assert.AreEqual("fr-FR", reader["UserCulture"].ToString(), "Culture incorrect");
+                        }
+                        Assert.AreEqual(1, counter, "More than one row returned for a single user");
+                    }
+                }
+            }
+        }
+
+
+
+        [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Create"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void PreferencesUpdate_InvalidUser_ExceptionThrown()
+        {
+            User user = new User(new MailAddress("fdsa@asdfasdf.com"), new Password("Hello"), "Hi");
+            user.Preferences.Update();
+        }
+
+        [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Update"), TestCategory("Successful")]
+        [TestMethod]
+        public void PreferencesUpdate_ValidUser_PreferencesCreated()
+        {
+            User user = new User(1);
+            user.Preferences.Culture = "fr-FR";
+            user.Update();
+            // Assert that Preferences were created as well!
+            using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+            {
+                con.Open();
+                using (MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.Connection = con;
+                    cmd.CommandText = "SELECT * FROM preferences WHERE UserID = @uid;";
+                    cmd.Parameters.AddWithValue("@uid", user.ID);
+                    cmd.Prepare();
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        int counter = 0;
+                        while (reader.Read())
+                        {
+                            counter++;
+                            // Check data
+                            Assert.AreEqual("fr-FR", reader["UserCulture"].ToString(), "Culture incorrect");
+                        }
+                        Assert.AreEqual(1, counter, "More than one row returned for a single user");
+                    }
+                }
+            }
+            user.Preferences.Culture = "en-GB";
+            user.Preferences.Update();
+            using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+            {
+                con.Open();
+                using (MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.Connection = con;
+                    cmd.CommandText = "SELECT * FROM preferences WHERE UserID = @uid;";
+                    cmd.Parameters.AddWithValue("@uid", user.ID);
+                    cmd.Prepare();
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        int counter = 0;
+                        while (reader.Read())
+                        {
+                            counter++;
+                            // Check data
+                            Assert.AreEqual("en-GB", reader["UserCulture"].ToString(), "Culture incorrect");
+                        }
+                        Assert.AreEqual(1, counter, "More than one row returned for a single user");
+                    }
+                }
+            }
+        }
+
+
+
+        [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Delete"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void PreferencesDelete_InvalidUser_ExceptionThrown()
+        {
+            User user = new User(new MailAddress("fdsa@asdfasdf.com"), new Password("Hello"), "Hi");
+            user.Preferences.Delete();
+        }
+
+        [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Delete"), TestCategory("Successful")]
+        [TestMethod]
+        public void PreferencesDelete_ValidUser_Successful()
+        {
+            User user = new User(10);
+            using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+            {
+                con.Open();
+                using (MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.Connection = con;
+                    cmd.CommandText = "SELECT * FROM preferences WHERE UserID = @uid;";
+                    cmd.Parameters.AddWithValue("@uid", user.ID);
+                    cmd.Prepare();
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        Assert.IsFalse(reader.HasRows, "Preferences found after deleted");
+                    }
+                }
+            }
+            user.Preferences.Create();
+            user.Delete();
+            using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+            {
+                con.Open();
+                using (MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.Connection = con;
+                    cmd.CommandText = "SELECT * FROM preferences WHERE UserID = @uid;";
+                    cmd.Parameters.AddWithValue("@uid", user.ID);
+                    cmd.Prepare();
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        Assert.IsFalse(reader.HasRows, "Preferences found after user deleted");
+                    }
+                }
+            }
+            TestManager.Reset().Wait();
+        }
         [ClassInitialize]
         public static void Initialize(TestContext ctx)
         {
