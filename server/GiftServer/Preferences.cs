@@ -270,6 +270,10 @@ namespace GiftServer
             /// <returns></returns>
             public XmlDocument Fetch()
             {
+                if (ID == 0 || User.ID == 0)
+                {
+                    throw new InvalidOperationException("Cannot fetch preferences without ID");
+                }
                 XmlDocument info = new XmlDocument();
                 XmlElement container = info.CreateElement("preferences");
                 info.AppendChild(container);
@@ -290,6 +294,18 @@ namespace GiftServer
             /// <returns>The serialization</returns>
             public XmlDocument Fetch(User viewer)
             {
+                if (ID == 0 || User.ID == 0)
+                {
+                    throw new InvalidOperationException("Cannot fetch preferences without ID");
+                }
+                else if (viewer == null)
+                {
+                    throw new ArgumentNullException(nameof(viewer), "Viewer cannot be null");
+                }
+                else if (viewer.ID == 0)
+                {
+                    throw new ArgumentException("Viewer must be valid", nameof(viewer));
+                }
                 // Will never happen
                 if (viewer.Equals(User))
                 {

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Configuration;
 using System.Net.Mail;
+using System.Threading.Tasks;
+using System.Xml;
 using GiftServer.Data;
 using GiftServer.Security;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -233,6 +235,197 @@ namespace GiftServerTests
             }
             TestManager.Reset().Wait();
         }
+
+
+
+        [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void PreferencesEquals_NullObject_False()
+        {
+            User user = new User(1);
+            Assert.IsFalse(user.Preferences.Equals((object)null), "Null object compares true");
+        }
+
+        [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void PreferencesEquals_NonPreferences_False()
+        {
+            User user = new User(1);
+            Assert.IsFalse(user.Preferences.Equals(new User(1)), "User object compares true");
+        }
+
+        [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void PreferencesEquals_NullPreferences_False()
+        {
+            User user = new User(1);
+            Assert.IsFalse(user.Preferences.Equals((Preferences)null), "Null Preferences compares true");
+        }
+
+        [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void PreferencesEquals_DifferentPreferences_False()
+        {
+            User user = new User(1);
+            User tester = new User(2);
+            Assert.IsFalse(user.Preferences.Equals(tester.Preferences), "Different Preferences compare true");
+        }
+
+        [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void PreferencesEquals_DifferentPreferencesObject_False()
+        {
+            User user = new User(1);
+            User tester = new User(2);
+            object pref = tester.Preferences;
+            Assert.IsFalse(user.Preferences.Equals(pref), "Different Preferences object compares true");
+        }
+
+        [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void PreferencesEquals_SamePreferences_True()
+        {
+            User user = new User(1);
+            User tester = new User(1);
+            Assert.IsTrue(user.Preferences.Equals(tester.Preferences), "Same preferences compare false");
+        }
+
+        [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void PreferencesEquals_IdenticalPreferences_True()
+        {
+            User user = new User(1);
+            Assert.IsTrue(user.Preferences.Equals(user.Preferences), "Identical Preferences compare false");
+        }
+
+        [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void PreferencesEquals_SamePreferencesAsObject_True()
+        {
+            User user = new User(1);
+            User tester = new User(1);
+            object pref = tester.Preferences;
+            Assert.IsTrue(user.Preferences.Equals(pref), "Same Preferences compare false");
+        }
+
+        [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestMethod]
+        public void PreferencesEquals_IdenticalPreferencesAsObject_True()
+        {
+            User user = new User(1);
+            Assert.IsTrue(user.Preferences.Equals((object)user.Preferences), "Identical Preferences as object compare false");
+        }
+
+
+
+        [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void PreferencesFetch_InvalidUser_ExceptionThrown()
+        {
+            User user = new User(new MailAddress("fdsa@fdsafdsa.com"), new Password("Hello World"), "He");
+            user.Preferences.Fetch();
+        }
+
+        [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void PreferencesFetch_ZeroID_ExceptionThrown()
+        {
+            User user = new User(1);
+            user.Preferences.Delete();
+            try
+            {
+                user.Preferences.Fetch();
+            }
+            catch (InvalidOperationException e)
+            {
+                TestManager.Reset().Wait();
+                throw e;
+            }
+        }
+
+        [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void PreferencesFetch_InvalidUserWithViewer_ExceptionThrown()
+        {
+            User user = new User(new MailAddress("fdsa@fdsafdsa.com"), new Password("Hello World"), "He");
+            user.Preferences.Fetch(new User(1));
+        }
+
+        [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void PreferencesFetch_ZeroIDWithViewer_ExceptionThrown()
+        {
+            User user = new User(1);
+            user.Preferences.Delete();
+            try
+            {
+                user.Preferences.Fetch(new User(1));
+            }
+            catch (InvalidOperationException e)
+            {
+                TestManager.Reset().Wait();
+                throw e;
+            }
+        }
+
+        [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void PreferencesFetch_NullViewer_ExceptionThrown()
+        {
+            User user = new User(1);
+            user.Preferences.Fetch(null);
+        }
+
+        [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("ExceptionThrown")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void PreferencesFetch_InvalidViewer_ExceptionThrown()
+        {
+            User user = new User(1);
+            user.Preferences.Fetch(new User(new MailAddress("Hello@goodbye.com"), new Password("Hi"), "hello"));
+        }
+
+        [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("Successful")]
+        [TestMethod]
+        public void PreferencesFetch_ValidData_PreferencesFetched()
+        {
+            User user = new User(1);
+            XmlDocument doc = user.Preferences.Fetch();
+            Assert.AreEqual("preferences", doc.DocumentElement.Name, "Name mismatch");
+            XmlElement id = (XmlElement)doc.GetElementsByTagName("preferenceId")[0];
+            Assert.AreEqual(user.Preferences.ID.ToString(), id.InnerText, "Preference ID mismatch");
+            XmlElement culture = (XmlElement)doc.GetElementsByTagName("culture")[0];
+            Assert.AreEqual(user.Preferences.Culture, id.InnerText, "Preference Culture mismatch");
+        }
+
+        [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("Successful")]
+        [TestMethod]
+        public void PreferencesFetch_UnauthorizedViewer_BareFetch()
+        {
+            User user = new User(1);
+            XmlDocument doc = user.Preferences.Fetch(new User(2));
+            Assert.AreEqual("preferences", doc.DocumentElement.Name, "Name mismatch");
+        }
+
+        [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("Successful")]
+        [TestMethod]
+        public void PreferencesFetch_ValidViewer_CompleteFetch()
+        {
+            User user = new User(1);
+            XmlDocument doc = user.Preferences.Fetch(user);
+            Assert.AreEqual("preferences", doc.DocumentElement.Name, "Name mismatch");
+            XmlElement id = (XmlElement)doc.GetElementsByTagName("preferenceId")[0];
+            Assert.AreEqual(user.Preferences.ID.ToString(), id.InnerText, "Preference ID mismatch");
+            XmlElement culture = (XmlElement)doc.GetElementsByTagName("culture")[0];
+            Assert.AreEqual(user.Preferences.Culture, id.InnerText, "Preference Culture mismatch");
+        }
+
+
         [ClassInitialize]
         public static void Initialize(TestContext ctx)
         {
