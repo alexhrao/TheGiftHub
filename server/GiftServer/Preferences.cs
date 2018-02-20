@@ -99,7 +99,8 @@ namespace GiftServer
             /// 
             /// In addition, all this does is fetch the *User* associated with this preference set, then extract the preferences
             /// </remarks>
-            private Preferences(ulong preferenceId)
+            [Obsolete("Preferences should not be created from an ID, and should be created from the User class", true)]
+            public Preferences(ulong preferenceId)
             {
                 // Try and get preferences
                 ID = preferenceId;
