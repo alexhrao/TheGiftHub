@@ -67,7 +67,7 @@ namespace GiftServer
                     }
                     else if (value == null)
                     {
-                        throw new ArgumentNullException(nameof(value),"Null User Name");
+                        throw new ArgumentNullException(nameof(value), "Null User Name");
                     }
                     else
                     {
