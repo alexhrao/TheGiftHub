@@ -863,7 +863,7 @@ namespace GiftServer
                 _user.Update();
                 return "200";
             }
-            private string Update(Preferences preferences)
+            private string Update(Preference preferences)
             {
                 preferences.Culture = _dict["culture"];
                 // preferences.Theme = Convert.ToInt32(_dict["theme"]);

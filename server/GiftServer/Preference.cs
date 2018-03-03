@@ -8,9 +8,9 @@ namespace GiftServer
     namespace Data
     {
         /// <summary>
-        /// User Preferences
+        /// User Preference
         /// </summary>
-        public class Preferences : ISynchronizable, IFetchable, IEquatable<Preferences>
+        public class Preference : ISynchronizable, IFetchable, IEquatable<Preference>
         {
             /// <summary>
             /// The ID for this set of preferences
@@ -54,7 +54,7 @@ namespace GiftServer
             /// Fetch preferences tied to a specific user
             /// </summary>
             /// <param name="user">The User to fetch</param>
-            public Preferences(User user)
+            public Preference(User user)
             {
                 // Try and get preferences
                 User = user;
@@ -85,14 +85,14 @@ namespace GiftServer
             /// <param name="preferenceId">The ID to fetch</param>
             /// <remarks>
             /// This method arguably should not be called for the following reasons:
-            /// - A Preferences object is already fetched when a User is instantiated
+            /// - A Preference object is already fetched when a User is instantiated
             /// - A new preferences is created by creating a new User
             /// - This method also fetches the user, which is redundant.
             /// 
             /// In addition, all this does is fetch the *User* associated with this preference set, then extract the preferences
             /// </remarks>
             [Obsolete("Preferences should not be created from an ID, and should be created from the User class", true)]
-            public Preferences(ulong preferenceId)
+            public Preference(ulong preferenceId)
             {
                 // Try and get preferences
                 ID = preferenceId;
@@ -231,7 +231,7 @@ namespace GiftServer
             /// <returns>If the two are equivalent</returns>
             public override bool Equals(object obj)
             {
-                if (obj != null && obj is Preferences p)
+                if (obj != null && obj is Preference p)
                 {
                     return Equals(p);
                 }
@@ -245,7 +245,7 @@ namespace GiftServer
             /// </summary>
             /// <param name="prefs">The preference to compare</param>
             /// <returns>Whether or not they are equal</returns>
-            public bool Equals(Preferences prefs)
+            public bool Equals(Preference prefs)
             {
                 return prefs != null && prefs.ID == ID;
             }
@@ -258,11 +258,11 @@ namespace GiftServer
                 return ID.GetHashCode();
             }
             /// <summary>
-            /// Serializes the Preferences as an XML Document
+            /// Serializes the Preference as an XML Document
             /// </summary>
             /// <remarks>
             /// This XML Document has the following fields:
-            ///     - preferenceId: The PreferenceID for this set of User Preferences
+            ///     - preferenceId: The PreferenceID for this set of User Preference
             ///     - culture: The preferred culture for this user
             ///     
             /// This is all wrapped in a preferences container
@@ -306,7 +306,6 @@ namespace GiftServer
                 {
                     throw new ArgumentException("Viewer must be valid", nameof(viewer));
                 }
-                // Will never happen
                 if (viewer.Equals(User))
                 {
                     return Fetch();

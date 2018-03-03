@@ -93,7 +93,7 @@ namespace GiftServerTests
             User user = new User(new MailAddress("fdsa@asdfasdf.com"), new Password("Hello"), "Hi");
             user.Preferences.Culture = "fr-FR";
             user.Create();
-            // Assert that Preferences were created as well!
+            // Assert that Preference were created as well!
             using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
             {
                 con.Open();
@@ -136,7 +136,7 @@ namespace GiftServerTests
             User user = new User(1);
             user.Preferences.Culture = "fr-FR";
             user.Update();
-            // Assert that Preferences were created as well!
+            // Assert that Preference were created as well!
             using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
             {
                 con.Open();
@@ -259,7 +259,7 @@ namespace GiftServerTests
         public void PreferencesEquals_NullPreferences_False()
         {
             User user = new User(1);
-            Assert.IsFalse(user.Preferences.Equals((Preferences)null), "Null Preferences compares true");
+            Assert.IsFalse(user.Preferences.Equals((Preference)null), "Null Preferences compares true");
         }
 
         [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]

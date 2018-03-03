@@ -166,7 +166,7 @@ namespace GiftServer
             /// <summary>
             /// The user's preferences
             /// </summary>
-            public Preferences Preferences
+            public Preference Preferences
             {
                 get;
                 private set;
@@ -794,7 +794,7 @@ namespace GiftServer
                                 GoogleId = Convert.ToString(reader["UserGoogleID"]);
                                 FacebookId = Convert.ToString(reader["UserFacebookID"]);
 
-                                Preferences = new Preferences(this);
+                                Preferences = new Preference(this);
                             }
                             else
                             {
@@ -900,7 +900,7 @@ namespace GiftServer
                             }
                         }
                     }
-                    Preferences = new Preferences(this);
+                    Preferences = new Preference(this);
                     Preferences.Create();
                 }
             }
