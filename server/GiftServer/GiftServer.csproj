@@ -113,7 +113,7 @@
     <Compile Include="ListManager.cs" />
     <Compile Include="OAuthUser.cs" />
     <Compile Include="Occurrence.cs" />
-    <Compile Include="Preferences.cs" />
+    <Compile Include="Preference.cs" />
     <Compile Include="ProfileManager.cs" />
     <Compile Include="DashboardManager.cs" />
     <Compile Include="Exceptions.cs" />

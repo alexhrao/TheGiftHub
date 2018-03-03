@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Configuration;
 using System.Net.Mail;
-using System.Threading.Tasks;
 using System.Xml;
 using GiftServer.Data;
 using GiftServer.Security;
