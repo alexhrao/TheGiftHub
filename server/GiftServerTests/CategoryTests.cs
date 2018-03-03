@@ -239,7 +239,7 @@ namespace GiftServerTests
         }
 
         [ClassCleanup]
-        public static void Cleanup(TestContext ctx)
+        public static void Cleanup()
         {
             TestManager.Reset().Wait();
         }

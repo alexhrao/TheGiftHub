@@ -243,18 +243,18 @@ BEGIN
             (10, 'NoGifts', 'fdasdffdsasa@google.com', 0, 0, "fdsaASDf", "UaIOl0x77777IQH5OfdfAw555222", NULL, NULL);
             
 	-- Create preferences:
-	INSERT INTO gift_registry_db_test.preferences (UserID, UserCulture, UserTheme)
+	INSERT INTO gift_registry_db_test.preferences (PreferenceID, UserID, UserCulture, UserTheme)
 		VALUES 
-            (1, 'en-US', 0),
-            (2, 'fr-FR', 1),
-            (3, 'en-GB', 0),
-            (4, 'fr-FR', 1),
-            (5, 'en-US', 0),
-            (6, 'en-GB', 1),
-            (7, 'en-US', 0),
-            (8, 'fr-FR', 1),
-            (9, 'en-US', 0),
-            (10, 'fr-FR', 1);
+            (1, 1, 'en-US', 0),
+            (2, 2, 'fr-FR', 1),
+            (3, 3, 'en-GB', 0),
+            (4, 4, 'fr-FR', 1),
+            (5, 5, 'en-US', 0),
+            (6, 6, 'en-GB', 1),
+            (7, 7, 'en-US', 0),
+            (8, 8, 'fr-FR', 1),
+            (9, 9, 'en-US', 0),
+            (10, 10, 'fr-FR', 1);
             
 		
 	-- Create Password:

@@ -216,8 +216,8 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "DELETE FROM preferences WHERE UserID = @uid;";
-                        cmd.Parameters.AddWithValue("@uid", User.ID);
+                        cmd.CommandText = "DELETE FROM preferences WHERE PreferenceID = @pid;";
+                        cmd.Parameters.AddWithValue("@pid", ID);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                         ID = 0;
