@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Mail;
 using GiftServer.Data;
 using GiftServer.Exceptions;
+using GiftServer.Security;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GiftServerTests
@@ -130,16 +132,38 @@ namespace GiftServerTests
             Assert.AreEqual(3, group.Members.Count, "User Count is not correct");
         }
 
-
-        [TestCategory("Group")]
+        [TestCategory("Group"), TestCategory("Property")]
         [TestMethod]
-        public void TestMethod1()
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Group_NullName_ExceptionThrown()
         {
-
+            Group group = new Group(1)
+            {
+                Name = null
+            };
         }
 
+        [TestCategory("Group"), TestCategory("Property")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void Group_EmptyName_ExceptionThrown()
+        {
+            Group group = new Group(1)
+            {
+                Name = ""
+            };
+        }
 
-
+        [TestCategory("Group"), TestCategory("Property")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void Group_SpaceName_ExceptionThrown()
+        {
+            Group group = new Group(1)
+            {
+                Name = "   "
+            };
+        }
 
         [ClassInitialize]
         public static void Initialize(TestContext ctx)

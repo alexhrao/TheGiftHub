@@ -160,7 +160,7 @@ namespace GiftServer
                                 ID = groupID;
                                 Name = Convert.ToString(reader["GroupName"]);
                                 Description = Convert.ToString(reader["GroupDescription"]);
-                                admin = new User(Convert.ToUInt64(reader["AdminID"]));
+                                Admin = new User(Convert.ToUInt64(reader["AdminID"]));
                             }
                             else
                             {
@@ -208,7 +208,7 @@ namespace GiftServer
             {
                 // Error check users
                 members = members ?? new List<Member>();
-                members.RemoveAll(m => m == null || m.User == null || m.ID == admin.ID);
+                members.RemoveAll(m => m == null || m.User == null || m.ID == Admin.ID);
                 members = members.Distinct().ToList();
                 if (members.Exists(m => m.ID == 0))
                 {
@@ -322,7 +322,23 @@ namespace GiftServer
                     }
                 }
             }
-
+            /// <summary>
+            /// Transfer ownership of this group to a new user
+            /// </summary>
+            /// <param name="newAdmin">The new admin</param>
+            public void TransferAdmin(User newAdmin)
+            {
+                // Check newAdmin is in group, AND not a child
+                if (newAdmin == null)
+                {
+                    throw new ArgumentNullException(nameof(newAdmin), "New Admin cannot be null");
+                }
+                else if (members.Exists(m => m.User.Equals(newAdmin) && !m.IsChild))
+                {
+                    // Not in group, not a child
+                    Admin = newAdmin;
+                }
+            }
             /// <summary>
             /// Add a user to the group
             /// </summary>
