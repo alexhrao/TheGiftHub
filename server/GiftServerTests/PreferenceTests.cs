@@ -200,21 +200,6 @@ namespace GiftServerTests
         public void PreferencesDelete_ValidUser_Successful()
         {
             User user = new User(10);
-            using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
-            {
-                con.Open();
-                using (MySqlCommand cmd = new MySqlCommand())
-                {
-                    cmd.Connection = con;
-                    cmd.CommandText = "SELECT * FROM preferences WHERE UserID = @uid;";
-                    cmd.Parameters.AddWithValue("@uid", user.ID);
-                    cmd.Prepare();
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        Assert.IsFalse(reader.HasRows, "Preferences found after deleted");
-                    }
-                }
-            }
             user.Preferences.Create();
             user.Delete();
             using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
@@ -399,7 +384,7 @@ namespace GiftServerTests
             XmlElement id = (XmlElement)doc.GetElementsByTagName("preferenceId")[0];
             Assert.AreEqual(user.Preferences.ID.ToString(), id.InnerText, "Preference ID mismatch");
             XmlElement culture = (XmlElement)doc.GetElementsByTagName("culture")[0];
-            Assert.AreEqual(user.Preferences.Culture, id.InnerText, "Preference Culture mismatch");
+            Assert.AreEqual(user.Preferences.Culture, culture.InnerText, "Preference Culture mismatch");
         }
 
         [TestCategory("Preferences"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("Successful")]
@@ -421,7 +406,7 @@ namespace GiftServerTests
             XmlElement id = (XmlElement)doc.GetElementsByTagName("preferenceId")[0];
             Assert.AreEqual(user.Preferences.ID.ToString(), id.InnerText, "Preference ID mismatch");
             XmlElement culture = (XmlElement)doc.GetElementsByTagName("culture")[0];
-            Assert.AreEqual(user.Preferences.Culture, id.InnerText, "Preference Culture mismatch");
+            Assert.AreEqual(user.Preferences.Culture, culture.InnerText, "Preference Culture mismatch");
         }
 
 

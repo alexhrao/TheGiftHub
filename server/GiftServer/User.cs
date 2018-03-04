@@ -707,6 +707,7 @@ namespace GiftServer
                 Email = email;
                 Password = password;
                 Name = name;
+                Preferences = new Preference(this);
             }
             /// <summary>
             /// Resets their password
@@ -900,7 +901,7 @@ namespace GiftServer
                             }
                         }
                     }
-                    Preferences = new Preference(this);
+                    Preferences = Preferences ?? new Preference(this);
                     Preferences.Create();
                 }
             }
