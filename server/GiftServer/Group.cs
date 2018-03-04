@@ -197,7 +197,6 @@ namespace GiftServer
                 Admin = admin;
                 Name = name;
             }
-            // Eventually, need to add support for children!
             /// <summary>
             /// Create a new group with specified members
             /// </summary>
