@@ -578,7 +578,7 @@ namespace GiftServer
                             else
                             {
                                 Gift gift = new Gift(gid);
-                                if (gift.Groups.FindAll(g => g.Users.Exists(u => u.ID == _user.ID)).Count == 0)
+                                if (gift.Groups.FindAll(g => g.Members.Exists(u => u.ID == _user.ID)).Count == 0)
                                 {
                                     _response.StatusCode = 403;
                                     message = "Forbidden - You are not in any common groups with this gift.";

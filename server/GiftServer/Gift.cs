@@ -1019,7 +1019,7 @@ public int Release(User realeser, int amount)
                     dateReceived.InnerText = DateReceived.HasValue ? DateReceived.Value.ToString("yyyy-MM-dd") : "";
                     XmlElement groups = info.CreateElement("groups");
                     // only attach group if viewer is also in that group
-                    foreach (Group group in Groups.FindAll(group => group.Users.Exists(u => u.ID == viewer.ID)))
+                    foreach (Group group in Groups.FindAll(group => group.Members.Exists(u => u.ID == viewer.ID)))
                     {
                         XmlElement groupElem = info.CreateElement("group");
                         groupElem.InnerText = group.ID.ToString();

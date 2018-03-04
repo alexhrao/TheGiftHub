@@ -51,7 +51,7 @@ namespace GiftServer
                     groupMenu.AppendChild(rightArrow);
                     HtmlNode users = HtmlNode.CreateNode("<ul></ul>");
                     users.AddClass("dropdown-menu");
-                    foreach (User member in group.Users)
+                    foreach (User member in group.Members)
                     {
                         // Add user to navbar
                         if (user.ID != member.ID)

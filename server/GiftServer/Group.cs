@@ -3,6 +3,7 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using System.Xml;
 
 namespace GiftServer
@@ -30,14 +31,37 @@ namespace GiftServer
                 get;
                 private set;
             } = 0;
+            private string name = "";
             /// <summary>
             /// The name of this group
             /// </summary>
-            public string Name;
+            public string Name
+            {
+                get
+                {
+                    return name;
+                }
+                set
+                {
+                    if (value == null)
+                    {
+                        throw new ArgumentNullException(nameof(value), "Name must not be null");
+                    }
+                    else if (String.IsNullOrWhiteSpace(value))
+                    {
+                        throw new ArgumentException("Name must not be empty or space", nameof(value));
+                    }
+                    else
+                    {
+                        name = value;
+                    }
+                }
+            }
             /// <summary>
             /// The description for this group
             /// </summary>
             public string Description;
+            private User admin;
             /// <summary>
             /// The Administrator for this group (An ordinary user in all other respects, however)
             /// </summary>
@@ -47,21 +71,31 @@ namespace GiftServer
                 {
                     return admin;
                 }
-                set
+                private set
                 {
-                    admin = value;
+                    if (value == null)
+                    {
+                        throw new ArgumentNullException(nameof(value), "Admin must not be null");
+                    }
+                    else if (value.ID == 0)
+                    {
+                        throw new ArgumentException("Admin must be a valid user", nameof(value));
+                    }
+                    else
+                    {
+                        admin = value;
+                    }
                 }
             }
-            private User admin;
-            private List<User> users = new List<User>();
+            private List<Member> members = new List<Member>();
             /// <summary>
             /// A list of all members including the administrator
             /// </summary>
-            public List<User> Users
+            public List<Member> Members
             {
                 get
                 {
-                    return new List<User>(users)
+                    return new List<Member>(members)
                     {
                         Admin
                     };
@@ -77,7 +111,7 @@ namespace GiftServer
                     List<Event> events = new List<Event>();
                     // For each User in this group, get all their events.
                     // BUT: filter that by existing in that events groups!
-                    foreach (User member in Users)
+                    foreach (User member in Members)
                     {
                         events.AddRange(member.GetEvents(this));
                     }
@@ -92,7 +126,7 @@ namespace GiftServer
                 get
                 {
                     List<Gift> gifts = new List<Gift>();
-                    foreach (User member in Users)
+                    foreach (User member in Members)
                     {
                         gifts.AddRange(member.Gifts.FindAll(gift => gift.Groups.Exists(group => group.ID == ID)));
                     }
@@ -106,6 +140,10 @@ namespace GiftServer
             /// <param name="groupID">The group's ID</param>
             public Group(ulong groupID)
             {
+                if (groupID == 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(groupID), "Group ID must be positive");
+                }
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
                     con.Open();
@@ -133,7 +171,7 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "SELECT groups_users.UserID FROM groups_users WHERE groups_users.GroupID = @gid AND NOT groups_users.UserID = @aid;";
+                        cmd.CommandText = "SELECT groups_users.UserID, groups_users.IsChild FROM groups_users WHERE groups_users.GroupID = @gid AND NOT groups_users.UserID = @aid;";
                         cmd.Parameters.AddWithValue("@gid", ID);
                         cmd.Parameters.AddWithValue("@aid", Admin.ID);
                         cmd.Prepare();
@@ -141,7 +179,9 @@ namespace GiftServer
                         {
                             while (reader.Read())
                             {
-                                users.Add(new User(Convert.ToUInt64(reader["UserID"])));
+                                Members.Add(new Member(
+                                    new User(Convert.ToUInt64(reader["UserID"])),
+                                    Convert.ToBoolean(reader["IsChild"])));
                             }
                         }
                     }
@@ -163,12 +203,22 @@ namespace GiftServer
             /// </summary>
             /// <param name="admin">The administrator for this group</param>
             /// <param name="name">The name of this group</param>
-            /// <param name="users">The members of this group (excluding the admin)</param>
-            public Group(User admin, string name, List<User> users)
+            /// <param name="members">The members of this group (excluding the admin)</param>
+            public Group(User admin, string name, List<Member> members) : 
+                this(admin, name)
             {
-                admin = Admin;
-                Name = name;
-                this.users = users;
+                // Error check users
+                members = members ?? new List<Member>();
+                members.RemoveAll(m => m == null || m.User == null || m.ID == admin.ID);
+                members = members.Distinct().ToList();
+                if (members.Exists(m => m.ID == 0))
+                {
+                    throw new ArgumentException("ID-less user found!", nameof(members));
+                }
+                else
+                {
+                    this.members = members;
+                }
             }
             /// <summary>
             /// Create this group in the database
@@ -190,15 +240,16 @@ namespace GiftServer
                         cmd.ExecuteNonQuery();
                         ID = Convert.ToUInt64(cmd.LastInsertedId);
                     }
-                    foreach (User user in Users)
+                    foreach (Member member in Members)
                     {
                         using (MySqlCommand cmd = new MySqlCommand())
                         {
                             cmd.Connection = con;
                             cmd.CommandText = "INSERT INTO groups_users (GroupID, UserID, IsChild) "
-                                            + "VALUES (@gid, @uid, FALSE);";
+                                            + "VALUES (@gid, @uid, @isc);";
                             cmd.Parameters.AddWithValue("@gid", ID);
-                            cmd.Parameters.AddWithValue("@uid", user.ID);
+                            cmd.Parameters.AddWithValue("@uid", member.ID);
+                            cmd.Parameters.AddWithValue("@isc", member.IsChild);
                             cmd.Prepare();
                             cmd.ExecuteNonQuery();
                         }
@@ -247,7 +298,7 @@ namespace GiftServer
                 {
                     Remove(gift);
                 }
-                foreach (User member in users)
+                foreach (User member in members)
                 {
                     // Use w/o ADMIN to remove
                     Remove(member);
@@ -463,16 +514,19 @@ namespace GiftServer
                 XmlElement admin = info.CreateElement("adminId");
                 admin.InnerText = Admin.ID.ToString();
                 XmlElement members = info.CreateElement("members");
-                foreach (User user in users)
+                foreach (Member member in members)
                 {
-                    XmlElement member = info.CreateElement("member");
+                    XmlElement mem = info.CreateElement("member");
                     XmlElement userId = info.CreateElement("userId");
                     XmlElement userName = info.CreateElement("userName");
-                    userId.InnerText = user.ID.ToString();
-                    userName.InnerText = user.Name;
-                    member.AppendChild(userId);
-                    member.AppendChild(userName);
-                    members.AppendChild(member);
+                    XmlElement userChildStatus = info.CreateElement("isChild");
+                    userId.InnerText = member.User.ID.ToString();
+                    userName.InnerText = member.User.Name;
+                    userChildStatus.InnerText = member.IsChild ? "1" : "0";
+                    mem.AppendChild(userId);
+                    mem.AppendChild(userName);
+                    mem.AppendChild(userChildStatus);
+                    members.AppendChild(mem);
                 }
 
                 container.AppendChild(id);
