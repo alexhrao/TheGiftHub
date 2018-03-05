@@ -17,7 +17,7 @@ namespace GiftServerTests
     public class UserTests
     {
         private static Tuple<string, byte[]>[] images;
-        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Instantiate")]
         [TestMethod]
         [ExpectedException(typeof(UserNotFoundException))]
         public void UserInstantiate_ZeroID_ExceptionThrown()
@@ -25,7 +25,7 @@ namespace GiftServerTests
             User user = new User(0);
         }
 
-        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Instantiate")]
         [TestMethod]
         [ExpectedException(typeof(UserNotFoundException))]
         public void UserInstantiate_InvalidID_ExceptionThrown()
@@ -34,7 +34,7 @@ namespace GiftServerTests
             User user = new User(1000);
         }
 
-        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Instantiate")]
         [TestMethod]
         [ExpectedException(typeof(UserNotFoundException))]
         public void UserInstantiate_InvalidHash_ExceptionThrown()
@@ -42,7 +42,7 @@ namespace GiftServerTests
             User user = new User("123445");
         }
 
-        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Instantiate")]
         [TestMethod]
         [ExpectedException(typeof(UserNotFoundException))]
         public void UserInstantiate_InvalidEmail_ExceptionThrown()
@@ -50,7 +50,7 @@ namespace GiftServerTests
             User user = new User(new MailAddress("myTest@hotmail.com"));
         }
 
-        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Instantiate")]
         [TestMethod]
         [ExpectedException(typeof(InvalidPasswordException))]
         public void UserInstantiate_InvalidPassword_ExceptionThrown()
@@ -58,7 +58,7 @@ namespace GiftServerTests
             User user = new User(new MailAddress("alexhrao@gmail.com"), "HelloWorld");
         }
 
-        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Instantiate")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void UserInstantiate_NullEmail_ExceptionThrown()
@@ -66,7 +66,7 @@ namespace GiftServerTests
             User user = new User((MailAddress) null);
         }
 
-        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Instantiate")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void UserInstantiate_NullPassword_ExceptionThrown()
@@ -74,7 +74,7 @@ namespace GiftServerTests
             User user = new User(new MailAddress("alexhrao@gmail.com"), null, "hello");
         }
 
-        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Instantiate")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void UserInstantiate_NullName_ExceptionThrown()
@@ -82,7 +82,7 @@ namespace GiftServerTests
             User user = new User(new MailAddress("alexhrao@gmail.com"), new Password("Hello World"), null);
         }
 
-        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Instantiate")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void UserInstantiate_EmptyName_ExceptionThrown()
@@ -90,7 +90,7 @@ namespace GiftServerTests
             User user = new User(new MailAddress("alexhrao@gmail.com"), new Password("Hello World"), "");
         }
 
-        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Instantiate")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void UserInstantiate_SpaceName_ExceptionThrown()
@@ -98,7 +98,7 @@ namespace GiftServerTests
             User user = new User(new MailAddress("alexhrao@gmail.com"), new Password("Hello World"), "   ");
         }
 
-        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Instantiate")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void UserInstantiate_NullStringPassword_ExceptionThrown()
@@ -106,7 +106,7 @@ namespace GiftServerTests
             User user = new User(new MailAddress("alexhrao@gmail.com"), null);
         }
 
-        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Instantiate")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void UserInstantiate_EmptyPassword_ExceptionThrown()
@@ -114,7 +114,7 @@ namespace GiftServerTests
             User user = new User(new MailAddress("alexhrao@gmail.com"), "");
         }
 
-        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Instantiate")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void UserInstantiate_NullHash_ExceptionThrown()
@@ -122,7 +122,7 @@ namespace GiftServerTests
             User user = new User((string) null);
         }
 
-        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Instantiate")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void UserInstantiate_EmptyHash_ExceptionThrown()
@@ -130,7 +130,7 @@ namespace GiftServerTests
             User user = new User("");
         }
 
-        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Instantiate")]
         [TestMethod]
         public void UserInstantiate_ValidCredentials_ExistingUser()
         {
@@ -139,14 +139,14 @@ namespace GiftServerTests
             Assert.AreEqual("Alex Rao", user.Name, "Incorrect User was fetched!");
         }
 
-        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("Successful"), TestCategory("OAuth")]
+        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("OAuth")]
         [TestMethod]
         public void UserInstantiate_ValidGoogleData_ExistingUser()
         {
             // Need valid (fake) GoogleUserID
         }
 
-        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("Successful"), TestCategory("OAuth")]
+        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("OAuth")]
         [TestMethod]
         public void UserInstantiate_ValidFacebookData_ExistingUser()
         {
@@ -154,7 +154,7 @@ namespace GiftServerTests
         }
         /*
          * This should be handled in GoogleUser, FacebookUser tests, respectively
-        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown"), TestCategory("OAuth")]
+        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("OAuth")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void UserInstantiate_InvalidGoogleData_ExceptionThrown()
@@ -162,7 +162,7 @@ namespace GiftServerTests
             GoogleUser user = new GoogleUser("12345");
         }
 
-        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown"), TestCategory("OAuth")]
+        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("OAuth")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void UserInstantiate_InvalidFacebookData_ExceptionThrown()
@@ -171,7 +171,7 @@ namespace GiftServerTests
         }
         */
 
-        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown"), TestCategory("OAuth")]
+        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("OAuth")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void UserInstantiate_NullOAuth_ExceptionThrown()
@@ -179,7 +179,7 @@ namespace GiftServerTests
             User user = new User((OAuthUser)null, (Action<MailAddress>)null);
         }
 
-        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown"), TestCategory("OAuth")]
+        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("OAuth")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void UserInstantiate_NullOAuthValidPass_ExceptionThrown()
@@ -187,7 +187,7 @@ namespace GiftServerTests
             new User((OAuthUser)null, "HelloWorld123");
         }
 
-        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown"), TestCategory("OAuth")]
+        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("OAuth")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void UserInstantiate_NullOAuthNullPass_ExceptionThrown()
@@ -195,7 +195,7 @@ namespace GiftServerTests
             new User((OAuthUser)null, (string)null);
         }
 
-        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("ExceptionThrown"), TestCategory("OAuth")]
+        [TestCategory("User"), TestCategory("Instantiate"), TestCategory("OAuth")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void UserInstantiate_ValidOAuthNullPass_ExceptionThrown()
@@ -204,9 +204,7 @@ namespace GiftServerTests
             new User((OAuthUser)null, (string)null);
         }
 
-
-
-        [TestCategory("User"), TestCategory("Property"), TestCategory("Email"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Email")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void UserProperty_NullEmail_ExceptionThrown()
@@ -217,7 +215,7 @@ namespace GiftServerTests
             };
         }
 
-        [TestCategory("User"), TestCategory("Property"), TestCategory("Email"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Email")]
         [TestMethod]
         public void UserProperty_ValidEmail_EmailChanged()
         {
@@ -228,7 +226,7 @@ namespace GiftServerTests
             Assert.AreEqual("alex.rao@southernco.edu", user.Email.Address, "Email was not changed!");
         }
 
-        [TestCategory("User"), TestCategory("Property"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Name")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void UserProperty_NullName_ExceptionThrown()
@@ -239,7 +237,7 @@ namespace GiftServerTests
             };
         }
 
-        [TestCategory("User"), TestCategory("Property"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Name")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void UserProperty_EmptyName_ExceptionThrown()
@@ -250,7 +248,7 @@ namespace GiftServerTests
             };
         }
 
-        [TestCategory("User"), TestCategory("Property"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Name")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void UserProperty_SpaceName_ExceptionThrown()
@@ -261,7 +259,7 @@ namespace GiftServerTests
             };
         }
 
-        [TestCategory("User"), TestCategory("Property"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Name")]
         [TestMethod]
         public void UserProperty_ValidName_NameChanged()
         {
@@ -272,7 +270,7 @@ namespace GiftServerTests
             Assert.AreEqual(user.Name, "Ale-Alejandro", "Name was not changed");
         }
 
-        [TestCategory("User"), TestCategory("Property"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Gift")]
         [TestMethod]
         public void UserProperty_Gifts_GiftReturned()
         {
@@ -282,7 +280,7 @@ namespace GiftServerTests
             Assert.AreEqual(4UL, gifts[0].ID, "Wrong gift fetched");
         }
 
-        [TestCategory("User"), TestCategory("Property"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Gift")]
         [TestMethod]
         public void UserProperty_Gifts_NoGifts()
         {
@@ -291,7 +289,7 @@ namespace GiftServerTests
             Assert.IsTrue(gifts.Count == 0, "Gifts returned when none should have been");
         }
 
-        [TestCategory("User"), TestCategory("Property"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Gift")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void UserProperty_GiftsNoID_ExceptionThrown()
@@ -300,7 +298,7 @@ namespace GiftServerTests
             List<Gift> g = user.Gifts;
         }
 
-        [TestCategory("User"), TestCategory("Property"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Group")]
         [TestMethod]
         public void UserProperty_Groups_GroupsReturned()
         {
@@ -312,7 +310,7 @@ namespace GiftServerTests
             Assert.IsTrue(groups.Exists(g => g.ID == 3), "Group 3 was not fetched");
         }
 
-        [TestCategory("User"), TestCategory("Property"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Group")]
         [TestMethod]
         public void UserProperty_Groups_NoGroups()
         {
@@ -320,7 +318,7 @@ namespace GiftServerTests
             Assert.IsTrue(user.Groups.Count == 0, "Groups fetched when none should have been");
         }
 
-        [TestCategory("User"), TestCategory("Property"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Group")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void UserProperty_GroupsNoID_ExceptionThrown()
@@ -329,7 +327,7 @@ namespace GiftServerTests
             List<Group> g = user.Groups;
         }
 
-        [TestCategory("User"), TestCategory("Property"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Event")]
         [TestMethod]
         public void UserProperty_Events_EventsReturned()
         {
@@ -342,7 +340,7 @@ namespace GiftServerTests
             Assert.IsTrue(events.Exists(e => e.ID == 4), "Event 4 was not fetched");
         }
 
-        [TestCategory("User"), TestCategory("Property"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Event")]
         [TestMethod]
         public void UserProperty_Events_NoEvents()
         {
@@ -350,7 +348,7 @@ namespace GiftServerTests
             Assert.IsTrue(user.Events.Count == 0, "Events fetched when none should have");
         }
 
-        [TestCategory("User"), TestCategory("Property"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Event")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void UserProperty_EventsNoID_ExceptionThrown()
@@ -359,7 +357,7 @@ namespace GiftServerTests
             List<Event> e = user.Events;
         }
 
-        [TestCategory("User"), TestCategory("Property"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Reservation")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void UserProperty_ReservationsNoID_ExceptionThrown()
@@ -368,7 +366,7 @@ namespace GiftServerTests
             List<Reservation> res = user.Reservations;
         }
 
-        [TestCategory("User"), TestCategory("Property"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Reservation")]
         [TestMethod]
         public void UserProperty_Reservations_NoReservations()
         {
@@ -376,7 +374,7 @@ namespace GiftServerTests
             List<Reservation> res = user.Reservations;
             Assert.IsTrue(res.Count == 0, "Fetched non-existent reservations");
         }
-        [TestCategory("User"), TestCategory("Property"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Property"), TestCategory("Reservation")]
         [TestMethod]
         public void UserProperty_Reservations_Reservations()
         {
@@ -385,9 +383,7 @@ namespace GiftServerTests
             Assert.AreEqual(1, res.Count, "Fetched a different number of records; expected 1, got " + res.Count);
         }
 
-
-
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Create"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Create")]
         [TestMethod]
         [ExpectedException(typeof(DuplicateUserException))]
         public void UserCreate_DuplicateEmail_ExceptionThrown()
@@ -399,7 +395,7 @@ namespace GiftServerTests
             user.Create();
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Create"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Create")]
         [TestMethod]
         public void UserCreate_ValidData_NewUser()
         {
@@ -414,7 +410,7 @@ namespace GiftServerTests
             Assert.IsNotNull(tester.Name, "Name was not sent");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Create"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Create")]
         [TestMethod]
         [ExpectedException(typeof(DuplicateUserException))]
         public void UserCreate_DuplicateGoogleID_ExceptionThrown()
@@ -426,7 +422,7 @@ namespace GiftServerTests
             user.Create();
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Create"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Create")]
         [TestMethod]
         [ExpectedException(typeof(DuplicateUserException))]
         public void UserCreate_DuplicateFacebookID_ExceptionThrown()
@@ -438,9 +434,7 @@ namespace GiftServerTests
             user.Create();
         }
 
-
-
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Update"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Update")]
         [TestMethod]
         public void UserUpdate_ValidUser_NewName()
         {
@@ -453,7 +447,7 @@ namespace GiftServerTests
             Assert.AreEqual("Alejandro", tester.Name, "Name not updated");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Update"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Update")]
         [TestMethod]
         public void UserUpdate_ValidUser_NewEmail()
         {
@@ -466,7 +460,7 @@ namespace GiftServerTests
             Assert.AreEqual("alexhrao@outlook.com", tester.Email.Address, "Email not updated");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Update"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Update")]
         [TestMethod]
         [ExpectedException(typeof(DuplicateUserException))]
         public void UserUpdate_DuplicateEmail_ExceptionThrown()
@@ -478,7 +472,7 @@ namespace GiftServerTests
             tester.Update();
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Update"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Update")]
         [TestMethod]
         public void UserUpdate_ValidUser_NewPassword()
         {
@@ -489,7 +483,7 @@ namespace GiftServerTests
             Assert.IsTrue(user.Password.Verify("HelloWorld2.0"), "Password not updated locally");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Update"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Update")]
         [TestMethod]
         public void UserUpdate_ValidUser_NewBirthDay()
         {
@@ -501,7 +495,7 @@ namespace GiftServerTests
             user.Update();
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Update"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Update")]
         [TestMethod]
         public void UserUpdate_ValidUser_RemoveBirth()
         {
@@ -513,7 +507,7 @@ namespace GiftServerTests
             user.Update();
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Update"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Update")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void UserUpdate_BirthMonthWithoutDay_ExceptionThrown()
@@ -526,7 +520,7 @@ namespace GiftServerTests
             user.Update();
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Update"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Update")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void UserUpdate_BirthDayWithoutMonth_ExceptionThrown()
@@ -539,7 +533,7 @@ namespace GiftServerTests
             user.Update();
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Update"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Update")]
         [TestMethod]
         [ExpectedException(typeof(DuplicateUserException))]
         public void UserUpdate_DuplicateGoogleID_ExceptionThrown()
@@ -551,7 +545,7 @@ namespace GiftServerTests
             user.Update();
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Create"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Update")]
         [TestMethod]
         [ExpectedException(typeof(DuplicateUserException))]
         public void UserUpdate_DuplicateFacebookID_ExceptionThrown()
@@ -563,8 +557,7 @@ namespace GiftServerTests
             user.Update();
         }
 
-
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Delete"), TestCategory("Exception Thrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Delete")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void UserDelete_Admin_ExceptionThrown()
@@ -573,7 +566,7 @@ namespace GiftServerTests
             user.Delete();
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Delete"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Delete")]
         [TestMethod]
         public void UserDelete_ValidUser_NoUser()
         {
@@ -604,7 +597,7 @@ namespace GiftServerTests
             Assert.AreEqual(0UL, user.ID, "UserID was not reset to 0");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Delete"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Delete")]
         [TestMethod]
         public void UserDelete_DeleteTwice_NoUser()
         {
@@ -615,9 +608,7 @@ namespace GiftServerTests
             user.Delete();
         }
 
-
-
-        [TestCategory("User"), TestCategory("Method"), TestCategory("SaveImage"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("SaveImage")]
         [TestMethod]
         public void SaveImage_NullInput_ImageRemoved()
         {
@@ -627,7 +618,7 @@ namespace GiftServerTests
             Assert.IsFalse(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User" + user.ID + ".png"), "User Image not deleted");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("SaveImage"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("SaveImage")]
         [TestMethod]
         public void SaveImage_EmptyInput_ImageRemoved()
         {
@@ -638,7 +629,7 @@ namespace GiftServerTests
             Assert.IsFalse(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User" + user.ID + ".png"), "User Image not deleted");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("SaveImage"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("SaveImage")]
         [TestMethod]
         public void SaveImage_ByteInput_ImageSaved()
         {
@@ -647,7 +638,7 @@ namespace GiftServerTests
             Assert.IsTrue(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User" + user.ID + ".png"), "User Image not saved");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("SaveImage"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("SaveImage")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void SaveImage_DeletedUser_ExceptionThrown()
@@ -656,9 +647,7 @@ namespace GiftServerTests
             user.SaveImage(TestManager.Image);
         }
 
-
-
-        [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveImage"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveImage")]
         [TestMethod]
         public void RemoveImage_NoSavedImage_NoException()
         {
@@ -667,7 +656,7 @@ namespace GiftServerTests
             Assert.IsFalse(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User" + user.ID + ".png"), "User Image not deleted");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveImage"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveImage")]
         [TestMethod]
         public void RemoveImage_SavedImage_ImageRemoved()
         {
@@ -676,7 +665,7 @@ namespace GiftServerTests
             Assert.IsFalse(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/User" + user.ID + ".png"), "User Image not deleted");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveImage"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveImage")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void RemoveImage_DeletedUser_ExceptionThrown()
@@ -685,9 +674,7 @@ namespace GiftServerTests
             user.RemoveImage();
         }
 
-
-
-        [TestCategory("User"), TestCategory("Method"), TestCategory("GetImage"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetImage")]
         [TestMethod]
         public void GetImage_ValidUser_CustomImage()
         {
@@ -697,7 +684,7 @@ namespace GiftServerTests
             Assert.AreEqual(Path.GetFileNameWithoutExtension(path), "User6", "Expected custom image, got " + Path.GetFileNameWithoutExtension(path));
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("GetImage"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetImage")]
         [TestMethod]
         public void GetImage_ValidUser_DefaultImage()
         {
@@ -707,7 +694,7 @@ namespace GiftServerTests
             Assert.AreEqual("default", Path.GetFileNameWithoutExtension(path), "Expected default image, got " + Path.GetFileNameWithoutExtension(path));
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("GetImage"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetImage")]
         [TestMethod]
         public void GetImage_ValidID_CustomImage()
         {
@@ -717,7 +704,7 @@ namespace GiftServerTests
             Assert.AreEqual("User1", Path.GetFileNameWithoutExtension(path), "Expected custom image, got " + Path.GetFileNameWithoutExtension(path));
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("GetImage"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetImage")]
         [TestMethod]
         public void GetImage_ValidID_DefaultImage()
         {
@@ -727,7 +714,7 @@ namespace GiftServerTests
             Assert.AreEqual("default", Path.GetFileNameWithoutExtension(path), "Expected default image, got " + Path.GetFileNameWithoutExtension(path));
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("GetImage"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetImage")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void GetImage_ZeroID_ExceptionThrown()
@@ -735,7 +722,7 @@ namespace GiftServerTests
             User.GetImage(0);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("GetImage"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetImage")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void GetImage_DeletedUser_ExceptionThrown()
@@ -746,9 +733,7 @@ namespace GiftServerTests
             string path = user.Image;
         }
 
-
-
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Reserve"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Reserve"), TestCategory("Gift")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void ReserveOne_NullGift_ExceptionThrown()
@@ -757,7 +742,7 @@ namespace GiftServerTests
             user.Reserve(null);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Reserve"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Reserve"), TestCategory("Gift")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void ReserveMany_NullGift_ExceptionThrown()
@@ -766,7 +751,7 @@ namespace GiftServerTests
             user.Reserve(null, 10);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Reserve"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Reserve"), TestCategory("Gift")]
         [TestMethod]
         [ExpectedException(typeof(ReservationOverflowException))]
         public void ReserveOne_FullReservations_ExceptionThrown()
@@ -775,7 +760,7 @@ namespace GiftServerTests
             user.Reserve(new Gift(6));
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Reserve"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Reserve"), TestCategory("Gift")]
         [TestMethod]
         public void ReserveMany_FullReservations_ZeroReturned()
         {
@@ -784,7 +769,7 @@ namespace GiftServerTests
             Assert.AreEqual(0, res, "Expected no reservations, " + res + " made");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Reserve"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Reserve"), TestCategory("Gift")]
         [TestMethod]
         public void ReserveOne_ValidGift_GiftReserved()
         {
@@ -792,7 +777,7 @@ namespace GiftServerTests
             user.Reserve(new Gift(7));
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Reserve"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Reserve"), TestCategory("Gift")]
         [TestMethod]
         public void ReserveThree_ValidGift_GiftReserved()
         {
@@ -801,9 +786,7 @@ namespace GiftServerTests
             Assert.AreEqual(3, numReserve, "Expected 3 gifts; " + numReserve + " were reserved");
         }
 
-
-
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Release"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Release"), TestCategory("Gift")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void ReleaseOne_NullGift_ExceptionThrown()
@@ -812,7 +795,7 @@ namespace GiftServerTests
             user.Release(null);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Release"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Release"), TestCategory("Gift")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void ReleaseMany_NullGift_ExceptionThrown()
@@ -821,7 +804,7 @@ namespace GiftServerTests
             user.Release(null, 10);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Release"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Release"), TestCategory("Gift")]
         [TestMethod]
         public void ReleaseOne_ValidGift_NoReservation()
         {
@@ -830,7 +813,7 @@ namespace GiftServerTests
             user.Release(gift);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Release"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Release"), TestCategory("Gift")]
         [TestMethod]
         public void ReleaseOne_NoReservations_NoChange()
         {
@@ -839,7 +822,7 @@ namespace GiftServerTests
             user.Release(gift);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Release"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Release"), TestCategory("Gift")]
         [TestMethod]
         public void ReleaseMany_ValidGift_AllReleased()
         {
@@ -849,7 +832,7 @@ namespace GiftServerTests
             Assert.AreEqual(5, released, "Expected release of 5 gifts; only released " + released);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Release"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Release"), TestCategory("Gift")]
         [TestMethod]
         public void ReleaseMany_ValidGift_PartialReleased()
         {
@@ -859,7 +842,7 @@ namespace GiftServerTests
             Assert.AreEqual(3, released, "Expected release of 3 gifts; got " + released);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Release"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Release"), TestCategory("Gift")]
         [TestMethod]
         public void ReleaseMany_NoReservations_NoChange()
         {
@@ -869,9 +852,7 @@ namespace GiftServerTests
             Assert.AreEqual(0, released, "Expected no releases, got " + released);
         }
 
-
-
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Purchase"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Purchase"), TestCategory("Gift")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void PurchaseOne_NullGift_ExceptionThrown()
@@ -880,7 +861,7 @@ namespace GiftServerTests
             user.Purchase(null);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Purchase"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Purchase"), TestCategory("Gift")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void PurchaseMany_NullGift_ExceptionThrown()
@@ -889,7 +870,7 @@ namespace GiftServerTests
             user.Purchase(null, 3);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Purchase"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Purchase"), TestCategory("Gift")]
         [TestMethod]
         public void PurchaseOne_ValidGift_OnePurchase()
         {
@@ -897,7 +878,7 @@ namespace GiftServerTests
             user.Purchase(new Gift(7));
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Purchase"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Purchase"), TestCategory("Gift")]
         [TestMethod]
         public void PurchaseMany_ValidGift_FullPurchase()
         {
@@ -906,7 +887,7 @@ namespace GiftServerTests
             Assert.AreEqual(3, purchased, "Did not purchase enough gifts");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Purchase"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Purchase"), TestCategory("Gift")]
         [TestMethod]
         public void PurchaseMany_ValidGift_PartialPurchase()
         {
@@ -915,9 +896,7 @@ namespace GiftServerTests
             Assert.AreEqual(1, purchased, "Purchased " + purchased + " When one was expected");
         }
 
-
-
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Return"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Return"), TestCategory("Gift")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void ReturnOne_NullGift_ExceptionThrown()
@@ -926,7 +905,7 @@ namespace GiftServerTests
             user.Return(null);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Return"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Return"), TestCategory("Gift")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void ReturnMany_NullGift_ExceptionThrown()
@@ -935,7 +914,7 @@ namespace GiftServerTests
             user.Return(null, 10);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Return"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Return"), TestCategory("Gift")]
         [TestMethod]
         public void ReturnOne_ValidGift_OneReturn()
         {
@@ -944,7 +923,7 @@ namespace GiftServerTests
             user.Return(gift);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Return"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Return"), TestCategory("Gift")]
         [TestMethod]
         public void ReturnMany_ValidGift_FullReturn()
         {
@@ -954,7 +933,7 @@ namespace GiftServerTests
             Assert.AreEqual(4, returned, "Expected to return 4, returned " + returned);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Return"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Return"), TestCategory("Gift")]
         [TestMethod]
         public void ReturnMany_ValidGift_PartialReturn()
         {
@@ -964,9 +943,7 @@ namespace GiftServerTests
             Assert.AreEqual(3, returned, "Expected to return 3, returned " + returned);
         }
 
-
-
-        [TestCategory("User"), TestCategory("Method"), TestCategory("GetGroups"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetGroups"), TestCategory("Group")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void GetGroups_NullUser_ExceptionThrown()
@@ -975,7 +952,7 @@ namespace GiftServerTests
             user.GetGroups(null);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("GetGroups"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetGroups"), TestCategory("Group")]
         [TestMethod]
         public void GetGroups_ValidCombination_GroupsFound()
         {
@@ -983,9 +960,6 @@ namespace GiftServerTests
             User target = new User(2);
             List<Group> groups = user.GetGroups(target);
             // The following groups SHOULD be present:
-            // GroupID 1
-            // GroupID 2
-            // GroupID 3
             Assert.IsTrue(groups.FindAll(g => g.ID == 1UL).Count == 1, "Unable to find Group with ID 1");
             Assert.IsTrue(groups.FindAll(g => g.ID == 2UL).Count == 1, "Unable to find Group with ID 2");
             Assert.IsTrue(groups.FindAll(g => g.ID == 3UL).Count == 1, "Unable to find Group with ID 3");
@@ -995,7 +969,7 @@ namespace GiftServerTests
             }
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("GetGroups"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetGroups"), TestCategory("Group")]
         [TestMethod]
         public void GetGroups_ValidCombination_NoGroupsFound()
         {
@@ -1009,9 +983,7 @@ namespace GiftServerTests
             }
         }
 
-
-
-        [TestCategory("User"), TestCategory("Method"), TestCategory("GetGifts"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetGifts"), TestCategory("Gift")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void GetGifts_NullUser_ExceptionThrown()
@@ -1020,7 +992,7 @@ namespace GiftServerTests
             user.GetGifts((User)null);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("GetGifts"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetGifts"), TestCategory("Gift")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void GetGifts_NullGroup_ExceptionThrown()
@@ -1029,7 +1001,7 @@ namespace GiftServerTests
             user.GetGifts((Group)null);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("GetGifts"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetGifts"), TestCategory("Gift")]
         [TestMethod]
         public void GetGifts_ValidUser_GiftFound()
         {
@@ -1041,7 +1013,7 @@ namespace GiftServerTests
             Assert.AreEqual(8UL, gifts[0].ID, "Incorrect ID of " + gifts[0].ID + " was fetched instead");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("GetGifts"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetGifts"), TestCategory("Gift")]
         [TestMethod]
         public void GetGifts_ValidUser_NoGifts()
         {
@@ -1052,7 +1024,7 @@ namespace GiftServerTests
             Assert.IsTrue(gifts.Count == 0, gifts.Count + " Gifts fetched; expected 0");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("GetGifts"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetGifts"), TestCategory("Gift")]
         [TestMethod]
         public void GetGifts_ValidGroup_GiftsFound()
         {
@@ -1064,7 +1036,7 @@ namespace GiftServerTests
             Assert.IsTrue(gifts[0].ID == 1, "Expected gift 1; Got gift " + gifts[0].ID);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("GetGifts"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetGifts"), TestCategory("Gift")]
         [TestMethod]
         public void GetGifts_ValidGroup_NoGifts()
         {
@@ -1075,9 +1047,7 @@ namespace GiftServerTests
             Assert.IsTrue(gifts.Count == 0, "Expected no gifts, Got " + gifts.Count);
         }
 
-
-
-        [TestCategory("User"), TestCategory("Method"), TestCategory("GetEvents"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetEvents"), TestCategory("Event")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void GetEvents_NullUser_ExceptionThrown()
@@ -1086,7 +1056,7 @@ namespace GiftServerTests
             user.GetEvents((User) null);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("GetEvents"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetEvents"), TestCategory("Event")]
         [TestMethod]
         public void GetEvents_ValidUser_EventFound()
         {
@@ -1100,7 +1070,7 @@ namespace GiftServerTests
             Assert.AreEqual(3, events.Count, events.Count + " events were fetched; 3 expected");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("GetEvents"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetEvents"), TestCategory("Event")]
         [TestMethod]
         public void GetEvents_ValidUser_NoEvents()
         {
@@ -1110,7 +1080,7 @@ namespace GiftServerTests
             Assert.AreEqual(0, events.Count, "Events were fetched");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("GetEvents"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetEvents"), TestCategory("Event")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void GetEvents_NullGroup_ExceptionThrown()
@@ -1119,7 +1089,7 @@ namespace GiftServerTests
             user.GetEvents((Group) null);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("GetEvents"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetEvents"), TestCategory("Event")]
         [TestMethod]
         public void GetEvents_ValidGroup_EventsFound()
         {
@@ -1132,7 +1102,7 @@ namespace GiftServerTests
             Assert.IsTrue(events.Exists(e => e.ID == 3), "Event with ID 3 was not found");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("GetEvents"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetEvents"), TestCategory("Event")]
         [TestMethod]
         public void GetEvents_ValidGroup_NoEvents()
         {
@@ -1142,9 +1112,7 @@ namespace GiftServerTests
             Assert.IsTrue(events.Count == 0, "Event count should be 0; got " + events.Count);
         }
 
-
-
-        [TestCategory("User"), TestCategory("Method"), TestCategory("AddOAuth"), TestCategory("OAuth"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("AddOAuth"), TestCategory("OAuth")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void AddOAuth_NullToken_ExceptionThrown()
@@ -1153,7 +1121,7 @@ namespace GiftServerTests
             user.AddOAuth(null);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("AddOAuth"), TestCategory("OAuth"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("AddOAuth"), TestCategory("OAuth")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void AddOAuth_ZeroID_ExceptionThrown()
@@ -1167,7 +1135,7 @@ namespace GiftServerTests
             throw new InvalidOperationException();
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("AddOAuth"), TestCategory("OAuth"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("AddOAuth"), TestCategory("OAuth")]
         [TestMethod]
         public void AddOAuth_ValidOAuth_OAuthAdded()
         {
@@ -1175,9 +1143,7 @@ namespace GiftServerTests
             // user.AddOAuth(new GoogleUser(TOKEN));
         }
 
-
-
-        [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveOAuth"), TestCategory("OAuth"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveOAuth"), TestCategory("OAuth")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void RemoveOAuth_NullToken_ExceptionThrown()
@@ -1186,7 +1152,7 @@ namespace GiftServerTests
             user.RemoveOAuth(null);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveOAuth"), TestCategory("OAuth"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveOAuth"), TestCategory("OAuth")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void RemoveOAuth_ZeroID_ExceptionThrown()
@@ -1197,7 +1163,7 @@ namespace GiftServerTests
             throw new InvalidOperationException();
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveOAuth"), TestCategory("OAuth"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("RemoveOAuth"), TestCategory("OAuth")]
         [TestMethod]
         public void RemoveOAuth_ValidOAuth_OAuthAdded()
         {
@@ -1207,7 +1173,7 @@ namespace GiftServerTests
 
 
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals")]
         [TestMethod]
         public void UserEquals_NullObject_False()
         {
@@ -1215,7 +1181,7 @@ namespace GiftServerTests
             Assert.IsFalse(user.Equals((object)null), "Null Object reported equal to User");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals")]
         [TestMethod]
         public void UserEquals_NonUser_False()
         {
@@ -1223,7 +1189,7 @@ namespace GiftServerTests
             Assert.IsFalse(user.Equals(1), "Non-User reported equal to User");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals")]
         [TestMethod]
         public void UserEquals_NullUser_False()
         {
@@ -1231,7 +1197,7 @@ namespace GiftServerTests
             Assert.IsFalse(user.Equals((User)null), "Null User reported equal to User");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals")]
         [TestMethod]
         public void UserEquals_DifferentUser_False()
         {
@@ -1240,7 +1206,7 @@ namespace GiftServerTests
             Assert.IsFalse(user.Equals(target), "Different Users reported equal");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals")]
         [TestMethod]
         public void UserEquals_SameUser_True()
         {
@@ -1248,7 +1214,7 @@ namespace GiftServerTests
             Assert.IsTrue(user.Equals(user), "User is not equal to itself");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals")]
         [TestMethod]
         public void UserEquals_IdenticalUsers_True()
         {
@@ -1257,7 +1223,7 @@ namespace GiftServerTests
             Assert.IsTrue(user.Equals(target), "User is not equal to copy of itself");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals")]
         [TestMethod]
         public void UserEquals_ThisZeroTargetValid_False()
         {
@@ -1266,7 +1232,7 @@ namespace GiftServerTests
             Assert.IsFalse(user.Equals(target), "Zero user equals non-zero user");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals")]
         [TestMethod]
         public void UserEquals_ThisValidTargetZero_False()
         {
@@ -1275,7 +1241,7 @@ namespace GiftServerTests
             Assert.IsFalse(user.Equals(target), "Non-zero user equals zero user");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals")]
         [TestMethod]
         public void UserEquals_ThisZeroTargetZero_False()
         {
@@ -1284,7 +1250,7 @@ namespace GiftServerTests
             Assert.IsFalse(user.Equals(target), "Zero users are reported equal");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Equals")]
         [TestMethod]
         public void UserEquals_SameZeroUser_False()
         {
@@ -1292,9 +1258,7 @@ namespace GiftServerTests
             Assert.IsFalse(user.Equals(user), "Same 0 user reported as equal to itself");
         }
 
-
-
-        [TestCategory("User"), TestCategory("Method"), TestCategory("GetHashCode"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetHashCode")]
         [TestMethod]
         public void UserHash_IdenticalUsers_SameHash()
         {
@@ -1303,7 +1267,7 @@ namespace GiftServerTests
             Assert.AreEqual(user1.GetHashCode(), user2.GetHashCode(), "Identical users have different hash codes");
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("GetHashCode"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("GetHashCode")]
         [TestMethod]
         public void UserHash_SameUser_SameHash()
         {
@@ -1311,9 +1275,7 @@ namespace GiftServerTests
             Assert.AreEqual(user.GetHashCode(), user.GetHashCode(), "Same user gives different hash codes");
         }
 
-        
-
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Fetch")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void UserFetch_ZeroID_ExceptionThrown()
@@ -1322,7 +1284,7 @@ namespace GiftServerTests
             XmlDocument doc = user.Fetch();
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Fetch")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void UserFetch_ViewerZeroID_ExceptionThrown()
@@ -1332,7 +1294,7 @@ namespace GiftServerTests
             XmlDocument doc = target.Fetch(user);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("ExceptionThrown")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Fetch")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void UserFetch_NullViewer_ExceptionThrown()
@@ -1341,7 +1303,7 @@ namespace GiftServerTests
             XmlDocument doc = user.Fetch(null);
         }
 
-        [TestCategory("User"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("Successful")]
+        [TestCategory("User"), TestCategory("Method"), TestCategory("Fetch")]
         [TestMethod]
         public void UserFetch_ValidUser_DataPresent()
         {

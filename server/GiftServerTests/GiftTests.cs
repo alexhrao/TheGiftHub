@@ -17,7 +17,7 @@ namespace GiftServerTests
     {
         private static Tuple<string, byte[]>[] images;
 
-        [TestCategory("Gift"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
+        [TestCategory("Gift"), TestCategory("Instantiate")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void GiftInstantiate_ZeroID_ExceptionThrown()
@@ -25,7 +25,7 @@ namespace GiftServerTests
             Gift gift = new Gift(0);
         }
 
-        [TestCategory("Gift"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
+        [TestCategory("Gift"), TestCategory("Instantiate")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void GiftInstantiate_InvalidID_ExceptionThrown()
@@ -33,7 +33,7 @@ namespace GiftServerTests
             Gift gift = new Gift(100);
         }
 
-        [TestCategory("Gift"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
+        [TestCategory("Gift"), TestCategory("Instantiate")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void GiftInstantiate_NullName_ExceptionThrown()
@@ -41,7 +41,7 @@ namespace GiftServerTests
             Gift gift = new Gift(null, new User(1));
         }
 
-        [TestCategory("Gift"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
+        [TestCategory("Gift"), TestCategory("Instantiate")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void GiftInstantiate_EmptyName_ExceptionThrown()
@@ -49,7 +49,7 @@ namespace GiftServerTests
             Gift gift = new Gift("", new User(1));
         }
 
-        [TestCategory("Gift"), TestCategory("Instantiate"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Instantiate")]
         [TestMethod]
         public void GiftInstantiate_ValidID_NewGift()
         {
@@ -57,7 +57,7 @@ namespace GiftServerTests
             Assert.AreEqual(1UL, gift.ID, "ID Mismatch");
         }
 
-        [TestCategory("Gift"), TestCategory("Instantiate"), TestCategory("ExceptionThrown")]
+        [TestCategory("Gift"), TestCategory("Instantiate")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void GiftInstantiate_NullUser_ExceptionThrown()
@@ -65,7 +65,7 @@ namespace GiftServerTests
             Gift gift = new Gift("Hello", null);
         }
 
-        [TestCategory("Gift"), TestCategory("Instantiate"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Instantiate")]
         [TestMethod]
         public void GiftInstantiate_ValidName_NewGift()
         {
@@ -73,9 +73,7 @@ namespace GiftServerTests
             Assert.AreEqual(0UL, gift.ID, "New Gift has non-zero ID");
         }
 
-
-
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("ExceptionThrown")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Name")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void GiftProperty_NullName_ExceptionThrown()
@@ -86,7 +84,7 @@ namespace GiftServerTests
             };
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("ExceptionThrown")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Name")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void GiftProperty_EmptyName_ExceptionThrown()
@@ -97,7 +95,7 @@ namespace GiftServerTests
             };
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("ExceptionThrown")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Name")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void GiftProperty_SpaceName_ExceptionThrown()
@@ -108,7 +106,7 @@ namespace GiftServerTests
             };
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Name")]
         [TestMethod]
         public void GiftProperty_ValidName_NameChanged()
         {
@@ -119,7 +117,7 @@ namespace GiftServerTests
             Assert.AreEqual("Hello World!", gift.Name, "Name was not changed correctly!");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Description")]
         [TestMethod]
         public void GiftProperty_NullDescription_NoDescription()
         {
@@ -130,7 +128,7 @@ namespace GiftServerTests
             Assert.IsTrue(null != gift.Description && String.IsNullOrEmpty(gift.Description), "Description has not been correctly removed");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Description")]
         [TestMethod]
         public void GiftProperty_EmptyDescription_NoDescription()
         {
@@ -141,7 +139,7 @@ namespace GiftServerTests
             Assert.IsTrue(null != gift.Description && String.IsNullOrEmpty(gift.Description), "Description has not been correctly removed");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Description")]
         [TestMethod]
         public void GiftProperty_WhiteSpaceDescription_DescriptionChanged()
         {
@@ -152,7 +150,7 @@ namespace GiftServerTests
             Assert.IsTrue(null != gift.Description && gift.Description == "    ", "Description has not been correctly modified");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Description")]
         [TestMethod]
         public void GiftProperty_ValidDescription_DescriptionChanged()
         {
@@ -163,9 +161,9 @@ namespace GiftServerTests
             Assert.IsTrue(null != gift.Description && gift.Description == "Hello world", "Description has not been correctly modified");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Url")]
         [TestMethod]
-        public void GiftProperty_NullURL_EmptyURL()
+        public void GiftProperty_NullUrl_EmptyUrl()
         {
             Gift gift = new Gift(1)
             {
@@ -174,9 +172,9 @@ namespace GiftServerTests
             Assert.IsTrue(gift.Url != null && String.IsNullOrEmpty(gift.Url), "Gift URL was not converted properly");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Url")]
         [TestMethod]
-        public void GiftProperty_EmptyURL_EmptyURL()
+        public void GiftProperty_EmptyUrl_EmptyUrl()
         {
             Gift gift = new Gift(1)
             {
@@ -185,9 +183,9 @@ namespace GiftServerTests
             Assert.IsTrue(gift.Url != null && String.IsNullOrEmpty(gift.Url), "Gift URL was not converted properly");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Url")]
         [TestMethod]
-        public void GiftProperty_ValidURL_Url()
+        public void GiftProperty_ValidUrl_Url()
         {
             Gift gift = new Gift(1)
             {
@@ -196,7 +194,7 @@ namespace GiftServerTests
             Assert.IsTrue(gift.Url != null && gift.Url == "https:\\google.com", "Gift URL was not converted properly");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("ExceptionThrown")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Cost")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void GiftProperty_NegativeCost_ExceptionThrown()
@@ -207,7 +205,7 @@ namespace GiftServerTests
             };
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Cost")]
         [TestMethod]
         public void GiftProperty_ZeroCost_ZeroCost()
         {
@@ -218,7 +216,7 @@ namespace GiftServerTests
             Assert.AreEqual(0d, gift.Cost, "Costs are not equal");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Cost")]
         [TestMethod]
         public void GiftProperty_NonZeroCost_NonZeroCost()
         {
@@ -229,7 +227,7 @@ namespace GiftServerTests
             Assert.AreEqual(5.02d, gift.Cost, "Costs were not maintained");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Stores")]
         [TestMethod]
         public void GiftProperty_NullStores_EmptyStores()
         {
@@ -240,7 +238,7 @@ namespace GiftServerTests
             Assert.IsTrue(gift.Stores != null && String.IsNullOrEmpty(gift.Stores), "Gift Stores was not converted properly");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Stores")]
         [TestMethod]
         public void GiftProperty_EmptyStores_EmptyStores()
         {
@@ -251,7 +249,7 @@ namespace GiftServerTests
             Assert.IsTrue(gift.Stores != null && String.IsNullOrEmpty(gift.Stores), "Gift Stores was not converted properly");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("ExceptionThrown")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Quantity")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void GiftProperty_ZeroQuantity_ExceptionThrown()
@@ -262,7 +260,7 @@ namespace GiftServerTests
             };
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Quantity")]
         [TestMethod]
         public void GiftProperty_ValidQuantity_QuantityChanged()
         {
@@ -273,7 +271,7 @@ namespace GiftServerTests
             Assert.AreEqual(65U, gift.Quantity, "Quantity not changed");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("ExceptionThrown")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Color")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void GiftProperty_ShortColor_ExceptionThrown()
@@ -284,7 +282,7 @@ namespace GiftServerTests
             };
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("ExceptionThrown")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Color")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void GiftProperty_LongColor_ExceptionThrown()
@@ -295,7 +293,7 @@ namespace GiftServerTests
             };
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Color")]
         [TestMethod]
         public void GiftProperty_NullColor_BlackColor()
         {
@@ -306,7 +304,7 @@ namespace GiftServerTests
             Assert.AreEqual("000000", gift.Color, "Null color was not converted to black");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Color")]
         [TestMethod]
         public void GiftProperty_EmptyColor_BlackColor()
         {
@@ -317,7 +315,7 @@ namespace GiftServerTests
             Assert.AreEqual("000000", gift.Color, "Empty color was not converted to black");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Color")]
         [TestMethod]
         public void GiftProperty_SpaceColor_BlackColor()
         {
@@ -328,7 +326,7 @@ namespace GiftServerTests
             Assert.AreEqual("000000", gift.Color, "Space color was not converted to black");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Color")]
         [TestMethod]
         public void GiftProperty_OnlyHashtag_BlackColor()
         {
@@ -339,7 +337,7 @@ namespace GiftServerTests
             Assert.AreEqual("000000", gift.Color, "Hashtag color was not converted to black");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Color")]
         [TestMethod]
         public void GiftProperty_HashtagSpace_BlackColor()
         {
@@ -350,7 +348,7 @@ namespace GiftServerTests
             Assert.AreEqual("000000", gift.Color, "Hashtag Space color was not converted to black");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Color")]
         [TestMethod]
         public void GiftProperty_SixSpace_BlackColor()
         {
@@ -361,7 +359,7 @@ namespace GiftServerTests
             Assert.AreEqual("000000", gift.Color, "Null color was not converted to black");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Color")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void GiftProperty_FiveCharOneSpace_ExceptionThrown()
@@ -372,7 +370,7 @@ namespace GiftServerTests
             };
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Color")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void GiftProperty_FiveCharOneSpaceHash_ExceptionThrown()
@@ -383,7 +381,7 @@ namespace GiftServerTests
             };
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Color")]
         [TestMethod]
         public void GiftProperty_ValidColorWithHashtag_ValidColor()
         {
@@ -394,7 +392,7 @@ namespace GiftServerTests
             Assert.AreEqual("FFABE1", gift.Color, "Hashtag color not converted correctly");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Color")]
         [TestMethod]
         public void GiftProperty_ValidColor_ValidColor()
         {
@@ -405,7 +403,7 @@ namespace GiftServerTests
             Assert.AreEqual("FFABE1", gift.Color, "Color was not set correctly");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Color")]
         [TestMethod]
         public void GiftProperty_NullColorText_EmptyColorText()
         {
@@ -416,7 +414,7 @@ namespace GiftServerTests
             Assert.AreEqual("", gift.ColorText, "ColorText was not set correctly");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Color")]
         [TestMethod]
         public void GiftProperty_EmptyColorText_EmptyColorText()
         {
@@ -427,7 +425,7 @@ namespace GiftServerTests
             Assert.AreEqual("", gift.ColorText, "ColorText was not set correctly");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Color")]
         [TestMethod]
         public void GiftProperty_ValidColorText_ValidColorText()
         {
@@ -438,7 +436,7 @@ namespace GiftServerTests
             Assert.AreEqual("Green", gift.ColorText, "ColorText was not set correctly");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Size")]
         [TestMethod]
         public void GiftProperty_NullSize_EmptySize()
         {
@@ -449,7 +447,7 @@ namespace GiftServerTests
             Assert.AreEqual("", gift.Size, "Size was not set correctly");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Size")]
         [TestMethod]
         public void GiftProperty_EmptySize_EmptySize()
         {
@@ -460,7 +458,7 @@ namespace GiftServerTests
             Assert.AreEqual("", gift.Size, "Size was not set correctly");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Size")]
         [TestMethod]
         public void GiftProperty_ValidSize_ValidSize()
         {
@@ -471,7 +469,7 @@ namespace GiftServerTests
             Assert.AreEqual("Large", gift.Size, "Size was not set correctly");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Category")]
         [TestMethod]
         public void GiftProperty_NullCategory_DefaultCategory()
         {
@@ -482,7 +480,7 @@ namespace GiftServerTests
             Assert.AreEqual(new Category(1), gift.Category, "Null category was not converted to default");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Category")]
         [TestMethod]
         public void GiftProperty_ValidCategory_ValidCategory()
         {
@@ -493,7 +491,7 @@ namespace GiftServerTests
             Assert.AreEqual(new Category(2), gift.Category, "Category not successfully changed");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("ExceptionThrown")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Rating")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void GiftProperty_NegativeRating_ExceptionThrown()
@@ -504,7 +502,7 @@ namespace GiftServerTests
             };
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("ExceptionThrown")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Rating")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void GiftProperty_LargerRating_ExceptionThrown()
@@ -515,7 +513,7 @@ namespace GiftServerTests
             };
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Rating")]
         [TestMethod]
         public void GiftProperty_ZeroRating_ZeroRating()
         {
@@ -526,7 +524,7 @@ namespace GiftServerTests
             Assert.AreEqual(0d, gift.Rating, "Rating is not 0");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Rating")]
         [TestMethod]
         public void GiftProperty_FiveRating_FiveRating()
         {
@@ -537,7 +535,7 @@ namespace GiftServerTests
             Assert.AreEqual(5d, gift.Rating, "Rating is not 5");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Rating")]
         [TestMethod]
         public void GiftProperty_DecimalRating_DecimalRating()
         {
@@ -548,7 +546,7 @@ namespace GiftServerTests
             Assert.AreEqual(2.5d, gift.Rating, "Rating is not 2.5");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Get"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("TimeStamp")]
         [TestMethod]
         public void GiftProperty_NewGift_NullTimestamp()
         {
@@ -556,7 +554,7 @@ namespace GiftServerTests
             Assert.IsNull(gift.TimeStamp, "Non Null Timestamp for new gift");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Get"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("TimeStamp")]
         [TestMethod]
         public void GiftProperty_ExistingGift_NonNullTimestamp()
         {
@@ -564,7 +562,7 @@ namespace GiftServerTests
             Assert.IsNotNull(gift.TimeStamp, "Null Timestamp for existing gift");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Get"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("ReceivedDate")]
         [TestMethod]
         public void GiftProperty_NotReceived_NullReceivedDate()
         {
@@ -572,7 +570,7 @@ namespace GiftServerTests
             Assert.IsNull(gift.DateReceived, "Date Received is not null");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Set"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("ReceivedDate")]
         [TestMethod]
         public void GiftProperty_SetReceived_NonNullReceivedDate()
         {
@@ -583,7 +581,7 @@ namespace GiftServerTests
             Assert.IsNotNull(gift.DateReceived, "Date Received not set");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Get"), TestCategory("Successful"), TestCategory("Reservation")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Reservation")]
         [TestMethod]
         public void GiftProperty_Reservations_NoReservations()
         {
@@ -592,7 +590,7 @@ namespace GiftServerTests
             Assert.AreEqual(0, res.Count, "More than 0 reservations fetched");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Get"), TestCategory("Successful"), TestCategory("Reservation")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Reservation")]
         [TestMethod]
         public void GiftProperty_Reservations_OneReservation()
         {
@@ -602,7 +600,7 @@ namespace GiftServerTests
             Assert.AreEqual(8UL, res[0].Gift.ID, "Incorrect GiftID fetched");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Get"), TestCategory("Successful"), TestCategory("Reservation")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Reservation")]
         [TestMethod]
         public void GiftProperty_Reservations_ManyReservations()
         {
@@ -612,7 +610,7 @@ namespace GiftServerTests
             Assert.IsTrue(res[0].Gift.ID == 3, "Wrong reservation fetched");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Get"), TestCategory("ExceptionThrown"), TestCategory("Reservation")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Reservation")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void GiftProperty_ReservationsZeroID_ExceptionThrown()
@@ -621,7 +619,7 @@ namespace GiftServerTests
             List<Reservation> res = gift.Reservations;
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Get"), TestCategory("ExceptionThrown"), TestCategory("Group")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Group")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void GiftProperty_GroupsZeroID_ExceptionThrown()
@@ -630,7 +628,7 @@ namespace GiftServerTests
             List<Group> groups = gift.Groups;
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Get"), TestCategory("Successful"), TestCategory("Group")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Group")]
         public void GiftProperty_Groups_NoGroups()
         {
             Gift gift = new Gift(3);
@@ -638,7 +636,7 @@ namespace GiftServerTests
             Assert.AreEqual(0, groups.Count, "Invalid number of groups fetched");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Get"), TestCategory("Successful"), TestCategory("Group")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Group")]
         public void GiftProperty_Groups_OneGroup()
         {
             Gift gift = new Gift(2);
@@ -647,7 +645,7 @@ namespace GiftServerTests
             Assert.AreEqual(1L, groups[0].ID, "Wrong Group tie fetched");
         }
 
-        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Get"), TestCategory("Successful"), TestCategory("Group")]
+        [TestCategory("Gift"), TestCategory("Property"), TestCategory("Group")]
         public void GiftProperty_Groups_ManyGroups()
         {
             Gift gift = new Gift(1);
@@ -657,9 +655,7 @@ namespace GiftServerTests
             Assert.AreNotEqual(groups[0].ID, groups[1].ID, "Same group fetched twice");
         }
 
-
-
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Create"), TestCategory("ExceptionThrown")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Create")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void GiftCreate_ZeroIDUser_ExceptionThrown()
@@ -668,7 +664,7 @@ namespace GiftServerTests
             gift.Create();
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Create"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Create")]
         [TestMethod]
         public void GiftCreate_MinimalData_NewGift()
         {
@@ -680,7 +676,7 @@ namespace GiftServerTests
             Assert.AreEqual(1UL, tester.Owner.ID, "Gift owner mismatch");
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Create"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Create")]
         [TestMethod]
         public void GiftCreate_AllData_NewGift()
         {
@@ -755,7 +751,7 @@ namespace GiftServerTests
             Assert.AreEqual("https://www.google.com", tester.Url, "URL not updated");
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Update"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Update")]
         [TestMethod]
         public void GiftUpdate_ZeroID_GiftCreated()
         {
@@ -794,7 +790,7 @@ namespace GiftServerTests
 
 
 
-        [TestCategory("Gift"), TestCategory("Delete"), TestCategory("Method"), TestCategory("ExceptionThrown")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Delete")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void GiftDelete_ZeroID_ExceptionThrown()
@@ -803,7 +799,7 @@ namespace GiftServerTests
             gift.Delete();
         }
 
-        [TestCategory("Gift"), TestCategory("Delete"), TestCategory("Method"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Delete")]
         [TestMethod]
         public void GiftDelete_ValidGift_GiftDeleted()
         {
@@ -852,8 +848,7 @@ namespace GiftServerTests
             }
         }
 
-
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("SaveImage"), TestCategory("ExceptionThrown")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("SaveImage")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void GiftSaveImage_ZeroID_ExceptionThrown()
@@ -862,7 +857,7 @@ namespace GiftServerTests
             gift.SaveImage(TestManager.Image);
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("SaveImage"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("SaveImage")]
         [TestMethod]
         public void GiftSaveImage_ValidGift_ImageSaved()
         {
@@ -871,7 +866,7 @@ namespace GiftServerTests
             Assert.IsTrue(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift5.png"), "Gift Image not created");
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("SaveImage"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("SaveImage")]
         [TestMethod]
         public void GiftSaveImage_NullInput_ImageDeleted()
         {
@@ -882,7 +877,7 @@ namespace GiftServerTests
             Assert.IsFalse(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift6.png"), "Gift Image not removed");
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("SaveImage"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("SaveImage")]
         [TestMethod]
         public void GiftSaveImage_EmptyInput_ImageDeleted()
         {
@@ -893,9 +888,7 @@ namespace GiftServerTests
             Assert.IsFalse(File.Exists(Directory.GetCurrentDirectory() + "/resources/images/gifts/Gift7.png"), "Gift Image not removed");
         }
 
-
-
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("GetImage"), TestCategory("ExceptionThrown")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("GetImage")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void GiftGetImage_ZeroID_ExceptionThrown()
@@ -904,7 +897,7 @@ namespace GiftServerTests
             string path = gift.Image;
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("GetImage"), TestCategory("ExceptionThrown")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("GetImage")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void GiftGetImage_ZeroIDInput_ExceptionThrown()
@@ -912,7 +905,7 @@ namespace GiftServerTests
             Gift.GetImage(0);
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("GetImage"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("GetImage")]
         [TestMethod]
         public void GiftGetImage_ValidGift_DefaultImage()
         {
@@ -921,7 +914,7 @@ namespace GiftServerTests
             Assert.AreEqual("default", Path.GetFileNameWithoutExtension(path), "Default Image not fetched");
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("GetImage"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("GetImage")]
         [TestMethod]
         public void GiftGetImage_ValidID_DefaultImage()
         {
@@ -929,7 +922,7 @@ namespace GiftServerTests
             Assert.AreEqual("default", Path.GetFileNameWithoutExtension(path), "Default Image not fetched");
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("GetImage"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("GetImage")]
         [TestMethod]
         public void GiftGetImage_ValidGift_CustomImage()
         {
@@ -939,7 +932,7 @@ namespace GiftServerTests
             Assert.AreEqual("Gift1", Path.GetFileNameWithoutExtension(path), "Gift Image not fetched");
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("GetImage"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("GetImage")]
         [TestMethod]
         public void GiftGetImage_ValidID_CustomImage()
         {
@@ -947,9 +940,7 @@ namespace GiftServerTests
             Assert.AreEqual("Gift1", Path.GetFileNameWithoutExtension(path), "Gift Image not fetched");
         }
 
-
-
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("RemoveImage"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("RemoveImage")]
         [TestMethod]
         public void GiftRemoveImage_CustomImage_ImageGone()
         {
@@ -959,7 +950,7 @@ namespace GiftServerTests
             Assert.IsFalse(File.Exists(path), "Image not deleted");
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("RemoveImage"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("RemoveImage")]
         [TestMethod]
         public void GiftRemoveImage_DefaultImage_ImageUnchanged()
         {
@@ -969,7 +960,7 @@ namespace GiftServerTests
             Assert.IsTrue(File.Exists(path), "Default image deleted");
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("RemoveImage"), TestCategory("ExceptionThrown")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("RemoveImage")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void GiftRemoveImage_ZeroID_ExceptionThrown()
@@ -978,11 +969,7 @@ namespace GiftServerTests
             gift.RemoveImage();
         }
 
-
-
-
-
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals")]
         [TestMethod]
         public void GiftEquals_NullObject_False()
         {
@@ -990,7 +977,7 @@ namespace GiftServerTests
             Assert.IsFalse(gift.Equals((object)null), "Null object shows as true");
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals")]
         [TestMethod]
         public void GiftEquals_NullGift_False()
         {
@@ -998,7 +985,7 @@ namespace GiftServerTests
             Assert.IsFalse(gift.Equals((Gift)null), "Null gift shows as true");
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals")]
         [TestMethod]
         public void GiftEquals_ThisZeroThatZero_False()
         {
@@ -1006,7 +993,7 @@ namespace GiftServerTests
             Assert.IsFalse(gift.Equals(gift), "Zero ID gifts shows as true");
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals")]
         [TestMethod]
         public void GiftEquals_ThisZeroThatValid_False()
         {
@@ -1014,7 +1001,7 @@ namespace GiftServerTests
             Assert.IsFalse(gift.Equals(new Gift(1)), "Zero ID gift compares true with non-zero");
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals")]
         [TestMethod]
         public void GiftEquals_ThisValidThatZero_False()
         {
@@ -1022,7 +1009,7 @@ namespace GiftServerTests
             Assert.IsFalse(gift.Equals(new Gift("Hello", new User(1))), "Zero ID gift compares true with non-zero");
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals")]
         [TestMethod]
         public void GiftEquals_ThisValidThatValidDifferentID_False()
         {
@@ -1031,7 +1018,7 @@ namespace GiftServerTests
             Assert.IsFalse(gift.Equals(target), "Different gifts show as true");
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals")]
         [TestMethod]
         public void GiftEquals_NonGift_False()
         {
@@ -1039,7 +1026,7 @@ namespace GiftServerTests
             Assert.IsFalse(gift.Equals(new User(1)), "Non gift shows as true");
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals")]
         [TestMethod]
         public void GiftEquals_ThisValidThatValidObjectDifferentID_False()
         {
@@ -1048,7 +1035,7 @@ namespace GiftServerTests
             Assert.IsFalse(gift.Equals(target), "Object that is different gift shows as true");
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals")]
         [TestMethod]
         public void GiftEquals_ThisValidThatValidSameID_True()
         {
@@ -1060,7 +1047,7 @@ namespace GiftServerTests
             Assert.IsTrue(gift.Equals(target), "Identical IDs compare false");
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals")]
         [TestMethod]
         public void GiftEquals_ThisValidThatValidObjectSameID_True()
         {
@@ -1072,7 +1059,7 @@ namespace GiftServerTests
             Assert.IsTrue(gift.Equals(target), "Identical IDs compare false");
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals")]
         [TestMethod]
         public void GiftEquals_IdenticalGift_True()
         {
@@ -1080,7 +1067,7 @@ namespace GiftServerTests
             Assert.IsTrue(gift.Equals(gift), "Identical gifts compare false");
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals")]
         [TestMethod]
         public void GiftEquals_IdenticalObject_True()
         {
@@ -1088,7 +1075,7 @@ namespace GiftServerTests
             Assert.IsTrue(gift.Equals((object)gift), "Identical object IDs compare false");
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals")]
         [TestMethod]
         public void GiftEquals_IdenticalZeroGift_False()
         {
@@ -1096,7 +1083,7 @@ namespace GiftServerTests
             Assert.IsFalse(gift.Equals(gift), "Identical 0 IDs compare true");
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Equals")]
         [TestMethod]
         public void GiftEquals_IdenticalZeroObject_False()
         {
@@ -1104,9 +1091,24 @@ namespace GiftServerTests
             Assert.IsFalse(gift.Equals(gift), "Identical 0 IDs compare true");
         }
 
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("GetHashCode")]
+        [TestMethod]
+        public void UserHash_IdenticalUsers_SameHash()
+        {
+            Gift gift1 = new Gift(1);
+            Gift gift2 = new Gift(1);
+            Assert.AreEqual(gift1.GetHashCode(), gift2.GetHashCode(), "Identical gifts have different hash codes");
+        }
 
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("GetHashCode")]
+        [TestMethod]
+        public void GiftHash_SameGift_SameHash()
+        {
+            Gift gift = new Gift(1);
+            Assert.AreEqual(gift.GetHashCode(), gift.GetHashCode(), "Same gift gives different hash codes");
+        }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("ExceptionThrown")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Fetch")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void GiftFetch_ZeroIDGift_ExceptionThrown()
@@ -1115,7 +1117,7 @@ namespace GiftServerTests
             XmlDocument doc = gift.Fetch();
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("ExceptionThrown")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Fetch")]
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void GiftFetch_ZeroIDGiftWithViewer_ExceptionThrown()
@@ -1124,7 +1126,7 @@ namespace GiftServerTests
             XmlDocument doc = gift.Fetch(new User(1));
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("ExceptionThrown")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Fetch")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void GiftFetch_ValidIDGiftWithNullViewer_ExceptionThrown()
@@ -1133,7 +1135,7 @@ namespace GiftServerTests
             XmlDocument doc = gift.Fetch(null);
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("ExceptionThrown")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Fetch")]
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void GiftFetch_ValidIDGiftWithZeroIDViewer_ExceptionThrown()
@@ -1142,7 +1144,7 @@ namespace GiftServerTests
             XmlDocument doc = gift.Fetch(new User(new MailAddress("Hello@gmail.com"), new Password("Hi there"), "hello"));
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Fetch")]
         [TestMethod]
         public void GiftFetch_ValidGift_FullXml()
         {
@@ -1205,7 +1207,7 @@ namespace GiftServerTests
             Assert.AreEqual(target.Groups.Count, groups.ChildNodes.Count, "Group count mismatch");
         }
 
-        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Fetch"), TestCategory("Successful")]
+        [TestCategory("Gift"), TestCategory("Method"), TestCategory("Fetch")]
         [TestMethod]
         public void GiftFetch_ValidGiftAndOwner_CompleteGiftXML()
         {
@@ -1213,8 +1215,6 @@ namespace GiftServerTests
             XmlDocument doc = target.Fetch(target.Owner);
             FullXmlChecker(target, doc);
         }
-
-
 
         [ClassInitialize]
         public static void Initialize(TestContext ctx)
