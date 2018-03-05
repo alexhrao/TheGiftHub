@@ -199,7 +199,7 @@ namespace GiftServerTests
         [TestMethod]
         public void PreferencesDelete_ValidUser_Successful()
         {
-            User user = new User(10);
+            User user = new User(11);
             user.Preferences.Create();
             user.Delete();
             using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))

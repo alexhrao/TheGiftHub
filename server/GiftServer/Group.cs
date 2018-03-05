@@ -108,6 +108,10 @@ namespace GiftServer
             {
                 get
                 {
+                    if (ID == 0)
+                    {
+                        throw new InvalidOperationException("Cannot fetch events of ID-less Group");
+                    }
                     List<Event> events = new List<Event>();
                     // For each User in this group, get all their events.
                     // BUT: filter that by existing in that events groups!
@@ -125,6 +129,10 @@ namespace GiftServer
             {
                 get
                 {
+                    if (ID == 0)
+                    {
+                        throw new InvalidOperationException("Cannot fetch gifts of ID-Less group");
+                    }
                     List<Gift> gifts = new List<Gift>();
                     foreach (User member in Members)
                     {
@@ -179,7 +187,7 @@ namespace GiftServer
                         {
                             while (reader.Read())
                             {
-                                Members.Add(new Member(
+                                members.Add(new Member(
                                     new User(Convert.ToUInt64(reader["UserID"])),
                                     Convert.ToBoolean(reader["IsChild"])));
                             }
@@ -239,7 +247,7 @@ namespace GiftServer
                         cmd.ExecuteNonQuery();
                         ID = Convert.ToUInt64(cmd.LastInsertedId);
                     }
-                    foreach (Member member in Members)
+                    foreach (Member member in members)
                     {
                         using (MySqlCommand cmd = new MySqlCommand())
                         {
@@ -274,11 +282,9 @@ namespace GiftServer
                             cmd.Connection = con;
                             cmd.CommandText = "UPDATE groups "
                                             + "SET GroupName = @name, "
-                                            + "GroupDescription = @desc, "
                                             + "AdminID = @uid "
                                             + "WHERE GroupID = @id;";
                             cmd.Parameters.AddWithValue("@name", Name);
-                            cmd.Parameters.AddWithValue("@desc", Description);
                             cmd.Parameters.AddWithValue("@uid", Admin.ID);
                             cmd.Parameters.AddWithValue("@id", ID);
                             cmd.Prepare();
@@ -333,10 +339,21 @@ namespace GiftServer
                 {
                     throw new ArgumentNullException(nameof(newAdmin), "New Admin cannot be null");
                 }
+                else if (newAdmin.ID == 0)
+                {
+                    throw new ArgumentException("User must be valid", nameof(newAdmin));
+                }
                 else if (members.Exists(m => m.User.Equals(newAdmin) && !m.IsChild))
                 {
                     // Not in group, not a child
                     Admin = newAdmin;
+                    // Remove this user from groups
+                    Remove(newAdmin);
+                    Update();
+                }
+                else
+                {
+                    throw new ArgumentException("User must belong to group AND be an adult", nameof(newAdmin));
                 }
             }
             /// <summary>

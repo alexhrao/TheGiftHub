@@ -31,8 +31,7 @@ CREATE TABLE gift_registry_db_test.users (
 CREATE TABLE gift_registry_db_test.preferences (
     PreferenceID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     UserID INT NOT NULL,
-    UserCulture CHAR(5) NOT NULL,
-    UserTheme TINYINT UNSIGNED NULL DEFAULT 0
+    UserCulture CHAR(5) NOT NULL
 );
 ALTER TABLE gift_registry_db_test.preferences
     ADD CONSTRAINT FK_UsersPreferences FOREIGN KEY (UserID)
@@ -240,21 +239,25 @@ BEGIN
             (7, 'HasImage', 'alexhrao@google.com', 7, 3, "fdsafdsa", "UaIOl0xfU7ccIQH5Ofs0Awfd2222", "12312", "12312"),
             (8, 'reservations', 'asdf@google.com', 7, 3, "fdsafdsa", "UaIOl0xfU7ccIQH5OfdfAwfd2222", "55555", "55555"),
             (9, 'reservationsHas', 'asdffdsasadf@google.com', 7, 3, "fdsafdsa", "UaIOl0xfU7ccIQH5OfdfAw555222", "66", "1234"),
-            (10, 'NoGifts', 'fdasdffdsasa@google.com', 0, 0, "fdsaASDf", "UaIOl0x77777IQH5OfdfAw555222", NULL, NULL);
+            (10, 'NoGifts', 'fdasdffdsasa@google.com', 0, 0, "fdsaASDf", "UaIOl0x77777IQH5OfdfAw555222", NULL, NULL),
+            (11, 'NoGroups', 'fdsafdsafdsafdsafdsa@gmail.com', 0, 0, "fdsafdsafdsa", "UaIOl0x77777IQH1OfdfAw555222", NULL, NULL),
+            (12, 'NoGroups', 'asd@gmail.com', 0, 0, "fdsafdsafdsa", "UaIOl0x77177IQH1OfdfAw555222", NULL, NULL);
             
 	-- Create preferences:
-	INSERT INTO gift_registry_db_test.preferences (PreferenceID, UserID, UserCulture, UserTheme)
+	INSERT INTO gift_registry_db_test.preferences (PreferenceID, UserID, UserCulture)
 		VALUES 
-            (1, 1, 'en-US', 0),
-            (2, 2, 'fr-FR', 1),
-            (3, 3, 'en-GB', 0),
-            (4, 4, 'fr-FR', 1),
-            (5, 5, 'en-US', 0),
-            (6, 6, 'en-GB', 1),
-            (7, 7, 'en-US', 0),
-            (8, 8, 'fr-FR', 1),
-            (9, 9, 'en-US', 0),
-            (10, 10, 'fr-FR', 1);
+            (1, 1, 'en-US'),
+            (2, 2, 'fr-FR'),
+            (3, 3, 'en-GB'),
+            (4, 4, 'fr-FR'),
+            (5, 5, 'en-US'),
+            (6, 6, 'en-GB'),
+            (7, 7, 'en-US'),
+            (8, 8, 'fr-FR'),
+            (9, 9, 'en-US'),
+            (10, 10, 'fr-FR'),
+            (11, 11, 'en-US'),
+            (12, 12, 'en-US');
             
 		
 	-- Create Password:
@@ -281,7 +284,10 @@ BEGIN
             (1, 'The Rao''s', 1),
             (2, 'Test Group 2', 2),
             (3, 'Test Group 3', 4),
-            (4, 'Test Group 1 is out', 4);
+            (4, 'Test Group 1 is out', 4),
+            (5, 'Test Group 5', 10),
+            (6, 'Test Group 6', 10),
+            (7, 'ToDelete', 12);
 		
 	-- Create gift
 	INSERT INTO gift_registry_db_test.gifts (GiftID, UserID, GiftName, GiftDescription, GiftURL, GiftCost, GiftStores, GiftQuantity, GiftColor, GiftColorText, GiftSize, CategoryID, GiftRating)
@@ -303,7 +309,6 @@ BEGIN
 	INSERT INTO gift_registry_db_test.groups_users (GroupID, UserID)
 		VALUES 
 			(2, 3),
-			(1, 1),
 			(2, 1),
 			(2, 5),
 			(3, 1),
@@ -315,7 +320,9 @@ BEGIN
             (1, 8),
             (4, 9),
             (2, 7),
-            (2, 4);
+            (2, 4),
+            (6, 9),
+            (4, 5);
 
 	-- Add gift to group
 	INSERT INTO gift_registry_db_test.groups_gifts (GroupID, GiftID)

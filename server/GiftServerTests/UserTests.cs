@@ -316,7 +316,7 @@ namespace GiftServerTests
         [TestMethod]
         public void UserProperty_Groups_NoGroups()
         {
-            User user = new User(10);
+            User user = new User(11);
             Assert.IsTrue(user.Groups.Count == 0, "Groups fetched when none should have been");
         }
 
