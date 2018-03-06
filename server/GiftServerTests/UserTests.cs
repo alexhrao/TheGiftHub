@@ -16,7 +16,20 @@ namespace GiftServerTests
     [TestClass]
     public class UserTests
     {
-        private static Tuple<string, byte[]>[] images;
+        private class Image
+        {
+            public readonly string Name;
+            public readonly byte[] Data;
+
+            public Image(string name, byte[] data)
+            {
+                Name = name;
+                Data = data;
+            }
+        }
+        private static Image[] _images;
+        private static TestContext _ctx;
+
         [TestCategory("User"), TestCategory("Instantiate")]
         [TestMethod]
         [ExpectedException(typeof(UserNotFoundException))]
@@ -1365,13 +1378,20 @@ namespace GiftServerTests
         public static void UserInitialize(TestContext ctx)
         {
             Task reset = TestManager.Reset();
-            // Add all images to tuples
+            _ctx = ctx;
             string[] names = Directory.GetFiles(Directory.GetCurrentDirectory() + "/resources/images/users/");
-            images = new Tuple<string, byte[]>[names.Length];
+            _images = new Image[names.Length];
             for (int i = 0; i < names.Length; i++)
             {
-                images[i] = new Tuple<string, byte[]>(names[i],
-                    File.ReadAllBytes(names[i]));
+                _images[i] = new Image(names[i], File.ReadAllBytes(names[i]));
+            }
+            string[] toWrite = { "User1.png", "User6.png" };
+            foreach (var f in toWrite)
+            {
+                if (!File.Exists(Directory.GetCurrentDirectory() + "/resources/images/users/" + f))
+                {
+                    File.WriteAllBytes(Directory.GetCurrentDirectory() + "/resources/images/users/" + f, TestManager.Image);
+                }
             }
             reset.Wait();
         }
@@ -1385,10 +1405,10 @@ namespace GiftServerTests
             {
                 File.Delete(file);
             }
-            foreach (var image in images)
+            foreach (var image in _images)
             {
                 // Save the image
-                File.WriteAllBytes(image.Item1, image.Item2);
+                File.WriteAllBytes(image.Name, image.Data);
             }
             reset.Wait();
         }

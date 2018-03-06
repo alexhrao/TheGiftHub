@@ -69,7 +69,7 @@ namespace GiftServerTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void EventInitialize_NullUser_ExceptionThrown()
         {
-            Event e = new Event("   ", DateTime.Now, null, null);
+            Event e = new Event("Hello", DateTime.Now, null, null);
         }
 
         [TestCategory("Event"), TestCategory("Initialize")]
@@ -78,10 +78,8 @@ namespace GiftServerTests
         public void EventInitialize_InvalidUser_ExceptionThrown()
         {
             User user = new User(new MailAddress("alex.h.rao@gmail.com"), new Password("Hello"), "hi");
-            Event e = new Event("   ", DateTime.Now, user, null);
+            Event e = new Event("Hi", DateTime.Now, user, null);
         }
-
-
 
         [ClassInitialize]
         public static void Initialize(TestContext ctx)

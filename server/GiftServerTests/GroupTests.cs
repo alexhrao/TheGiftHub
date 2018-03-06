@@ -1,8 +1,10 @@
 ﻿using GiftServer.Data;
 using GiftServer.Exceptions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 
 namespace GiftServerTests
 {
@@ -344,8 +346,57 @@ namespace GiftServerTests
         public void GroupDelete_ValidGroup_GroupDeleted()
         {
             Group group = new Group(7);
+            ulong id = group.ID;
             group.Delete();
-            // TODO: Add checking for deleted event, gift, and user records
+            using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+            {
+                con.Open();
+                using (MySqlCommand cmd = new MySqlCommand())
+                {
+                    // Check no group record
+                    cmd.Connection = con;
+                    cmd.CommandText = "SELECT GroupID FROM groups WHERE GroupID = @gid;";
+                    cmd.Parameters.AddWithValue("@gid", id);
+                    cmd.Prepare();
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        Assert.IsFalse(reader.HasRows, "Group not deleted");
+                    }
+                }
+                using (MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.Connection = con;
+                    cmd.CommandText = "SELECT GroupID FROM groups_users WHERE GroupID = @gid;";
+                    cmd.Parameters.AddWithValue("@gid", id);
+                    cmd.Prepare();
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        Assert.IsFalse(reader.HasRows, "Group User record still found");
+                    }
+                }
+                using (MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.Connection = con;
+                    cmd.CommandText = "SELECT GroupID FROM groups_events WHERE GroupID = @gid;";
+                    cmd.Parameters.AddWithValue("@gid", id);
+                    cmd.Prepare();
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        Assert.IsFalse(reader.HasRows, "Group Event record still found");
+                    }
+                }
+                using (MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.Connection = con;
+                    cmd.CommandText = "SELECT GroupID FROM groups_gifts WHERE GroupID = @gid;";
+                    cmd.Parameters.AddWithValue("@gid", id);
+                    cmd.Prepare();
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        Assert.IsFalse(reader.HasRows, "Group Gift record still found");
+                    }
+                }
+            }
         }
 
         [ClassInitialize]
