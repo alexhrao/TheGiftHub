@@ -23,10 +23,32 @@ namespace GiftServer
                 get;
                 private set;
             } = 0;
+            private string name = "";
             /// <summary>
             /// The Name for this event
             /// </summary>
-            public string Name = "";
+            public string Name
+            {
+                get
+                {
+                    return name;
+                }
+                set
+                {
+                    if (value == null)
+                    {
+                        throw new ArgumentNullException(nameof(value), "Name must not be null");
+                    }
+                    else if (String.IsNullOrWhiteSpace(value))
+                    {
+                        throw new ArgumentException("Name must not be blank", nameof(value));
+                    }
+                    else
+                    {
+                        name = value;
+                    }
+                }
+            }
             /// <summary>
             /// The Starting Date of this event
             /// </summary>
@@ -38,10 +60,32 @@ namespace GiftServer
             /// If this is null, then there is no end date
             /// </remarks>
             public DateTime? EndDate;
+            private User user;
             /// <summary>
             /// The owner of this event
             /// </summary>
-            public User User;
+            public User User
+            {
+                get
+                {
+                    return user;
+                }
+                set
+                {
+                    if (value == null)
+                    {
+                        throw new ArgumentNullException(nameof(value), "Owner cannot be null!");
+                    }
+                    else if (value.ID == 0)
+                    {
+                        throw new ArgumentException("User must have valid ID", nameof(value));
+                    }
+                    else
+                    {
+                        user = value;
+                    }
+                }
+            }
             /// <summary>
             /// The Rules Engine
             /// </summary>
@@ -182,10 +226,6 @@ namespace GiftServer
             /// <param name="engine">The engine this event runs on - can be null</param>
             public Event(string name, DateTime startDate, User owner, RulesEngine engine)
             {
-                if (String.IsNullOrWhiteSpace(name))
-                {
-                    throw new ArgumentException("Name is blank");
-                }
                 Name = name;
                 StartDate = startDate;
                 User = owner;
