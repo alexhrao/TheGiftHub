@@ -198,32 +198,12 @@ namespace GiftServerTests
         [ClassInitialize]
         public static void Initialize(TestContext ctx)
         {
-            using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
-            {
-                con.Open();
-                using (MySqlCommand cmd = new MySqlCommand())
-                {
-                    cmd.Connection = con;
-                    cmd.CommandText = "CALL gift_registry_db_test.setup();";
-                    cmd.Prepare();
-                    cmd.ExecuteNonQuery();
-                }
-            }
+            Reset().Wait();
         }
         [ClassCleanup]
         public static void Cleanup()
         {
-            using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
-            {
-                con.Open();
-                using (MySqlCommand cmd = new MySqlCommand())
-                {
-                    cmd.Connection = con;
-                    cmd.CommandText = "CALL gift_registry_db_test.setup();";
-                    cmd.Prepare();
-                    cmd.ExecuteNonQuery();
-                }
-            }
+            Reset().Wait();
         }
     }
 }

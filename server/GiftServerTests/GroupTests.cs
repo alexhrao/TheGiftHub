@@ -353,29 +353,6 @@ namespace GiftServerTests
                 con.Open();
                 using (MySqlCommand cmd = new MySqlCommand())
                 {
-                    // Check no group record
-                    cmd.Connection = con;
-                    cmd.CommandText = "SELECT GroupID FROM groups WHERE GroupID = @gid;";
-                    cmd.Parameters.AddWithValue("@gid", id);
-                    cmd.Prepare();
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        Assert.IsFalse(reader.HasRows, "Group not deleted");
-                    }
-                }
-                using (MySqlCommand cmd = new MySqlCommand())
-                {
-                    cmd.Connection = con;
-                    cmd.CommandText = "SELECT GroupID FROM groups_users WHERE GroupID = @gid;";
-                    cmd.Parameters.AddWithValue("@gid", id);
-                    cmd.Prepare();
-                    using (MySqlDataReader reader = cmd.ExecuteReader())
-                    {
-                        Assert.IsFalse(reader.HasRows, "Group User record still found");
-                    }
-                }
-                using (MySqlCommand cmd = new MySqlCommand())
-                {
                     cmd.Connection = con;
                     cmd.CommandText = "SELECT GroupID FROM groups_events WHERE GroupID = @gid;";
                     cmd.Parameters.AddWithValue("@gid", id);
@@ -394,6 +371,29 @@ namespace GiftServerTests
                     using (MySqlDataReader reader = cmd.ExecuteReader())
                     {
                         Assert.IsFalse(reader.HasRows, "Group Gift record still found");
+                    }
+                }
+                using (MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.Connection = con;
+                    cmd.CommandText = "SELECT GroupID FROM groups_users WHERE GroupID = @gid;";
+                    cmd.Parameters.AddWithValue("@gid", id);
+                    cmd.Prepare();
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        Assert.IsFalse(reader.HasRows, "Group User record still found");
+                    }
+                }
+                using (MySqlCommand cmd = new MySqlCommand())
+                {
+                    // Check no group record
+                    cmd.Connection = con;
+                    cmd.CommandText = "SELECT GroupID FROM groups WHERE GroupID = @gid;";
+                    cmd.Parameters.AddWithValue("@gid", id);
+                    cmd.Prepare();
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        Assert.IsFalse(reader.HasRows, "Group not deleted");
                     }
                 }
             }
