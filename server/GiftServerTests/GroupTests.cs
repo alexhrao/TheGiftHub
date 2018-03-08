@@ -1,10 +1,12 @@
 ﻿using GiftServer.Data;
 using GiftServer.Exceptions;
+using GiftServer.Security;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Net.Mail;
 
 namespace GiftServerTests
 {
@@ -343,11 +345,20 @@ namespace GiftServerTests
 
         [TestCategory("Group"), TestCategory("Method"), TestCategory("Delete")]
         [TestMethod]
+        public void GroupDelete_ZeroID_NoChange()
+        {
+            Group group = new Group(new User(1), "Hello");
+            group.Delete();
+        }
+
+        [TestCategory("Group"), TestCategory("Method"), TestCategory("Delete")]
+        [TestMethod]
         public void GroupDelete_ValidGroup_GroupDeleted()
         {
             Group group = new Group(7);
             ulong id = group.ID;
             group.Delete();
+            Assert.AreEqual(0UL, group.ID, "ID not set to 0");
             using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
             {
                 con.Open();
@@ -396,6 +407,78 @@ namespace GiftServerTests
                         Assert.IsFalse(reader.HasRows, "Group not deleted");
                     }
                 }
+            }
+        }
+
+        [TestCategory("Group"), TestCategory("Method"), TestCategory("TransferAdmin")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void GroupTransferAdmin_NullUser_ExceptionThrown()
+        {
+            Group group = new Group(1);
+            group.TransferAdmin(null);
+        }
+
+        [TestCategory("Group"), TestCategory("Method"), TestCategory("TransferAdmin")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void GroupTransferAdmin_ZeroIDUser_ExceptionThrown()
+        {
+            Group group = new Group(1);
+            User user = new User(new MailAddress("alejandro@alejandro.com"), new Password("Hi"), "Hello");
+            group.TransferAdmin(user);
+        }
+
+        [TestCategory("Group"), TestCategory("Method"), TestCategory("TransferAdmin")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void GroupTransferAdmin_UserNotInGroup_ExceptionThrown()
+        {
+            Group group = new Group(1);
+            User user = new User(3);
+            group.TransferAdmin(user);
+        }
+
+        [TestCategory("Group"), TestCategory("Method"), TestCategory("TransferAdmin")]
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void GroupTransferAdmin_UserIsChild_ExceptionThrown()
+        {
+            Group group = new Group(1);
+            User user = new User(2);
+            group.TransferAdmin(user);
+        }
+
+        [TestCategory("Group"), TestCategory("Method"), TestCategory("TransferAdmin")]
+        [TestMethod]
+        public void GroupTransferAdmin_ValidUser_Success()
+        {
+            ulong gid = 1;
+            ulong newAdminId = 8;
+            Group group = new Group(gid);
+            ulong oldAdminId = group.Admin.ID;
+            Assert.AreNotEqual(newAdminId, oldAdminId, "Test not set up correctly - admin won't change");
+            group.TransferAdmin(new User(newAdminId));
+            Group tester = new Group(gid);
+            Assert.AreEqual(newAdminId, group.Admin.ID, "Admin ID not updated");
+            // Assert no record of 8 in groups_users
+            using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
+            {
+                con.Open();
+                using (MySqlCommand cmd = new MySqlCommand())
+                {
+                    cmd.Connection = con;
+                    cmd.CommandText = "SELECT UserID FROM groups_users WHERE GroupID = @gid AND UserID = @uid;";
+                    cmd.Parameters.AddWithValue("@gid", gid);
+                    cmd.Parameters.AddWithValue("@uid", newAdminId);
+                    cmd.Prepare();
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        Assert.IsFalse(reader.HasRows, "New Admin still has record in groups_users");
+                    }
+                }
+                List<Member> members = tester.Members;
+                Assert.IsTrue(members.Exists(m => m.ID == oldAdminId), "Old Admin kicked from group");
             }
         }
 

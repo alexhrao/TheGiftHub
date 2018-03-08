@@ -299,6 +299,10 @@ namespace GiftServer
             public void Delete()
             {
                 // Remove gifts, users, events, Delete this
+                if (ID == 0)
+                {
+                    return;
+                }
                 foreach (Gift gift in Gifts)
                 {
                     Remove(gift);
@@ -327,6 +331,7 @@ namespace GiftServer
                         cmd.ExecuteNonQuery();
                     }
                 }
+                ID = 0;
             }
             /// <summary>
             /// Transfer ownership of this group to a new user
@@ -345,11 +350,13 @@ namespace GiftServer
                 }
                 else if (members.Exists(m => m.User.Equals(newAdmin) && !m.IsChild))
                 {
+                    User oldAdmin = Admin;
                     // Not in group, not a child
                     Admin = newAdmin;
-                    // Remove this user from groups
-                    Remove(newAdmin);
+                    // Add as member.
                     Update();
+                    Remove(newAdmin);
+                    Add(oldAdmin);
                 }
                 else
                 {
@@ -360,7 +367,7 @@ namespace GiftServer
             /// Add a user to the group
             /// </summary>
             /// <param name="user">The user to be added</param>
-            public void Add(User user)
+            public void Add(Member user)
             {
                 using (MySqlConnection con = new MySqlConnection(ConfigurationManager.ConnectionStrings["Development"].ConnectionString))
                 {
@@ -368,9 +375,10 @@ namespace GiftServer
                     using (MySqlCommand cmd = new MySqlCommand())
                     {
                         cmd.Connection = con;
-                        cmd.CommandText = "INSERT INTO groups_users (GroupID, UserID) VALUES (@gid, @uid);";
+                        cmd.CommandText = "INSERT INTO groups_users (GroupID, UserID, IsChild) VALUES (@gid, @uid, @isc);";
                         cmd.Parameters.AddWithValue("@gid", ID);
                         cmd.Parameters.AddWithValue("@uid", user.ID);
+                        cmd.Parameters.AddWithValue("@isc", user.IsChild);
                         cmd.Prepare();
                         cmd.ExecuteNonQuery();
                     }
